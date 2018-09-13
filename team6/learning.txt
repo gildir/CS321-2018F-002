@@ -1,2 +1,2 @@
 Google Search (x2)
-git - the simple guide 
+git - the simple guide
