@@ -1,3 +1,4 @@
 Google Search (x3)
 git - the simple guide
 Git Immersion
+https://stackoverflow.com/questions/2745076/what-are-the-differences-between-git-commit-and-git-push
