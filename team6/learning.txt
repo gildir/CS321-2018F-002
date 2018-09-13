@@ -1,1 +1,3 @@
-Google searches
+Google Search (x3)
+git - the simple guide
+Git Immersion
