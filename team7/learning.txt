@@ -1,6 +1,4 @@
 Think like a git --- think-like-a-git.net x3
-git - the simple guide --- rogerdudler.github.io/git-guide/ x3
-Git Immersion --- gitimmersion.com
-git - the simple guide 
+git - the simple guide --- rogerdudler.github.io/git-guide/ x4  
 github learning resources - from github site
-
+Git Immersion --- gitimmersion.com x2
