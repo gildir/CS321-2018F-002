@@ -1,1 +1,2 @@
-Insert git resources you've used bellow
+Insert git resources you've used below
+http://rogerdudler.github.io/git-guide/
