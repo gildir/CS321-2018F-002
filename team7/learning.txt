@@ -1,3 +1,6 @@
+I can confirm that my team and I have been actively learning how to use git with the help of the resources below.
+In addition to these resources, we have also been learning git during our weekly working meetings that we hold at Fenwick Library at 1:30 PM on Fridays.
+
 Think like a git --- think-like-a-git.net x3
 git - the simple guide --- rogerdudler.github.io/git-guide/ x4  
 github learning resources - from github site
