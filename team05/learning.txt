@@ -1,1 +1,4 @@
-testing
+http://rogerdudler.github.io/git-guide/
+http://think-like-a-git.net/
+http://gitimmersion.com/
+https://www.youtube.com/playlist?list=PLRqwX-V7Uu6ZF9C0YMKuns9sLDzK6zoiV
