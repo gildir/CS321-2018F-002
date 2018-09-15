@@ -1,1 +1,3 @@
-testing
+git - the simple guide
+Think Like (a) Git
+Git and Github for Poets - This is a youtube playlist by the channel The Coding Train that goes through some of the basics of git; https://www.youtube.com/playlist?list=PLRqwX-V7Uu6ZF9C0YMKuns9sLDzK6zoiV
