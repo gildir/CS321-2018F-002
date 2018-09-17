@@ -1,0 +1,3 @@
+Resource 1: This is from Atlassian that gives a good overview of GIT commands and the system while giving a handy cheat sheet
+https://www.atlassian.com/git/tutorials/atlassian-git-cheatsheet
+
