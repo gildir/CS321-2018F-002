@@ -1,2 +1,3 @@
+I, the team leader confirm that my team is actively learning git, our last working meeting was after right class on sept 17 and lasted for about an hour.
 git immersion website I followed the lessons until I understood how to merge and what was actually happening
 I read the readings on the schedule x4
