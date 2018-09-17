@@ -1,0 +1,1 @@
+git immersion website I followed the lessons until I understood how to merge and what was actually happening
