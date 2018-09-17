@@ -1,1 +1,3 @@
 Insert git resources you've used bellow
+David - git - the simple guide
+David - GitHub Learning Path
