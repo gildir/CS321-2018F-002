@@ -1,2 +1,5 @@
 Insert git resources you've used below
-http://rogerdudler.github.io/git-guide/
+http://rogerdudler.github.io/git-guide/ (X2 - added by Chris)
+
+Chris:
+https://git-scm.com/docs
