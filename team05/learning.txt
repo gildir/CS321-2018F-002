@@ -1,4 +1,4 @@
-git - the simple guide
+As the team leader I confirm that my team is actively learning git. We had one meeting on Saturday, September 16 which helped us a lot to progress with the assignment.  
 https://www.youtube.com/playlist?list=PLRqwX-V7Uu6ZF9C0YMKuns9sLDzK6zoiVGit and Github for Poets x2 - This is a youtube playlist by the channel The Coding Train that goes through some of the basics of git;
 http://rogerdudler.github.io/git-guide/ x2
 http://think-like-a-git.net/ x2
