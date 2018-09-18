@@ -1,3 +1,0 @@
-testing
-
-I used the following two links, http://help.github.com/articles/git-and-github-learning-resources/ and https://git-scm.com/book/en/v2/Getting-Started-Git-Basics to learn the basics of github , from merging, pull requests, commits, etc.
