@@ -1,4 +1,4 @@
-I, Kevin, team leader, state that my group has been actively learning git. We've worked together in this in class (Sep 12) and in a meeteing (Sep 13).
+I, Kevin, team leader, state that the team has been actively learning git. We've worked together on it in class (Sep 12, 1:30pm) and in a group meeting (Sep 13, 1:45pm).
 Git Immersion: http://gitimmersion.com/
 git - the simple guide: http://rogerdudler.github.io/git-guide/ x3
 GitHub Learning Path: https://services.github.com/on-demand/resources/learning-path/
