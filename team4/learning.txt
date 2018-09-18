@@ -4,6 +4,10 @@
 
 
 
-git-the simple guide
+git-the simple guide x2
 
 github learning path
+
+Visualizing Git
+
+
