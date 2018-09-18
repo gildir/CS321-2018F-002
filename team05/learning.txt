@@ -3,3 +3,4 @@ Git and Github for Poets x2 - This is a youtube playlist by the channel The Codi
 http://rogerdudler.github.io/git-guide/
 http://think-like-a-git.net/ x2
 http://gitimmersion.com/
+Codecademy - This is a website with many free courses to understand the basics of many languages and other things like git. http://codecademy.com/
