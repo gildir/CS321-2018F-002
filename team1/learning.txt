@@ -1,2 +1,5 @@
 Resource: This is from Atlassian that gives a good overview of GIT commands and the system while giving a handy cheat sheet
 https://www.atlassian.com/git/tutorials/atlassian-git-cheatsheet
+
+Resource: This is a help for learning GIT and all of GIT commands. Great tutorial to continue or learn new GIT material.
+https://learngitbranching.js.org/
