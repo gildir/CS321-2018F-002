@@ -1,3 +1,7 @@
+I, Haroon Tanveer, can confirm that my team has actively spent the last 2 weeks learning git. We have met for 3 workings meetings.
+Wednesday, 9/12 3:00pm-4:15pm
+Monday, 9/17 3:00pm-4:15pm and 7:15pm-8:30pm
+
 Resource x3 : This is from Atlassian that gives a good overview of GIT commands and the system while giving a handy cheat sheet
 https://www.atlassian.com/git/tutorials/atlassian-git-cheatsheet
 
