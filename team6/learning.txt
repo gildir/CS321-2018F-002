@@ -1,3 +1,5 @@
+I, Kevin, Team Leader, certify that our group has been learning git. We meet on Tuesdays and Thrusdays and met on the 11th and the 13th last week.
+
 Google Search (x3)
 git - the simple guide
 Git Immersion
