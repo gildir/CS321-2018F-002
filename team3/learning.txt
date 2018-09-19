@@ -1,3 +1,5 @@
+I confirm that my team has made an effort to learn git. We had one working meeting on Thursday August 13th specifically for learning git.
+
 Insert git resources you've used below
 http://rogerdudler.github.io/git-guide/ (X3 - added by Chris)
 
