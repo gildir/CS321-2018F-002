@@ -21,7 +21,7 @@ public class Player {
         this.name = name;
         this.currentInventory = new LinkedList<>();
     }
-    
+
     public void turnLeft() {
         switch(this.currentDirection.toString()) {
             case "North":
@@ -35,10 +35,10 @@ public class Player {
                 break;
             case "West":
                 this.currentDirection = Direction.SOUTH;
-                break;                
+                break;
         }
     }
-    
+
     public void turnRight() {
         switch(this.currentDirection.toString()) {
             case "North":
@@ -52,10 +52,10 @@ public class Player {
                 break;
             case "West":
                 this.currentDirection = Direction.NORTH;
-                break;                
+                break;
         }
     }
-    
+
     public String getName() {
         return name;
     }
@@ -75,43 +75,52 @@ public class Player {
     public void addObjectToInventory(Item object) {
         this.currentInventory.add(object);
     }
-    
+    public String removeObjectFomInventory(String object) {
+        for(String obj : this.currentInventory) {
+            if(obj.equalsIgnoreCase(object)) {
+                this.currentInventory.remove(obj);
+                return obj;
+              }
+            }
+        return null;
+    }
+
     public void setReplyWriter(PrintWriter writer) {
         this.replyWriter = writer;
     }
-    
+
     public PrintWriter getReplyWriter() {
         return this.replyWriter;
     }
-    
+
     public void setOutputWriter(DataOutputStream writer) {
         this.outputWriter = writer;
     }
-    
+
     public DataOutputStream getOutputWriter() {
         return this.outputWriter;
     }
-    
+
     public int getCurrentRoom() {
         return this.currentRoom;
     }
-    
+
     public void setCurrentRoom(int room) {
         this.currentRoom = room;
     }
-    
+
     public String getCurrentDirection() {
         return this.currentDirection.name();
     }
-    
+
     public Direction getDirection() {
         return this.currentDirection;
     }
-    
+
     public String viewInventory() {
         String result = "";
         if(this.currentInventory.isEmpty() == true) {
-            return "nothing.";
+            return " nothing.";
         }
         else {
             for(Item obj : this.currentInventory) {
