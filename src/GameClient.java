@@ -52,6 +52,7 @@ public class GameClient {
         System.out.println("The game allows you to use the following commands:");
         System.out.println("  LOOK          - Shows you the area around you");
         System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
+        System.out.println("  WHISPER player message - Says 'message' to specified 'player'.");
         System.out.println("  LEFT          - Turns your player left 90 degrees.");
         System.out.println("  RIGHT         - Turns your player right 90 degrees.");
         System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
@@ -169,6 +170,21 @@ public class GameClient {
                             }
                         }                        
                         System.out.println(remoteGameInterface.say(this.playerName, message));
+                    }
+                    break;
+                case "WHISPER":
+                    if(tokens.isEmpty()) {
+                        System.err.println("You need to specify a player and write a message in order to WHISPER.");
+                    }
+                    else {
+                        String receivingName = tokens.remove(0);
+                        while(tokens.isEmpty() == false) {
+                            message += tokens.remove(0);
+                            if(tokens.isEmpty() == false) {
+                                message += " ";
+                            }
+                        }
+                        System.out.println(remoteGameInterface.whisper(this.playerName, receivingName, message));
                     }
                     break;
                 case "MOVE":
