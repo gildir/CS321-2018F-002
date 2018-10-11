@@ -175,6 +175,9 @@ public class GameClient {
                     if(tokens.isEmpty()) {
                         System.err.println("You need to provide a distance in order to move.");
                     }
+		    else if (!tokens.contains("1")) {
+			System.err.println("You need to move one at a time.");
+		    }
                     else {
                         System.out.println(remoteGameInterface.move(this.playerName, Integer.parseInt(tokens.remove(0))));
                     }
