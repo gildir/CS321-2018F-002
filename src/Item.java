@@ -1,4 +1,4 @@
-import java.util.*
+import java.util.*;
 
 public class Item{
 	private String itemName;
@@ -28,7 +28,9 @@ public class Item{
 	}
 	// To String Method
 	public String toString(){
-		return itemName + "(" + itemWeight + ", $" + value +")";
+		String weightString = String.format("%.2f",itemWeight);
+		return itemName + "(" + itemWeight + ", $" + itemValue +")";
+
 	}
 
 }
