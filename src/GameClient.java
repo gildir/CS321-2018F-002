@@ -21,6 +21,7 @@ import java.util.logging.Logger;
  * @author Kevin
  */
 public class GameClient {
+	
     // Control flag for running the game.
     private boolean runGame;
 
@@ -80,6 +81,10 @@ public class GameClient {
                     System.out.println("Please enter a name for your player.");
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine();
+                    System.out.println("Please enter a password.");
+                    System.out.print("> ");
+                    String password = keyboardInput.readLine();
+                    PlayerDatabase.addPlayer(this.playerName, password);
                     System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this name?");
                     System.out.print("(Y/N) >");
                     if(keyboardInput.readLine().equalsIgnoreCase("Y")) {
