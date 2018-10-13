@@ -236,7 +236,7 @@ public class GameCore implements GameCoreInterface {
         Player playerReceiving = this.playerList.findPlayer(name2);
         if(playerSending != null && playerReceiving != null) {
             this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
-            return "You whisper, \"" + message + "\"" + " to " + playerReceiving.getName();
+            return "message sent to " + playerReceiving.getName();
         }
         else {
             if(playerReceiving == null) {
