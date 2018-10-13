@@ -217,14 +217,13 @@ public class GameCore implements GameCoreInterface {
      * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      */
-    public String move(String name, int distance) {
+    public String move(String name) {
         Player player = this.playerList.findPlayer(name);
-        if(player == null || distance <= 0) {
+        if(player == null) {
             return null;
         }
         Room room;
-        while(distance-- != 0) {
-            room = map.findRoom(player.getCurrentRoom());
+        room = map.findRoom(player.getCurrentRoom());
             if(room.canExit(player.getDirection())) {
                 this.broadcast(player, player.getName() + " has walked off to the " + player.getCurrentDirection());
                 player.getReplyWriter().println(room.exitMessage(player.getDirection()));
@@ -236,7 +235,6 @@ public class GameCore implements GameCoreInterface {
                 player.getReplyWriter().println(room.exitMessage(player.getDirection()));
                 return "You grumble a little and stop moving.";
             }
-        }
         return "You stop moving and begin to stand around again.";
     }
     
