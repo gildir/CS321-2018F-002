@@ -28,8 +28,9 @@ public class Item{
 	}
 	// To String Method
 	public String toString(){
-		String weightString = String.format("%.2f",itemWeight);
-		return itemName + "(" + weightString + " lb, $" + itemValue +")";
+		String weightString = String.format("%.2f", itemWeight);
+		String valueString = String.format("%.2f", itemValue);
+		return itemName + "(" + weightString + " lb, $" + valueString +")";
 	}
 
 }
