@@ -178,14 +178,21 @@ public class GameClient {
                     }
                     else {
                         String receivingName = tokens.remove(0);
-                        while(tokens.isEmpty() == false) {
-                            message += tokens.remove(0);
-                            if(tokens.isEmpty() == false) {
-                                message += " ";
-                            }
+			if( tokens.isEmpty() ){	//check if message is empty
+				
+				System.out.println("You need to add a message.");
+			}
+			else{
+                        	while(tokens.isEmpty() == false) {	
+                            		message += tokens.remove(0);
+                            		if(tokens.isEmpty() == false) {    
+						message += " ";
+                            	}
                         }
-                        System.out.println(remoteGameInterface.whisper(this.playerName, receivingName, message));
-                    }
+			System.out.println(remoteGameInterface.whisper(this.playerName, receivingName, message));
+                    	
+		   	}
+		    } //end of WHISPER case
                     break;
                 case "MOVE":
                     if(tokens.isEmpty()) {
