@@ -57,7 +57,7 @@ public class CommandRunner {
                 return remoteGameInterface.move(name, distance);
             } catch (Exception e) {
                 // System.err.println(e);
-                return "[ERROR] " + e.getMessage();
+                // return "[ERROR] " + e.getMessage();
                 return "[ERROR] Couldn't parse arguments";
             }
         });
@@ -80,17 +80,20 @@ public class CommandRunner {
      */
     private class Command {
         private String id;
+        private String arguments;
         private String description;
         private CommandFunction<String, ArrayList<String>, String> function;
 
         /**
          * @param id name of the command
+         * @param arguments arguments of the command
          * @param description text description of the command
          * @param function the function to be executed when calling the command
          * @return new Command
          */
-        public Command(String id, String description, CommandFunction<String, ArrayList<String>, String> function) {
+        public Command(String id, String arguments, String description, CommandFunction<String, ArrayList<String>, String> function) {
             this.id = id;
+            this.arguments = arguments;
             this.description = description;
             this.function = function;
         }
@@ -109,6 +112,13 @@ public class CommandRunner {
          */
         public String getId() {
             return id;
+        }
+
+        /**
+         * @return the arguments of this command
+         */
+        public String getArguments() {
+            return arguments;
         }
 
         /**
@@ -151,18 +161,18 @@ public class CommandRunner {
      * Create sample descriptions for commands. Then use them to create the commands
      */
     private void createCommands() {
-        HashMap<String, String> descriptions = new HashMap<String, String>();
+        HashMap<String, String[]> descriptions = new HashMap<String, String[]>();
 
         // Insert commands
-        descriptions.put("LOOK",      "Shows you the area around you");
-        descriptions.put("LEFT",      "Says 'message' to any other players in the same area.");
-        descriptions.put("RIGHT",     "Turns your player left 90 degrees.");
-        descriptions.put("SAY",       "Turns your player right 90 degrees.");
-        descriptions.put("MOVE",      "Tries to walk forward <distance> times.");
-        descriptions.put("PICKUP",    "Tries to pick up an object in the same area.");
-        descriptions.put("INVENTORY", "Shows you what objects you have collected.");
-        descriptions.put("QUIT",      "Quits the game.");
-        descriptions.put("HELP",      "Displays the list of available commands");
+        descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
+        descriptions.put("LEFT",      new String[]{"",         "Says 'message' to any other players in the same area."});
+        descriptions.put("RIGHT",     new String[]{"",         "Turns your player left 90 degrees."});
+        descriptions.put("SAY",       new String[]{"WORDS",    "Turns your player right 90 degrees."});
+        descriptions.put("MOVE",      new String[]{"DISTANCE", "Tries to walk forward <distance> times."});
+        descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an object in the same area."});
+        descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
+        descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
+        descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
 
         // Create them
         createCommands(descriptions);
@@ -171,13 +181,14 @@ public class CommandRunner {
     /**
      * @param descriptions map with command names as keys and their descriptions as values
      */
-    private void createCommands(HashMap<String, String> descriptions) {
+    private void createCommands(HashMap<String, String[]> descriptions) {
         for (String key : descriptions.keySet()) {
-            String description = descriptions.get(key);
+            String arguments = descriptions.get(key)[0];
+            String description = descriptions.get(key)[1];
             CommandFunction<String, ArrayList<String>, String> function = commandFunctions.get(key);
 
             if (function != null) {
-                commands.put(key, new Command(key, description, function));
+                commands.put(key, new Command(key, arguments, description, function));
             }
         }
     }
@@ -214,7 +225,7 @@ public class CommandRunner {
 
         for (String key : commands.keySet()) {
             Command command = commands.get(key);
-            String line = String.format("%15s - %s\n", command.getId(), command.getDescription());
+            String line = String.format("- %-30s%s\n", command.getId() + " " + command.getArguments(), command.getDescription());
             s += line;
         }
 
