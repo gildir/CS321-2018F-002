@@ -147,8 +147,10 @@ public class GameClient {
         
         String message = "";
 
-        try {
-            switch(tokens.remove(0).toUpperCase()) {
+        try
+        {
+            switch(tokens.remove(0).toUpperCase())
+            {
 
                 case "LOOK":
                     System.out.println(remoteGameInterface.look(this.playerName));
@@ -189,16 +191,18 @@ public class GameClient {
 
                             System.out.println("You need to add a message.");
                         }
-                        else{
-                            while(tokens.isEmpty() == false) {
+                        else
+                            {
+                            while(tokens.isEmpty() == false)
+                            {
                                 message += tokens.remove(0);
-                                if(tokens.isEmpty() == false) {
+                                if(tokens.isEmpty() == false)
+                                {
                                     message += " ";
                                 }
                             }
-                            System.out.println(remoteGameInterface.whisper(this.playerName, receivingName, message));
-
-                        }
+                                System.out.println(remoteGameInterface.whisper(this.playerName, receivingName, message));
+                            }
                     } //end of WHISPER case
                     break;
                 case "MOVE":
@@ -225,7 +229,9 @@ public class GameClient {
                     runListener = false;
                     break;
             }
-        } catch (RemoteException ex) {
+        }
+        catch (RemoteException ex)
+        {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
