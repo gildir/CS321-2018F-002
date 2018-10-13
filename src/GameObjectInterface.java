@@ -61,6 +61,8 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException 
      */
+    //author Shayan AH
+    public String listAllPlayers(String name) throws RemoteException;
     public String move(String name, int distance) throws RemoteException;
 
     /**

@@ -98,7 +98,11 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String say(String name, String message) throws RemoteException {
         return core.say(name, message);
     }
-      
+    //Author Shayan AH
+    public String listAllPlayers(String name)throws RemoteException
+    {
+        return core.listAllPlayers(name);
+    }
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.

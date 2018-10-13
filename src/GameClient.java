@@ -52,6 +52,7 @@ public class GameClient {
         System.out.println("The game allows you to use the following commands:");
         System.out.println("  LOOK          - Shows you the area around you");
         System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
+        System.out.println("  LISTPLAYERS   - List all the players in the world");
         System.out.println("  LEFT          - Turns your player left 90 degrees.");
         System.out.println("  RIGHT         - Turns your player right 90 degrees.");
         System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
@@ -170,6 +171,11 @@ public class GameClient {
                         }                        
                         System.out.println(remoteGameInterface.say(this.playerName, message));
                     }
+                    break;
+                //author Shayan AH
+                case "LISTPLAYERS":
+                    System.out.println(remoteGameInterface.listAllPlayers(this.playerName));
+                    //System.out.println("hskdfjslkfnlsdfl");
                     break;
                 case "MOVE":
                     if(tokens.isEmpty()) {

@@ -208,8 +208,23 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }  
-    
+    }
+    //author Shayan AH
+    public String listAllPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Players in the world: ";
+
+        if(player != null)
+        {
+            l += playerList.toString();
+            return l;
+        }
+        else
+            {
+                return null;
+            }
+    }
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
