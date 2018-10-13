@@ -250,12 +250,12 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             Room room = map.findRoom(player.getCurrentRoom());
-            String object = room.removeObject(target);
             if (player.getCurrentInventory().size() >= 10)
             {
-                this.broadcast(player, player.getName() + " tried to pick up a " + target + " but was holding too many items.");
-                return "You try to pick up the " + target + " but can't because you're holding too many items.";
+                this.broadcast(player, player.getName() + " tried to pick something up, but was holding too many items.");
+                return "You try to pick up the " + target + ", but can't because you're holding too many items.";
             }
+            String object = room.removeObject(target);
             if(object != null) {
                 player.addObjectToInventory(object);
                 this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
