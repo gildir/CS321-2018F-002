@@ -14,15 +14,18 @@ public class CommandRunner {
     protected GameObjectInterface remoteGameInterface;
 
     /**
+     * Wrap a lambda expression and allow it to throw a RemoteException
+     */
+    @FunctionalInterface
+    private interface CommandFunction<U, V, W> {
+        public W apply(U u, V v) throws RemoteException;
+    }
+
+    /**
      * Store command functions and preprocessing of arguments
      */
-    private HashMap<String, BiFunction<String, ArrayList<String>, String>> commandFunctions
-        = new HashMap<String, BiFunction<String, ArrayList<String>, String>>();
-
-    private String handleRemoteException(RemoteException ex) {
-        Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
-        return null;
-    }
+    private HashMap<String, CommandFunction<String, ArrayList<String>, String>> commandFunctions
+        = new HashMap<String, CommandFunction<String, ArrayList<String>, String>>();
 
     /**
      * For each command add it to the hashmap defining also a lambda expression
@@ -33,90 +36,42 @@ public class CommandRunner {
      * needed for the arguments and call the needed function in the RGI.
      */
     private void setupFunctions() {
-        commandFunctions.put("LOOK", (name, args) -> {
-            try {
-                return remoteGameInterface.look(name);
-            } catch (RemoteException ex) {
-                return handleRemoteException(ex);
+        // Help command
+        commandFunctions.put("HELP",    (name, args) -> listCommands() );
+        commandFunctions.put("LOOK",    (name, args) -> remoteGameInterface.look(name));
+        commandFunctions.put("LEFT",    (name, args) -> remoteGameInterface.left(name));
+        commandFunctions.put("RIGHT",   (name, args) -> remoteGameInterface.right(name));
+        commandFunctions.put("SAY",     (name, args) -> {
+            // Create empty string
+            String message = String.join(" ", args);
+
+            if (message.equals("")) {
+                return "[ERROR] Empty message";
+            } else {
+                return remoteGameInterface.say(name, message);
             }
         });
-
-        commandFunctions.put("LEFT", (name, args) -> {
-            try {
-                return remoteGameInterface.left(name);
-            } catch (RemoteException ex) {
-                return handleRemoteException(ex);
-            }
-        });
-
-        commandFunctions.put("RIGHT", (name, args) -> {
-            try {
-                return remoteGameInterface.right(name);
-            } catch (RemoteException ex) {
-                return handleRemoteException(ex);
-            }
-        });
-
-        commandFunctions.put("SAY", (name, args) -> {
-            try {
-                // Create empty string
-                String message = String.join(" ", args);
-
-                if (message.equals("")) {
-                    return "[ERROR] Empty message";
-                } else {
-                    return remoteGameInterface.say(name, message);
-                }
-            } catch (RemoteException ex) {
-                return handleRemoteException(ex);
-            }
-        });
-
-        commandFunctions.put("MOVE", (name, args) -> {
+        commandFunctions.put("MOVE",     (name, args) -> {
             try {
                 int distance = Integer.parseInt(args.get(0));
                 return remoteGameInterface.move(name, distance);
-            } catch (RemoteException ex) {
-                return handleRemoteException(ex);
             } catch (Exception e) {
                 // System.err.println(e);
                 return "[ERROR] " + e.getMessage();
+                return "[ERROR] Couldn't parse arguments";
             }
         });
+        commandFunctions.put("PICKUP",    (name, args) -> {
+            String object = args.get(0);
 
-        commandFunctions.put("PICKUP", (name, args) -> {
-            try {
-                String object = args.get(0);
-
-                if (object.equals("")) {
-                    return "[ERROR] No object specified";
-                } else {
-                    return remoteGameInterface.pickup(name, object);
-                }
-            } catch (RemoteException ex) {
-                return handleRemoteException(ex);
+            if (object.equals("")) {
+                return "[ERROR] No object specified";
+            } else {
+                return remoteGameInterface.pickup(name, object);
             }
         });
-
-        commandFunctions.put("INVENTORY", (name, args) -> {
-            try {
-                return remoteGameInterface.inventory(name);
-            } catch (RemoteException ex) {
-                return handleRemoteException(ex);
-            }
-        });
-
-        commandFunctions.put("QUIT", (name, args) -> {
-            try {
-                remoteGameInterface.leave(name);
-                return "";
-            } catch (RemoteException ex) {
-                return handleRemoteException(ex);
-            }
-        });
-
-        // Help command
-        commandFunctions.put("HELP", (name, args) -> listCommands());
+        commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
+        commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
     }
 
     /**
@@ -126,7 +81,7 @@ public class CommandRunner {
     private class Command {
         private String id;
         private String description;
-        private BiFunction<String, ArrayList<String>, String> function;
+        private CommandFunction<String, ArrayList<String>, String> function;
 
         /**
          * @param id name of the command
@@ -134,7 +89,7 @@ public class CommandRunner {
          * @param function the function to be executed when calling the command
          * @return new Command
          */
-        public Command(String id, String description, BiFunction<String, ArrayList<String>, String> function) {
+        public Command(String id, String description, CommandFunction<String, ArrayList<String>, String> function) {
             this.id = id;
             this.description = description;
             this.function = function;
@@ -145,7 +100,7 @@ public class CommandRunner {
          * @param args list of text arguments form input
          * @return the String returned by the execution of the command
          */
-        public String run(String name, ArrayList<String> args) {
+        public String run(String name, ArrayList<String> args) throws RemoteException {
             return function.apply(name, args);
         }
 
@@ -219,7 +174,7 @@ public class CommandRunner {
     private void createCommands(HashMap<String, String> descriptions) {
         for (String key : descriptions.keySet()) {
             String description = descriptions.get(key);
-            BiFunction<String, ArrayList<String>, String> function = commandFunctions.get(key);
+            CommandFunction<String, ArrayList<String>, String> function = commandFunctions.get(key);
 
             if (function != null) {
                 commands.put(key, new Command(key, description, function));
@@ -239,9 +194,14 @@ public class CommandRunner {
         Command cmd = commands.get(command.toUpperCase());
 
         if (cmd != null) {
-            String result = cmd.run(playerName, args);
-            if (result != null)
-                System.out.println(result);
+
+            try {
+                String result = cmd.run(playerName, args);
+                if (result != null)
+                    System.out.println(result);
+            } catch (RemoteException ex) {
+                Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         // TODO: prompt command not found
     }
