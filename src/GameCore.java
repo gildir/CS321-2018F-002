@@ -234,6 +234,9 @@ public class GameCore implements GameCoreInterface {
     public String whisper(String name1, String name2, String message) {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
+	if(name1.equals(name2))
+		return "Cannot whisper yourself";
+		
         if(playerSending != null && playerReceiving != null) {
             this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
             return "You whisper, \"" + message + "\"" + " to " + playerReceiving.getName();
