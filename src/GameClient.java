@@ -53,6 +53,7 @@ public class GameClient {
         System.out.println("  LOOK          - Shows you the area around you");
         System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
         System.out.println("  LISTPLAYERS   - List all the players in the world");
+        System.out.println("  WHISPER player message - Says 'message' to specified 'player'.");
         System.out.println("  LEFT          - Turns your player left 90 degrees.");
         System.out.println("  RIGHT         - Turns your player right 90 degrees.");
         System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
@@ -175,7 +176,30 @@ public class GameClient {
                 //author Shayan AH
                 case "LISTPLAYERS":
                     System.out.println(remoteGameInterface.listAllPlayers(this.playerName));
-                    //System.out.println("hskdfjslkfnlsdfl");
+                    break;
+                case "WHISPER":
+                    if(tokens.isEmpty())
+                    {
+                        System.err.println("You need to specify a player and write a message in order to WHISPER.");
+                    }
+                    else
+                    {
+                        String receivingName = tokens.remove(0);
+                        if( tokens.isEmpty() ){	//check if message is empty
+
+                            System.out.println("You need to add a message.");
+                        }
+                        else{
+                            while(tokens.isEmpty() == false) {
+                                message += tokens.remove(0);
+                                if(tokens.isEmpty() == false) {
+                                    message += " ";
+                                }
+                            }
+                            System.out.println(remoteGameInterface.whisper(this.playerName, receivingName, message));
+
+                        }
+                    } //end of WHISPER case
                     break;
                 case "MOVE":
                     if(tokens.isEmpty()) {
