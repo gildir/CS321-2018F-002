@@ -141,14 +141,8 @@ public class GameClient {
             return;
         }
 
-        try {
-
-            String command = tokens.remove(0);
-            commandRunner.run(command, tokens, this.playerName);
-
-        } catch (RemoteException ex) {
-            Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        String command = tokens.remove(0);
+        commandRunner.run(command, tokens, this.playerName);
     }
 
     public static void main(String[] args) {

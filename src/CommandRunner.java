@@ -3,6 +3,8 @@ import java.rmi.RemoteException;
 import java.util.function.BiFunction;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class CommandRunner {
 
@@ -17,6 +19,11 @@ public class CommandRunner {
     private HashMap<String, BiFunction<String, ArrayList<String>, String>> commandFunctions
         = new HashMap<String, BiFunction<String, ArrayList<String>, String>>();
 
+    private String handleRemoteException(RemoteException ex) {
+        Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
+        return null;
+    }
+
     /**
      * For each command add it to the hashmap defining also a lambda expression
      * that receives a String with the name of the player and a List with the
@@ -29,24 +36,24 @@ public class CommandRunner {
         commandFunctions.put("LOOK", (name, args) -> {
             try {
                 return remoteGameInterface.look(name);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (RemoteException ex) {
+                return handleRemoteException(ex);
             }
         });
 
         commandFunctions.put("LEFT", (name, args) -> {
             try {
                 return remoteGameInterface.left(name);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (RemoteException ex) {
+                return handleRemoteException(ex);
             }
         });
 
         commandFunctions.put("RIGHT", (name, args) -> {
             try {
                 return remoteGameInterface.right(name);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (RemoteException ex) {
+                return handleRemoteException(ex);
             }
         });
 
@@ -60,8 +67,8 @@ public class CommandRunner {
                 } else {
                     return remoteGameInterface.say(name, message);
                 }
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (RemoteException ex) {
+                return handleRemoteException(ex);
             }
         });
 
@@ -69,8 +76,8 @@ public class CommandRunner {
             try {
                 int distance = Integer.parseInt(args.get(0));
                 return remoteGameInterface.move(name, distance);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (RemoteException ex) {
+                return handleRemoteException(ex);
             } catch (Exception e) {
                 // System.err.println(e);
                 return "[ERROR] " + e.getMessage();
@@ -86,16 +93,16 @@ public class CommandRunner {
                 } else {
                     return remoteGameInterface.pickup(name, object);
                 }
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (RemoteException ex) {
+                return handleRemoteException(ex);
             }
         });
 
         commandFunctions.put("INVENTORY", (name, args) -> {
             try {
                 return remoteGameInterface.inventory(name);
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (RemoteException ex) {
+                return handleRemoteException(ex);
             }
         });
 
@@ -103,8 +110,8 @@ public class CommandRunner {
             try {
                 remoteGameInterface.leave(name);
                 return "";
-            } catch (RemoteException e) {
-                throw new RuntimeException(e);
+            } catch (RemoteException ex) {
+                return handleRemoteException(ex);
             }
         });
 
@@ -226,11 +233,17 @@ public class CommandRunner {
      * @param playerName name of player running the command
      * @throws RemoteException [description]
      */
-    public void run(String command, ArrayList<String> args, String playerName) throws RemoteException {
+    public void run(String command, ArrayList<String> args, String playerName) {
         // System.out.println(playerName + ": " + command + '(' + args + ')');
 
-        String result = commands.get(command.toUpperCase()).run(playerName, args);
-        System.out.println(result);
+        Command cmd = commands.get(command.toUpperCase());
+
+        if (cmd != null) {
+            String result = cmd.run(playerName, args);
+            if (result != null)
+                System.out.println(result);
+        }
+        // TODO: prompt command not found
     }
 
     /**
