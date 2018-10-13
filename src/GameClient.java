@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -35,12 +37,36 @@ public class GameClient {
     // Members related to the player in the game.
     protected String playerName;
     
+    private class Time{
+        Timer timer;  
+
+        public Time(){
+            timer = new Timer();
+            timer.schedule(new timeoutTask(), 300000);
+        }
+
+        class timeoutTask extends TimerTask{
+            public void run(){
+                System.out.println("User has been inactive for 5 minutes.. logging off");  
+                try{
+                    remoteGameInterface.leave(playerName);
+                    runListener = false;
+                    timer.cancel();
+                } 
+                catch (RemoteException ex) {
+                	Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+    
     /** 
      * Main class for running the game client.
      */
     public GameClient(String host) {
         this.runGame = true;
         boolean nameSat = false;
+        new Time();
         
         System.out.println("Welcome to the client for an RMI based online game.\n");
         System.out.println("This game allows you to connect to a server an walk around a virtual,");
@@ -76,6 +102,7 @@ public class GameClient {
             //   Lets the player choose a name and checks it with the server.  If the name is
             //    already taken or the user doesn't like their input, they can choose again.
             while(nameSat == false) {
+            	new Time(); 
                 try {
                     System.out.println("Please enter a name for your player.");
                     System.out.print("> ");
@@ -137,7 +164,7 @@ public class GameClient {
         while(commandTokens.hasMoreTokens() == true) {
             tokens.add(commandTokens.nextToken());
         }
-
+        new Time();
         if(tokens.isEmpty()) {
             System.out.println("The keyboard input had no commands.");
             return;
