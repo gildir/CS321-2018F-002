@@ -6,23 +6,27 @@ import java.util.HashMap;
 
 public class CommandRunner {
 
-    // Access the game
+    /**
+     * Game interface
+     */
     protected GameObjectInterface remoteGameInterface;
 
-    // Default command functions and preprocessing of arguments
+    /**
+     * Store command functions and preprocessing of arguments
+     */
     private HashMap<String, BiFunction<String, ArrayList<String>, String>> commandFunctions
         = new HashMap<String, BiFunction<String, ArrayList<String>, String>>();
 
-    //
-    // For each command add it to the hashmap defining also a lambda expression
-    // that receives a String with the name of the player and a List with the
-    // rest of arguments parsed from the command input. In the expression catch
-    // Checked Expressions and throw a Runtime one instead to allow to store
-    // the functions in the hashmap. Inside the try block do any preprocessing
-    // needed for the arguments and call the needed function in the RGI.
-    //
+    /**
+     * For each command add it to the hashmap defining also a lambda expression
+     * that receives a String with the name of the player and a List with the
+     * rest of arguments parsed from the command input. In the expression catch
+     * Checked Expressions and throw a Runtime one instead to allow to store
+     * the functions in the hashmap. Inside the try block do any preprocessing
+     * needed for the arguments and call the needed function in the RGI.
+     */
     private void setupFunctions() {
-        commandFunctions.put("LOOK", (String name, ArrayList<String> args) -> {
+        commandFunctions.put("LOOK", (name, args) -> {
             try {
                 return remoteGameInterface.look(name);
             } catch (RemoteException e) {
@@ -30,7 +34,7 @@ public class CommandRunner {
             }
         });
 
-        commandFunctions.put("LEFT", (String name, ArrayList<String> args) -> {
+        commandFunctions.put("LEFT", (name, args) -> {
             try {
                 return remoteGameInterface.left(name);
             } catch (RemoteException e) {
@@ -38,7 +42,7 @@ public class CommandRunner {
             }
         });
 
-        commandFunctions.put("RIGHT", (String name, ArrayList<String> args) -> {
+        commandFunctions.put("RIGHT", (name, args) -> {
             try {
                 return remoteGameInterface.right(name);
             } catch (RemoteException e) {
@@ -46,7 +50,7 @@ public class CommandRunner {
             }
         });
 
-        commandFunctions.put("SAY", (String name, ArrayList<String> args) -> {
+        commandFunctions.put("SAY", (name, args) -> {
             try {
                 // Create empty string
                 String message = String.join(" ", args);
@@ -61,7 +65,7 @@ public class CommandRunner {
             }
         });
 
-        commandFunctions.put("MOVE", (String name, ArrayList<String> args) -> {
+        commandFunctions.put("MOVE", (name, args) -> {
             try {
                 int distance = Integer.parseInt(args.get(0));
                 return remoteGameInterface.move(name, distance);
@@ -73,7 +77,7 @@ public class CommandRunner {
             }
         });
 
-        commandFunctions.put("PICKUP", (String name, ArrayList<String> args) -> {
+        commandFunctions.put("PICKUP", (name, args) -> {
             try {
                 String object = args.get(0);
 
@@ -87,7 +91,7 @@ public class CommandRunner {
             }
         });
 
-        commandFunctions.put("INVENTORY", (String name, ArrayList<String> args) -> {
+        commandFunctions.put("INVENTORY", (name, args) -> {
             try {
                 return remoteGameInterface.inventory(name);
             } catch (RemoteException e) {
@@ -95,7 +99,7 @@ public class CommandRunner {
             }
         });
 
-        commandFunctions.put("QUIT", (String name, ArrayList<String> args) -> {
+        commandFunctions.put("QUIT", (name, args) -> {
             try {
                 remoteGameInterface.leave(name);
                 return "";
@@ -105,45 +109,74 @@ public class CommandRunner {
         });
 
         // Help command
-        commandFunctions.put("HELP", (String name, ArrayList<String> args) -> listCommands());
+        commandFunctions.put("HELP", (name, args) -> listCommands());
     }
 
-    // Helper class to store a commands ID (command caller), its definition and
-    // the function to be called with the command
+    /**
+     * Helper class to store a commands ID (command caller), its definition and
+     * the function to be called with the command
+     */
     private class Command {
         private String id;
         private String description;
         private BiFunction<String, ArrayList<String>, String> function;
 
+        /**
+         * @param id name of the command
+         * @param description text description of the command
+         * @param function the function to be executed when calling the command
+         * @return new Command
+         */
         public Command(String id, String description, BiFunction<String, ArrayList<String>, String> function) {
             this.id = id;
             this.description = description;
             this.function = function;
         }
 
+        /**
+         * @param name name of the command
+         * @param args list of text arguments form input
+         * @return the String returned by the execution of the command
+         */
         public String run(String name, ArrayList<String> args) {
             return function.apply(name, args);
         }
 
+        /**
+         * @return the id of this command
+         */
         public String getId() {
             return id;
         }
 
+        /**
+         * @return the description of this command
+         */
         public String getDescription() {
             return description;
         }
     }
 
-    // List of commands in memory
+    /**
+     * Store commands in memory
+     */
     private HashMap<String, Command> commands = new HashMap<String, Command>();
 
-    // Public constructors
+    /**
+     * @param rgi remote game interface
+     * @return new CommandRunner
+     */
     public CommandRunner(GameObjectInterface rgi) {
         this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();
     }
 
+    /**
+     * @param rgi remote game interface
+     * @param commandsFile path to file with command descriptions
+     * @return new CommandRunner
+     */
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
         this.remoteGameInterface = rgi;
         setupFunctions();
@@ -152,7 +185,9 @@ public class CommandRunner {
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
     }
 
-    // Creates Sample Descriptions and calls createCommands(descriptions)
+    /**
+     * Create sample descriptions for commands. Then use them to create the commands
+     */
     private void createCommands() {
         HashMap<String, String> descriptions = new HashMap<String, String>();
 
@@ -171,7 +206,9 @@ public class CommandRunner {
         createCommands(descriptions);
     }
 
-    //
+    /**
+     * @param descriptions map with command names as keys and their descriptions as values
+     */
     private void createCommands(HashMap<String, String> descriptions) {
         for (String key : descriptions.keySet()) {
             String description = descriptions.get(key);
@@ -183,7 +220,12 @@ public class CommandRunner {
         }
     }
 
-    // Runs a specific command if found in memory.
+    /**
+     * @param command name of the command to be run
+     * @param args list of arguments from input
+     * @param playerName name of player running the command
+     * @throws RemoteException [description]
+     */
     public void run(String command, ArrayList<String> args, String playerName) throws RemoteException {
         // System.out.println(playerName + ": " + command + '(' + args + ')');
 
@@ -191,7 +233,9 @@ public class CommandRunner {
         System.out.println(result);
     }
 
-    // Prints list of commands and descriptions
+    /**
+     * @return string with commands name, accepted arguments and descriptions
+     */
     public String listCommands() {
         String s = "The game allows you to use the following commands:\n";
 
