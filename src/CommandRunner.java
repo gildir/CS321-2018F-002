@@ -29,11 +29,9 @@ public class CommandRunner {
 
     /**
      * For each command add it to the hashmap defining also a lambda expression
-     * that receives a String with the name of the player and a List with the
-     * rest of arguments parsed from the command input. In the expression catch
-     * Checked Expressions and throw a Runtime one instead to allow to store
-     * the functions in the hashmap. Inside the try block do any preprocessing
-     * needed for the arguments and call the needed function in the RGI.
+     * receiving the name of the player and the arguments parsed from the input.
+     * In the expression catch. Do any preprocessing needed for the arguments
+     * and call the command function in the RGI.
      */
     private void setupFunctions() {
         // Help command
