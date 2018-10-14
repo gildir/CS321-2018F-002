@@ -81,6 +81,9 @@ public class GameClient {
                     System.out.println("Please enter a name for your player.");
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine();
+                    //if username already exists, ask user to enter new name
+                    if(PlayerDatabase.isPlayer(playerName))
+                        continue;
                     System.out.println("Please enter a password.");
                     System.out.print("> ");
                     String password = keyboardInput.readLine();
