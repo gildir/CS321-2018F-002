@@ -1,6 +1,6 @@
 /**
  *
- * @author Kevin
+ * @author Kevin yeet
  */
 public class Exit {
     private final Direction direction;
