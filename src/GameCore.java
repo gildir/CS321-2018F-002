@@ -1,6 +1,4 @@
 
-
-
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -281,8 +279,30 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }    
+    } 
+    
+     /**
+     * Returns a list of nearby players to trade with.
+     * @param name Player Name
+     * @return String representation of nearby players.
+     */
+    public String tradeable(String playerName) {
+        Player player = playerList.findPlayer(playerName);
 
+        if(player != null) {        
+            // Find the room the player is in.
+            Room room = this.map.findRoom(player.getCurrentRoom());
+
+            // Return a string representation of players in teh same room
+            String trade_list = "\nTradeable players near you: " + room.getPlayers(this.playerList);
+            trade_list = trade_list.replace(playerName, "");
+            return trade_list;
+        }
+        // No such player exists
+        else {
+            return null;
+        }
+    }  
      /**
      * Leaves the game.
      * @param name Name of the player to leave

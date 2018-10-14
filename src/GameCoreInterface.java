@@ -75,6 +75,13 @@ public interface GameCoreInterface {
     public String inventory(String name);
     
     /**
+     * Returns a list of nearby players to trade with.
+     * @param name Player Name
+     * @return String representation of nearby players.
+     */
+    public String tradeable(String name);
+    
+    /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @return Player that was just removed.

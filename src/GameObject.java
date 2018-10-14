@@ -136,6 +136,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }    
     
      /**
+     * Returns a list of nearby players to trade with.
+     * @param name Player Name
+     * @return String representation of nearby players.
+     * @throws RemoteException 
+     */
+    @Override
+    public String tradeable(String playerName) throws RemoteException {
+        return core.tradeable(playerName);
+    } 
+    
+     /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @throws RemoteException 
