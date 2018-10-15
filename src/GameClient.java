@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  *
@@ -35,13 +37,37 @@ public class GameClient {
     // Members related to the player in the game.
     protected String playerName;
     
+private class Time{
+        Timer timer;  
+
+        public Time(){
+            timer = new Timer();
+            timer.schedule(new timeoutTask(), 300000);
+        }
+
+        class timeoutTask extends TimerTask{
+            public void run(){
+                System.out.println("User has been inactive for 5 minutes.. logging off");  
+                try{
+                    remoteGameInterface.leave(playerName);
+                    runListener = false;
+                    timer.cancel();
+                } 
+                catch (RemoteException ex) {
+                	Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+
     /** 
      * Main class for running the game client.
      */
     public GameClient(String host) {
         this.runGame = true;
         boolean nameSat = false;
-        
+        new Time();
         System.out.println("Welcome to the client for an RMI based online game.\n");
         System.out.println("This game allows you to connect to a server an walk around a virtual,");
         System.out.println(" text-based version of the George Mason University campus.\n");
@@ -77,6 +103,7 @@ public class GameClient {
             //    already taken or the user doesn't like their input, they can choose again.
             while(nameSat == false) {
                 try {
+                    new Time();
                     System.out.println("Please enter a name for your player.");
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine();
@@ -91,6 +118,7 @@ public class GameClient {
                             nameSat = true;
                         }
                     }
+                    new Time();
                 } catch (IOException ex) {
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                     System.exit(-1);
@@ -102,13 +130,15 @@ public class GameClient {
             remoteOutputThread = new Thread(new GameClient.ReplyRemote(host));
             remoteOutputThread.setDaemon(true);
             remoteOutputThread.start();
-
+            
             // Collect input for the game.
             while(runGame) {
                 try {
+                    new Time();
                     keyboardStatement = keyboardInput.readLine();
                     parseInput(keyboardStatement);
                 } catch (IOException ex) {
+                    new Time();
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                     System.exit(-1);
                 }
@@ -130,7 +160,8 @@ public class GameClient {
      */
     private void parseInput(String input) {
         boolean reply;
-        
+        new Time();
+
         // First, tokenize the raw input.
         StringTokenizer commandTokens = new StringTokenizer(input);
         ArrayList<String> tokens = new ArrayList<>();
@@ -142,7 +173,7 @@ public class GameClient {
             System.out.println("The keyboard input had no commands.");
             return;
         }
-        
+        new Time();
         String message = "";
 
         try {
@@ -208,6 +239,33 @@ public class GameClient {
 		
         System.out.println("[STARTUP] Game Client Now Starting...");
         new GameClient(args[0]);
+    }
+
+    /**
+     * This is the timer class that will keep track of the time a user has been inactive
+     * new Time() will reset timer
+     */
+    private class Time{
+        Timer timer;  
+
+        public Time(){
+            timer = new Timer();
+            timer.schedule(new timeoutTask(), 300000);
+        }
+
+        class timeoutTask extends TimerTask{
+            public void run(){
+                System.out.println("User has been inactive for 5 minutes.. logging off");  
+                try{
+                    remoteGameInterface.leave(playerName);
+                    runListener = false;
+                    timer.cancel();
+                } 
+                catch (RemoteException ex) {
+                	Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
     }
 
     /**
