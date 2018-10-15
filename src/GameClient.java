@@ -214,7 +214,7 @@ public class GameClient {
                     }
                     else
                     {
-                      remoteGameInterface.accept(this.playerName,tokens.remove(0));
+                      remoteGameInterface.accept(tokens.remove(0),this.playerName);
                     }
                     break;
                 case "REFUSE":
@@ -224,7 +224,7 @@ public class GameClient {
                     }
                     else
                     {
-                      remoteGameInterface.refuse(this.playerName,tokens.remove(0));
+                      remoteGameInterface.refuse(tokens.remove(0),this.playerName);
                     }
                     break;
             }
