@@ -28,16 +28,6 @@ public interface GameObjectInterface extends Remote {
      */
     public String look(String name) throws RemoteException;
     
-    
-    
-    
-    
-    public String gift(String playerName, String name) throws RemoteException ; 
-    
-    
-    
-    
-    
     /**
      * Turns the player left.
      * @param name Player Name

@@ -38,8 +38,6 @@ public interface GameCoreInterface {
      */
     public Player joinGame(String name);
     
-    public String gift(String playerName, String name); 
-    
     /**
      * Returns a look at the area of the specified player.
      * @param playerName Player Name
