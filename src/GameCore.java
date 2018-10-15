@@ -323,21 +323,21 @@ public class GameCore implements GameCoreInterface {
     //A new battle is created. with Rps.addBattle(challenger,player2) -> return
 
     //If one does currently exist with both players but has status "Pending" -> doBattle(challenger, player2)
-
-    return true;
+    System.out.println("Player: " + challenger + " Challenged: " + player2);
   }
 
   public void accept(String challenger, String player2)
   {
-    return true;
+    System.out.println("Player: " + player2 + " Accepted " + challenger + "'s' Challenge.");
   }
 
   public void refuse(String challenger, String player2)
   {
-    return true;
+    System.out.println("Player: " + player2 + " Refused " + challenger + "'s' Challenge.");
   }
 
-  public void doBattle(String challenger, String player2)
+
+  public void doBattle(String challenger, String player2, int player1, int player2)
   {
 
   }
