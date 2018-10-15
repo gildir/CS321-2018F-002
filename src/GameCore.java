@@ -334,23 +334,6 @@ public class GameCore implements GameCoreInterface {
         }
     }    
     
-<<<<<<< HEAD
-    @Override 
-    public String gift(String yourname ,String name){
-     Player player = this.playerList.findPlayer(name); 
-     Player you = this.playerList.findPlayer(yourname); 
-     
-     System.out.println("YOUR NAME IS: " + you);
-     if(player != null){
-       this.broadcast(you, you.getName() + " offers a gift to " + player.getName());
-       return "You offer " + player.getName() + " a gift"; 
-     }else{
-      return null;  
-     }
-      
-    }
-    
-=======
     @Override
     public String money(String name) {
         Player player = this.playerList.findPlayer(name);
@@ -362,7 +345,6 @@ public class GameCore implements GameCoreInterface {
         }
     }    
 
->>>>>>> master
      /**
      * Leaves the game.
      * @param name Name of the player to leave

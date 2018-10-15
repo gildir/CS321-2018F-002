@@ -282,25 +282,7 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }    
-<<<<<<< HEAD
-    
-    @Override 
-    public String trade(String yourname ,String name){
-     Player player = this.playerList.findPlayer(name); 
-     Player you = this.playerList.findPlayer(yourname); 
-     
-     System.out.println("YOUR NAME IS: " + you);
-     if(player == null){
-       return you + " would like to trade with " + player; 
-     }else{
-      return null;  
-     }
-      
-    }
-    
-=======
 
->>>>>>> master
      /**
      * Leaves the game.
      * @param name Name of the player to leave
