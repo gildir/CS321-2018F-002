@@ -28,6 +28,7 @@ public interface GameObjectInterface extends Remote {
      */
     public String look(String name) throws RemoteException;
     
+<<<<<<< HEAD
     
     
     
@@ -38,6 +39,8 @@ public interface GameObjectInterface extends Remote {
     
     
     
+=======
+>>>>>>> master
     /**
      * Turns the player left.
      * @param name Player Name

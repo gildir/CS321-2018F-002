@@ -135,11 +135,14 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.inventory(name);
     }    
     
+<<<<<<< HEAD
     @Override
     public String trade(String yourname,String name) throws RemoteException {
      return core.trade(yourname, name);  
     }
     
+=======
+>>>>>>> master
      /**
      * Leaves the game.
      * @param name Name of the player to leave

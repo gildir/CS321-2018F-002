@@ -26,7 +26,7 @@ public class GameClient {
 
     // Remote object for RMI server access
     protected GameObjectInterface remoteGameInterface;
-    //protected PlayerList pl; 
+    
     
     // Members for running the remote receive connection (for non-managed events)
     private boolean runListener;
@@ -58,6 +58,8 @@ public class GameClient {
         System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY     - Shows you what objects you have collected.");
+        
+        
         System.out.println("  GIFT          - Offer to give another player money.");
         System.out.println("  QUIT          - Quits the game.");
         System.out.println();

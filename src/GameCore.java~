@@ -282,6 +282,7 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }    
+<<<<<<< HEAD
     
     @Override 
     public String trade(String yourname ,String name){
@@ -297,6 +298,9 @@ public class GameCore implements GameCoreInterface {
       
     }
     
+=======
+
+>>>>>>> master
      /**
      * Leaves the game.
      * @param name Name of the player to leave

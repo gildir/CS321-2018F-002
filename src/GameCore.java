@@ -241,6 +241,57 @@ public class GameCore implements GameCoreInterface {
     }
     
     /**
+     * Attempts to enter <location>. Use if entering a room that is part of another
+     * room, instead of using move to walk to a separate room
+     * @param name Name of the player to enter
+     * @param location The place to enter
+     * @return Message showing success
+     */
+    public String enter(String name, String location) {
+    	Player player = this.playerList.findPlayer(name);
+    	if(player == null) return null;
+    	int newID;
+    	//add more if statements for different shops
+    	if(location.equalsIgnoreCase("shop"))
+    		newID = 10;
+    	else
+    		return location + " is unknown.";
+    	//if player not near a shop, return.
+    	if(player.getCurrentRoom() != 1)
+    		return "Not near " + location;
+    	Room room = map.findRoom(player.getCurrentRoom());
+    	this.broadcast(player, player.getName() + " has walked off towards the shop");
+    	player.getReplyWriter().println("You enter the shop");
+    	player.setCurrentRoom(newID);
+    	this.broadcast(player, player.getName() + " just walked into the shop.");
+    	player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+    	return "You stop moving and begin to stand around again.";
+    }
+    
+    /**
+     * Makes player leave a room e.g shop
+     * @param name Player Name
+     * @return Message showing success
+     */
+    public String leaveRoom(String name) {
+    	Player player = this.playerList.findPlayer(name);
+    	if(player == null) return null;
+    	int newID;
+    	//add more if statements for different shops
+    	if(player.getCurrentRoom() == 10)
+    		newID = 1;
+    	else
+    		return "Can't leave, did you mean quit?";
+    	Room room = map.findRoom(player.getCurrentRoom());
+    	this.broadcast(player, player.getName() + " has left the shop");
+    	player.getReplyWriter().println("You leave the room");
+    	player.setCurrentRoom(newID);
+    	this.broadcast(player, player.getName() + " just walked into the area.");
+    	player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+    	return "You stop moving and begin to stand around again.";
+    }
+    
+    /**
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
      * @param target The case-insensitive name of the object to pickup.
@@ -283,6 +334,7 @@ public class GameCore implements GameCoreInterface {
         }
     }    
     
+<<<<<<< HEAD
     @Override 
     public String gift(String yourname ,String name){
      Player player = this.playerList.findPlayer(name); 
@@ -298,6 +350,19 @@ public class GameCore implements GameCoreInterface {
       
     }
     
+=======
+    @Override
+    public String money(String name) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            return player.viewMoney();
+        }
+        else {
+            return null;
+        }
+    }    
+
+>>>>>>> master
      /**
      * Leaves the game.
      * @param name Name of the player to leave

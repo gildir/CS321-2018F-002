@@ -80,6 +80,14 @@ public interface GameCoreInterface {
      * Leaves the game.
      * @param name Name of the player to leave
      * @return Player that was just removed.
-     */    
-    public Player leave(String name);    
+     */   
+    public Player leave(String name);   
+    
+    /**
+     * Returns a string representation of money you have
+     * @param name Name of the player 
+     * @return Player who wants to see his/her money 
+     */ 
+    public String money(String name);
+    
 }
