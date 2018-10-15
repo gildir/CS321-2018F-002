@@ -14,16 +14,12 @@ public class Player {
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
-    // add a money field to track player money
-    private double money;
 
     public Player(String name) {
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
-        // set a default amount of money for each player
-        this.money = 20.0;
     }
     
     public void turnLeft() {
@@ -110,14 +106,6 @@ public class Player {
     
     public Direction getDirection() {
         return this.currentDirection;
-    }
-    // get money 
-    public double getMoney() {
-      return this.money;
-    }
-    // return a string to print to the screen when player wants to view money
-    public String viewMoney() {
-      return this.name + ", you have " + this.money + " dollars.";
     }
     
     public String viewInventory() {
