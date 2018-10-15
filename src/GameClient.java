@@ -54,7 +54,7 @@ public class GameClient {
         System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
         System.out.println("  LEFT          - Turns your player left 90 degrees.");
         System.out.println("  RIGHT         - Turns your player right 90 degrees.");
-        System.out.println("  MOVE 	       - Tries to walk forward.");
+        System.out.println("  MOVE direction 	       - Tries to walk forward in the provided direction.");
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY     - Shows you what objects you have collected.");
         System.out.println("  QUIT          - Quits the game.");
@@ -172,7 +172,12 @@ public class GameClient {
                     }
                     break;
                 case "MOVE":
-                    System.out.println(remoteGameInterface.move(this.playerName));
+		    if(tokens.isEmpty()){
+			    System.err.println("You need to provide a direction in order to move.");
+		    }
+		    else{
+	                    System.out.println(remoteGameInterface.move(this.playerName, tokens.remove(0).toUpperCase()));
+		    }
                     break;
                 case "PICKUP":
                     if(tokens.isEmpty()) {

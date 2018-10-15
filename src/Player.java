@@ -107,6 +107,10 @@ public class Player {
     public Direction getDirection() {
         return this.currentDirection;
     }
+
+    public void setDirection(Direction direction){
+	    this.currentDirection = direction;
+    }
     
     public String viewInventory() {
         String result = "";
