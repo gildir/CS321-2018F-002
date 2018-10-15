@@ -37,7 +37,11 @@ public class GameClient {
     // Members related to the player in the game.
     protected String playerName;
     
-private class Time{
+    /**
+     * Class will be used to determine if the user has been timed out after 5 minutes
+     * USE new Time() each time getting input
+     */
+    private class Time{
         Timer timer;  
 
         public Time(){
@@ -239,33 +243,6 @@ private class Time{
 		
         System.out.println("[STARTUP] Game Client Now Starting...");
         new GameClient(args[0]);
-    }
-
-    /**
-     * This is the timer class that will keep track of the time a user has been inactive
-     * new Time() will reset timer
-     */
-    private class Time{
-        Timer timer;  
-
-        public Time(){
-            timer = new Timer();
-            timer.schedule(new timeoutTask(), 300000);
-        }
-
-        class timeoutTask extends TimerTask{
-            public void run(){
-                System.out.println("User has been inactive for 5 minutes.. logging off");  
-                try{
-                    remoteGameInterface.leave(playerName);
-                    runListener = false;
-                    timer.cancel();
-                } 
-                catch (RemoteException ex) {
-                	Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
     }
 
     /**
