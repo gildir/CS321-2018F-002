@@ -13,7 +13,7 @@ public class Battle
 
   public void setStatus(String newStatus)
   {
-    currentStatus = newStatus.toUpperCase();
+    currentStatus = newStatus;
   }
 
   public String getStatus()
