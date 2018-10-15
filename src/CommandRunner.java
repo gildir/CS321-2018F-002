@@ -60,12 +60,16 @@ public class CommandRunner {
             }
         });
         commandFunctions.put("PICKUP",    (name, args) -> {
-            String object = args.get(0);
+            try {
+                String object = args.get(0);
 
-            if (object.equals("")) {
+                if (object.equals("")) {
+                    return "[ERROR] No object specified";
+                } else {
+                    return remoteGameInterface.pickup(name, object);
+                }
+            } catch (IndexOutOfBoundsException ex) {
                 return "[ERROR] No object specified";
-            } else {
-                return remoteGameInterface.pickup(name, object);
             }
         });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
@@ -163,11 +167,11 @@ public class CommandRunner {
 
         // Insert commands
         descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
-        descriptions.put("LEFT",      new String[]{"",         "Says 'message' to any other players in the same area."});
-        descriptions.put("RIGHT",     new String[]{"",         "Turns your player left 90 degrees."});
-        descriptions.put("SAY",       new String[]{"WORDS",    "Turns your player right 90 degrees."});
-        descriptions.put("MOVE",      new String[]{"DISTANCE", "Tries to walk forward <distance> times."});
-        descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an object in the same area."});
+        descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
+        descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
+        descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
+        descriptions.put("MOVE",      new String[]{"DISTANCE", "Tries to walk forward <DISTANCE> times."});
+        descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
         descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
