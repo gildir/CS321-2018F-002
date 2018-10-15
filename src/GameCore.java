@@ -250,7 +250,9 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             Room room = map.findRoom(player.getCurrentRoom());
-            if(target == "all"){
+            System.out.print(target);
+            if(target.equals("all")){
+                
             	int obj_count = 0;
             	String object;
             	String AllObjects = room.getObjects();
@@ -259,7 +261,7 @@ public class GameCore implements GameCoreInterface {
             		obj_count++;
             	}
             	if(obj_count > 0)
-            		return "You bend over and pick up" + AllObjects + ".";
+            		return "You bend over and pick up all the objects";
             	else
             		return "No objects in this room";
             }
