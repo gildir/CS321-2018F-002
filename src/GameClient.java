@@ -25,6 +25,7 @@ import javafx.scene.input.KeyCharacterCombinationBuilder;
  * @author Kevin
  */
 public class GameClient {
+	
     // Control flag for running the game.
     private boolean runGame;
 
@@ -107,10 +108,19 @@ public class GameClient {
             	new Time(); 
                 try {
                     boolean nameConf = true; //Name Confirmation
+					new Time();
                     System.out.println("Please enter a name for your player.");
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine();
                     do{
+                    //if username already exists, ask user to enter new name
+                    if(PlayerDatabase.isPlayer(playerName))
+                        continue;
+                    System.out.println("Please enter a password.");
+                    System.out.print("> ");
+					new Time();
+                    String password = keyboardInput.readLine();
+                    PlayerDatabase.addPlayer(this.playerName, password);
                     System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this name?");
                     System.out.print("(Y/N) > ");
                     String entry = keyboardInput.readLine();
