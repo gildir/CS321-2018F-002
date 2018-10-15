@@ -14,8 +14,8 @@ public class Map
 {
 	
 	private final LinkedList<Room> map;
-	
-	public Map()
+	//Constructor now takes a filename as an argument
+	public Map(String filename)
 	{
 		
 		map = new LinkedList<>();
@@ -24,7 +24,7 @@ public class Map
 		{
 			
 			// open a new scanner with the specified file as the input
-			File mapFile = new File("./rooms.csv");
+			File mapFile = new File(filename);
 			Scanner csvFileScanner = new Scanner(mapFile);
 			
 			// while the scanner has a next line, there is another room to add
