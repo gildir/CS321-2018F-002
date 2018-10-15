@@ -26,10 +26,7 @@ public class GameClient {
 
     // Remote object for RMI server access
     protected GameObjectInterface remoteGameInterface;
-<<<<<<< HEAD
     //protected PlayerList pl; 
-=======
->>>>>>> master
     
     // Members for running the remote receive connection (for non-managed events)
     private boolean runListener;
@@ -62,8 +59,10 @@ public class GameClient {
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY     - Shows you what objects you have collected.");
 <<<<<<< HEAD
-        System.out.println("  TRADE         - Offer to trade with another play.");
+        System.out.println("  GIFT          - Offer to give another player money.");
 =======
+        // allow user to see how much money they have
+        System.out.println("  MONEY         - Shows you how much money you have.");
 >>>>>>> master
         System.out.println("  QUIT          - Quits the game.");
         System.out.println();
@@ -78,6 +77,8 @@ public class GameClient {
             // Establish RMI connection with the server
             System.setSecurityManager(new SecurityManager());
             String strName = "rmi://"+host+"/GameService";
+            // GameObject extends GameObjectInterface, GameObject has a GameCore which calls 
+            // Player methods 
             remoteGameInterface = (GameObjectInterface) Naming.lookup(strName);
 
             // Start by remotely executing the joinGame method.  
@@ -187,6 +188,17 @@ public class GameClient {
                         System.out.println(remoteGameInterface.move(this.playerName, Integer.parseInt(tokens.remove(0))));
                     }
                     break;
+                case "ENTER":
+                	if(tokens.isEmpty()) {
+                		System.err.println("You need to provide a place to enter");
+                	}
+                	else {
+                		System.out.println(remoteGameInterface.enter(this.playerName, tokens.remove(0)));
+                	}
+                	break;
+                case "LEAVE":
+                    System.out.println(remoteGameInterface.leaveRoom(this.playerName));
+                    break;
                 case "PICKUP":
                     if(tokens.isEmpty()) {
                         System.err.println("You need to provide an object to pickup.");
@@ -197,18 +209,21 @@ public class GameClient {
                     break;
                 case "INVENTORY":
                     System.out.println(remoteGameInterface.inventory(this.playerName));
-                    break;                                                            
+                    break; 
+                // add in the case of printing money 
+                case "MONEY":
+                    System.out.println(remoteGameInterface.money(this.playerName));
+                    break; 
                 case "QUIT":
                     remoteGameInterface.leave(this.playerName);
                     runListener = false;
                     break;
-<<<<<<< HEAD
-              case "TRADE":
+              case "GIFT":
                 if(tokens.isEmpty()){
-                    System.err.println("You need to provide a player name to trade.");
+                    System.err.println("You need to provide a player name to gift.");
               }else{
               
-               System.out.println(remoteGameInterface.trade(this.playerName, tokens.remove(0))); 
+               System.out.println(remoteGameInterface.gift(this.playerName, tokens.remove(0))); 
                  
                  
                  
@@ -218,8 +233,6 @@ public class GameClient {
                 
               }
                 
-=======
->>>>>>> master
             }
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -227,19 +240,11 @@ public class GameClient {
     }
     
     public static void main(String[] args) {
-<<<<<<< HEAD
   if(args.length < 1) {
    System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");
    System.exit(-1);
   }
   
-=======
-		if(args.length < 1) {
-			System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");
-			System.exit(-1);
-		}
-		
->>>>>>> master
         System.out.println("[STARTUP] Game Client Now Starting...");
         new GameClient(args[0]);
     }
@@ -250,21 +255,12 @@ public class GameClient {
      *  - Spawns multiple threads, one for each remote connection.
      */
     public class ReplyRemote implements Runnable {
-<<<<<<< HEAD
   private String host;
   
   public ReplyRemote(String host) {
    this.host = host;
   }
   
-=======
-		private String host;
-		
-		public ReplyRemote(String host) {
-			this.host = host;
-		}
-		
->>>>>>> master
         @Override
         public void run() {
             // This thread is interruptable, which will allow it to clean up before

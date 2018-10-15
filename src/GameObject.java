@@ -161,6 +161,11 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.money(name);
     }  
     
+    @Override
+    public String gift(String yourname,String name) throws RemoteException {
+     return core.gift(yourname, name);  
+    }
+    
      /**
      * Leaves the game.
      * @param name Name of the player to leave

@@ -38,6 +38,11 @@ public interface GameCoreInterface {
      */
     public Player joinGame(String name);
     
+<<<<<<< HEAD
+    public String trade(String playerName, String name); 
+    
+=======
+>>>>>>> master
     /**
      * Returns a look at the area of the specified player.
      * @param playerName Player Name
