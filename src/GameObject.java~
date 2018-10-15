@@ -133,12 +133,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     @Override
     public String inventory(String name) throws RemoteException {
         return core.inventory(name);
-    }   
-    
-    @Override
-    public String money(String name) throws RemoteException {
-        return core.money(name);
-    }  
+    }    
     
      /**
      * Leaves the game.

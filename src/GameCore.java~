@@ -282,17 +282,6 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }    
-    
-    @Override
-    public String money(String name) {
-        Player player = this.playerList.findPlayer(name);
-        if(player != null) {
-            return player.viewMoney();
-        }
-        else {
-            return null;
-        }
-    }    
 
      /**
      * Leaves the game.
