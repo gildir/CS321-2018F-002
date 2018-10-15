@@ -75,9 +75,9 @@ public class Player {
     public void addObjectToInventory(Item object) {
         this.currentInventory.add(object);
     }
-    public String removeObjectFomInventory(String object) {
-        for(String obj : this.currentInventory) {
-            if(obj.equalsIgnoreCase(object)) {
+    public Item removeObjectFomInventory(String object) {
+        for(Item obj : this.currentInventory) {
+            if(obj.getItemName().equalsIgnoreCase(object)) {
                 this.currentInventory.remove(obj);
                 return obj;
               }

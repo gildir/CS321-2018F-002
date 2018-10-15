@@ -274,7 +274,7 @@ public class GameCore implements GameCoreInterface {
     public String dropoff(String name, String target) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
-            String object = player.removeObjectFomInventory(target);
+            Item object = player.removeObjectFomInventory(target);
             Room room = map.findRoom(player.getCurrentRoom());
             if(object != null) {
                 room.addObject(object);
