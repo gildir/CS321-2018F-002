@@ -111,7 +111,28 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String move(String name, int distance) throws RemoteException {
         return core.move(name, distance);
     }
-      
+    
+    /**
+     * Attempts to enter <location>. Use if entering a room that is part of another
+     * room, instead of using move to walk to a separate room
+     * @param name Name of the player to enter
+     * @param location The place to enter
+     * @return Message showing success
+     * @throws RemoteException
+     */
+    public String enter(String name, String location) throws RemoteException{
+    	return core.enter(name, location);
+    }
+    
+    /**
+     * Makes player leave a room e.g shop
+     * @param name Player Name
+     * @return Message showing success
+     */
+    public String leaveRoom(String name) {
+    	return core.leaveRoom(name);
+    }
+    
     /**
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move

@@ -183,6 +183,17 @@ public class GameClient {
                         System.out.println(remoteGameInterface.move(this.playerName, Integer.parseInt(tokens.remove(0))));
                     }
                     break;
+                case "ENTER":
+                	if(tokens.isEmpty()) {
+                		System.err.println("You need to provide a place to enter");
+                	}
+                	else {
+                		System.out.println(remoteGameInterface.enter(this.playerName, tokens.remove(0)));
+                	}
+                	break;
+                case "LEAVE":
+                    System.out.println(remoteGameInterface.leaveRoom(this.playerName));
+                    break;
                 case "PICKUP":
                     if(tokens.isEmpty()) {
                         System.err.println("You need to provide an object to pickup.");
