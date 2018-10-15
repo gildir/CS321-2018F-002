@@ -284,14 +284,13 @@ public class GameCore implements GameCoreInterface {
     }    
     
     @Override 
-    public String gift(String yourname ,String name){
+    public String trade(String yourname ,String name){
      Player player = this.playerList.findPlayer(name); 
      Player you = this.playerList.findPlayer(yourname); 
      
      System.out.println("YOUR NAME IS: " + you);
-     if(player != null){
-       this.broadcast(you, you.getName() + " offers a gift to " + player.getName());
-       return "You offer " + player.getName() + " a gift"; 
+     if(player == null){
+       return you + " would like to trade with " + player; 
      }else{
       return null;  
      }

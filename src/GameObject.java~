@@ -136,8 +136,8 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }    
     
     @Override
-    public String gift(String yourname,String name) throws RemoteException {
-     return core.gift(yourname, name);  
+    public String trade(String yourname,String name) throws RemoteException {
+     return core.trade(yourname, name);  
     }
     
      /**

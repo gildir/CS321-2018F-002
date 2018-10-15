@@ -32,7 +32,7 @@ public interface GameObjectInterface extends Remote {
     
     
     
-    public String gift(String playerName, String name) throws RemoteException ; 
+    public String trade(String playerName, String name) throws RemoteException ; 
     
     
     

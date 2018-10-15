@@ -58,7 +58,7 @@ public class GameClient {
         System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY     - Shows you what objects you have collected.");
-        System.out.println("  GIFT          - Offer to give another player money.");
+        System.out.println("  TRADE         - Offer to trade with another play.");
         System.out.println("  QUIT          - Quits the game.");
         System.out.println();
         
@@ -196,12 +196,12 @@ public class GameClient {
                     remoteGameInterface.leave(this.playerName);
                     runListener = false;
                     break;
-              case "GIFT":
+              case "TRADE":
                 if(tokens.isEmpty()){
-                    System.err.println("You need to provide a player name to gift.");
+                    System.err.println("You need to provide a player name to trade.");
               }else{
               
-               System.out.println(remoteGameInterface.gift(this.playerName, tokens.remove(0))); 
+               System.out.println(remoteGameInterface.trade(this.playerName, tokens.remove(0))); 
                  
                  
                  
