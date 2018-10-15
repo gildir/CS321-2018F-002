@@ -281,7 +281,7 @@ public class GameCore implements GameCoreInterface {
     	if(player.getCurrentRoom() == 10)
     		newID = 1;
     	else
-    		return "Can't leave";
+    		return "Can't leave, did you mean quit?";
     	Room room = map.findRoom(player.getCurrentRoom());
     	this.broadcast(player, player.getName() + " has left the shop");
     	player.getReplyWriter().println("You leave the room");
