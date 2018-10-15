@@ -81,12 +81,12 @@ public interface GameObjectInterface extends Remote {
     public String inventory(String name) throws RemoteException; 
     
     /**
-     * Returns a list of nearby players to trade with.
+     * Returns a list of nearby players you can gift.
      * @param name Player Name
      * @return String representation of nearby players.
      * @throws RemoteException 
      */
-    public String tradeable(String name) throws RemoteException;
+    public String giftable(String name) throws RemoteException;
     
      /**
      * Leaves the game.

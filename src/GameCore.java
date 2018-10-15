@@ -282,11 +282,11 @@ public class GameCore implements GameCoreInterface {
     } 
     
      /**
-     * Returns a list of nearby players to trade with.
+     * Returns a list of nearby players you can gift
      * @param name Player Name
      * @return String representation of nearby players.
      */
-    public String tradeable(String playerName) {
+    public String giftable(String playerName) {
         Player player = playerList.findPlayer(playerName);
 
         if(player != null) {        
@@ -294,9 +294,9 @@ public class GameCore implements GameCoreInterface {
             Room room = this.map.findRoom(player.getCurrentRoom());
 
             // Return a string representation of players in teh same room
-            String trade_list = "\nTradeable players near you: " + room.getPlayers(this.playerList);
-            trade_list = trade_list.replace(playerName, "");
-            return trade_list;
+            String gift_list = "\nGiftable players near you: " + room.getPlayers(this.playerList);
+            gift_list = gift_list.replace(playerName, "");
+            return gift_list;
         }
         // No such player exists
         else {

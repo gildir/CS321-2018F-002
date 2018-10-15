@@ -190,8 +190,8 @@ public class GameClient {
                 case "INVENTORY":
                     System.out.println(remoteGameInterface.inventory(this.playerName));
                     break;
-                case "TRADEABLE":
-                    System.out.println(remoteGameInterface.tradeable(this.playerName));
+                case "GIFTABLE":
+                    System.out.println(remoteGameInterface.giftable(this.playerName));
                     break;
                 case "QUIT":
                     remoteGameInterface.leave(this.playerName);

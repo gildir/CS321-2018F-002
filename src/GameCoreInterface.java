@@ -75,11 +75,11 @@ public interface GameCoreInterface {
     public String inventory(String name);
     
     /**
-     * Returns a list of nearby players to trade with.
+     * Returns a list of nearby players you can gift
      * @param name Player Name
      * @return String representation of nearby players.
      */
-    public String tradeable(String name);
+    public String giftable(String name);
     
     /**
      * Leaves the game.
