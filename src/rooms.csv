@@ -1,16 +1,16 @@
-1, Clock in the Main Quad, You are standing in front of the George Mason University Clock.  A plaque on the clock says it was a gift from the Class of 1999.
+1, outside, Clock in the Main Quad, You are standing in front of the George Mason University Clock.  A plaque on the clock says it was a gift from the Class of 1999.
 0, You try to walk north towards the library, but the sidewalk is closed due to construction.
 2, You walk around the fountains as you head towards the statue.
 0, You try to walk north towards the dorms, however, a large student rally is blocking your path.
 3, You walk around the grassy median and head south, past the Johnson Center.
 
-2, Mason Statue, There is a large statue of George Mason resting at the end of the sidewalk. The Mason statue is currently wearing a green Patriots basketball t-shirt.
+2, outside, Mason Statue, There is a large statue of George Mason resting at the end of the sidewalk. The Mason statue is currently wearing a green Patriots basketball t-shirt.
 0, You start to walk north towards the parking deck, but you really don't want to, so you stop yourself.
 0, You look to the west and see a very long staircase just past the traffic circle.  You decide against going that direction.
 1, You walk around the fountains as you head towards the clock.
 0, You try to enter the Johnson Center, but the entrances are closed due to construction.
 
-3, Exploratory Hall, You are standing out front of the new Exploratory Hall.
+3, inside, Exploratory Hall, You are standing out front of the new Exploratory Hall.
 1, You head up the sidewalk, towards the clock.
 0, You look towards Exploratory Hall, but decide to just admire the view from where you are.
 0, You try to head towards the Johnson Center, but the entrance is closed for construction.

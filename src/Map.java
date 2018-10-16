@@ -32,16 +32,17 @@ public class Map
 			{
 				
 				Room newRoom;
-				String title, description, message;
+				String title, description, message, location;
 				int id, link;
 				
 				csvFileScanner.useDelimiter("\\s*,\\s*");	// use comma in csv file as delimiter (and consume whitespace on either side)
 				id = csvFileScanner.nextInt();				// get the id of this room
+				location = csvFileScanner.next();
 				title = csvFileScanner.next();				// get the title of this room
 				csvFileScanner.useDelimiter("\n");			// don't use comma as delimiter, we want the remainder of the line for the description (which may include commas)
 				csvFileScanner.skip(", ");					// skip the characters ", " at the beginning of the next token
 				description = csvFileScanner.next();		// get the description of this room
-				newRoom = new Room(id, title, description);
+				newRoom = new Room(id, title, description, location);
 				
 				/*
 				ADD THE EXITS TO THIS ROOM
@@ -89,9 +90,11 @@ public class Map
 				// if there's another room, advance the scanner to the first line of the next room
 				if (csvFileScanner.hasNextLine())
 				{
-					csvFileScanner.nextLine();
-					// (there is an additional newline for human readability in the specified input file)
-					csvFileScanner.nextLine();
+					try{
+						csvFileScanner.nextLine();
+						// (there is an additional newline for human readability in the specified input file)
+						csvFileScanner.nextLine();
+					}catch(Exception e){}
 				}
 				
 			}

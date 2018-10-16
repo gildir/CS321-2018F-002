@@ -8,16 +8,18 @@ public class Room {
     private final int id;
     private final String title;
     private final String description;
+    private final String location;
     private final LinkedList<String> objects;
     private final LinkedList<Exit> exits;
     
-    public Room(int id, String title, String description) {
+    public Room(int id, String title, String description, String location) {
         this.objects = new LinkedList<>();
         this.exits = new LinkedList<>();        
         
         this.id = id;
         this.title = title;
         this.description = description;
+	this.location = location;
     }
     
     public String toString(PlayerList playerList, Player player) {
@@ -26,6 +28,7 @@ public class Room {
         result += "-------------------------\n";
         result += this.getDescription() + "\n";
         result += "...................\n";
+	result += "This room is " + this.getLocation() + "\n";
         result += "Objects in the area: " + this.getObjects() + "\n";
         result += "Players in the area: " + this.getPlayers(playerList) + "\n";
         result += "You see paths in these directions: " + this.getExits() + "\n";
@@ -85,6 +88,10 @@ public class Room {
     
     public String getTitle() {
         return this.title;
+    }
+
+    public String getLocation() {
+	return this.location;
     }
     
     public String getObjects() {
