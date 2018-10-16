@@ -13,7 +13,8 @@ public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
 
-    private final Rps rpsBattle; //Handles all battles for all players on the server.
+    private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
+    private ArrayList<Battle> pendingBattles; //Handles all battles for all players on the server.
 
     /**
      * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
@@ -28,7 +29,8 @@ public class GameCore implements GameCoreInterface {
 
         playerList = new PlayerList();
 
-        rpsBattle = new Rps();
+        activeBattles = new ArrayList<Battle>();
+        pendingBattles = new ArrayList<Battle>();
 
         Thread objectThread = new Thread(new Runnable() {
             @Override
