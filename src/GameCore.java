@@ -13,7 +13,9 @@ public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
 
-    private final Rps rpsBattle; //Handles all battles for all players on the server.
+    private ArrayList<Battle> activeBattles;
+    private ArrayList<Battle> pendingBattles;
+
 
     /**
      * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
@@ -28,7 +30,8 @@ public class GameCore implements GameCoreInterface {
 
         playerList = new PlayerList();
 
-        rpsBattle = new Rps();
+        activeBattles = new ArrayList<Battle>();
+        pendingBattles = new ArrayList<Battle>();
 
         Thread objectThread = new Thread(new Runnable() {
             @Override
@@ -324,6 +327,27 @@ public class GameCore implements GameCoreInterface {
 
     //If one does currently exist with both players but has status "Pending" -> doBattle(challenger, player2)
     System.out.println("Player: " + challenger + " Challenged: " + player2);
+    Player play1 = this.playerList.findPlayer(challenger);
+    Player play2 = this.playerList.findPlayer(player2);
+
+    if(play2 == null)//other player doesnt exist
+    {
+      play1.getReplyWriter().println("That player doesn't exist.");
+    }
+    else
+    {
+      for(Battle b : pendingBattles)
+      {
+        if(b.hasPlayers(challenger,player2))
+        {
+          play1.getReplyWriter().println("You already have a pending challenge request with "+ player2 +".");
+          return;
+        }
+      }
+      play2.getReplyWriter().println(challenger + " has challenged you to a Rock Paper Scissors Battle. \nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
+      pendingBattles.add(new Battle(challenger, player2));
+      System.out.println("Player: " + challenger + " Challenged: " + player2);
+    }
   }
 
   public void accept(String challenger, String player2)
