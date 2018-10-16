@@ -227,6 +227,15 @@ public class GameClient {
                       remoteGameInterface.refuse(tokens.remove(0),this.playerName);
                     }
                     break;
+                case "ROCK":
+                    remoteGameInterface.rock(this.playerName);
+                    break;
+                case "PAPER":
+                    remoteGameInterface.paper(this.playerName);
+                    break;
+                case "SCISSORS":
+                    remoteGameInterface.scissors(this.playerName);
+                    break;
             }
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);

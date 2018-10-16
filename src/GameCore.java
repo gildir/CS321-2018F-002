@@ -4,6 +4,7 @@
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.ArrayList;
 
 /**
  *
@@ -13,11 +14,8 @@ public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
 
-    private ArrayList<Battle> activeBattles;
+    private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
-
-
-
     /**
      * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -322,12 +320,6 @@ public class GameCore implements GameCoreInterface {
   //if player2 does exist, broadcast to challenger "Request sent. You will be notified when they respond."
   public void challenge(String challenger, String player2)
   {
-    //get battle
-    //if none currently exists with both players in it and with status "Pending"
-    //A new battle is created. with Rps.addBattle(challenger,player2) -> return
-
-    //If one does currently exist with both players but has status "Pending" -> doBattle(challenger, player2)
-    System.out.println("Player: " + challenger + " Challenged: " + player2);
     Player play1 = this.playerList.findPlayer(challenger);
     Player play2 = this.playerList.findPlayer(player2);
 
@@ -353,6 +345,40 @@ public class GameCore implements GameCoreInterface {
 
   public void accept(String challenger, String player2)
   {
+    Player play1 = this.playerList.findPlayer(challenger);
+    Player play2 = this.playerList.findPlayer(player2);
+
+
+    for(Battle b : activeBattles)
+    {
+      if(b.containsPlayer(player2))
+      {
+        play2.getReplyWriter().println("You're already in a Rock Paper Scissors challenge with someone. \nMake a choice of 'rock', 'paper', or 'scissors' \nand wait for the challenge to end before trying to accept another.\n");
+        return;
+      }
+    }
+
+    if(play1 == null)//other player doesnt exist
+    {
+      play2.getReplyWriter().println("You can't accept a challenge from a player that doesn't exist.");
+    }
+    else
+    {
+      for(Battle b : pendingBattles)
+      {
+        if(b.hasPlayers(challenger,player2) && b.getStatus().equalsIgnoreCase("pending"))
+        {
+          play1.getReplyWriter().println(player2 + " has accepted your Rock Paper Scissors challenge. \nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
+          play2.getReplyWriter().println("You have accepted " + challenger + "'s Rock Paper Scissors challenge." + "\nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
+          Battle temp = b;
+          temp.setStatus("active");
+          activeBattles.add(temp);
+          pendingBattles.remove(b);
+          return;
+        }
+      }
+      play2.getReplyWriter().println("You don't have any pending requests from that player.");
+    }
     System.out.println("Player: " + player2 + " Accepted " + challenger + "'s' Challenge.");
   }
 
@@ -382,9 +408,101 @@ public class GameCore implements GameCoreInterface {
     System.out.println("Player: " + player2 + " Refused " + challenger + "'s' Challenge.");
   }
 
-
-  public void doBattle(String challenger, String player2, int player1, int player2)
+  public void rock(String player)
   {
+    Player p = this.playerList.findPlayer(player);
+    for(Battle b : activeBattles)
+    {
+      if(b.containsPlayer(player))
+      {
+        if(b.getPlayer1().equalsIgnoreCase(player))
+        {
+          b.setChoiceP1(1);
+          p.getReplyWriter().println("You Chose Rock.\n");
+          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          {
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+          }
+          return;
+        }
+        if(b.getPlayer2().equalsIgnoreCase(player))
+        {
+          b.setChoiceP2(1);
+          p.getReplyWriter().println("You Chose Rock.\n");
+          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          {
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+          }
+          return;
+        }
+      }
+    }
+    p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
+  }
+
+  public void paper(String player)
+  {
+    Player p = this.playerList.findPlayer(player);
+    for(Battle b : activeBattles)
+    {
+      if(b.containsPlayer(player))
+      {
+        if(b.getPlayer1().equalsIgnoreCase(player))
+        {
+          b.setChoiceP1(2);
+          p.getReplyWriter().println("You Chose Paper.\n");
+          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          {
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+          }
+          return;
+        }
+        if(b.getPlayer2().equalsIgnoreCase(player))
+        {
+          b.setChoiceP2(2);
+          p.getReplyWriter().println("You Chose Paper.\n");
+          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          {
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+          }
+          return;
+        }
+      }
+    }
+    p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
+  }
+
+  public void scissors(String player)
+  {
+    Player p = this.playerList.findPlayer(player);
+    for(Battle b : activeBattles)
+    {
+      if(b.containsPlayer(player))
+      {
+        if(b.getPlayer1().equalsIgnoreCase(player))
+        {
+          b.setChoiceP1(3);
+          p.getReplyWriter().println("You Chose Scissors.\n");
+          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          {
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+          }
+          return;
+        }
+        if(b.getPlayer2().equalsIgnoreCase(player))
+        {
+          b.setChoiceP2(3);
+          p.getReplyWriter().println("You Chose Scissors.\n");
+          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          {
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+          }
+          return;
+        }
+      }
+    }
+    p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
+  }
 
   public void doBattle(String challenger, String player2, int p1, int p2, Battle b)
   {
