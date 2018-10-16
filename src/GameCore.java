@@ -335,6 +335,27 @@ public class GameCore implements GameCoreInterface {
 
   public void refuse(String challenger, String player2)
   {
+    Player play1 = this.playerList.findPlayer(challenger);
+    Player play2 = this.playerList.findPlayer(player2);
+
+    if(play1 == null)//other player doesnt exist
+    {
+      play2.getReplyWriter().println("You can't refuse a challenge from a player that doesn't exist.");
+    }
+    else
+    {
+      for(Battle b : pendingBattles)
+      {
+        if(b.hasPlayers(challenger,player2) && b.getStatus().equalsIgnoreCase("pending"))
+        {
+          play1.getReplyWriter().println(player2 + " has refused your Rock Paper Scissors Challenge. :(");
+          play2.getReplyWriter().println("You have refused "+challenger+"'s Rock Paper Scissors Challenge.");
+          pendingBattles.remove(b);
+          return;
+        }
+      }
+      play2.getReplyWriter().println("You don't have any pending requests from that player.");
+    }
     System.out.println("Player: " + player2 + " Refused " + challenger + "'s' Challenge.");
   }
 
