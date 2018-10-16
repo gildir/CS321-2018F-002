@@ -13,7 +13,8 @@ public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
 
-    private final Rps rpsBattle; //Handles all battles for all players on the server.
+    private ArrayList<Battle> activeBattles;
+    private ArrayList<Battle> pendingBattles;
 
     /**
      * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
@@ -28,7 +29,8 @@ public class GameCore implements GameCoreInterface {
 
         playerList = new PlayerList();
 
-        rpsBattle = new Rps();
+        activeBattles = new ArrayList<Battle>();
+        pendingBattles = new ArrayList<Battle>();
 
         Thread objectThread = new Thread(new Runnable() {
             @Override
@@ -337,9 +339,99 @@ public class GameCore implements GameCoreInterface {
   }
 
 
-  public void doBattle(String challenger, String player2, int player1, int player2)
+  public void doBattle(String challenger, String player2, int p1, int p2, Battle b)
   {
-
+    Player play1 = this.playerList.findPlayer(challenger);
+    Player play2 = this.playerList.findPlayer(player2);
+    String message = "";
+    if(p1 == p2)
+    {
+      //tie
+      switch(p1)
+      {
+        case 1:
+          play1.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
+          play2.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
+          message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
+          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+          activeBattles.remove(b);
+          return;
+        case 2:
+          play1.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
+          play2.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
+          message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
+          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+          activeBattles.remove(b);
+          return;
+        case 3:
+          play1.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
+          play2.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
+          message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
+          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+          activeBattles.remove(b);
+          return;
+      }
+    }
+    else if(p1 == 1 && p2 == 2)
+    {
+      //rock paper
+      play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Paper. \nYou lose.\n");
+      play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Rock. \nYou win.\n");
+      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
+      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+      activeBattles.remove(b);
+      return;
+    }
+    else if(p1 == 1 && p2 == 3)
+    {
+      //rock scissors
+      play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Scissors. \nYou win.\n");
+      play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Rock. \nYou lose.\n");
+      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
+      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+      activeBattles.remove(b);
+      return;
+    }
+    else if(p1 == 2 && p2 == 1)
+    {
+      //paper rock
+      play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Rock. \nYou win.\n");
+      play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Paper. \nYou lose.\n");
+      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
+      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+      activeBattles.remove(b);
+      return;
+    }
+    else if(p1 == 2 && p2 == 3)
+    {
+      //paper scissors
+      play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Scissors. \nYou lose.\n");
+      play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Paper. \nYou win.\n");
+      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
+      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+      activeBattles.remove(b);
+      return;
+    }
+    else if(p1 == 3 && p2 == 1)
+    {
+      //scissors rock
+      play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Rock. \nYou lose.\n");
+      play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Scissors. \nYou win.\n");
+      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
+      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+      activeBattles.remove(b);
+      return;
+    }
+    else if(p1 == 3 && p2 == 2)
+    {
+      //scissors paper
+      play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Paper. \nYou win.\n");
+      play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Scissors. \nYou lose.\n");
+      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
+      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);;
+      activeBattles.remove(b);
+      return;
+    }
   }
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
