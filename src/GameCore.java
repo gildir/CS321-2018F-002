@@ -246,24 +246,29 @@ public class GameCore implements GameCoreInterface {
     * @return Message showing success.
     */
     @Override
-    public String whisper(String name1, String name2, String message) {
+    public String whisper(String name1, String name2, String message)
+    {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
-	
-        if(playerSending != null && playerReceiving != null) {
-	
-	if(name1.equals(name2)){
-		return "Cannot whisper yourself";}
-	
-            this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
-            return "message sent to " + playerReceiving.getName();
+        if(playerSending != null && playerReceiving != null)
+        {
+
+            if(name1.equals(name2))
+                return "Cannot whisper yourself";
+            else
+                {
+                    this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+                    return "message sent to " + playerReceiving.getName();
+                }
         }
-        else {
+        else
+        {
             if(playerReceiving == null) {
                 return "That player isn't online.";
             }
             return null;
         }
+
     }
 
     /**
