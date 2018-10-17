@@ -255,18 +255,17 @@ public class GameCore implements GameCoreInterface {
             name1 = name1.toUpperCase();
             name2 = name2.toUpperCase();
             if(name1.equals(name2))
-                return "Cannot whisper yourself";
+                return "You cannot whisper yourself";
             else
-                {
-                    this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
-                    return "message sent to " + playerReceiving.getName();
-                }
+            {
+                this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+                return "message sent to " + playerReceiving.getName();
+            }
         }
         else
         {
-            if(playerReceiving == null) {
+            if(playerReceiving == null)
                 return "That player isn't online.";
-            }
             return null;
         }
 
