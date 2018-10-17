@@ -72,9 +72,7 @@ public class GameClient {
         this.runGame = true;
         boolean nameSat = false;
         new Time();
-<<<<<<< HEAD
-=======
-        
+                
         System.out.println("Welcome to the client for an RMI based online game.\n");
         System.out.println("This game allows you to connect to a server an walk around a virtual,");
         System.out.println(" text-based version of the George Mason University campus.\n");
