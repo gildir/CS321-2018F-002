@@ -234,9 +234,9 @@ public class GameCore implements GameCoreInterface {
             return l;
         }
         else
-            {
-                return null;
-            }
+        {
+            return null;
+        }
     }
     /**
     * Whispers "message" to a specified player.
@@ -252,7 +252,8 @@ public class GameCore implements GameCoreInterface {
         Player playerReceiving = this.playerList.findPlayer(name2);
         if(playerSending != null && playerReceiving != null)
         {
-
+            name1 = name1.toUpperCase();
+            name2 = name2.toUpperCase();
             if(name1.equals(name2))
                 return "Cannot whisper yourself";
             else
