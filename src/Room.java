@@ -29,6 +29,11 @@ public class Room {
         result += "Objects in the area: " + this.getObjects() + "\n";
         result += "Players in the area: " + this.getPlayers(playerList) + "\n";
         result += "You see paths in these directions: " + this.getExits() + "\n";
+        //If player is at the clock tower, they are near the shop
+        if(this.getId() == 1)
+        	result += "You see the shop nearby. ENTER SHOP to enter the shop.\n";
+        if(this.getId() == 10)
+        	result += "LEAVE to leave the shop\n";
         result += "...................\n";
         result += "You are facing: " + player.getCurrentDirection() + "\n";
         return result;
