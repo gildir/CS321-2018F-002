@@ -37,13 +37,10 @@ public class GameClient {
     // Members related to the player in the game.
     protected String playerName;
     
-<<<<<<< HEAD
     /**
      * Class will be used to determine if the user has been timed out after 5 minutes
      * USE new Time() each time getting input
      */
-=======
->>>>>>> 4233a5bdbe666dc6bcd9589036bb438c75ca70ef
     private class Time{
         Timer timer;  
 
