@@ -99,7 +99,6 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public String inventory(String name) throws RemoteException; 
-<<<<<<< HEAD
     
     /**
      * Returns a list of nearby players you can gift.
@@ -108,7 +107,7 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public String giftable(String name) throws RemoteException;
-=======
+
     /**
      * Returns a string representation of money you have
      * @param name Name of the player to view their money
@@ -116,7 +115,6 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public String money(String name) throws RemoteException;   
->>>>>>> master
     
      /**
      * Leaves the game.
