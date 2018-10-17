@@ -14,13 +14,14 @@ public class Player {
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
-
+    
     public Player(String name) {
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
     }
+    
     
     public void turnLeft() {
         switch(this.currentDirection.toString()) {

@@ -37,10 +37,13 @@ public class GameClient {
     // Members related to the player in the game.
     protected String playerName;
     
+<<<<<<< HEAD
     /**
      * Class will be used to determine if the user has been timed out after 5 minutes
      * USE new Time() each time getting input
      */
+=======
+>>>>>>> 4233a5bdbe666dc6bcd9589036bb438c75ca70ef
     private class Time{
         Timer timer;  
 
@@ -64,8 +67,7 @@ public class GameClient {
             }
         }
     }
-
-
+    
     /** 
      * Main class for running the game client.
      */
@@ -73,6 +75,9 @@ public class GameClient {
         this.runGame = true;
         boolean nameSat = false;
         new Time();
+<<<<<<< HEAD
+=======
+        
         System.out.println("Welcome to the client for an RMI based online game.\n");
         System.out.println("This game allows you to connect to a server an walk around a virtual,");
         System.out.println(" text-based version of the George Mason University campus.\n");
@@ -107,6 +112,7 @@ public class GameClient {
             //   Lets the player choose a name and checks it with the server.  If the name is
             //    already taken or the user doesn't like their input, they can choose again.
             while(nameSat == false) {
+            	new Time(); 
                 try {
                     new Time();
                     System.out.println("Please enter a name for your player.");
@@ -173,7 +179,7 @@ public class GameClient {
         while(commandTokens.hasMoreTokens() == true) {
             tokens.add(commandTokens.nextToken());
         }
-
+        new Time();
         if(tokens.isEmpty()) {
             System.out.println("The keyboard input had no commands.");
             return;
