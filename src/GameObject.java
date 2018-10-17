@@ -167,6 +167,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }  
     
      /**
+     * Returns a list of nearby players you can gift
+     * @param name Player Name
+     * @return String representation of nearby players.
+     * @throws RemoteException 
+     */
+    @Override
+    public String giftable(String playerName) throws RemoteException {
+        return core.giftable(playerName);
+    } 
+    
+     /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @throws RemoteException 
