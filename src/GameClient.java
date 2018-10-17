@@ -117,11 +117,7 @@ public class GameClient {
                     //if username already exists, ask user to enter new name
                     if(PlayerDatabase.isPlayer(playerName))
                         continue;
-                    System.out.println("Please enter a password.");
-                    System.out.print("> ");
-					new Time();
-                    String password = keyboardInput.readLine();
-                    PlayerDatabase.addPlayer(this.playerName, password);
+                    
                     System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this name?");
                     System.out.print("(Y/N) > ");
                     String entry = keyboardInput.readLine();
@@ -137,15 +133,25 @@ public class GameClient {
                     }
                     else if (entry.equalsIgnoreCase("N")){
                         nameConf = true; nameSat = false; //Will reprompt to enter name
+                        continue;
                     }
                     else{
                         nameConf = false; nameSat = true; //Will reprompt confirmation
+                        continue;
                     }
+
+                    System.out.println("Please enter a password.");
+                    System.out.print("> ");
+					new Time();
+                    String password = keyboardInput.readLine();
+                    PlayerDatabase.addPlayer(this.playerName, password);
                 }while(!nameConf);
                 } catch (IOException ex) {
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                     System.exit(-1);
                 }
+
+            
             }
 
             // Player has joined, now start up the remote socket.
