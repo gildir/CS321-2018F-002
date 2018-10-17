@@ -109,7 +109,6 @@ public class GameClient {
                 try {
                     boolean nameConf = true; //Name Confirmation
                     new Time();
-                    do{
 
                     System.out.println("Please enter a name for your player.");
                     System.out.print("> ");
@@ -117,7 +116,8 @@ public class GameClient {
                     //if username already exists, ask user to enter new name
                     if(PlayerDatabase.isPlayer(playerName))
                         continue;
-                    
+                 do{
+
                     System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this name?");
                     System.out.print("(Y/N) > ");
                     String entry = keyboardInput.readLine();
