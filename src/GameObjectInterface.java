@@ -61,6 +61,15 @@ public interface GameObjectInterface extends Remote {
     * @return Message showing success.
     */
     public String whisper(String name1, String name2, String message) throws RemoteException;
+
+
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    */
+    public String reply(String name, String message) throws RemoteException;
     
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
