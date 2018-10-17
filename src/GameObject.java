@@ -121,7 +121,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @throws RemoteException
      */
     public String enter(String name, String location) throws RemoteException{
-    	return core.enter(name, location);
+     return core.enter(name, location);
     }
     
     /**
@@ -130,7 +130,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @return Message showing success
      */
     public String leaveRoom(String name) {
-    	return core.leaveRoom(name);
+     return core.leaveRoom(name);
     }
     
     /**
@@ -144,6 +144,11 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String pickup(String name, String target) throws RemoteException {
         return core.pickup(name, target);
     }    
+    
+    @Override
+    public String gift(String yourname,String name) throws RemoteException {
+     return core.gift(yourname, name);  
+    }
     
     /**
      * Returns a string representation of all objects you are carrying.
