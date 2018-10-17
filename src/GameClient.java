@@ -51,11 +51,12 @@ public class GameClient {
 
         class timeoutTask extends TimerTask{
             public void run(){
-                System.out.println("User has been inactive for 5 minutes.. logging off");  
                 try{
                     remoteGameInterface.leave(playerName);
                     runListener = false;
+                    System.out.println("User has been inactive for 5 minutes.. logging off");  
                     timer.cancel();
+                    System.exit(-1);
                 } 
                 catch (RemoteException ex) {
                 	Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
