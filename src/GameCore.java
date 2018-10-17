@@ -234,9 +234,9 @@ public class GameCore implements GameCoreInterface {
             return l;
         }
         else
-            {
-                return null;
-            }
+        {
+            return null;
+        }
     }
     /**
     * Whispers "message" to a specified player.
@@ -264,8 +264,8 @@ public class GameCore implements GameCoreInterface {
             }
             return null;
         }
-    }
 
+    }
     /**
     * Sends a whisper the last player that whispered.
     * @param name Name of player replying to whisper
