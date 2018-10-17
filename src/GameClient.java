@@ -99,9 +99,11 @@ public class GameClient {
                     }
                     else if (entry.equalsIgnoreCase("N")){
                         nameConf = true; nameSat = false; //Will reprompt to enter name
+                        continue;
                     }
                     else{
                         nameConf = false; nameSat = true; //Will reprompt confirmation
+                        continue;
                     }
                 }while(!nameConf);
                 } catch (IOException ex) {
