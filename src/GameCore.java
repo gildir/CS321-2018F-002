@@ -252,9 +252,7 @@ public class GameCore implements GameCoreInterface {
         Player playerReceiving = this.playerList.findPlayer(name2);
         if(playerSending != null && playerReceiving != null)
         {
-            name1 = name1.toUpperCase();
-            name2 = name2.toUpperCase();
-            if(name1.equals(name2))
+            if(name1.equalsIgnoreCase(name2))
                 return "You cannot whisper yourself";
             else
             {
@@ -270,7 +268,6 @@ public class GameCore implements GameCoreInterface {
         }
 
     }
-
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
