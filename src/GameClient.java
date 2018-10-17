@@ -45,9 +45,7 @@ public class GameClient {
 
         public Time(){
             timer = new Timer();
-            //timer.schedule(new timeoutTask(), 300000);
-            timer.schedule(new timeoutTask(), 5000);
-
+            timer.schedule(new timeoutTask(), 300000);
         }
 
         class timeoutTask extends TimerTask{
