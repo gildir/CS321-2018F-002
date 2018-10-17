@@ -248,24 +248,24 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success
      */
     public String enter(String name, String location) {
-    	Player player = this.playerList.findPlayer(name);
-    	if(player == null) return null;
-    	int newID;
-    	//add more if statements for different shops
-    	if(location.equalsIgnoreCase("shop"))
-    		newID = 10;
-    	else
-    		return location + " is unknown.";
-    	//if player not near a shop, return.
-    	if(player.getCurrentRoom() != 1)
-    		return "Not near " + location;
-    	Room room = map.findRoom(player.getCurrentRoom());
-    	this.broadcast(player, player.getName() + " has walked off towards the shop");
-    	player.getReplyWriter().println("You enter the shop");
-    	player.setCurrentRoom(newID);
-    	this.broadcast(player, player.getName() + " just walked into the shop.");
-    	player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
-    	return "You stop moving and begin to stand around again.";
+     Player player = this.playerList.findPlayer(name);
+     if(player == null) return null;
+     int newID;
+     //add more if statements for different shops
+     if(location.equalsIgnoreCase("shop"))
+      newID = 10;
+     else
+      return location + " is unknown.";
+     //if player not near a shop, return.
+     if(player.getCurrentRoom() != 1)
+      return "Not near " + location;
+     Room room = map.findRoom(player.getCurrentRoom());
+     this.broadcast(player, player.getName() + " has walked off towards the shop");
+     player.getReplyWriter().println("You enter the shop");
+     player.setCurrentRoom(newID);
+     this.broadcast(player, player.getName() + " just walked into the shop.");
+     player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+     return "You stop moving and begin to stand around again.";
     }
     
     /**
@@ -274,21 +274,21 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success
      */
     public String leaveRoom(String name) {
-    	Player player = this.playerList.findPlayer(name);
-    	if(player == null) return null;
-    	int newID;
-    	//add more if statements for different shops
-    	if(player.getCurrentRoom() == 10)
-    		newID = 1;
-    	else
-    		return "Can't leave, did you mean quit?";
-    	Room room = map.findRoom(player.getCurrentRoom());
-    	this.broadcast(player, player.getName() + " has left the shop");
-    	player.getReplyWriter().println("You leave the room");
-    	player.setCurrentRoom(newID);
-    	this.broadcast(player, player.getName() + " just walked into the area.");
-    	player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
-    	return "You stop moving and begin to stand around again.";
+     Player player = this.playerList.findPlayer(name);
+     if(player == null) return null;
+     int newID;
+     //add more if statements for different shops
+     if(player.getCurrentRoom() == 10)
+      newID = 1;
+     else
+      return "Can't leave, did you mean quit?";
+     Room room = map.findRoom(player.getCurrentRoom());
+     this.broadcast(player, player.getName() + " has left the shop");
+     player.getReplyWriter().println("You leave the room");
+     player.setCurrentRoom(newID);
+     this.broadcast(player, player.getName() + " just walked into the area.");
+     player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+     return "You stop moving and begin to stand around again.";
     }
     
     /**
@@ -344,6 +344,22 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }    
+    
+    @Override 
+    public String gift(String yourname ,String name){
+     Player player = this.playerList.findPlayer(name); 
+     Player you = this.playerList.findPlayer(yourname); 
+     
+     System.out.println("YOUR NAME IS: " + you);
+     if(player != null){
+       this.broadcast(you, you.getName() + " offers a gift to " + player.getName());
+       return "You offer " + player.getName() + " a gift"; 
+     }else{
+      return null;  
+     }
+      
+    }
+
 
      /**
      * Leaves the game.

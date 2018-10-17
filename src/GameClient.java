@@ -57,6 +57,7 @@ public class GameClient {
         System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY     - Shows you what objects you have collected.");
+        System.out.println("  GIFT          - Offer to give another player money.");
         // allow user to see how much money they have
         System.out.println("  MONEY         - Shows you how much money you have.");
         System.out.println("  QUIT          - Quits the game.");
@@ -184,13 +185,13 @@ public class GameClient {
                     }
                     break;
                 case "ENTER":
-                	if(tokens.isEmpty()) {
-                		System.err.println("You need to provide a place to enter");
-                	}
-                	else {
-                		System.out.println(remoteGameInterface.enter(this.playerName, tokens.remove(0)));
-                	}
-                	break;
+                 if(tokens.isEmpty()) {
+                  System.err.println("You need to provide a place to enter");
+                 }
+                 else {
+                  System.out.println(remoteGameInterface.enter(this.playerName, tokens.remove(0)));
+                 }
+                 break;
                 case "LEAVE":
                     System.out.println(remoteGameInterface.leaveRoom(this.playerName));
                     break;
@@ -209,6 +210,14 @@ public class GameClient {
                 case "MONEY":
                     System.out.println(remoteGameInterface.money(this.playerName));
                     break; 
+                case "GIFT":
+                if(tokens.isEmpty()){
+                    System.err.println("You need to provide a player name to gift.");
+                }else{                 
+                  System.out.println(remoteGameInterface.gift(this.playerName, tokens.remove(0)));  
+                }
+                break;
+                
                 case "QUIT":
                     remoteGameInterface.leave(this.playerName);
                     runListener = false;
