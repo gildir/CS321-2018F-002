@@ -323,6 +323,12 @@ public class GameCore implements GameCoreInterface {
     Player play1 = this.playerList.findPlayer(challenger);
     Player play2 = this.playerList.findPlayer(player2);
 
+    if(challenger.equalsIgnoreCase(player2))
+    {
+      play1.getReplyWriter().println("\nYou can't challenge yourself.\n");
+      return;
+    }
+
     if(play2 == null)//other player doesnt exist
     {
       play1.getReplyWriter().println("That player doesn't exist.");
