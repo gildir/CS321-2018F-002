@@ -251,8 +251,8 @@ public class GameCore implements GameCoreInterface {
         Player playerReceiving = this.playerList.findPlayer(name2);
 	
         if(playerSending != null && playerReceiving != null) {
-            if(name1.equals(name2)) {
-                return "Cannot whisper yourself";
+            if(name1.equalsIgnoreCase(name2)) {
+                return "You cannot whisper yourself.";
             }
             this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
             playerReceiving.setLastWhisperName(name1);
