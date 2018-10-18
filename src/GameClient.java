@@ -49,16 +49,8 @@ public class GameClient {
         System.out.println("When you do, you will join the game at the George Mason Clock, in the main quad.");
         System.out.println("You will be able to see if any other players are in the same area as well as what");
         System.out.println("objects are on the ground and what direction you are facing.\n");
-        System.out.println("The game allows you to use the following commands:");
-        System.out.println("  LOOK          - Shows you the area around you");
-        System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
-        System.out.println("  LEFT          - Turns your player left 90 degrees.");
-        System.out.println("  RIGHT         - Turns your player right 90 degrees.");
-        System.out.println("  MOVE direction 	       - Tries to walk forward in the provided direction.");
-        System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
-        System.out.println("  INVENTORY     - Shows you what objects you have collected.");
-        System.out.println("  QUIT          - Quits the game.");
-        System.out.println();
+       
+        
         
 
         // Set up for keyboard input for local commands.
