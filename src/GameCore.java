@@ -329,6 +329,15 @@ public class GameCore implements GameCoreInterface {
       return;
     }
 
+    for(Battle b : activeBattles)
+    {
+      if(b.containsPlayer(challenger))
+      {
+        play1.getReplyWriter().println("You can only be in one battle at a time. Finish the current one you are in before challenging someone else.");
+        return;
+      }
+    }
+
     if(play2 == null)//other player doesnt exist
     {
       play1.getReplyWriter().println("That player doesn't exist.");
