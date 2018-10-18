@@ -59,12 +59,16 @@ public class CommandRunner {
             }
         });
         commandFunctions.put("PICKUP",    (name, args) -> {
-            String object = args.get(0);
+            try {
+                String object = args.get(0);
 
-            if (object.equals("")) {
+                if (object.equals("")) {
+                    return "[ERROR] No object specified";
+                } else {
+                    return remoteGameInterface.pickup(name, object);
+                }
+            } catch (IndexOutOfBoundsException ex) {
                 return "[ERROR] No object specified";
-            } else {
-                return remoteGameInterface.pickup(name, object);
             }
         });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
