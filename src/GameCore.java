@@ -1,6 +1,3 @@
-
-
-
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -327,6 +324,15 @@ public class GameCore implements GameCoreInterface {
     {
       play1.getReplyWriter().println("\nYou can't challenge yourself.\n");
       return;
+    }
+
+    for(Battle b : activeBattles)
+    {
+      if(b.containsPlayer(player2))
+      {
+        play1.getReplyWriter().println("You cant challenge " + player2 + " right now, they're currently in a battle. ");
+        return;
+      }
     }
 
     if(play2 == null)//other player doesnt exist
