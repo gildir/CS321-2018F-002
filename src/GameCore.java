@@ -4,6 +4,7 @@
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.LinkedList;
 
 /**
  *
@@ -264,7 +265,25 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }       
+    }
+
+    /**
+     * Allows an an object to be taken away from someone's inventory.
+     * @param name Name of the player to take an item from
+     * @return Message showing success.
+     */  
+    public String takeAway(String name)  {
+        Player player = this.playerList.findPlayer(name);
+
+        LinkedList<String> currentInventory = player.getCurrentInventory();
+        Random randInt = new Random();
+        int randItem = randInt.nextInt(currentInventory.size()-1);
+        String targetItem = currentInventory.remove(randItem);
+        player.setCurrentInventory(currentInventory);
+        this.broadcast(player, player.getName() + "\'s item was taken away!");
+        return targetItem + " was removed from your inventory.";
+    }    
+           
     
     /**
      * Returns a string representation of all objects you are carrying.
