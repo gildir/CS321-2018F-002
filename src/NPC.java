@@ -48,14 +48,11 @@ abstract class NPC {
   public String toString() {
     return this.getName();
   }
-  
-  public void broadcast(Room room, String message) {
-    for(Player player : object.getPlayerList()) {
-      if(player.getCurrentRoom() == room.getId()) {
-        player.getReplyWriter().println(message);
-      }
-    }
+
+  private void broadcast(String message) {
+    object.broadcast(currentRoom, message);
   }
+  
 // AI movement methods
   protected LinkedList<Exit> getCurrentExits(){
     LinkedList<Exit> exits = new LinkedList<Exit>();
