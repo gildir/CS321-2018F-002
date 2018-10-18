@@ -51,8 +51,13 @@ public class CommandRunner {
         });
         commandFunctions.put("MOVE",     (name, args) -> {
             try {
-                int distance = Integer.parseInt(args.get(0));
-                return remoteGameInterface.move(name, distance);
+                String direction = args.get(0);
+		if (direction.equals(""){
+			return "[Error] No direction specified";
+		}
+		else{
+	                return remoteGameInterface.move(name, direction);
+		}
             } catch (Exception e) {
                 // System.err.println(e);
                 // return "[ERROR] " + e.getMessage();
@@ -163,10 +168,10 @@ public class CommandRunner {
 
         // Insert commands
         descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
-        descriptions.put("LEFT",      new String[]{"",         "Says 'message' to any other players in the same area."});
-        descriptions.put("RIGHT",     new String[]{"",         "Turns your player left 90 degrees."});
-        descriptions.put("SAY",       new String[]{"WORDS",    "Turns your player right 90 degrees."});
-        descriptions.put("MOVE",      new String[]{"DISTANCE", "Tries to walk forward <distance> times."});
+        descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
+        descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
+        descriptions.put("SAY",       new String[]{"WORDS",    "Says 'message' to any other players in the same area."});
+        descriptions.put("MOVE",      new String[]{"DIRECTION", "Tries to walk in <direction>."});
         descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an object in the same area."});
         descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
