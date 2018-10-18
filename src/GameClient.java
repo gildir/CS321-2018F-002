@@ -52,6 +52,7 @@ public class GameClient {
         System.out.println("The game allows you to use the following commands:");
         System.out.println("  LOOK          - Shows you the area around you");
         System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
+        System.out.println("  SHOUT message - Says 'message' to all players in the world.");
         System.out.println("  LISTPLAYERS   - List all the players in the world");
         System.out.println("  WHISPER player message - Says 'message' to specified 'player'.");
         System.out.println("  LEFT          - Turns your player left 90 degrees.");
@@ -173,6 +174,20 @@ public class GameClient {
                             }
                         }                        
                         System.out.println(remoteGameInterface.say(this.playerName, message));
+                    }
+                    break;
+                case "SHOUT":
+                    if(tokens.isEmpty()) {
+                        System.err.println("You need to write a message to shout.");
+                    }
+                    else {
+                        while(tokens.isEmpty() == false) {
+                            message += tokens.remove(0);
+                            if(tokens.isEmpty() == false) {
+                                message += " ";
+                            }
+                        }
+                        System.out.println(remoteGameInterface.shout(this.playerName, message));
                     }
                     break;
                 //author Shayan AH

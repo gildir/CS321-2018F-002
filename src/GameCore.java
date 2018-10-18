@@ -67,6 +67,19 @@ public class GameCore implements GameCoreInterface {
     }
 
     /**
+    * Broadcasts a message to all players in the world.
+    * @param player Player shouting the message
+    * @param message Message to broadcast
+    */
+    public void broadcastShout(Player player, String message) {
+        for(Player otherPlayer : this.playerList) {
+            if(otherPlayer != player) {
+                otherPlayer.getReplyWriter().println(message);
+            }
+        }
+    }
+
+    /**
     * Broadcasts a message to the specified player.
     * @param sendingPlayer Player sending message
     * @param receivingPlayer Player receiving message
@@ -222,6 +235,24 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }
+
+    /**
+    * Shouts "message" to everyone in the world.
+    * @param name Name of the player shouting
+    * @param message Message that will be shouted
+    * @return Message showing success.
+    */
+    public String shout(String name, String message) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            this.broadcastShout(player, player.getName() + " shouts, \"" + message + "\"");
+            return "You shout, \"" + message + "\"";
+        }
+        else {
+            return null;
+        }
+    }
+
     //author Shayan AH
     public String listAllPlayers(String name)
     {

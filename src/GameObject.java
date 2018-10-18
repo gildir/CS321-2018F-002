@@ -99,6 +99,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.say(name, message);
     }
 
+    /**
+    * Shouts "message" to everyone in the game.
+    * @param name Name of the player shouting
+    * @param message Message to be shouted
+    * @return Message showing success
+    * @throws RemoteException
+    */
+    public String shout(String name, String message) throws RemoteException {
+        return core.shout(name, message);
+    }
+
     //Author Shayan AH
     public String listAllPlayers(String name)throws RemoteException
     {

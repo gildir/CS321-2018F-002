@@ -54,11 +54,21 @@ public interface GameObjectInterface extends Remote {
     public String say(String name, String message) throws RemoteException;
 
     /**
+    * Shouts "message" to everyone in the game.
+    * @param name Name of the player shouting
+    * @param message Message to be shouted
+    * @return Message showing success
+    * @throws RemoteException
+    */
+    public String shout(String name, String message) throws RemoteException;
+
+    /**
     * Whispers "message" to specified player.
     * @param name1 Name of players sending message
     * @param name2 Name of player receiving message
     * @param message Message to whisper
     * @return Message showing success.
+    * @throws RemoteException
     */
     public String whisper(String name1, String name2, String message) throws RemoteException;
     
