@@ -320,7 +320,13 @@ public class GameCore implements GameCoreInterface {
     Player play1 = this.playerList.findPlayer(challenger);
     Player play2 = this.playerList.findPlayer(player2);
 
-    if(challenger.equalsIgnoreCase(player2))
+    if(play2 == null)//other player doesnt exist
+    {
+      play1.getReplyWriter().println("That player doesn't exist.");
+      return;
+    }
+
+    if(challenger.equalsIgnoreCase(player2)) // Challenger is challenging himself. Stupid challenger...
     {
       play1.getReplyWriter().println("\nYou can't challenge yourself.\n");
       return;
@@ -328,6 +334,11 @@ public class GameCore implements GameCoreInterface {
 
     for(Battle b : activeBattles)
     {
+      if(b.containsPlayer(challenger))
+      {
+        play1.getReplyWriter().println("You can only be in one battle at a time. Finish the current one you are in before challenging someone else.");
+        return;
+      }
       if(b.containsPlayer(player2))
       {
         play1.getReplyWriter().println("You cant challenge " + player2 + " right now, they're currently in a battle. ");
@@ -335,12 +346,8 @@ public class GameCore implements GameCoreInterface {
       }
     }
 
-    if(play2 == null)//other player doesnt exist
-    {
-      play1.getReplyWriter().println("That player doesn't exist.");
-    }
-    else
-    {
+
+
       for(Battle b : pendingBattles)
       {
         if(b.hasPlayers(challenger,player2))
@@ -352,7 +359,7 @@ public class GameCore implements GameCoreInterface {
       play2.getReplyWriter().println(challenger + " has challenged you to a Rock Paper Scissors Battle. \nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
       pendingBattles.add(new Battle(challenger, player2));
       System.out.println("Player: " + challenger + " Challenged: " + player2);
-    }
+
   }
 
   public void accept(String challenger, String player2)
