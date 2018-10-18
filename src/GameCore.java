@@ -334,32 +334,29 @@ public class GameCore implements GameCoreInterface {
 
     for(Battle b : activeBattles)
     {
-      if(b.containsPlayer(challenger))
+      if(b.containsPlayer(challenger))// Challenger is already in an active battle
       {
         play1.getReplyWriter().println("You can only be in one battle at a time. Finish the current one you are in before challenging someone else.");
         return;
       }
-      if(b.containsPlayer(player2))
+      if(b.containsPlayer(player2))// Other Player is already in an active battle.
       {
         play1.getReplyWriter().println("You cant challenge " + player2 + " right now, they're currently in a battle. ");
         return;
       }
     }
 
-
-
-      for(Battle b : pendingBattles)
+    for(Battle b : pendingBattles)//Challenger already asked this person to battle and is waiting for a response still.
+    {
+      if(b.hasPlayers(challenger,player2))
       {
-        if(b.hasPlayers(challenger,player2))
-        {
-          play1.getReplyWriter().println("You already have a pending challenge request with "+ player2 +".");
-          return;
-        }
+        play1.getReplyWriter().println("You already have a pending challenge request with "+ player2 +".");
+        return;
       }
-      play2.getReplyWriter().println(challenger + " has challenged you to a Rock Paper Scissors Battle. \nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
-      pendingBattles.add(new Battle(challenger, player2));
-      System.out.println("Player: " + challenger + " Challenged: " + player2);
-
+    }
+    play2.getReplyWriter().println(challenger + " has challenged you to a Rock Paper Scissors Battle. \n\nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\n\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
+    pendingBattles.add(new Battle(challenger, player2));
+    System.out.println("Player: " + challenger + " Challenged: " + player2);
   }
 
   public void accept(String challenger, String player2)
