@@ -4,6 +4,7 @@
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.LinkedList;
 
 /**
  *
@@ -264,7 +265,7 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }       
+    }           
     
     /**
      * Returns a string representation of all objects you are carrying.
