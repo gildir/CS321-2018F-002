@@ -53,6 +53,13 @@ public class GameCore implements GameCoreInterface {
     }
     
     /**
+     * Basic getter method for GameCore.
+     */ 
+    public PlayerList getPlayerList(){
+      return this.playerList;
+    }
+    
+    /**
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.
      * @param message Message to broadcast.
