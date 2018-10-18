@@ -38,6 +38,9 @@ public class Room {
         return this.id;
     }
     
+    public LinkedList<Exit> getExitsList(){
+      return this.exits;
+    }
     public String getExits() {
         String result = "";
         for(Exit exit : this.exits) {
@@ -115,7 +118,7 @@ public class Room {
     public String getPlayers(PlayerList players) {
         String localPlayers = "";
         for(Player player : players) {
-System.err.println("Checking to see if " + player.getName() + " in room " + player.getCurrentRoom() + " is in this room (" + this.id + ")");
+          System.err.println("Checking to see if " + player.getName() + " in room " + player.getCurrentRoom() + " is in this room (" + this.id + ")");
             if(player.getCurrentRoom() == this.id) {
                 localPlayers += player.getName() + " ";
             }
