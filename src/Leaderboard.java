@@ -40,6 +40,6 @@ public class Leaderboard {
 			wins = String.format("%-4d", score.getWins());
 			board += ("Rank: " + rank + " | Score: " + wins + " | Name: " + score.getName() + "\n");
 		}
-		return "hello";
+		return board;
 	}
 }

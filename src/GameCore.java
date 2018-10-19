@@ -647,7 +647,6 @@ public class GameCore implements GameCoreInterface {
         if(player == null)
             return;
 		String board = this.leaderboard.getBoard();
-        //this.broadcast(player, board);
         player.getReplyWriter().println(board);
     }
 
