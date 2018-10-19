@@ -80,6 +80,16 @@ public interface GameObjectInterface extends Remote {
      */
     public String dropoff(String name, String object) throws RemoteException;
 
+    /**
+     * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
+     * @param player The player offering the item
+     * @param nameOffered Name of the person being offered an item
+     * @param target The name of the item to offer
+     * @return A message showing success.
+     *
+     */
+    public String offerItem(String playerName, String nameOffered, String target) throws RemoteException;
+
      /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to view their inventory
