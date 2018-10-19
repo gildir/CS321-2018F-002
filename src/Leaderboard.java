@@ -18,11 +18,11 @@ public class Leaderboard {
 			score = this.leaderboard.get(i);
 			if(score.getName() == name) {
 				score.increment();
-				for(int j = i-1; j >= 0; j++) {
-					if(this.leaderboard.get(j).getWins() >= score.getWins()) {
-						Collections.swap(this.leaderboard, i, j+1);
+				for(int j = i-1; j >= 0; j--) {
+					if(this.leaderboard.get(j).getWins() < score.getWins())
+						Collections.swap(this.leaderboard, i, j);
+					else
 						return;
-					}
 				}
 				return;
 			}
