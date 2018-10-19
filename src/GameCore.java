@@ -1,6 +1,8 @@
 
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,9 +14,10 @@ import java.util.logging.Logger;
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
+    private final ArrayList npcList;
     
     /**
-     * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
+     * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
      * 
      * This is the main core that both the RMI and non-RMI based servers will interface with.
@@ -23,7 +26,6 @@ public class GameCore implements GameCoreInterface {
         
         // Generate the game map.
         map = new Map();
-        
         playerList = new PlayerList();
         
         Thread objectThread = new Thread(new Runnable() {
@@ -50,6 +52,22 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
+        npcList = Arrays.asList(new Ghoul(this, "Larry", getRandomRoom(), 60),
+		                          new Ghoul(this, "Bob", getRandomRoom(), 90),
+	                             new Ghost(this, "Casper", getRandomRoom(), 20));
+
+        Thread npcThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    for (NPC npc : npcList)
+                        npc.tryAi();
+                }
+            }
+        });
+        npcThread.setDaemon(true);
+        npcThread.start();
     }
     
     /**
