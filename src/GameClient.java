@@ -210,7 +210,6 @@ public void createAccount(){
     private void login(){
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
-
         try{
             do{
                 System.out.println("Please enter your username");
