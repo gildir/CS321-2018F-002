@@ -2,6 +2,9 @@
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+/* START 405_ignore */
+import java.util.ArrayList;
+/* END 405_ignore */
 
 /**
  *
@@ -14,12 +17,20 @@ public class Player {
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
-
+    /* START 405_ignore variables*/
+    private ArrayList<String> ignoreList;
+    private ArrayList<String> ignoredByList;
+    /* END 405_ignore variables*/
+	
     public Player(String name) {
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
+		/* START 405_ignore*/
+        this.ignoreList = new ArrayList<String>();
+        this.ignoredByList = new ArrayList<String>();
+        /* END 405_ignore  */
     }
     
     public void turnLeft() {
@@ -126,4 +137,33 @@ public class Player {
     public String toString() {
         return "Player " + this.name + ": " + currentDirection.toString();
     }
+	
+	/* START 405_ignore */
+    public void ignorePlayer(String name) {
+		ignoreList.add(name);
+    }
+    
+    public void addIgnoredBy( String name) {
+		ignoredByList.add(name);
+    }
+
+    public boolean searchIgnoredBy(String name) {
+    	int listSize = ignoredByList.size();
+		for( int x = 0; x < listSize; x++){
+			if( name.equals(ignoredByList.get(x)))
+				return true;
+		}	
+		return false;
+    }
+
+    public boolean searchIgnoreList(String name) {
+    	int listSize = ignoreList.size();
+		for( int x = 0; x < listSize; x++){
+			if( name.equals(ignoreList.get(x)))
+				return true;
+		}
+		return false;
+    }
+    /* END 405_ignore */
+
 }

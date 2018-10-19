@@ -54,7 +54,8 @@ public class GameClient {
         System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
         System.out.println("  LISTPLAYERS   - List all the players in the world");
         System.out.println("  WHISPER player message - Says 'message' to specified 'player'.");
-        System.out.println("  LEFT          - Turns your player left 90 degrees.");
+        System.out.println("  IGNORE player - ignore messages and whispers from 'player'.");       
+		System.out.println("  LEFT          - Turns your player left 90 degrees.");
         System.out.println("  RIGHT         - Turns your player right 90 degrees.");
         System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
@@ -205,6 +206,18 @@ public class GameClient {
                             }
                     } //end of WHISPER case
                     break;
+							/* START 405_ignore */
+                case "IGNORE":
+                    if(tokens.isEmpty()) {
+                        System.err.println("You need to specify a player.");
+                    }else if(tokens.size()>1) {
+                        System.err.println("You can only ignore one player at a time.");
+					}
+                    else {
+                        System.out.println( remoteGameInterface.ignore( this.playerName, tokens.remove(0) ) );
+                    }
+                    break;
+				/* START 405_ignore */
                 case "MOVE":
                     if(tokens.isEmpty()) {
                         System.err.println("You need to provide a distance in order to move.");

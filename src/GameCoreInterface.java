@@ -96,5 +96,15 @@ public interface GameCoreInterface {
      * @param name Name of the player to leave
      * @return Player that was just removed.
      */    
-    public Player leave(String name);    
+    public Player leave(String name); 
+
+    /* START 405_ignore */
+    /**
+     * Ignores player messages and whispers
+     * @param name Name of the player ignoring
+     * @param ignorePlayerName Name of player being ignored
+     * @return Message showing success.
+     */    
+    public String ignore(String name, String ignorePlayerName);
+    /* END 405_ignore */	
 }

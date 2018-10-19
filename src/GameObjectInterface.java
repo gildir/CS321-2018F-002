@@ -96,5 +96,16 @@ public interface GameObjectInterface extends Remote {
      * @param name Name of the player to leave
      * @throws RemoteException 
      */    
-    public void leave(String name) throws RemoteException;       
+    public void leave(String name) throws RemoteException;
+
+	/* START 405_ignore */
+     /**
+     * update ignore and ignoredBy lists, depending on player
+     * @param name Name of the player performing ignore
+     * @param ignorePlayerName Name of the player being ignored
+     * @return Message with success/failure
+     * @throws RemoteException
+     */    
+    public String ignore(String name, String ignoreName) throws RemoteException;
+	/* START 405_ignore */   	
 }

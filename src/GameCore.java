@@ -60,7 +60,8 @@ public class GameCore implements GameCoreInterface {
     @Override
     public void broadcast(Player player, String message) {
         for(Player otherPlayer : this.playerList) {
-            if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()) {
+            if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()
+			    && !player.searchIgnoredBy( otherPlayer.getName() )) {	// 405_ignore, don't broadcast to players ignoring you
                 otherPlayer.getReplyWriter().println(message);
             }
         }
@@ -74,7 +75,8 @@ public class GameCore implements GameCoreInterface {
     */
     @Override
     public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
-        if(sendingPlayer != receivingPlayer) {
+        if(sendingPlayer != receivingPlayer
+			&& !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
             receivingPlayer.getReplyWriter().println(message);
         }
     }
@@ -355,5 +357,36 @@ public class GameCore implements GameCoreInterface {
             return player;
         }
         return null;
-    }       
+    }
+
+    /* START 405_ignore */
+    /**
+     * Update ignore and ignoredBy lists, depending on player
+     * @param name Name of player committing ignore
+     * @param name Name of player being ignored
+     * @return Message showing succiess/failure
+     */
+    @Override
+    public String ignore(String name, String ignoreName) {
+		if( name.equals(ignoreName) )
+			return "You can't ignore yourself.";
+	
+		//verify player being ignored exists
+		Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
+		if( ignoredPlayer == null )
+			return "Player " + ignoreName + "is not in the game.";
+	
+		Player thisPlayer = this.playerList.findPlayer(name);
+		//verify player is not already in ignore list
+		if( thisPlayer.searchIgnoreList(ignoreName) )
+			return "Player " + ignoreName + " is in ignored list.";
+
+		//add ignoreName to ignore list
+		thisPlayer.ignorePlayer(ignoreName);
+
+		//add ignoring player to ignored players ignoredBy list
+		ignoredPlayer.addIgnoredBy(name);
+		return ignoreName + " added to ignore list.";
+    }  
+    /* STOP 405_ignore */	
 }
