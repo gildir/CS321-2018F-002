@@ -1,5 +1,5 @@
 import java.util.LinkedList;
-
+import java.util.Random;
 /**
  *
  * @author Kevin
@@ -86,6 +86,11 @@ public class Room {
             }
         }
         return 0; 
+    }
+    
+    public Exit randomExit(){
+      int index = new Random().nextInt(getExitsList().size());
+      return getExitsList().get(index);
     }
     
     public String getDescription() {
