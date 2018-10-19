@@ -1,1 +1,1 @@
-java -Djava.security.policy=game.policy GameClient localhost $0
+java -Djava.security.policy=game.policy GameClient localhost
