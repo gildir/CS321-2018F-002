@@ -57,6 +57,7 @@ public class GameClient {
         System.out.println("  MOVE distance    - Tries to walk forward <distance> times.");
         System.out.println("  PICKUP object    - Tries to pick up an object in the same area.");
         System.out.println("  DROPOFF object   - Drop off object from player inventory.");
+        System.out.println("  OFFERITEM player object - Offer 'player' 'object' from your inventory.");
         System.out.println("  INVENTORY        - Shows you what objects you have collected.");
         System.out.println("  QUIT             - Quits the game.");
         System.out.println();
