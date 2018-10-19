@@ -1,6 +1,6 @@
 
 
-
+import java.util.*;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,11 +32,11 @@ public class GameCore implements GameCoreInterface {
                 Random rand = new Random();
                 Room room;
                 Item object;
-                Item[] objects = {new Item("Flower", 0.1, 0.0), new Item("Textbook", 4.8, 300), new Item("Phone", 0.3, 100), new Item("Newspaper", 0.6, 0)};
+                ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
                         Thread.sleep(rand.nextInt(60000));
-                        object = objects[rand.nextInt(objects.length)];
+                        object = objects.get(rand.nextInt(objects.size()));
                         room = map.randomRoom();
                         room.addObject(object);
                         
