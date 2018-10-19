@@ -53,10 +53,13 @@ public class GameCore implements GameCoreInterface {
     }
     
     /**
-     * Basic getter method for GameCore.
+     * Basic getter methods for GameCore.
      */ 
     public PlayerList getPlayerList(){
       return this.playerList;
+    }
+    public Map getMap(){
+      return this.map;
     }
     
     /**
