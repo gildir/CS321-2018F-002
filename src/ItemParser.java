@@ -1,8 +1,17 @@
 import java.util.*;
 import java.io.*;
-
+/**
+ * This class parses a csv file and creates an array of item objects. 
+ *
+ */
 public class ItemParser
 {
+	/**
+	 * This method converts a csv file and returns an ArrayList of items. 
+	 * @param fileName contains the path to a csv file
+	 * @return ArrayList<Item> an array list of the items in the csv file
+	 *
+	 */
 	public static ArrayList<Item> parse(String fileName)
 	{
 		File itemListFile = new File(fileName);
