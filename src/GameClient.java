@@ -41,11 +41,15 @@ public class GameClient {
     protected String playerName;
     protected String playerPassword;
     
+    /**
+     * Time Class keeps track of the time and ensures the user has not exceeded the 5 minute limit of inactivity
+     * 
+     * Use new Time() to reset timer after each input
+     */
     private class Time{
         Timer timer;  
 
         public Time(){
-            timer.cancel();
             timer = new Timer();
             timer.schedule(new timeoutTask(), 300000);
         }
@@ -110,7 +114,7 @@ public class GameClient {
            
             boolean acctConf;
             try{
-                do{
+                do{ //do-while block ensure correct input is entered to direct user through login
                     acctConf = true;
                     System.out.println("Enter 1 to login with a previously created account");
                     System.out.println("Enter 2 to create an account");
@@ -155,64 +159,71 @@ public class GameClient {
         }        
     }    
 
-public void createAccount(){
-    InputStreamReader keyboardReader = new InputStreamReader(System.in);
-    BufferedReader keyboardInput = new BufferedReader(keyboardReader);
-    boolean nameSat = false; boolean nameConf = false;
-    try{
-    do{
-        do{
-            System.out.println("Please enter a username");
-            System.out.print("> ");
-            this.playerName = keyboardInput.readLine(); new Time();
-            if(PlayerDatabase.isPlayer(playerName))
-            {
-                System.out.println("Username already exits... Please enter a new username\n");
-                nameSat = false;
-            }
-            else nameSat = true;
-        }while(!nameSat);
-        nameConf = false;
-        while(!nameConf){
-            new Time(); 
-            System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this username?");
-            System.out.print("(Y/N) > ");
-            String entry = keyboardInput.readLine(); new Time();
-            if(entry.equalsIgnoreCase("Y")) {
-            // Attempt to join the server
-                if(remoteGameInterface.joinGame(this.playerName) == false) {
-                    System.out.println("I'm sorry, " + this.playerName + ", but someone else is already logged in with your name. Please pick another.");
-                    nameSat = false; nameConf = true;
+    /**
+     * If the user does not have an account, this method will help the user create a username and password
+     * that will be stored in the database
+     */
+    public void createAccount(){
+        InputStreamReader keyboardReader = new InputStreamReader(System.in);
+        BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+        boolean nameSat = false; boolean nameConf = false;
+        try{
+        do{//do-while block will re-prompt user to enter a username if needed
+            do{//do-while block ensure username entered is unique
+                System.out.println("Please enter a username");
+                System.out.print("> ");
+                this.playerName = keyboardInput.readLine(); new Time();
+                if(PlayerDatabase.isPlayer(playerName))
+                {
+                    System.out.println("Username already exits... Please enter a new username\n");
+                    nameSat = false;
+                }
+                else nameSat = true;
+            }while(!nameSat);
+            nameConf = false;
+            while(!nameConf){ //while loop will repeat if user does not enter a proper entry to confirm name
+                new Time(); 
+                System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this username?");
+                System.out.print("(Y/N) > ");
+                String entry = keyboardInput.readLine(); new Time();
+                if(entry.equalsIgnoreCase("Y")) {
+                // Attempt to join the server
+                    if(remoteGameInterface.joinGame(this.playerName) == false) {
+                        System.out.println("I'm sorry, " + this.playerName + ", but someone else is already logged in with your name. Please pick another.");
+                        nameSat = false; nameConf = true;
+                    }
+                    else{
+                        nameConf = true; nameSat = true;
+                    }
+                }
+                else if (entry.equalsIgnoreCase("N")){
+                    nameConf = true; nameSat = false;
                 }
                 else{
-                    nameConf = true; nameSat = true;
+                    nameConf = false; //Will reprompt confirmation
                 }
             }
-            else if (entry.equalsIgnoreCase("N")){
-                nameConf = true; nameSat = false;
-                //continue;
-            }
-            else{
-                nameConf = false; //Will reprompt confirmation
-            }
-        }
-        }while(!nameSat); //will repeat until broken out
+            }while(!nameSat); //will repeat until broken out
 
-        System.out.println("Please enter a password.");
-        System.out.print("> ");
-        String password = keyboardInput.readLine(); new Time();
-        PlayerDatabase.addPlayer(this.playerName, password);
-    }catch (IOException ex) {
-        System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
-        System.exit(-1);
+            //User creates a password that can be used to log in 
+            System.out.println("Please enter a password.");
+            System.out.print("> ");
+            String password = keyboardInput.readLine(); new Time();
+            PlayerDatabase.addPlayer(this.playerName, password);
+        }catch (IOException ex) {
+            System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
+            System.exit(-1);
+        }
     }
- }
-            
+           
+    /**
+     * Method helps the user login with their username and password
+     */
     private void login(){
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         try{
-            do{
+            do{//loop repeats if an active username is entered
                 System.out.println("Please enter your username");
                 System.out.print("> ");
                 this.playerName = keyboardInput.readLine(); new Time();
@@ -221,10 +232,10 @@ public void createAccount(){
                 }
                 //if username already exists, ask user to enter new name
                 else if(PlayerDatabase.isPlayer(playerName)) break;
-            }while(true);
+            }while(true); //exits the loop only through a break
            
             boolean conf = false;
-            while(!conf){
+            while(!conf){ //While loop verifies user password
                 System.out.println("Please enter your password");
                 System.out.print("> ");
                 this.playerPassword = keyboardInput.readLine(); new Time();
@@ -305,7 +316,7 @@ public void createAccount(){
                 case "INVENTORY":
                     System.out.println(remoteGameInterface.inventory(this.playerName));
                     break;                                                            
-                case "QUIT":
+                case "QUIT": 
                     remoteGameInterface.leave(this.playerName);
                     runListener = false;
                     break;

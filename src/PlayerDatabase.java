@@ -76,10 +76,15 @@ public class PlayerDatabase {
       catch(IOException e) {
          return false;
       }
-
       return false;
     }
     
+    /**
+     * Checks if the password for the given user matches the the password put in
+     * @param name
+     * @param password
+     * @return true if the passwords match
+     */
     public static boolean isPassword(String name, String password){
         try(FileInputStream fis = new FileInputStream(DATABASE_FILE);
           InputStreamReader isr = new InputStreamReader(fis);
@@ -97,11 +102,9 @@ public class PlayerDatabase {
                     return true;
              }
 			 }
-		}
-      catch(IOException e) {
+		}catch(IOException e) {
          return false;
       }
-
       return false;
     }
 }
