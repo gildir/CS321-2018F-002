@@ -16,7 +16,7 @@ public class Ghoul extends NPC {
     public static final int MAXANGER = 100;
 
     Ghoul(){
-        super.NPC(String name, int currentRoom, long aiPeriodSeconds);
+        super("Ghoul", 1, 0);
     }
 
 

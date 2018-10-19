@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
-    private final ArrayList npcList;
+    private final NPCList npcList;
     
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
@@ -27,6 +27,7 @@ public class GameCore implements GameCoreInterface {
         // Generate the game map.
         map = new Map();
         playerList = new PlayerList();
+        npcList = new NPCList();
         
         Thread objectThread = new Thread(new Runnable() {
             @Override
@@ -53,23 +54,22 @@ public class GameCore implements GameCoreInterface {
         objectThread.setDaemon(true);
         objectThread.start();
 
-        npcList = Arrays.asList(new Ghoul(this, "Larry", getRandomRoom(), 60),
-		                          new Ghoul(this, "Bob", getRandomRoom(), 90),
-	                             new Ghost(this, "Casper", getRandomRoom(), 20));
+       // npcList = Arrays.asList(new Ghoul(this, "Larry", .getRandomRoom(), 60),
+         //                   new Ghoul(this, "Bob", getRandomRoom(), 90),
+         //                     new Ghost(this, "Casper", getRandomRoom(), 20));
 
         Thread npcThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true) {
-                    for (NPC npc : npcList)
-                        npc.tryAi();
+                  //  for (NPC npc : npcList)
+                    //    npc.tryAi();
                 }
             }
         });
         npcThread.setDaemon(true);
         npcThread.start();
     }
-    
     /**
      * Basic getter methods for GameCore.
      */ 
@@ -79,7 +79,9 @@ public class GameCore implements GameCoreInterface {
     public Map getMap(){
       return this.map;
     }
-    
+    public NPCList getNPCList(){
+      return this.npcList;
+    }
     /**
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.

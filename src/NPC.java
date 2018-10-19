@@ -61,7 +61,31 @@ abstract class NPC {
         break;                
     }
   }
+  /**
+   * Turns the player left.
+   * @param name NPC Name
+   * @return String message of the NPC turning left.
+   */
+  public void left(String name) {
+    NPC npc = object.getNPCList().findNPC(name);
+    if(npc != null) {
+      // Compel the player to turn left 90 degrees.
+      npc.turnLeft();
+    }
+  }
   
+  /**
+   * Turns the player right.
+   * @param name Player Name
+   * @return String message of the player turning right.
+   */
+  public void right(String name) {
+    NPC npc = object.getNPCList().findNPC(name);
+    if(npc != null) {
+      // Compel the player to turn left 90 degrees.
+      npc.turnRight();
+    }
+  }    
 //Simple getters and setters
   public String getName(){
     return this.name;
@@ -94,22 +118,16 @@ abstract class NPC {
     return this.getName() + ": " + currentDirection.toString();
   }
   
-  private void broadcast(String message) {
+  public void broadcast(String message) {
     object.broadcast(object.getMap().findRoom(currentRoom), message);
   }
   
 // AI movement methods
   
-  protected int getRandomRoom(){
-    int randomRoom = 0;
-//exits.get(new Random().nextInt(exits.size())).getRoom();
-    return randomRoom;
-  }
-  
   protected void moveRandomly() {
     synchronized (this) {
-      setCurrentRoom(getRandomRoom());
-      //exits = new Room(currentRoom, "", "").getExitsList();
+      setCurrentRoom(new Random().nextInt(object.getMap().findRoom(currentRoom).getExitsList().size()));
+      broadcast(this.getName() + " has moved to the " + this.getCurrentRoom());
     }
   }
   
