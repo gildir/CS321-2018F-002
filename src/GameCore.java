@@ -4,6 +4,7 @@
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.LinkedList;
 
 /**
  *
@@ -304,30 +305,31 @@ public class GameCore implements GameCoreInterface {
      * @return A message showing success.
      *
      */
-    public String offerItem(Player player, String nameOffered, String target){
+    public String offerItem(String playerName, String nameOffered, String target){
+        Player player = this.playerList.findPlayer(playerName);
     	Player playerOffered = this.playerList.findPlayer(nameOffered);
-	int hasItem = 0;
-	if(player != null){
-        	LinkedList<Item> playerInventory = player.getCurrentInventory();
-		if(playerOffered != null) {
-		    for(Item obj : playerInventory){
-			if(obj.getItemName().equalsIgnoreCase(target)){
-				hasItem = 1;
-				break;
-			}
-		    } 
-	            if(hasItem) {
-			// figure out how to message specific players
-	                return "You just offered " + nameOffered + " a " + target + " from your inventory.";
-	            }
-	            else {
-	                return "You just tried to offer " + nameOffered + " a " + target + ", but you don't have one.";
-	            }
-	        }
-	        else {
-	            return "You just tried to offer " + nameOffered + " a " + target + ", but " + nameOffered + " is not here.";
-		}
-	}
+        boolean hasItem = false;
+        if(player != null){
+            LinkedList<Item> playerInventory = player.getCurrentInventory();
+            if(playerOffered != null) {
+                for(Item obj : playerInventory){
+                    if(obj.getItemName().equalsIgnoreCase(target)){
+                        hasItem = true;
+                        break;
+                    }
+                } 
+                if(hasItem) {
+                    playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
+                    return "You just offered " + nameOffered + " a " + target + " from your inventory.";
+                }
+                else {
+                    return "You just tried to offer " + nameOffered + " a " + target + ", but you don't have one.";
+                }
+            }
+            else {
+                return "You just tried to offer " + nameOffered + " a " + target + ", but " + nameOffered + " is not here.";
+            }
+        }
     	else{
 	    return null;
 	}

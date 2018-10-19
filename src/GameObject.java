@@ -144,8 +144,21 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     @Override
     public String inventory(String name) throws RemoteException {
         return core.inventory(name);
-    }    
-    
+    }
+
+    /**
+     * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
+     * @param player The player offering the item
+     * @param nameOffered Name of the person being offered an item
+     * @param target The name of the item to offer
+     * @return A message showing success.
+     *
+     */
+    @Override
+    public String offerItem(String playerName, String nameOffered, String target) throws RemoteException {
+        return core.offerItem(playerName, nameOffered, target);
+    }
+
      /**
      * Leaves the game.
      * @param name Name of the player to leave
