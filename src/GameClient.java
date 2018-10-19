@@ -236,6 +236,11 @@ public class GameClient {
                 case "SCISSORS":
                     remoteGameInterface.scissors(this.playerName);
                     break;
+				
+				// Added by Brendan
+				case "CHECK-BOARD":
+					remoteGameInterface.checkBoard(this.playerName);
+					break;
             }
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);

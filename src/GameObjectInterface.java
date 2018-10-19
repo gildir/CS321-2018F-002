@@ -96,6 +96,9 @@ public interface GameObjectInterface extends Remote {
     public void rock(String player) throws RemoteException;
     public void paper(String player) throws RemoteException;
     public void scissors(String player) throws RemoteException;
+	
 //Rock Paper Scissors Battle Code Here---------------------------------
 
+	// Added by Brendan
+    public void checkBoard(String player) throws RemoteException;
 }
