@@ -194,13 +194,13 @@ public class GameClient {
                         System.err.println("You need to provide a player to offer an item.");
                     }
                     if(!tokens.isEmpty()) {
-                        tokens.remove(0);
+                        Player offeredPlayer = tokens.remove(0);
                     }
                     if(tokens.isEmpty()) {
                         System.err.println("You need to provide an item to offer.");
                     }
                     else {
-                        System.out.println(remoteGameInterface.offerItems(this.playerName, tokens.remove(0)));
+                        System.out.println(remoteGameInterface.offerItems(this.playerName, offeredPlayer, tokens.remove(0)));
                     }
                     break;
                 case "DROPOFF":
