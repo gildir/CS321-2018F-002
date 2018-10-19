@@ -1,33 +1,40 @@
-//@author: Thomas Washington
-//Team 6
 
 import java.time.Instant;
 import java.util.*;
 
+/**
+ * @author Thomas Washington
+ * @author Kevin Rickard
+ */
 
+/**
+ * Basic NPC, which moves on its own.
+ */
 abstract class NPC {
-  
-//Basic fields for NPC, which movoes on its own.
+
   private String name;
   private int currentRoom; // initialized via constructor
   private int pastRoom;
+  // TODO remove plz
   private Direction currentDirection;
+
   private long lastAiTime;
   private long aiPeriodSeconds;
-  private GameCore object;
-  
-  public NPC(String name){
-    this.name = name;
-    this.currentRoom = 1;
-    this.currentDirection = Direction.NORTH;
-  }
-  public NPC(String name, int currentRoom, long aiPeriodSeconds){
+  private GameCore gameCore;
+
+  public NPC(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds) {
     this.name = name;
     this.currentRoom = currentRoom;
+    this.pastRoom = -1;
+    // TODO remove plz
     this.currentDirection = Direction.NORTH;
+
+    this.lastAiTime = Instant.now().getEpochSecond();
     this.aiPeriodSeconds = aiPeriodSeconds;
+    this.gameCore = gameCore;
   }
-  
+
+  // TODO remove plz
   public void turnLeft() {
     switch(this.currentDirection.toString()) {
       case "North":
@@ -44,7 +51,8 @@ abstract class NPC {
         break;                
     }
   }
-  
+
+  // TODO remove plz
   public void turnRight() {
     switch(this.currentDirection.toString()) {
       case "North":
@@ -61,54 +69,32 @@ abstract class NPC {
         break;                
     }
   }
-  /**
-   * Turns the player left.
-   * @param name NPC Name
-   * @return String message of the NPC turning left.
-   */
-  public void left(String name) {
-    NPC npc = object.getNPCList().findNPC(name);
-    if(npc != null) {
-      // Compel the player to turn left 90 degrees.
-      npc.turnLeft();
-    }
-  }
-  
-  /**
-   * Turns the player right.
-   * @param name Player Name
-   * @return String message of the player turning right.
-   */
-  public void right(String name) {
-    NPC npc = object.getNPCList().findNPC(name);
-    if(npc != null) {
-      // Compel the player to turn left 90 degrees.
-      npc.turnRight();
-    }
-  }    
-//Simple getters and setters
+
   public String getName(){
     return this.name;
   }
+
   public int getPastRoom(){
     return this.pastRoom;
   }
   
-  protected void setCurrentRoom(int room){
-    int temp = currentRoom;
-    
-    this.currentRoom = room;
-    pastRoom = temp;
+  protected void setCurrentRoom(int newRoom){
+      synchronized (this) {
+          pastRoom = currentRoom;
+          currentRoom = newRoom;
+      }
   }
   
   public int getCurrentRoom(){
     return this.currentRoom;
   }
-  
+
+  // TODO remove plz
   public String getCurrentDirection() {
     return this.currentDirection.name();
   }
-  
+
+  // TODO remove plz
   public Direction getDirection() {
     return this.currentDirection;
   }
@@ -118,21 +104,25 @@ abstract class NPC {
     return this.getName() + ": " + currentDirection.toString();
   }
   
-  public void broadcast(String message) {
-    object.broadcast(object.getMap().findRoom(currentRoom), message);
+  protected void broadcast(String message) {
+    gameCore.broadcast(gameCore.getMap().findRoom(currentRoom), message);
   }
-  
-// AI movement methods
-  
+
+  /* TODO fix moveRandomly. This will currently setCurrentRoom to a random number in the range of the size of the exits list?
+   *
+   * I would suggest making a method in the Room class that returns a random exit object when given a current room.
+   *
+   * The exit object returned from that call will include everything you need to output proper broadcast messages
+   * before and after you call setCurrentRoom
+   */
   protected void moveRandomly() {
     synchronized (this) {
-      setCurrentRoom(new Random().nextInt(object.getMap().findRoom(currentRoom).getExitsList().size()));
+      setCurrentRoom(new Random().nextInt(gameCore.getMap().findRoom(currentRoom).getExitsList().size()));
       broadcast(this.getName() + " has moved to the " + this.getCurrentRoom());
     }
   }
   
   public boolean tryAi() {
-    // synchronized(this)
     final long secondsSinceLastAi = Instant.now().getEpochSecond() - lastAiTime;
     if (secondsSinceLastAi > aiPeriodSeconds) {
       doAi();
@@ -143,7 +133,8 @@ abstract class NPC {
   }
   
   protected void doAi() {
-    moveRandomly();
+      synchronized (this) {
+          moveRandomly();
+      }
   }
-  
 }

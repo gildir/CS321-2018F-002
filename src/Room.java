@@ -37,12 +37,16 @@ public class Room {
     public int getId() {
         return this.id;
     }
+
     public Room getRoom(int id){
       return this;
     }
+
+    // TODO remove, breaks information hiding principle unnecessarily
     public LinkedList<Exit> getExitsList(){
       return this.exits;
     }
+
     public String getExits() {
         String result = "";
         for(Exit exit : this.exits) {
