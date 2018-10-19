@@ -37,7 +37,9 @@ public class Room {
     public int getId() {
         return this.id;
     }
-    
+    public Room getRoom(int id){
+      return this;
+    }
     public LinkedList<Exit> getExitsList(){
       return this.exits;
     }
