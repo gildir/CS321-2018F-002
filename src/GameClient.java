@@ -45,6 +45,7 @@ public class GameClient {
         Timer timer;  
 
         public Time(){
+            timer.cancel();
             timer = new Timer();
             timer.schedule(new timeoutTask(), 300000);
         }
