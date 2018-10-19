@@ -10,6 +10,7 @@ import java.util.LinkedList;
 public class Player {
     private LinkedList<String> currentInventory;
     private String name;
+    private String password;
     private int currentRoom;
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
@@ -19,6 +20,7 @@ public class Player {
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
         this.name = name;
+        this.password = password;
         this.currentInventory = new LinkedList<>();
     }
     
@@ -57,12 +59,18 @@ public class Player {
         }
     }
     
+
+
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPassword(){
+        return this.password;
     }
 
     public LinkedList<String> getCurrentInventory() {

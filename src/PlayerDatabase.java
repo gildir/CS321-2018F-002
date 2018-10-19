@@ -69,8 +69,7 @@ public class PlayerDatabase {
              
              //checks if the username on this line is equal to the given username
 				 if(info[0].equals(name)) {
-               System.out.println("Player name taken.");
-               return true;
+                    return true;
              }
 			 }
 		}
@@ -79,5 +78,30 @@ public class PlayerDatabase {
       }
 
       return false;
-	}
+    }
+    
+    public static boolean isPassword(String name, String password){
+        try(FileInputStream fis = new FileInputStream(DATABASE_FILE);
+          InputStreamReader isr = new InputStreamReader(fis);
+          BufferedReader br = new BufferedReader(isr)) {
+          
+          //reads database line by line
+          String line;
+			 while((line = br.readLine()) != null) {
+             //stores username and password from current line into an array
+				 String[] info = line.split(",");
+             
+             //checks if the username on this line is equal to the given username
+			if(info[0].equals(name)) {
+                if(info[1].equals(password))
+                    return true;
+             }
+			 }
+		}
+      catch(IOException e) {
+         return false;
+      }
+
+      return false;
+    }
 }

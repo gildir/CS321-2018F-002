@@ -39,6 +39,7 @@ public class GameClient {
     
     // Members related to the player in the game.
     protected String playerName;
+    protected String playerPassword;
     
     private class Time{
         Timer timer;  
@@ -70,7 +71,6 @@ public class GameClient {
      */
     public GameClient(String host) {
         this.runGame = true;
-        boolean nameSat = false;
         new Time();
         
         System.out.println("Welcome to the client for an RMI based online game.\n");
@@ -106,56 +106,27 @@ public class GameClient {
             // Start by remotely executing the joinGame method.  
             //   Lets the player choose a name and checks it with the server.  If the name is
             //    already taken or the user doesn't like their input, they can choose again.
-            while(nameSat == false) {
-            	new Time(); 
-                try {
-                    boolean nameConf = true; //Name Confirmation
-                    new Time();
-
-                    System.out.println("Please enter a name for your player.");
+           
+            boolean acctConf;
+            try{
+                do{
+                    acctConf = true;
+                    System.out.println("Enter 1 to login with a previously created account");
+                    System.out.println("Enter 2 to create an account");
                     System.out.print("> ");
-                    this.playerName = keyboardInput.readLine();
-                    //if username already exists, ask user to enter new name
-                    if(PlayerDatabase.isPlayer(playerName))
-                        continue;
-                 do{
-
-                    System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this name?");
-                    System.out.print("(Y/N) > ");
-                    String entry = keyboardInput.readLine();
-                    if(entry.equalsIgnoreCase("Y")) {
-                        // Attempt to join the server
-                        if(remoteGameInterface.joinGame(this.playerName) == false) {
-                            System.out.println("I'm sorry, " + this.playerName + ", but someone else is already logged in with your name. Please pick another.");
-                        }
-                        else {
-                            nameSat = true;
-                        }
-                        nameConf = true;
-                    }
-                    else if (entry.equalsIgnoreCase("N")){
-                        nameConf = true; nameSat = false; //Will reprompt to enter name
-                        continue;
-                    }
+                    String acct = keyboardInput.readLine(); new Time();
+                    
+                    if(acct.equals("1")) login(); //User already has an account
+                    else if(acct.equals("2")) createAccount();
                     else{
-                        nameConf = false; nameSat = true; //Will reprompt confirmation
-                        continue;
+                        System.out.println("Please enter a correct input\n");
+                        acctConf = false;
                     }
-
-                    System.out.println("Please enter a password.");
-                    System.out.print("> ");
-					new Time();
-                    String password = keyboardInput.readLine();
-                    PlayerDatabase.addPlayer(this.playerName, password);
-                }while(!nameConf);
-                } catch (IOException ex) {
-                    System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
-                    System.exit(-1);
-                }
-
-            
-            }
-
+                }while(acctConf == false);
+            }catch (IOException ex) {
+                System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
+                System.exit(-1);
+            }   
             // Player has joined, now start up the remote socket.
             this.runListener = true;
             remoteOutputThread = new Thread(new GameClient.ReplyRemote(host));
@@ -181,8 +152,93 @@ public class GameClient {
             System.err.println("[CRITICAL ERROR] Code: " + re);
             System.exit(-1);
         }        
+    }    
+
+public void createAccount(){
+    InputStreamReader keyboardReader = new InputStreamReader(System.in);
+    BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+    boolean nameSat = false; boolean nameConf = false;
+    try{
+    do{
+        do{
+            System.out.println("Please enter a username");
+            System.out.print("> ");
+            this.playerName = keyboardInput.readLine(); new Time();
+            if(PlayerDatabase.isPlayer(playerName))
+            {
+                System.out.println("Username already exits... Please enter a new username\n");
+                nameSat = false;
+            }
+            else nameSat = true;
+        }while(!nameSat);
+        nameConf = false;
+        while(!nameConf){
+            new Time(); 
+            System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this username?");
+            System.out.print("(Y/N) > ");
+            String entry = keyboardInput.readLine(); new Time();
+            if(entry.equalsIgnoreCase("Y")) {
+            // Attempt to join the server
+                if(remoteGameInterface.joinGame(this.playerName) == false) {
+                    System.out.println("I'm sorry, " + this.playerName + ", but someone else is already logged in with your name. Please pick another.");
+                    nameSat = false; nameConf = true;
+                }
+                else{
+                    nameConf = true; nameSat = true;
+                }
+            }
+            else if (entry.equalsIgnoreCase("N")){
+                nameConf = true; nameSat = false;
+                //continue;
+            }
+            else{
+                nameConf = false; //Will reprompt confirmation
+            }
+        }
+        }while(!nameSat); //will repeat until broken out
+
+        System.out.println("Please enter a password.");
+        System.out.print("> ");
+        String password = keyboardInput.readLine(); new Time();
+        PlayerDatabase.addPlayer(this.playerName, password);
+    }catch (IOException ex) {
+        System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
+        System.exit(-1);
     }
-    
+ }
+            
+    private void login(){
+        InputStreamReader keyboardReader = new InputStreamReader(System.in);
+        BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+
+        try{
+            do{
+                System.out.println("Please enter your username");
+                System.out.print("> ");
+                this.playerName = keyboardInput.readLine(); new Time();
+                if(remoteGameInterface.joinGame(this.playerName) == false) {
+                    System.out.println("This player is already logged in");
+                }
+                //if username already exists, ask user to enter new name
+                else if(PlayerDatabase.isPlayer(playerName)) break;
+            }while(true);
+           
+            boolean conf = false;
+            while(!conf){
+                System.out.println("Please enter your password");
+                System.out.print("> ");
+                this.playerPassword = keyboardInput.readLine(); new Time();
+                if(PlayerDatabase.isPassword(playerName, playerPassword)){
+                    System.out.println("Login Successful");
+                    conf = true;
+                }
+            }
+        }catch (IOException ex) {
+            System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
+            System.exit(-1);
+        }    
+    }
+
     /** 
      * Simple method to parse the local input and remotely execute the RMI commands.
      * @param input 
