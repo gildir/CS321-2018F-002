@@ -19,8 +19,15 @@ public class Ghoul extends NPC {
         super.NPC(String name, int currentRoom, long aiPeriodSeconds);
     }
 
-
     private void decreaseAnger(){
+
+        if (anger <= 0){
+            anger = 0;
+        }
+        else{
+
+            anger -= getRandomNumberInRange(1,5);
+        }
         
     }
 
@@ -52,18 +59,28 @@ public class Ghoul extends NPC {
     }
     
 
-    // returns the anger level of the ghoul out of the MAXANGER
+    // returns the anger level of the ghoul
     public int getAnger(){
 
         // positive anger
         if (anger > 0){
-            return (anger/MAXANGER);
+            return (anger);
         }
         // anger <= 0
         else{
             return 0;
         }
         
+    }
+
+    private static int getRandomNumberInRange(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
     }
 
 }
