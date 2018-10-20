@@ -1,7 +1,9 @@
 
 
-
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -12,9 +14,10 @@ import java.util.logging.Logger;
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
+    private final Set<NPC> npcSet;
     
     /**
-     * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
+     * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
      * 
      * This is the main core that both the RMI and non-RMI based servers will interface with.
@@ -23,8 +26,24 @@ public class GameCore implements GameCoreInterface {
         
         // Generate the game map.
         map = new Map();
-        
         playerList = new PlayerList();
+        npcSet = new HashSet<>();
+
+        // Initialize starting NPCs
+        npcSet.addAll(Arrays.asList(new Ghoul(),
+                                    new Ghoul()));
+
+        Thread npcThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    for (NPC npc : npcSet)
+                        npc.tryAi();
+                }
+            }
+        });
+        npcThread.setDaemon(true);
+        npcThread.start();
         
         Thread objectThread = new Thread(new Runnable() {
             @Override
@@ -50,15 +69,17 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
     }
-    
     /**
-     * Basic getter method for GameCore.
+     * Basic getter methods for GameCore.
      */ 
     public PlayerList getPlayerList(){
       return this.playerList;
     }
-    
+    public Map getMap(){
+      return this.map;
+    }
     /**
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.

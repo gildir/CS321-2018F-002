@@ -1,81 +1,73 @@
-//@author: Thomas Washington
-//Team 6
 
 import java.time.Instant;
 import java.util.*;
 
+/**
+ * @author Thomas Washington
+ * @author Kevin Rickard
+ */
 
+/**
+ * Basic NPC, which moves on its own.
+ */
 abstract class NPC {
-  
-//Basic fields for NPC, which movoes on its own.
-  private final String name;
+
+  private String name;
   private int currentRoom; // initialized via constructor
   private int pastRoom;
   private long lastAiTime;
   private long aiPeriodSeconds;
-  private Direction currentDirection;
-  private LinkedList<Exit> exits;
-  private GameCore object;
-  
-  public NPC(String name, int currentRoom, long aiPeriodSeconds){
+  private GameCore gameCore;
+
+  public NPC(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds) {
     this.name = name;
     this.currentRoom = currentRoom;
-    this.currentDirection = Direction.NORTH;
-    exits = new Room(currentRoom, "", "").getExitsList();
+    this.pastRoom = -1;
+    this.lastAiTime = Instant.now().getEpochSecond();
     this.aiPeriodSeconds = aiPeriodSeconds;
+    this.gameCore = gameCore;
   }
-  
-//Simple getters and setters
+
   public String getName(){
     return this.name;
-  }
-  public int getPastRoom(){
-    return this.pastRoom;
-  }
-  
-  protected void setCurrentRoom(int room){
-    int temp = currentRoom;
-    this.currentRoom = room;
-    pastRoom = temp;
   }
   
   public int getCurrentRoom(){
     return this.currentRoom;
   }
+  public int getPastRoom(){
+    return this.pastRoom;
+  }
   
+  protected void setCurrentRoom(int newRoom){
+    synchronized (this) {
+      pastRoom = currentRoom;
+      currentRoom = newRoom;
+    }
+  }
   
   @Override
   public String toString() {
     return this.getName();
   }
+  
+  protected void broadcast(String message) {
+    gameCore.broadcast(gameCore.getMap().findRoom(currentRoom), message);
+  }
 
-  private void broadcast(String message) {
-    object.broadcast(currentRoom, message);
-  }
   
-// AI movement methods
-  protected LinkedList<Exit> getCurrentExits(){
-    LinkedList<Exit> exits = new LinkedList<Exit>();
-    
-    for (int i = 0; i < 4; i++){
-      
-    }
-    return exits;
-  }
-  protected int getRandomRoom(){
-    int randomRoom = exits.get(new Random().nextInt(exits.size())).getRoom();
-    return randomRoom;
-  }
-  
+   /* The exit object returned from that call will include everything you need to output proper broadcast messages
+   * before and after you call setCurrentRoom
+   */
   protected void moveRandomly() {
     synchronized (this) {
-      setCurrentRoom(getRandomRoom());
-      exits = getCurrentExits();
+      Exit exit = gameCore.getMap().findRoom(currentRoom).randomExit();
+      broadcast(exit.getMessage());
+      setCurrentRoom(exit.getRoom());
     }
   }
   
   public boolean tryAi() {
-    // synchronized(this)
     final long secondsSinceLastAi = Instant.now().getEpochSecond() - lastAiTime;
     if (secondsSinceLastAi > aiPeriodSeconds) {
       doAi();
@@ -86,7 +78,8 @@ abstract class NPC {
   }
   
   protected void doAi() {
-    moveRandomly();
+      synchronized (this) {
+          moveRandomly();
+      }
   }
-  
 }

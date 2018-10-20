@@ -1,5 +1,5 @@
 import java.util.LinkedList;
-
+import java.util.Random;
 /**
  *
  * @author Kevin
@@ -37,10 +37,16 @@ public class Room {
     public int getId() {
         return this.id;
     }
-    
+
+    public Room getRoom(int id){
+      return this;
+    }
+
+    // TODO remove, breaks information hiding principle unnecessarily
     public LinkedList<Exit> getExitsList(){
       return this.exits;
     }
+
     public String getExits() {
         String result = "";
         for(Exit exit : this.exits) {
@@ -80,6 +86,11 @@ public class Room {
             }
         }
         return 0; 
+    }
+    
+    public Exit randomExit(){
+      int index = new Random().nextInt(getExitsList().size());
+      return getExitsList().get(index);
     }
     
     public String getDescription() {
