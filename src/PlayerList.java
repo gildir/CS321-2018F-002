@@ -21,6 +21,7 @@ public class PlayerList implements Iterable<Player> {
     
     public void addPlayer(Player player) {
         this.playerList.add(player);
+        PlayerDatabase.loginLog(player.getName(), true);
     }
     
     public Player findPlayer(String name) {
