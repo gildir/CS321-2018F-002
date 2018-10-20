@@ -98,9 +98,9 @@ public class PlayerDatabase {
       
       try(FileOutputStream fos = new FileOutputStream(LOG_FILE, true)) {
          if(isLoggingIn)
-            log += " is logging in.\n";
+            log += " logged in.\n";
          else
-            log += " is logging out.\n"; 
+            log += " logged out.\n"; 
          
          //write log message to log file
          fos.write(log.getBytes());
