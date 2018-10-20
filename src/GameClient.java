@@ -58,8 +58,7 @@ public class GameClient {
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY     - Shows you what objects you have collected.");
         System.out.println("  GIFT          - Offer to give another player money.");
-        // allow user to see how much money they have
-        System.out.println("  MONEY         - Shows you how much money you have.");
+        System.out.println("  MONEY         - Shows you how much money you have."); // allow user to see how much money they have
         System.out.println("  QUIT          - Quits the game.");
         System.out.println();
         
@@ -205,10 +204,9 @@ public class GameClient {
                     break;
                 case "INVENTORY":
                     System.out.println(remoteGameInterface.inventory(this.playerName));
-                    break; 
-                // add in the case of printing money 
+                    break;                 
                 case "MONEY":
-                    System.out.println(remoteGameInterface.money(this.playerName));
+                    System.out.println(remoteGameInterface.money(this.playerName)); // add in the case of printing money 
                     break; 
                 case "GIFT":
                 if(tokens.isEmpty()){
