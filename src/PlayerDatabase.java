@@ -20,6 +20,11 @@ public class PlayerDatabase {
     * File name of player database 
     */
    public static final String DATABASE_FILE = "player_database.csv";
+   
+   /*
+    * File name of login/logout log
+    */
+   public static final String LOG_FILE = "login_logout_log.txt";
 	
    /**
     * Adds a player's username and password to the database
@@ -29,7 +34,7 @@ public class PlayerDatabase {
     * @param password Player's password
     * @return true if player is added to database, false otherwise 
     */
-	public static boolean addPlayer(String name, String password){
+   public static boolean addPlayer(String name, String password){
    
       //build comma-seperated inputs for database with user's name and password
       try(FileOutputStream fos = new FileOutputStream(DATABASE_FILE, true)) {
@@ -46,9 +51,9 @@ public class PlayerDatabase {
          e.printStackTrace();
          return false;
       }
-
-		return true;
-	}
+   
+      return true;
+   }
 	
    /**
     * Checks if username already exists in the database
@@ -56,28 +61,55 @@ public class PlayerDatabase {
     * @param name The username to check for in the database
     * @return true if username exists, false otherwise
     */
-	public static boolean isPlayer(String name) {
+   public static boolean isPlayer(String name) {
       try(FileInputStream fis = new FileInputStream(DATABASE_FILE);
           InputStreamReader isr = new InputStreamReader(fis);
           BufferedReader br = new BufferedReader(isr)) {
           
           //reads database line by line
-          String line;
-			 while((line = br.readLine()) != null) {
+         String line;
+         while((line = br.readLine()) != null) {
              //stores username and password from current line into an array
-				 String[] info = line.split(",");
+            String[] info = line.split(",");
              
              //checks if the username on this line is equal to the given username
-				 if(info[0].equals(name)) {
+            if(info[0].equals(name)) {
                System.out.println("Player name taken.");
                return true;
-             }
-			 }
-		}
+            }
+         }
+      }
       catch(IOException e) {
          return false;
       }
-
+   
       return false;
-	}
+   }
+   
+   /**
+    * Writes to a log file everytime a player logs in/out
+    *
+    * @param name Player name
+    * @param isLoggingIn Whether the player is logging in or logging out
+    * @return true if log message is written successfully, false otherwise
+    */
+   public static boolean loginLog(String name, boolean isLoggingIn) {
+      String log = name;
+      
+      try(FileOutputStream fos = new FileOutputStream(LOG_FILE, true)) {
+         if(isLoggingIn)
+            log += " is logging in.\n";
+         else
+            log += " is logging out.\n"; 
+         
+         //write log message to log file
+         fos.write(log.getBytes());
+      }
+      catch(IOException e) {
+         e.printStackTrace();
+         return false;
+      }
+      
+      return true;
+   }
 }
