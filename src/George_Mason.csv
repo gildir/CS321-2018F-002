@@ -1,0 +1,101 @@
+1, outside, Clock Tower, You stand before the George Mason Clock Tower. It's fall of 2016, and the weather is lovely.
+2, You walk a bit north of the Clock Tower.
+3, You walk down the path east of the Clock Tower.
+4, You walk down the path west of the Clock Tower.
+5, You walk down the path south of the Clock Tower.
+
+2, outside, Clock Tower North, You stand just north of the George Mason Clock Tower.
+6, You enter Robinson Hall A.
+7, You walk down the path to your east.
+8, You walk under the overpass between Robinson A and B and emerge into a small park.
+1, You walk south a bit to the Clock Tower.
+
+3, outside, Path, You stand on a path just east of the George Mason Clock Tower.
+7, You walk a little north along the path to the Library.
+9, You walk a little east along the path towards the dorms.
+1, You walk a little west to the Clock Tower.
+10, You walk south into David King Hall.
+
+4, outside, Path, You stand on a path just west of the George Mason Clock Tower.
+11, You walk north into Robinson Hall B
+1, You walk east to the Clock Tower
+12, You walk to your west, towards the George Mason Statue.
+13, You walk south into the Johnson Center.
+
+5, outside, Path, You stand on a path just south of the George Mason Clock Tower.
+1, You walk a bit north to the Clock Tower.
+10, You walk east into David King Hall.
+0, You try to go west, but there's no where to go.
+14, You walk a bit south to a crossroads.
+
+6, inside, Robinson Hall A, You stand inside Robinson A. The building is pretty rundown, and due for an upgrade.
+15, You leave Robinson Hall to the north, entering a large park area.
+0, You try to find an exit on the east side, but don't find anything.
+11, You walk west into Robinson B.
+2, You leave Robinson Hall to the south, headed towards the GMU Clock Tower.
+
+7, outside, Path, You stand on a path just north east of the George Mason Clock Tower.
+16, You walk north along the path towards the Library.
+0, You look for a path east but don't find one.
+2, You walk to your west.
+3, You walk to your south.
+
+8, outside, Small Park (South), You stand in the southern half of a small park just south of Sub 1.
+17, You walk north, through the park.
+2, You head under the overpass towards the George Mason Clock Tower.
+18, Harris Theatre
+0, WIP
+
+9, outside, Path, You stand on a path a ways east of the George Mason Clock Tower.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+10, inside, David King Hall, You stand inside of David King Hall.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+11, inside, Robinson Hall B, You stand in Robinson Hall B. It's pretty rundown in here, when will they finally replace it?
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+12, outside, George Mason Statue, You stand before the statue of George Mason.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+13, inside, Johnson Center Food Court, You stand inside the Johnson Center Food Court. Damn that smells good.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+14, outside, Crossroads South of the Clock Tower, You stand at a crossroads south of the George Mason Clock Tower. To your west is the Johnson Center and to your east is Planetary Hall.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+15, outside, Big Park (South West Corner), You stand in a large park. To your north west is sub 1, and to your east is The Mix.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+16, outside, Path, You stand on a path outside the Library.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+17, outside, Small Park (North), You stand on the north side of a small park, just south of Sub 1.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
