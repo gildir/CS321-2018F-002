@@ -57,8 +57,7 @@ public class GameClient {
         System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY     - Shows you what objects you have collected.");
-        // allow user to see how much money they have
-        System.out.println("  MONEY         - Shows you how much money you have.");
+        System.out.println("  MONEY         - Shows you how much money you have."); // allow user to see how much money they have
         System.out.println("  QUIT          - Quits the game.");
         System.out.println();
         
@@ -194,9 +193,8 @@ public class GameClient {
                 case "INVENTORY":
                     System.out.println(remoteGameInterface.inventory(this.playerName));
                     break; 
-                // add in the case of printing money 
                 case "MONEY":
-                    System.out.println(remoteGameInterface.money(this.playerName));
+                    System.out.println(remoteGameInterface.money(this.playerName)); // add in the case of printing money 
                     break; 
                 case "QUIT":
                     remoteGameInterface.leave(this.playerName);
@@ -209,11 +207,11 @@ public class GameClient {
     }
     
     public static void main(String[] args) {
-  if(args.length < 1) {
-   System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");
-   System.exit(-1);
-  }
-  
+		if(args.length < 1) {
+			System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");
+			System.exit(-1);
+		}
+		
         System.out.println("[STARTUP] Game Client Now Starting...");
         new GameClient(args[0]);
     }
@@ -224,12 +222,12 @@ public class GameClient {
      *  - Spawns multiple threads, one for each remote connection.
      */
     public class ReplyRemote implements Runnable {
-  private String host;
-  
-  public ReplyRemote(String host) {
-   this.host = host;
-  }
-  
+		private String host;
+		
+		public ReplyRemote(String host) {
+			this.host = host;
+		}
+		
         @Override
         public void run() {
             // This thread is interruptable, which will allow it to clean up before
