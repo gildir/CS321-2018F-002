@@ -89,8 +89,8 @@ public class Room {
     }
     
     public Exit randomExit(){
-      int index = new Random().nextInt(getExitsList().size());
-      return getExitsList().get(index);
+      int index = new Random().nextInt(exits.size());
+      return exits.get(index);
     }
     
     public String getDescription() {
