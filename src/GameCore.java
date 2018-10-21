@@ -330,8 +330,8 @@ public class GameCore implements GameCoreInterface {
     /**
      * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
      * @param playerName Name of the player that gifts the ghoul.
-     * @param ghoulName Name of the ghoul that is poked
-     * @param itemName Name of the ghoul that is poked
+     * @param ghoulName Name of the ghoul to give the item to.
+     * @param itemName Name of the item to give to the ghoul.
      * @return Message showing success or failure of the gifting action.
      */
     public String giftGhoul(String playerName, String ghoulName, String itemName) {
