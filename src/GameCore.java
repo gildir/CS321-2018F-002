@@ -1,13 +1,8 @@
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import java.util.List;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -528,16 +523,12 @@ public class GameCore implements GameCoreInterface {
       switch(p1)
       {
         case 1:
-          play1.getReplyWriter().println("You both chose Rock. The match is a pussy tie!\n");
+          play1.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
           message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
-            FileWriter fw = new FileWriter("battlelog.docx");
-            fw.write("pussy");
-            fw.close;
-
-                    //writeLog(challenger, player2, "Rock", "Rock", "a tie");
+          writeLog(challenger, player2, "Rock", "Rock", "a tie");
           return;
         case 2:
           play1.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
@@ -565,6 +556,7 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
+      writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
       return;
     }
     else if(p1 == 1 && p2 == 3)
@@ -575,6 +567,7 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
+        writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
       return;
     }
     else if(p1 == 2 && p2 == 1)
@@ -585,6 +578,7 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
+        writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
       return;
     }
     else if(p1 == 2 && p2 == 3)
@@ -595,6 +589,7 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
+      writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
       return;
     }
     else if(p1 == 3 && p2 == 1)
@@ -605,6 +600,7 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
+        writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
       return;
     }
     else if(p1 == 3 && p2 == 2)
@@ -615,21 +611,25 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);;
       activeBattles.remove(b);
+        writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
       return;
     }
   }
 
-    public void writeLog(String play1, String play2, String p1, String p2, String winner) throws IOException {
+    public void writeLog(String play1, String play2, String p1, String p2, String winner) {
+         try(BufferedWriter writer = new BufferedWriter(new FileWriter("battlelog.txt",true))) {
+             String str = play1 + " Challenged " + play2 + " picking " + p1 + " against " + p2 + " resulting in " + winner + "\r\n\n";
+             writer.write(str);
+             writer.close();
+         } catch(IOException e) {
 
-        FileWriter fw = new FileWriter("battlelog.docx");
-
-        fw.write(play1 + "Challenged" + play2 + "picking" + p1 + "against" + p2 "resulting in" + winner + "as the winner");
-        fw.close;
+         }
+         }
 
 
 
 
-    }
+
 
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
