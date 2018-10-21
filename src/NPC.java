@@ -65,7 +65,7 @@ abstract class NPC {
 
   protected void moveRandomly() {
     synchronized (this) {
-      Exit exit = gameCore.getMap().findRoom(currentRoom).randomExit();
+      Exit exit = gameCore.getMap().findRoom(currentRoom).randomValidExit();
       broadcast(exit.getMessage());
       setCurrentRoom(exit.getRoom());
     }
