@@ -268,6 +268,32 @@ public class GameCore implements GameCoreInterface {
     }       
     
     /**
+     *Attempts to drop off an object < target >. Will return a message on any success or failure.
+     *@param name Name of the player to move
+     *@param target The case-insensitive name of the object to dropoff.
+     *@return Message showing success.
+     */
+    public String dropoff(String name, String target) {
+        Player player = this.playerList.findPlayer(name);
+	if(player != null) {
+	    String object = player.removeObjectFromInventory(target);
+	    Room room = map.findRoom(player.getCurrentRoom());
+	    if(object != null) {
+	        room.playerAddObject(object);
+		this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
+		return "You just dropped off a " + target + ".";
+	    }
+	    else {
+	        this.broadcast(player, player.getName() + " tried to drop off something, but doesn't seem to find what they were looking for.");
+		return "You just tried to drop off a " + target + ", but you don't have one.";
+	    }
+	}
+	else {
+	    return null;
+	}
+    }
+
+    /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move
      * @return Message showing success.

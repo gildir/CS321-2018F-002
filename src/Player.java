@@ -76,6 +76,16 @@ public class Player {
         this.currentInventory.add(object);
     }
     
+    public String removeObjectFromInventory(String object) {
+        for(String obj : this.currentInventory) {
+	    if(obj.equalsIgnoreCase(object)) {
+	        this.currentInventory.remove(obj);
+		return obj;
+	    }
+	}
+    return null;
+    }
+
     public void setReplyWriter(PrintWriter writer) {
         this.replyWriter = writer;
     }

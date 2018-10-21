@@ -108,6 +108,10 @@ public class Room {
             this.objects.add(obj);
         }
     }
+
+   public void playerAddObject(String obj) {
+      this.objects.add(obj);
+   }
     
     public String removeObject(String target) {
         for(String obj : this.objects) {
