@@ -78,7 +78,8 @@ public class GameClient {
 			do {
 				if (keyboardStatement.equalsIgnoreCase("Y")) {
 					System.out.print("Enter password: ");
-					keyboardStatement = keyboardInput.readLine();
+                    keyboardStatement = keyboardInput.readLine();
+                    new Time();
 					if(PlayerDatabase.isPassword(playerName, keyboardStatement))
 						removeApproval = true;
 					else System.out.println("Password incorrect.\n" + playerName + " was not removed.");
@@ -87,7 +88,8 @@ public class GameClient {
 					break;
 				} else {
 					System.out.print("Would you like to delete your player? (Y/N)");
-					keyboardStatement = keyboardInput.readLine();
+                    keyboardStatement = keyboardInput.readLine();
+                    new Time();
 				}
 			} while (true);
 		}  catch (IOException ex) {
