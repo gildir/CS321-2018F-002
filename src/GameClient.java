@@ -180,6 +180,7 @@ public class GameClient {
                 case "LISTPLAYERS":
                     System.out.println(remoteGameInterface.listAllPlayers(this.playerName));
                     break;
+                case "/W":
                 case "WHISPER":
                     if(tokens.isEmpty())
                     {
@@ -206,6 +207,7 @@ public class GameClient {
                             }
                     } //end of WHISPER case
                     break;
+                case "/R":
                 case "REPLY":
                     if(tokens.isEmpty()) {
                         System.err.println("You need to write a message to reply.");
