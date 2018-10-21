@@ -35,8 +35,6 @@ public class Ghoul extends NPC {
         }
         
     }
-        
-    }
 
     // Calls the NPC broading method which calls GameCore
     private void replyAnger(){
@@ -74,14 +72,14 @@ public class Ghoul extends NPC {
         return anger;
     }
 
-//    private static int getRandomNumberInRange(int min, int max) {
-//
-//        if (min >= max) {
-//            throw new IllegalArgumentException("max must be greater than min");
-//        }
-//
-//        Random r = new Random();
-//        return r.nextInt((max - min) + 1) + min;
-//    }
 
+   private static int getRandomNumberInRange(int min, int max) {
+
+       if (min >= max) {
+           throw new IllegalArgumentException("max must be greater than min");
+       }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+   }
 }
