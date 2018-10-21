@@ -13,10 +13,6 @@ public class GameCore implements GameCoreInterface {
     private final Map map;
     private final Set<NPC> npcSet;
 
-    public Set<NPC> getNpcSet() {
-        return npcSet;
-    }
-
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -75,15 +71,22 @@ public class GameCore implements GameCoreInterface {
         objectThread.start();
 
     }
+
     /**
      * Basic getter methods for GameCore.
      */ 
     public PlayerList getPlayerList(){
       return this.playerList;
     }
+
     public Map getMap(){
       return this.map;
     }
+
+    public Set<NPC> getNpcSet() {
+        return npcSet;
+    }
+
     /**
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.
@@ -298,14 +301,12 @@ public class GameCore implements GameCoreInterface {
         }
     }
 
-
     /**
      * Player pokes a ghoul that is in the same room.
-     * @param ghoulName Name of the ghoul that is poked
      * @param playerName Name of the player that pokes the ghoul.
+     * @param ghoulName Name of the ghoul that is poked
      * @return Message showing success or failure of poke action.
      */
-
     public String pokeGhoul(String playerName, String ghoulName) {
         Player player = this.playerList.findPlayer(playerName);
         Room room = map.findRoom(player.getCurrentRoom());
@@ -323,20 +324,17 @@ public class GameCore implements GameCoreInterface {
                 }
             }
         }
-
-
         return null;
     }
 
     /**
      * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
      * @param playerName Name of the player that gifts the ghoul.
+     * @param ghoulName Name of the ghoul that is poked
+     * @param itemName Name of the ghoul that is poked
      * @return Message showing success or failure of the gifting action.
      */
-
-
-    public String giftGhoul(String playerName, String ghoulName, String target) {
-
+    public String giftGhoul(String playerName, String ghoulName, String itemName) {
         Player player = this.playerList.findPlayer(playerName);
         boolean ghoulFound = false;
         //check if player exists
@@ -365,10 +363,10 @@ public class GameCore implements GameCoreInterface {
                         return "You don't have a " + target + " to offer.";
                     }*/
                     for (int i = 0; i < playerIn.size(); i++){
-                        if (target.equalsIgnoreCase(playerIn.get(i))){
+                        if (itemName.equalsIgnoreCase(playerIn.get(i))){
                             playerIn.remove(i);
                             player.setCurrentInventory(playerIn);//updating the inventory
-                            return playerName + " gifted " + ghoulName + " a " + target;
+                            return playerName + " gifted " + ghoulName + " a " + itemName;
                         }
                     }
                 }
@@ -377,13 +375,8 @@ public class GameCore implements GameCoreInterface {
                 }
             }
         }
-
         return null;
     }
-
-
-
-
 
     /**
      * Returns a string representation of all objects you are carrying.
