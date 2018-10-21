@@ -335,28 +335,7 @@ public class GameCore implements GameCoreInterface {
      */
 
 
-    public String giftGhoul(String playerName, String arg) {
-        char[] charArray = arg.toCharArray();
-        String ghoulName = "";
-        String target = "";
-        int j = 0;//holds the index for the start of the next word
-
-        for (int i = 0; i < charArray.length; i++){
-            if (charArray[i] != '-'){
-                ghoulName += charArray[i];
-            }
-            else {
-                j = i + 1;
-                i = 9999;
-            }
-        }
-
-        for (int i = j; i < charArray.length; i++){
-            target += charArray[i];
-        }
-
-
-
+    public String giftGhoul(String playerName, String ghoulName, String target) {
 
         Player player = this.playerList.findPlayer(playerName);
         boolean ghoulFound = false;

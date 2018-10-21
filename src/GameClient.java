@@ -50,16 +50,16 @@ public class GameClient {
         System.out.println("You will be able to see if any other players are in the same area as well as what");
         System.out.println("objects are on the ground and what direction you are facing.\n");
         System.out.println("The game allows you to use the following commands:");
-        System.out.println("  POKE ghoul    - Pokes a ghoul with the given name");
-        System.out.println("  GIFT ghoul    - Gifts a ghoul an object with the given name");
-        System.out.println("  LOOK          - Shows you the area around you");
-        System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
-        System.out.println("  LEFT          - Turns your player left 90 degrees.");
-        System.out.println("  RIGHT         - Turns your player right 90 degrees.");
-        System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
-        System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
-        System.out.println("  INVENTORY     - Shows you what objects you have collected.");
-        System.out.println("  QUIT          - Quits the game.");
+        System.out.println("  POKE <ghoul>             - Pokes a ghoul with the given name");
+        System.out.println("  GIFT <ghoul> <object>    - Gifts a ghoul an object with the given name");
+        System.out.println("  LOOK                     - Shows you the area around you");
+        System.out.println("  SAY message              - Says 'message' to any other players in the same area.");
+        System.out.println("  LEFT                     - Turns your player left 90 degrees.");
+        System.out.println("  RIGHT                    - Turns your player right 90 degrees.");
+        System.out.println("  MOVE distance            - Tries to walk forward <distance> times.");
+        System.out.println("  PICKUP object            - Tries to pick up an object in the same area.");
+        System.out.println("  INVENTORY                - Shows you what objects you have collected.");
+        System.out.println("  QUIT                     - Quits the game.");
         System.out.println();
         
 
@@ -178,7 +178,10 @@ public class GameClient {
                         System.err.println("You need to provide a ghoul name and an object.");
                     }
                     else {
-                        System.out.println(remoteGameInterface.giftGhoul(this.playerName, tokens.remove(0)));
+                        String ghoulName = tokens.remove(0);
+                        String target = tokens.remove(0);
+
+                        System.out.println(remoteGameInterface.giftGhoul(this.playerName, ghoulName, target));
                     }
                     break;
                 case "POKE":

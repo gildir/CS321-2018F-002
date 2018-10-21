@@ -98,7 +98,7 @@ public interface GameObjectInterface extends Remote {
      */
 
 
-    public String giftGhoul(String playerName, String arg) throws RemoteException;
+    public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException;
 
 
     

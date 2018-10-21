@@ -145,8 +145,8 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      */
 
 
-    public String giftGhoul(String playerName, String arg) throws RemoteException {
-        return core.giftGhoul(playerName, arg);
+    public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException {
+        return core.giftGhoul(playerName, ghoulName, target);
     }
 
     
