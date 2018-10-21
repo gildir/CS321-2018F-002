@@ -17,10 +17,8 @@ public class Ghoul extends NPC {
     public static final int MAXANGER = 100;
 
     Ghoul(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds){
-        super.gameCore = gameCore;
-        super.name = name;
-        super.currentRoom = currentRoom;
-        super.aiPeriodSeconds = aiPeriodSeconds;
+
+        super(gameCore, name, currentRoom, aiPeriodSeconds);
         this.anger = 0;
     }
 
@@ -35,6 +33,8 @@ public class Ghoul extends NPC {
         else{
             anger -= getRandomNumberInRange(1,5);
         }
+        
+    }
         
     }
 
@@ -74,14 +74,14 @@ public class Ghoul extends NPC {
         return anger;
     }
 
-    private static int getRandomNumberInRange(int min, int max) {
-
-        if (min >= max) {
-            throw new IllegalArgumentException("max must be greater than min");
-        }
-
-        Random r = new Random();
-        return r.nextInt((max - min) + 1) + min;
-    }
+//    private static int getRandomNumberInRange(int min, int max) {
+//
+//        if (min >= max) {
+//            throw new IllegalArgumentException("max must be greater than min");
+//        }
+//
+//        Random r = new Random();
+//        return r.nextInt((max - min) + 1) + min;
+//    }
 
 }

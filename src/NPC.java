@@ -1,6 +1,5 @@
 
 import java.time.Instant;
-import java.util.*;
 
 /**
  * @author Thomas Washington
@@ -13,7 +12,7 @@ import java.util.*;
 abstract class NPC {
 
   private String name;
-  private int currentRoom; // initialized via constructor
+  private int currentRoom;
   private int pastRoom;
   private long lastAiTime;
   private long aiPeriodSeconds;
@@ -35,6 +34,11 @@ abstract class NPC {
   public int getCurrentRoom(){
     return this.currentRoom;
   }
+
+  /**
+   * @return the last room this NPC was in.
+   * If this is the first room the NPC has been in, returns -1.
+   */
   public int getPastRoom(){
     return this.pastRoom;
   }
@@ -50,20 +54,21 @@ abstract class NPC {
   public String toString() {
     return this.getName();
   }
-  
-  protected void broadcast(String message) {
+
+  /**
+   * Output a message to all players in the same room as this NPC.
+   * @param message to output.
+   */
+  public void broadcast(String message) {
     gameCore.broadcast(gameCore.getMap().findRoom(currentRoom), message);
   }
 
-  
-   /* The exit object returned from that call will include everything you need to output proper broadcast messages
-   * before and after you call setCurrentRoom
-   */
   protected void moveRandomly() {
     synchronized (this) {
-      Exit exit = gameCore.getMap().findRoom(currentRoom).randomExit();
-      broadcast(exit.getMessage());
+      Exit exit = gameCore.getMap().findRoom(currentRoom).randomValidExit();
+      broadcast(name + " walked off to the " + exit.getDirection());
       setCurrentRoom(exit.getRoom());
+      broadcast(name + " walked into the area");
     }
   }
   
@@ -78,8 +83,8 @@ abstract class NPC {
   }
   
   protected void doAi() {
-      synchronized (this) {
-          moveRandomly();
-      }
+    synchronized (this) {
+        moveRandomly();
+    }
   }
 }
