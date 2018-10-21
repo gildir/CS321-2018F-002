@@ -12,7 +12,8 @@ import java.util.logging.Logger;
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
-    
+    //Specifies a minimum and maximum amount of time until next item spawn
+    private final int min=100, max=600;
     /**
      * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -36,7 +37,9 @@ public class GameCore implements GameCoreInterface {
                 String[] objects = {"Flower", "Textbook", "Phone", "Newspaper"};
                 while(true) {
                     try {
-                        Thread.sleep(rand.nextInt(60000));
+                        //Thread.sleep(rand.nextInt(60000));//only takes a max number
+			//Math.random() allows us to easily generate a number between a given min and max (CONTACT TEAM THREE BEFORE CHANGING)
+			Thread.sleep((int)(Math.random()*(max+1))+min);
                         object = objects[rand.nextInt(objects.length)];
                         room = map.randomRoom();
                         room.addObject(object);
