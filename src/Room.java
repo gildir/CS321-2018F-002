@@ -138,5 +138,23 @@ public class Room {
             return localPlayers;
         }
     }
+
+    //Finding NPCs in the same room as a player. Returning a list of those NPCs
+    public ArrayList<String> getLocalNPC(Set<NPC> npcList){
+
+        ArrayList<String> npcsFound = new ArrayList<>();
+
+        //traverse the list of all NPCs
+        for (NPC npc : npcList) {
+            //finding NPCs in the same room as a player
+            if (npc.getCurrentRoom() == this.id) {
+                npcsFound.add(npc.getName());
+            }
+        }
+        if (npcsFound.isEmpty()){
+            return null;
+        }
+        return npcsFound;
+    }
     
 }

@@ -1,9 +1,6 @@
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +12,11 @@ public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
     private final Set<NPC> npcSet;
-    
+
+    public Set<NPC> getNpcSet() {
+        return npcSet;
+    }
+
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -30,9 +31,9 @@ public class GameCore implements GameCoreInterface {
         npcSet = new HashSet<>();
 
         // Initialize starting NPCs
-        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul 1", 1, 3),
-                                    new Ghoul(this, "Ghoul 2", 2, 3),
-                                    new Ghoul(this, "Ghoul 3", 3, 3)));
+        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 14),
+                                    new Ghoul(this, "Ghoul2", 2, 14),
+                                    new Ghoul(this, "Ghoul3", 3, 14)));
 
         Thread npcThread = new Thread(new Runnable() {
             @Override
@@ -295,8 +296,116 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }       
-    
+    }
+
+
+    /**
+     * Player pokes a ghoul that is in the same room.
+     * @param ghoulName Name of the ghoul that is poked
+     * @param playerName Name of the player that pokes the ghoul.
+     * @return Message showing success or failure of poke action.
+     */
+
+    public String pokeGhoul(String playerName, String ghoulName) {
+        Player player = this.playerList.findPlayer(playerName);
+        Room room = map.findRoom(player.getCurrentRoom());
+        ArrayList<String> npcsFound = new ArrayList<>();
+        //check if player exists
+        if (player != null){
+            //find all the NPCs in the room that the player's in
+            npcsFound = room.getLocalNPC(npcSet);
+            if (npcsFound != null){
+                //checking to see if the ghoulName matches any ghouls in the same room
+                for (int i = 0; i < npcsFound.size(); i++){
+                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
+                        return playerName + " POKED " + npcsFound.get(i);
+                    }
+                }
+            }
+        }
+
+
+        return null;
+    }
+
+    /**
+     * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
+     * @param playerName Name of the player that gifts the ghoul.
+     * @return Message showing success or failure of the gifting action.
+     */
+
+
+    public String giftGhoul(String playerName, String arg) {
+        char[] charArray = arg.toCharArray();
+        String ghoulName = "";
+        String target = "";
+        int j = 0;//holds the index for the start of the next word
+
+        for (int i = 0; i < charArray.length; i++){
+            if (charArray[i] != '-'){
+                ghoulName += charArray[i];
+            }
+            else {
+                j = i + 1;
+                i = 9999;
+            }
+        }
+
+        for (int i = j; i < charArray.length; i++){
+            target += charArray[i];
+        }
+
+
+
+
+        Player player = this.playerList.findPlayer(playerName);
+        boolean ghoulFound = false;
+        //check if player exists
+        Room room = map.findRoom(player.getCurrentRoom());
+        ArrayList<String> npcsFound = new ArrayList<>();
+        LinkedList<String> playerIn = player.getCurrentInventory();
+        //check if inventory is empty
+        if (player.getCurrentInventory().isEmpty()){
+            return "Inventory is empty.";
+        }
+        //check if player exists
+        if (player != null){
+            //find all the NPCs in the room that the player's in
+            npcsFound = room.getLocalNPC(npcSet);
+            if (npcsFound != null){
+                //checking to see if the ghoulName matches any ghouls in the same room
+                for (int i = 0; i < npcsFound.size(); i++){
+                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
+                        i = 9999;
+                        ghoulFound = true;
+                    }
+                }
+                if (ghoulFound){
+                    //check if the player has the object in their inventory
+                    /*if (!playerIn.contains(target)){
+                        return "You don't have a " + target + " to offer.";
+                    }*/
+                    for (int i = 0; i < playerIn.size(); i++){
+                        if (target.equalsIgnoreCase(playerIn.get(i))){
+                            playerIn.remove(i);
+                            player.setCurrentInventory(playerIn);//updating the inventory
+                            return playerName + " gifted " + ghoulName + " a " + target;
+                        }
+                    }
+                }
+                else{
+                    return ghoulName + " is not in the same room as you.";
+                }
+            }
+        }
+
+        return null;
+    }
+
+
+
+
+
     /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move

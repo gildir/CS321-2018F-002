@@ -50,6 +50,8 @@ public class GameClient {
         System.out.println("You will be able to see if any other players are in the same area as well as what");
         System.out.println("objects are on the ground and what direction you are facing.\n");
         System.out.println("The game allows you to use the following commands:");
+        System.out.println("  POKE ghoul    - Pokes a ghoul with the given name");
+        System.out.println("  GIFT ghoul    - Gifts a ghoul an object with the given name");
         System.out.println("  LOOK          - Shows you the area around you");
         System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
         System.out.println("  LEFT          - Turns your player left 90 degrees.");
@@ -169,6 +171,22 @@ public class GameClient {
                             }
                         }                        
                         System.out.println(remoteGameInterface.say(this.playerName, message));
+                    }
+                    break;
+                case "GIFT":
+                    if(tokens.isEmpty()) {
+                        System.err.println("You need to provide a ghoul name and an object.");
+                    }
+                    else {
+                        System.out.println(remoteGameInterface.giftGhoul(this.playerName, tokens.remove(0)));
+                    }
+                    break;
+                case "POKE":
+                    if(tokens.isEmpty()) {
+                        System.err.println("You need to provide a ghoul name.");
+                    }
+                    else {
+                        System.out.println(remoteGameInterface.pokeGhoul(this.playerName, tokens.remove(0)));
                     }
                     break;
                 case "MOVE":
