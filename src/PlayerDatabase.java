@@ -74,7 +74,6 @@ public class PlayerDatabase {
              
              //checks if the username on this line is equal to the given username
             if(info[0].equals(name)) {
-               System.out.println("Player name taken.");
                return true;
             }
          }
