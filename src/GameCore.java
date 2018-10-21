@@ -37,8 +37,10 @@ public class GameCore implements GameCoreInterface {
             @Override
             public void run() {
                 while(true) {
-                    for (NPC npc : npcSet)
-                        npc.tryAi();
+                    synchronized (npcSet) {
+                        for (NPC npc : npcSet)
+                            npc.tryAi();
+                    }
                 }
             }
         });
