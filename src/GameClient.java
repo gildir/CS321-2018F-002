@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javafx.scene.input.KeyCharacterCombinationBuilder;
+//import javafx.scene.input.KeyCharacterCombinationBuilder;
 
 /**
  *
@@ -57,18 +57,57 @@ public class GameClient {
         class timeoutTask extends TimerTask{
             public void run(){
                 try{
-                    remoteGameInterface.leave(playerName);
+                	remoteGameInterface.leave(playerName);
                     runListener = false;
                     System.out.println("User has been inactive for 5 minutes.. logging off");  
                     timer.cancel();
                     System.exit(-1);
-                    
                 } 
                 catch (RemoteException ex) {
                 	Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
+    }
+    
+    /**
+     * Method called when player is exiting that prompts if the user wants to delete 
+     * his or her character then proceeds to remove the user name and password if prompted to
+     */
+    private void deleteCharacter() {
+    	InputStreamReader keyboardReader = new InputStreamReader(System.in);
+    	BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+    	String keyboardStatement = "";
+    	boolean removeApproval = false;
+    	
+    	try {
+			do {
+				if (keyboardStatement.equalsIgnoreCase("Y")) {
+					System.out.print("Enter password: ");
+                    keyboardStatement = keyboardInput.readLine();
+                    new Time();
+					if(PlayerDatabase.isPassword(playerName, keyboardStatement))
+						removeApproval = true;
+					else System.out.println("Password incorrect.\n" + playerName + " was not removed.");
+					break;
+				} else if (keyboardStatement.equalsIgnoreCase("N")) {
+					break;
+				} else {
+					System.out.print("Would you like to delete your player? (Y/N)");
+                    keyboardStatement = keyboardInput.readLine();
+                    new Time();
+				}
+			} while (true);
+		}  catch (IOException ex) {
+			System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
+            System.exit(-1);
+		}
+		if(removeApproval) {
+    		if(PlayerDatabase.removePlayer(playerName))
+    			System.out.println(playerName + " has been removed.");
+    		else System.out.println(playerName + " could not be removed.");
+		}
+    	
     }
     
     /** 
@@ -255,7 +294,6 @@ public class GameClient {
      * @param input 
      */
     private void parseInput(String input) {
-        boolean reply;
         
         // First, tokenize the raw input.
         StringTokenizer commandTokens = new StringTokenizer(input);
@@ -316,7 +354,8 @@ public class GameClient {
                 case "INVENTORY":
                     System.out.println(remoteGameInterface.inventory(this.playerName));
                     break;                                                            
-                case "QUIT": 
+                case "QUIT":
+                	deleteCharacter();
                     remoteGameInterface.leave(this.playerName);
                     runListener = false;
                     break;

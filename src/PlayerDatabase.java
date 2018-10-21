@@ -2,17 +2,18 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 import java.lang.StringBuilder;
 
 /**
  * This class will handle all player database interactions
- 
- * NOTE: All methods in this class are static, do not attempt to
- *       create an instance of this class
+ * 
+ * NOTE: All methods in this class are static, do not attempt to create an
+ * instance of this class
  *
- * Authors: Cody Kidwell and Joseph Saah
+ * Authors: Cody Kidwell, Brett Mullins, Joseph Saah, and Haroon Tanveer
  */
 public class PlayerDatabase {
 
@@ -111,7 +112,55 @@ public class PlayerDatabase {
          return false;
       }
       return false;
-    }
+	}
+	
+	/**
+	 * Removes a player's username and password from the database if the username
+	 * does already exist in the system
+	 * 
+	 * @param name
+	 *            The username to be removed
+	 * @return true if username has been removed, false if otherwise
+	 */
+	public static boolean removePlayer(String name) {
+		// first checks if player exists
+		if (!isPlayer(name)) {
+			System.out.println(name + " does not exist in database.");
+			return false;
+		}
+		// removal process here
+		else {
+			String line;
+			StringBuilder lines = new StringBuilder();
+			try (FileInputStream fis = new FileInputStream(DATABASE_FILE);
+					InputStreamReader isr = new InputStreamReader(fis);
+					BufferedReader br = new BufferedReader(isr)) {
+
+				// reads database line by line adding lines in to a collective string of all the lines
+				while ((line = br.readLine()) != null) {
+					
+					String[] info = line.split(",");
+
+					// if username does not match to the one read it will rewrite it to the file
+					if (!info[0].equals(name)) lines.append(line + "\n");
+				
+				}
+			} catch (IOException e) {
+				return false;
+			}
+			try (FileOutputStream fos = new FileOutputStream(DATABASE_FILE)){
+				
+				//overwrite the old file
+				fos.write(lines.toString().getBytes());
+				return true;
+			
+			} catch (FileNotFoundException e) {
+				return false;
+			} catch (IOException e) {
+				return false;
+			}
+		}
+	}
    
    /**
     * Writes to a log file everytime a player logs in/out
