@@ -264,21 +264,39 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             Room room = map.findRoom(player.getCurrentRoom());
-            String object = room.removeObject(target);
-            if(object != null) {
-                player.addObjectToInventory(object);
-                this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
-                return "You bend over and pick up a " + target + ".";
+            System.out.print(target);
+            if(target.equals("all")){
+                
+            	int obj_count = 0;
+            	String object;
+            	String AllObjects = room.getObjects();
+            	while((object = room.getLastObject()) != null){
+            		player.addObjectToInventory(object);
+            		obj_count++;
+            	}
+            	if(obj_count > 0)
+            		return "You bend over and pick up all the objects";
+            	else
+            		return "No objects in this room";
             }
-            else {
-                this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
-                return "You look around for a " + target + ", but can't find one.";
+            else{
+            	
+	            String object = room.removeObject(target);
+	            if(object != null) {
+	                player.addObjectToInventory(object);
+	                this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
+	                return "You bend over and pick up a " + target + ".";
+	            }
+	            else {
+	                this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
+	                return "You look around for a " + target + ", but can't find one.";
+	            }
             }
         }
         else {
             return null;
         }
-    }       
+    }   
     
     /**
      * Returns a string representation of all objects you are carrying.
