@@ -68,7 +68,7 @@ abstract class NPC {
       Exit exit = gameCore.getMap().findRoom(currentRoom).randomValidExit();
       broadcast(name + " walked off to the " + exit.getDirection());
       setCurrentRoom(exit.getRoom());
-      broadcast(name + " walked in from " + gameCore.getMap().findRoom(pastRoom).getTitle());
+      broadcast(name + " walked into the area");
     }
   }
   
