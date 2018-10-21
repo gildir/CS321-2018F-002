@@ -2,6 +2,7 @@
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  *
@@ -74,6 +75,19 @@ public class Player {
     
     public void addObjectToInventory(String object) {
         this.currentInventory.add(object);
+    }
+
+    /**
+     * Allows an an object to be taken away from someone's inventory.
+     * @param name Name of the player to take an item from
+     * @return Message showing success.
+     */  
+    public String removeRandomItem()  {
+        Random randInt = new Random();
+        int randItem = randInt.nextInt(this.currentInventory.size()-1);
+        String targetItem = this.currentInventory.remove(randItem);
+        setCurrentInventory(this.currentInventory);
+        return targetItem + " was removed from your inventory.";
     }
     
     public void setReplyWriter(PrintWriter writer) {
