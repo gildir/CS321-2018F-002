@@ -197,17 +197,17 @@ public class GameClient {
 					System.out.print("Enter password: ");
                     keyboardStatement = keyboardInput.readLine();
                     new Time();
-					if(PlayerDatabase.isPassword(playerName, keyboardStatement))
-						removeApproval = true;
-					else System.out.println("Password incorrect.\n" + playerName + " was not removed.");
-					break;
+                    if(PlayerDatabase.isPassword(playerName, keyboardStatement)){
+                        removeApproval = true;
+                        break;
+                    }
+					else System.out.println("Password incorrect.");
 				} else if (keyboardStatement.equalsIgnoreCase("N")) {
 					break;
-				} else {
-					System.out.print("Would you like to permanently delete your player and account? (Y/N)");
-                    keyboardStatement = keyboardInput.readLine();
-                    new Time();
-				}
+                } 
+                System.out.print("Would you like to permanently delete your player and account? (Y/N)");
+                keyboardStatement = keyboardInput.readLine();
+                new Time();
 			} while (true);
 		}  catch (IOException ex) {
 			System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
