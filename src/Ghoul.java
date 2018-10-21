@@ -2,6 +2,7 @@
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  *
@@ -15,27 +16,35 @@ public class Ghoul extends NPC {
     // total anger level
     public static final int MAXANGER = 100;
 
-    Ghoul(){
-        super("Ghoul", 1, 0);
+    Ghoul(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds){
+        super.gameCore = gameCore;
+        super.name = name;
+        super.currentRoom = currentRoom;
+        super.aiPeriodSeconds = aiPeriodSeconds;
+        this.anger = 0;
     }
 
+
+    // If anger goes below 0 and into the negative it will go back to zero
+    // (possibly use negative int numbers as a friendly aggro or revamp)
     private void decreaseAnger(){
 
         if (anger <= 0){
             anger = 0;
         }
         else{
-
             anger -= getRandomNumberInRange(1,5);
         }
         
     }
 
+    // Calls the NPC broading method which calls GameCore
     private void replyAnger(){
         super.broadcast("Grrrr, do not poke me! *the ghouls anger level rises*");
     }
 
 
+    // TODO WAIT FOR THAOVY
     private void dragPlayer(){
 
     }
@@ -48,12 +57,12 @@ public class Ghoul extends NPC {
     }
     */
     
-    // TODO
+    // TODO WAIT FOR HABIB
     public void poke(){
 
     }
     
-    // TODO
+    // TODO WAIT FOR HABIB
     public void give(Item object){
 
     }
@@ -62,15 +71,7 @@ public class Ghoul extends NPC {
     // returns the anger level of the ghoul
     public int getAnger(){
 
-        // positive anger
-        if (anger > 0){
-            return (anger);
-        }
-        // anger <= 0
-        else{
-            return 0;
-        }
-        
+        return anger;
     }
 
     private static int getRandomNumberInRange(int min, int max) {
