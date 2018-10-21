@@ -78,11 +78,13 @@ public class Player {
     }
 
     /**
-     * Allows an an object to be taken away from someone's inventory.
-     * @param name Name of the player to take an item from
+     * Allows an an object to be taken away from player's inventory.
      * @return Message showing success.
      */  
     public String removeRandomItem()  {
+        if (this.currentInventory.isEmpty()){
+            return "There are no items in your inventory.";
+        }
         Random randInt = new Random();
         int randItem = randInt.nextInt(this.currentInventory.size()-1);
         String targetItem = this.currentInventory.remove(randItem);
@@ -124,15 +126,13 @@ public class Player {
     
     public String viewInventory() {
         String result = "";
-        if(this.currentInventory.isEmpty() == true) {
+        if(this.currentInventory.isEmpty()) {
             return "nothing.";
         }
-        else {
-            for(String obj : this.currentInventory) {
-                result += " " + obj;
-            }
-            result += ".";
+        for(String obj : this.currentInventory) {
+            result += " " + obj;
         }
+        result += ".";
         return result;
     }
 
