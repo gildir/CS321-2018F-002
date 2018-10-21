@@ -55,15 +55,12 @@ abstract class NPC {
     gameCore.broadcast(gameCore.getMap().findRoom(currentRoom), message);
   }
 
-  
-   /* The exit object returned from that call will include everything you need to output proper broadcast messages
-   * before and after you call setCurrentRoom
-   */
   protected void moveRandomly() {
     synchronized (this) {
       Exit exit = gameCore.getMap().findRoom(currentRoom).randomExit();
-      broadcast(exit.getMessage());
+      broadcast(name + " walked off to the " + exit.getDirection());
       setCurrentRoom(exit.getRoom());
+      broadcast(name + " walked in from " + gameCore.getMap().findRoom(pastRoom).getTitle());
     }
   }
   
