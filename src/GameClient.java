@@ -69,47 +69,7 @@ public class GameClient {
             }
         }
     }
-    
-    /**
-     * Method called when player is exiting that prompts if the user wants to delete 
-     * his or her character then proceeds to remove the user name and password if prompted to
-     */
-    private void deleteCharacter() {
-    	InputStreamReader keyboardReader = new InputStreamReader(System.in);
-    	BufferedReader keyboardInput = new BufferedReader(keyboardReader);
-    	String keyboardStatement = "";
-    	boolean removeApproval = false;
-    	
-    	try {
-			do {
-				if (keyboardStatement.equalsIgnoreCase("Y")) {
-					System.out.print("Enter password: ");
-                    keyboardStatement = keyboardInput.readLine();
-                    new Time();
-					if(PlayerDatabase.isPassword(playerName, keyboardStatement))
-						removeApproval = true;
-					else System.out.println("Password incorrect.\n" + playerName + " was not removed.");
-					break;
-				} else if (keyboardStatement.equalsIgnoreCase("N")) {
-					break;
-				} else {
-					System.out.print("Would you like to delete your player? (Y/N)");
-                    keyboardStatement = keyboardInput.readLine();
-                    new Time();
-				}
-			} while (true);
-		}  catch (IOException ex) {
-			System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
-            System.exit(-1);
-		}
-		if(removeApproval) {
-    		if(PlayerDatabase.removePlayer(playerName))
-    			System.out.println(playerName + " has been removed.");
-    		else System.out.println(playerName + " could not be removed.");
-		}
-    	
-    }
-    
+        
     /** 
      * Main class for running the game client.
      */
@@ -287,6 +247,45 @@ public class GameClient {
             System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
             System.exit(-1);
         }    
+    }
+    
+    /**
+     * Method called when player is exiting that prompts if the user wants to delete 
+     * his or her character then proceeds to remove the user name and password if prompted to
+     */
+    private void deleteCharacter() {
+    	InputStreamReader keyboardReader = new InputStreamReader(System.in);
+    	BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+    	String keyboardStatement = "";
+    	boolean removeApproval = false;
+    	
+    	try {
+			do {
+				if (keyboardStatement.equalsIgnoreCase("Y")) {
+					System.out.print("Enter password: ");
+                    keyboardStatement = keyboardInput.readLine();
+                    new Time();
+                    if(PlayerDatabase.isPassword(playerName, keyboardStatement)){
+                        removeApproval = true;
+                        break;
+                    }
+					else System.out.println("Password incorrect.");
+				} else if (keyboardStatement.equalsIgnoreCase("N")) {
+					break;
+                } 
+                System.out.print("Would you like to permanently delete your player and account? (Y/N)");
+                keyboardStatement = keyboardInput.readLine();
+                new Time();
+			} while (true);
+		}  catch (IOException ex) {
+			System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
+            System.exit(-1);
+		}
+		if(removeApproval) {
+    		if(PlayerDatabase.removePlayer(playerName))
+    			System.out.println(playerName + " has been removed.");
+    		else System.out.println(playerName + " could not be removed.");
+		}
     }
 
     /** 
