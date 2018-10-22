@@ -218,7 +218,7 @@ public class GameClient {
                         System.out.println( remoteGameInterface.ignore( this.playerName, tokens.remove(0) ) );
                     }
                     break;
-				//407
+				//story 407
                 case "LISTIGNOREDPLAYERS":
                     System.out.println(remoteGameInterface.listIgnoredPlayers(this.playerName));
                 case "MOVE":
