@@ -166,18 +166,14 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
             player.getReplyWriter().close();
         }
     }
-
-	/* START 405_ignore */
-     /**
-     * Update ignore and ignoredBy lists, depending on player
-     * @param name Name of player committing ignore
-     * @param name Name of player being ignored
-     * @return Message showing success/failure
-     * @throws RemoteException
-     */    
+    //405
     @Override
     public String ignore(String name, String ignoreName) throws RemoteException{
     	return core.ignore(name,ignoreName);
     }
-	/* END 405_ignore */    
+    //407
+    @Override
+    public String listIgnoredPlayers(String playerName) throws RemoteException {
+        return core.listIgnoredPlayers(playerName);
+    }
 }

@@ -107,5 +107,7 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */    
     public String ignore(String name, String ignoreName) throws RemoteException;
-	/* START 405_ignore */   	
+
+    public String listIgnoredPlayers(String playerName)throws RemoteException;
+    /* START 405_ignore */   	
 }

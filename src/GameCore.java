@@ -224,7 +224,7 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }
-    //author Shayan AH
+    //402
     public String listAllPlayers(String name)
     {
         Player player = this.playerList.findPlayer(name);
@@ -388,5 +388,20 @@ public class GameCore implements GameCoreInterface {
 		ignoredPlayer.addIgnoredBy(name);
 		return ignoreName + " added to ignore list.";
     }  
-    /* STOP 405_ignore */	
+    /* STOP 405_ignore */
+    public String listIgnoredPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Ignored Players: ";
+
+        if(player != null)
+        {
+            l += player.showIgnoreList();
+            return l;
+        }
+        else
+        {
+            return null;
+        }
+    }
 }

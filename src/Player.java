@@ -165,5 +165,13 @@ public class Player {
 		return false;
     }
     /* END 405_ignore */
+    //407
+    public String showIgnoreList()
+    {
+        String res = "";
+        for(int i = 0; i < ignoreList.size(); i++)
+            res += ignoreList.get(i) + " ";
+        return res;
+    }
 
 }
