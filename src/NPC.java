@@ -16,7 +16,7 @@ abstract class NPC {
   private int pastRoom;
   private long lastAiTime;
   private long aiPeriodSeconds;
-  private GameCore gameCore;
+  protected GameCore gameCore;
 
   public NPC(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds) {
     this.name = name;

@@ -2,6 +2,7 @@
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  *
@@ -16,26 +17,32 @@ public class Ghoul extends NPC {
     public static final int MAXANGER = 100;
 
     Ghoul(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds){
+
         super(gameCore, name, currentRoom, aiPeriodSeconds);
+        this.anger = 0;
     }
 
-//    private void decreaseAnger(){
-//
-//        if (anger <= 0){
-//            anger = 0;
-//        }
-//        else{
-//
-//            anger -= getRandomNumberInRange(1,5);
-//        }
-//
-//    }
 
+    // If anger goes below 0 and into the negative it will go back to zero
+    // (possibly use negative int numbers as a friendly aggro or revamp)
+    private void decreaseAnger(){
+
+        if (anger <= 0){
+            anger = 0;
+        }
+        else{
+            anger -= getRandomNumberInRange(1,5);
+        }
+        
+    }
+
+    // Calls the NPC broading method which calls GameCore
     private void replyAnger(){
         super.broadcast("Grrrr, do not poke me! *the ghouls anger level rises*");
     }
 
 
+    // TODO WAIT FOR THAOVY
     private void dragPlayer(){
 
     }
@@ -48,39 +55,31 @@ public class Ghoul extends NPC {
     }
     */
     
-    // TODO
-    public void poke(){
+    // TODO WAIT FOR HABIB
+    /*public void poke(){
 
-    }
+    }*/
     
-//    // TODO
-//    public void give(Item object){
-//
-//    }
+    // TODO WAIT FOR HABIB
+    /*public void give(Item object){
+
+    }*/
     
 
     // returns the anger level of the ghoul
     public int getAnger(){
 
-        // positive anger
-        if (anger > 0){
-            return (anger);
-        }
-        // anger <= 0
-        else{
-            return 0;
-        }
-        
+        return anger;
     }
 
-//    private static int getRandomNumberInRange(int min, int max) {
-//
-//        if (min >= max) {
-//            throw new IllegalArgumentException("max must be greater than min");
-//        }
-//
-//        Random r = new Random();
-//        return r.nextInt((max - min) + 1) + min;
-//    }
 
+   private static int getRandomNumberInRange(int min, int max) {
+
+       if (min >= max) {
+           throw new IllegalArgumentException("max must be greater than min");
+       }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+   }
 }

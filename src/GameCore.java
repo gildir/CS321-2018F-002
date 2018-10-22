@@ -13,10 +13,6 @@ public class GameCore implements GameCoreInterface {
     private final Map map;
     private final Set<NPC> npcSet;
 
-    public Set<NPC> getNpcSet() {
-        return npcSet;
-    }
-
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -75,15 +71,22 @@ public class GameCore implements GameCoreInterface {
         objectThread.start();
 
     }
+
     /**
      * Basic getter methods for GameCore.
      */ 
     public PlayerList getPlayerList(){
       return this.playerList;
     }
+
     public Map getMap(){
       return this.map;
     }
+
+    public Set<NPC> getNpcSet() {
+        return npcSet;
+    }
+
     /**
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.
@@ -298,14 +301,12 @@ public class GameCore implements GameCoreInterface {
         }
     }
 
-
     /**
      * Player pokes a ghoul that is in the same room.
-     * @param ghoulName Name of the ghoul that is poked
      * @param playerName Name of the player that pokes the ghoul.
+     * @param ghoulName Name of the ghoul that is poked
      * @return Message showing success or failure of poke action.
      */
-
     public String pokeGhoul(String playerName, String ghoulName) {
         Player player = this.playerList.findPlayer(playerName);
         ArrayList<String> npcsFound = new ArrayList<>();
@@ -323,14 +324,14 @@ public class GameCore implements GameCoreInterface {
                 }
             }
         }
-
-
         return null;
     }
 
     /**
      * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
      * @param playerName Name of the player that gifts the ghoul.
+     * @param ghoulName Name of the ghoul to give the item to.
+     * @param itemName Name of the item to give to the ghoul.
      * @return Message showing success or failure of the gifting action.
      */
 
@@ -374,13 +375,8 @@ public class GameCore implements GameCoreInterface {
                 }
             }
         }
-
         return null;
     }
-
-
-
-
 
     /**
      * Returns a string representation of all objects you are carrying.
@@ -413,5 +409,32 @@ public class GameCore implements GameCoreInterface {
             return player;
         }
         return null;
-    }       
+    }
+
+
+    
+    /**
+     * Ghoul "drags" player.
+     * @param name Name of the player to "drag"
+     * @return void.
+     */
+     /*  
+    public void dragPlayer(int currentRoom) {
+       
+        // Find the room the Ghoul is in.
+        Room room = this.map.findRoom(Ghoul.getCurrentRoom());
+
+            // Send a message to all other players in the room that this player is looking around.
+            this.broadcast(player, player.getName() + " takes a look around.");
+
+            // Return a string representation of the room state.
+            return room.toString(this.playerList, player);
+        }
+        // No such player exists
+        else {
+            return null;
+        }
+
+    }
+    */
 }
