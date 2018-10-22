@@ -103,10 +103,12 @@ public class Room {
         }
     }
     
-    public void addObject(String obj) {
+    public boolean addObject(String obj) {
         if(this.objects.size() < 5) {
             this.objects.add(obj);
+	    return true;
         }
+	return false;
     }
 
    public void playerAddObject(String obj) {
