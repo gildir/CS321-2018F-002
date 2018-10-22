@@ -1,6 +1,0 @@
-public class fiveDollar extends Dollar{
-
-  public oneDollar(){
-    super(5);
-  }
-}
