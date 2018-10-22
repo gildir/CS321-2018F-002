@@ -124,14 +124,8 @@ public class Player {
     
     public String viewInventory() {
         String result = "";
-        if(this.currentInventory.isEmpty() == true) {
             return "nothing.";
         }
-        else {
-            for(String obj : this.currentInventory) {
-                result += " " + obj;
-            }
-            result += ".";
         }
         return result;
     }
