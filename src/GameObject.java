@@ -113,7 +113,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
     
     /**
-     * Attempts to enter <location>. Use if entering a room that is part of another
+     * Attempts to enter <location> shop. Use if entering a room that is part of another
      * room, instead of using move to walk to a separate room
      * @param name Name of the player to enter
      * @param location The place to enter
@@ -176,6 +176,16 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String giftable(String playerName) throws RemoteException {
         return core.giftable(playerName);
     } 
+    
+    /**
+     * Sell an item to the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to sell
+     * @return A string indicating success or failure
+     */
+    public String sell(String playerName, String itemName) throws RemoteException{
+    	return core.sell(playerName, itemName);
+    }
     
      /**
      * Leaves the game.

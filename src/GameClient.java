@@ -217,6 +217,14 @@ public class GameClient {
           System.out.println(remoteGameInterface.gift(this.playerName, tokens.remove(0)));  
         }
         break;
+        case "SELL":
+        	if(tokens.isEmpty()) {
+        		System.err.println("Provide an item name to sell.");
+        	}
+        	else {
+        		System.out.println(remoteGameInterface.sell(this.playerName, tokens.remove(0)));
+        	}
+        break;
         case "QUIT":
           remoteGameInterface.leave(this.playerName);
           runListener = false;
