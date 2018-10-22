@@ -218,6 +218,7 @@ public class GameClient {
                         System.out.println( remoteGameInterface.ignore( this.playerName, tokens.remove(0) ) );
                     }
                     break;
+				/* START 405_ignore */
  case "UNIGNORE":
                     if(tokens.isEmpty()) {
                         System.err.println("You need to specify a player to unignore.");

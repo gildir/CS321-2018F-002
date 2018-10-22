@@ -170,7 +170,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      /* START 405_ignore */
      /**
      * Update ignore and ignoredBy lists, depending on player
-     * @param name Name of player committing ignored
+     * @param name Name of player committing ignore
      * @param name Name of player being ignored
      * @return Message showing success/failure
      * @throws RemoteException
