@@ -312,6 +312,10 @@ public class GameCore implements GameCoreInterface {
         if(player != null){
             LinkedList<Item> playerInventory = player.getCurrentInventory();
             if(playerOffered != null) {
+                if (player == playerOffered)
+                {
+                    return "You can't offer yourself an item.";
+                }
                 for(Item obj : playerInventory){
                     if(obj.getItemName().equalsIgnoreCase(target)){
                         hasItem = true;
@@ -330,9 +334,9 @@ public class GameCore implements GameCoreInterface {
                 return "You just tried to offer " + nameOffered + " a " + target + ", but " + nameOffered + " is not here.";
             }
         }
-    	else{
-	    return null;
-	}
+    	else {
+	        return null;
+	    }
     }
 
     /**
