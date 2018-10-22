@@ -605,5 +605,25 @@ public class GameCore implements GameCoreInterface {
     }
   }
 //Rock Paper Scissors Battle Methods -------------------------------------------
-
+  public void tutorial()
+  {
+     System.out.println("█▀▀▀▀▀▀▀▀▀▀▀▀▀█\n
+             █░░╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗░░█\n
+             █░░║║║╠─║─║─║║║║║╠─░░█\n
+             █░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█\n
+             █▄▄▄▄▄▄▄▄▄▄▄▄▄█\n");
+     System.out.println("This is your Rock-Paper-Scissors Tutorial with me, the Professor.\n" +
+             "This is the basic rock paper scissors game that everyone knows and loves. Two players each pick one of rock, paper, and scissors.\n" +
+             "Rock beats scissors, scissors beats paper, paper beats rock, and a mirror matchup is always a tie.\n\n" +
+             "\t\t\t How to Play:\n" +
+             "If you want to play someone, you have to challenge them. You can challenge someone by using the 'CHALLENGE' command and entering the name of the player you wish to challenge.\n" +
+             "In order to help you challenge someone, you can see the list of names of players in the same room as you and pick one as the player to challenge.\n" +
+             "If you enter a name that does not belong to any player or belongs to a player that isn't in the same room as you, you will be prompted to enter another command so you can only battle someone in proximity.\n" +
+             "For example, if you're 'p1' and you see someone named 'p2' that you want to challenge, entering 'CHALLENGE p2' will send p2 a challenge.\n" +
+             "If you enter 'CHALLENGE p3' instead and there is nobody with the name 'p3', you'll be prompted to enter another command. Likewise, if there is a 'p3' but he's in a different room, you'll be prompted to enter another command\n" +
+             "\nIf you get challenged by someone else, you can either accept or refuse the challenge request.\n" +
+             "In order to accept, you have to enter 'ACCEPT playername' where playername is the name of the person that challenged you.\n" +
+             "In order to refuse, you have to enter 'REFUSE playername' where playername is the name of the person that challenged you.\n" +
+             "For example, if you get challenged by Bob, you can accept by entering 'ACCEPT Bob' or refuse by entering 'REFUSE Bob'");
+  }
 }
