@@ -308,10 +308,10 @@ public class GameCore implements GameCoreInterface {
 
     public String pokeGhoul(String playerName, String ghoulName) {
         Player player = this.playerList.findPlayer(playerName);
-        Room room = map.findRoom(player.getCurrentRoom());
         ArrayList<String> npcsFound = new ArrayList<>();
         //check if player exists
         if (player != null){
+            Room room = map.findRoom(player.getCurrentRoom());
             //find all the NPCs in the room that the player's in
             npcsFound = room.getLocalNPC(npcSet);
             if (npcsFound != null){
@@ -335,13 +335,10 @@ public class GameCore implements GameCoreInterface {
      */
 
 
-    public String giftGhoul(String playerName, String ghoulName, String target) {
+    public String giftGhoul(String playerName, String ghoulName, String itemName) {
 
         Player player = this.playerList.findPlayer(playerName);
-        boolean ghoulFound = false;
-        //check if player exists
-        Room room = map.findRoom(player.getCurrentRoom());
-        ArrayList<String> npcsFound = new ArrayList<>();
+        boolean ghoulNotFound = true;
         LinkedList<String> playerIn = player.getCurrentInventory();
         //check if inventory is empty
         if (player.getCurrentInventory().isEmpty()){
@@ -349,28 +346,28 @@ public class GameCore implements GameCoreInterface {
         }
         //check if player exists
         if (player != null){
+            Room room = map.findRoom(player.getCurrentRoom());
             //find all the NPCs in the room that the player's in
+            ArrayList<String> npcsFound = new ArrayList<>();
             npcsFound = room.getLocalNPC(npcSet);
             if (npcsFound != null){
                 //checking to see if the ghoulName matches any ghouls in the same room
-                for (int i = 0; i < npcsFound.size(); i++){
+                for (int i = 0;(i < npcsFound.size() && ghoulNotFound); i++){
                     if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
                         i = 9999;
-                        ghoulFound = true;
+                        ghoulNotFound = false;
                     }
                 }
-                if (ghoulFound){
+                if (!ghoulNotFound){
                     //check if the player has the object in their inventory
-                    /*if (!playerIn.contains(target)){
-                        return "You don't have a " + target + " to offer.";
-                    }*/
                     for (int i = 0; i < playerIn.size(); i++){
-                        if (target.equalsIgnoreCase(playerIn.get(i))){
+                        if (itemName.equalsIgnoreCase(playerIn.get(i))){
                             playerIn.remove(i);
                             player.setCurrentInventory(playerIn);//updating the inventory
-                            return playerName + " gifted " + ghoulName + " a " + target;
+                            return playerName + " gifted " + ghoulName + " a " + itemName;
                         }
                     }
+                    return "Player doesn't have a " + itemName + " in their inventory.";
                 }
                 else{
                     return ghoulName + " is not in the same room as you.";

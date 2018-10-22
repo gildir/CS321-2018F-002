@@ -177,11 +177,14 @@ public class GameClient {
                     if(tokens.isEmpty()) {
                         System.err.println("You need to provide a ghoul name and an object.");
                     }
-                    else {
+                    else if (tokens.size() == 2){
                         String ghoulName = tokens.remove(0);
                         String target = tokens.remove(0);
 
                         System.out.println(remoteGameInterface.giftGhoul(this.playerName, ghoulName, target));
+                    }
+                    else{
+                        System.err.println("Gift command only takes two arguments <ghoul_name> <item_name>.");
                     }
                     break;
                 case "POKE":
