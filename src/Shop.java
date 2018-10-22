@@ -10,8 +10,9 @@ import java.util.ArrayList;
  */
 public class Shop {
 	
-	ArrayList<String> playersInShop;
-	ArrayList<ItemStock> items;
+	private ArrayList<String> playersInShop;
+	private ArrayList<String> items;
+	private int maxSize = 10;
 	
 	/**
 	 * 
@@ -38,7 +39,7 @@ public class Shop {
 	
 	public Shop() {
 		playersInShop = new ArrayList<String>();
-		items = new ArrayList<ItemStock>();
+		items = new ArrayList<String>();
 	}
 	
 	/**
@@ -46,18 +47,13 @@ public class Shop {
 	 * @param name
 	 */
 	public void sellItem(String name) {
-		ItemStock newItem = new ItemStock(name, 1);
-		if(items.contains(newItem)) {
-			int index = items.indexOf(newItem);
-			items.get(index).amount++;
-			return;
-		}
-		if(items.size() >= 10) {
+		if(items.size() >= maxSize) {
 			items.remove(0);
-			items.add(newItem);
+			items.add(name);
+			items.trimToSize();
 			return;
 		}
-		items.add(newItem);
+		items.add(name);
 	}
 	
 	/**
@@ -90,10 +86,21 @@ public class Shop {
 	 * @return String representation of shop
 	 */
 	public String displayShop() {
+		ArrayList<ItemStock> itemList = new ArrayList<ItemStock>();
+		for(String item : this.items) {
+			ItemStock iStock = new ItemStock(item, 1);
+			if(!(itemList.contains(iStock))){
+				itemList.add(iStock);
+			}
+			else {
+				ItemStock incumbent = itemList.get(itemList.indexOf(iStock));
+				incumbent.amount++;
+			}
+		}
 		String result = "\nAMOUNT ................ ITEM\n";
 		if(items.size() == 0)
 			result += "shop is empty\n";
-		for(ItemStock item : items) {
+		for(ItemStock item : itemList) {
 			result += "" + item.amount + " ................ " + item.itemName + "\n";
 		}
 		result += "To sell an item enter SELL <ITEM>\n\n";
