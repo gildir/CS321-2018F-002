@@ -116,6 +116,14 @@ public interface GameObjectInterface extends Remote {
      */    
     public String money(String name) throws RemoteException;   
     
+    /**
+     * Sell an item to the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to sell
+     * @return A string indicating success or failure
+     * @throws RemoteException
+     */
+    public String sell(String playerName, String itemName) throws RemoteException;
      /**
      * Leaves the game.
      * @param name Name of the player to leave

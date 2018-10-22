@@ -116,6 +116,11 @@ public class Player {
     public Money getMoney() {
       return this.money;
     }
+    //add money
+    public double addMoney(double amount) {
+    	this.money += amount;
+    	return this.money;
+    }
     // return a string to print to the screen when player wants to view money
     public String viewMoney() {
       return this.money.toString();

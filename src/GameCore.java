@@ -1,4 +1,5 @@
 
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
+    private final Shop shop;
     
     /**
      * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
@@ -23,6 +25,8 @@ public class GameCore implements GameCoreInterface {
         map = new Map();
         
         playerList = new PlayerList();
+        
+        shop = new Shop();
         
         Thread objectThread = new Thread(new Runnable() {
             @Override
@@ -216,6 +220,10 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
     public String move(String name, int distance) {
+    	System.out.println("Players in list from move function");
+    	for(Player players : this.playerList) {
+    		System.out.println(players.getName());
+    	}
         Player player = this.playerList.findPlayer(name);
         if(player == null || distance <= 0) {
             return null;
@@ -239,7 +247,7 @@ public class GameCore implements GameCoreInterface {
     }
     
     /**
-     * Attempts to enter <location>. Use if entering a room that is part of another
+     * Attempts to enter <location> shop. Use if entering a room that is part of another
      * room, instead of using move to walk to a separate room
      * @param name Name of the player to enter
      * @param location The place to enter
@@ -257,12 +265,13 @@ public class GameCore implements GameCoreInterface {
       //if player not near a shop, return.
       if(player.getCurrentRoom() != 1)
         return "Not near " + location;
-      Room room = map.findRoom(player.getCurrentRoom());
+      Room room = this.map.findRoom(player.getCurrentRoom());
       this.broadcast(player, player.getName() + " has walked off towards the shop");
       player.getReplyWriter().println("You enter the shop");
       player.setCurrentRoom(newID);
       this.broadcast(player, player.getName() + " just walked into the shop.");
-      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
+      shop.addPlayer(name);
       return "You stop moving and begin to stand around again.";
     }
     
@@ -280,12 +289,13 @@ public class GameCore implements GameCoreInterface {
         newID = 1;
       else
         return "Can't leave, did you mean quit?";
-      Room room = map.findRoom(player.getCurrentRoom());
+      Room room = this.map.findRoom(player.getCurrentRoom());
       this.broadcast(player, player.getName() + " has left the shop");
       player.getReplyWriter().println("You leave the room");
       player.setCurrentRoom(newID);
       this.broadcast(player, player.getName() + " just walked into the area.");
-      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
+      shop.removePlayer(name);
       return "You stop moving and begin to stand around again.";
     }
     
@@ -392,4 +402,41 @@ public class GameCore implements GameCoreInterface {
         }
         return null;
     }       
+    
+	/**
+	 * Returns true or false if player is in/not in the shop
+	 * @param name
+	 * @return true:inShop  false:notInShop
+	 */
+	public boolean playerInShop(String name) {
+		return shop.playerInShop(name);
+	}
+	
+	/**
+     * Sell an item to the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to sell
+     * @return A string indicating success or failure
+     */
+	public String sell(String playerName, String itemName) {
+		if(itemName.equals("") || itemName == null )
+			return "Bad item";
+		//format user input for item
+		itemName = itemName.toLowerCase();
+		itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
+		//check if player not in shop or does not have item
+		if(!shop.playerInShop(playerName)) {
+			return "You cannot sell if you are not in a shop!";
+		}
+		Player player = this.playerList.findPlayer(playerName);
+		LinkedList<String> inventory = player.getCurrentInventory();
+		if(!inventory.contains(itemName)) {
+			return "You do not have " + itemName + " in your inventory!";
+		}
+		//remove item from inventory, update player inventory, increase money
+		inventory.remove(itemName);
+		player.setCurrentInventory(inventory);
+		player.addMoney(5);
+		return "You have sold " + itemName + " to the shop.";
+	}
 }
