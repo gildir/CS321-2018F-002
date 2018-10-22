@@ -36,6 +36,14 @@ public class Ghoul extends NPC {
         
     }
 
+    private void increaseAnger(){
+
+        if (anger < MAXANGER){
+            anger += getRandomNumberInRange(1,5);
+        }
+
+    }
+
     // Calls the NPC broading method which calls GameCore
     private void replyAnger(){
         super.broadcast("Grrrr, do not poke me! *the ghouls anger level rises*");
@@ -55,15 +63,14 @@ public class Ghoul extends NPC {
     }
     */
     
-    // TODO WAIT FOR HABIB
-    /*public void poke(){
-
-    }*/
+    public void poke(){
+        increaseAnger();
+    }
     
-    // TODO WAIT FOR HABIB
-    /*public void give(Item object){
-
-    }*/
+    // if an item is gifted to the ghoul, decrease their anger
+    public void give(Item object){
+        decreaseAnger();
+    }
     
 
     // returns the anger level of the ghoul
