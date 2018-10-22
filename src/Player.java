@@ -166,4 +166,11 @@ public class Player {
     }
     /* END 405_ignore */
 
+   public void unIgnorePlayer(String name) {
+		ignoreList.remove(name);
+    }
+   
+ public void removeIgnoredBy( String name) {
+		ignoredByList.remove(name);
+    }
 }

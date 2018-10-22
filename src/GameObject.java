@@ -167,10 +167,10 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         }
     }
 
-	/* START 405_ignore */
+     /* START 405_ignore */
      /**
      * Update ignore and ignoredBy lists, depending on player
-     * @param name Name of player committing ignore
+     * @param name Name of player committing ignored
      * @param name Name of player being ignored
      * @return Message showing success/failure
      * @throws RemoteException
@@ -180,4 +180,18 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     	return core.ignore(name,ignoreName);
     }
 	/* END 405_ignore */    
+
+ /* START 408_ignore */
+     /**
+     * Update ignore and ignoredBy lists, depending on player
+     * @param name Name of player committing unignored
+     * @param name Name of player being unignored
+     * @return Message showing success/failure
+     * @throws RemoteException
+     */    
+    @Override
+    public String unIgnore(String name, String ignoreName) throws RemoteException{
+    	return core.unIgnore(name,ignoreName);
+    }
+	/* END 408_ignore */    
 }

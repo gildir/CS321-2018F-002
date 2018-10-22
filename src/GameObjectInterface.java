@@ -108,4 +108,16 @@ public interface GameObjectInterface extends Remote {
      */    
     public String ignore(String name, String ignoreName) throws RemoteException;
 	/* START 405_ignore */   	
+
+	/* START 408_ignore */
+     /**
+     * update ignore and ignoredBy lists, depending on player
+     * @param name Name of the player performing unignored
+     * @param ignorePlayerName Name of the player being unignored
+     * @return Message with success/failure
+     * @throws RemoteException
+     */    
+    public String unIgnore(String name, String ignoreName) throws RemoteException;
+	/* START 408_ignore */   	
+
 }

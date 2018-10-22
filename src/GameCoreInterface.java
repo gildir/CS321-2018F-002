@@ -107,4 +107,13 @@ public interface GameCoreInterface {
      */    
     public String ignore(String name, String ignorePlayerName);
     /* END 405_ignore */	
+
+    /**
+     * Ignores player messages and whispers
+     * @param name Name of the current player
+     * @param ignorePlayerName Name of player to unignore
+     * @return Message showing success.
+     */    
+    public String unIgnore(String name, String ignorePlayerName);
+
 }

@@ -389,4 +389,38 @@ public class GameCore implements GameCoreInterface {
 		return ignoreName + " added to ignore list.";
     }  
     /* STOP 405_ignore */	
+
+
+    /* START 408_ignore */
+    /**
+     * Update ignore and ignoredBy lists, depending on player
+     * @param name Name of player committing unignore
+     * @param name Name of player being unignored
+     * @return Message showing success/failure
+     */
+    @Override
+    public String unIgnore(String name, String unIgnoreName) {
+		if( name.equals(unIgnoreName) )
+			return "You can't ignore yourself.";
+	
+		//verify player being unignored exists
+		Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
+		if( unIgnoredPlayer == null )
+			return "Player " + unIgnoreName + "is not in the game.";
+	
+		Player thisPlayer = this.playerList.findPlayer(name);
+
+		//verify player is in Ignore list
+		if( !thisPlayer.searchIgnoreList(unIgnoreName) )
+			return "Player " + unIgnoreName + " is not in ignored list.";
+
+		//remove ignoreName in ignore list
+		thisPlayer.unIgnorePlayer(unIgnoreName);
+
+		//add ignoring player to ignored players ignoredBy list
+		unIgnoredPlayer.removeIgnoredBy(name);
+		return unIgnoreName + " removed from ignore list.";
+    }  
+    /* STOP 408_ignore */	
+
 }
