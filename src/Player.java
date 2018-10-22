@@ -2,6 +2,7 @@
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,7 +16,7 @@ public class Player {
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
     // add a money field to track player money
-    private double money;
+    private Money money;
 
     public Player(String name) {
         this.currentRoom = 1;
@@ -23,7 +24,7 @@ public class Player {
         this.name = name;
         this.currentInventory = new LinkedList<>();
         // set a default amount of money for each player
-        this.money = 20.0;
+        this.money = new Money(20);
     }
     
     public void turnLeft() {
@@ -112,12 +113,33 @@ public class Player {
         return this.currentDirection;
     }
     // get money 
-    public double getMoney() {
+    public Money getMoney() {
       return this.money;
     }
     // return a string to print to the screen when player wants to view money
     public String viewMoney() {
-      return this.name + ", you have " + this.money + " dollars.";
+      return this.money.toString();
+    }
+    // allows a player to accept money from another player
+    public void acceptMoney(Money moneyToAdd){
+      this.money.dollars.addAll(moneyToAdd.getDollars());
+      this.money.coins.addAll(moneyToAdd.getCoins());
+    }
+    
+    public Money giveMoney(double value){
+//      if(this.money.sum() < value){
+//        // disallow giving money
+//      }
+      // otherwise, player has enough to give
+      Money moneyToGive = new Money();
+        //moneyToGive.dollars.add(this.money.dollars[])
+        // use value to figure out how you'll split up into dollars and coins
+        // moneyToGive has an ArrayList called dollars so you can store dollars
+        // it also has an ArrayList called coins so you can store coins
+        // call this.money.dollars.remove() to get rid of the dollars you're giving away
+        // call this.money.coins.remove() to get rid of coins you're giving away
+        // return moneyToGive in the end 
+      return moneyToGive;
     }
     
     public String viewInventory() {
