@@ -272,6 +272,7 @@ public class GameCore implements GameCoreInterface {
       this.broadcast(player, player.getName() + " just walked into the shop.");
       player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
       shop.addPlayer(name);
+      player.getReplyWriter().println(shop.displayShop());
       return "You stop moving and begin to stand around again.";
     }
     
@@ -419,8 +420,6 @@ public class GameCore implements GameCoreInterface {
      * @return A string indicating success or failure
      */
 	public String sell(String playerName, String itemName) {
-		if(itemName.equals("") || itemName == null )
-			return "Bad item";
 		//format user input for item
 		itemName = itemName.toLowerCase();
 		itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
@@ -429,6 +428,8 @@ public class GameCore implements GameCoreInterface {
 			return "You cannot sell if you are not in a shop!";
 		}
 		Player player = this.playerList.findPlayer(playerName);
+		if(player == null)
+			return null;
 		LinkedList<String> inventory = player.getCurrentInventory();
 		if(!inventory.contains(itemName)) {
 			return "You do not have " + itemName + " in your inventory!";
@@ -436,7 +437,9 @@ public class GameCore implements GameCoreInterface {
 		//remove item from inventory, update player inventory, increase money
 		inventory.remove(itemName);
 		player.setCurrentInventory(inventory);
+		shop.sellItem(itemName);
 		player.addMoney(5);
+		player.getReplyWriter().println(shop.displayShop());
 		return "You have sold " + itemName + " to the shop.";
 	}
 }
