@@ -78,13 +78,6 @@ public class Player {
     }
 
     /**
-<<<<<<< HEAD
-     * Allows an an object to be taken away from someone's inventory.
-     * @param name Name of the player to take an item from
-     * @return Message showing success.
-     */  
-    public String removeRandomItem()  {
-=======
      * Allows an an object to be taken away from player's inventory.
      * @return Message showing success.
      */  
@@ -92,7 +85,6 @@ public class Player {
         if (this.currentInventory.isEmpty()){
             return "You have no items in your inventory.";
         }
->>>>>>> 5fd5b39f006dc537a6915f22d70b4ca87db834b3
         Random randInt = new Random();
         int randItem = randInt.nextInt(this.currentInventory.size()-1);
         String targetItem = this.currentInventory.remove(randItem);
