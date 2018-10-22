@@ -404,14 +404,6 @@ public class GameCore implements GameCoreInterface {
         return null;
     }       
     
-	/**
-	 * Returns true or false if player is in/not in the shop
-	 * @param name
-	 * @return true:inShop  false:notInShop
-	 */
-	public boolean playerInShop(String name) {
-		return shop.playerInShop(name);
-	}
 	
 	/**
      * Sell an item to the shop the player is currently in
