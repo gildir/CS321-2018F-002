@@ -150,7 +150,7 @@ public class Player {
     public boolean searchIgnoredBy(String name) {
     	int listSize = ignoredByList.size();
 		for( int x = 0; x < listSize; x++){
-			if( name.equals(ignoredByList.get(x)))
+			if( name.equalsIgnoreCase(ignoredByList.get(x)))
 				return true;
 		}	
 		return false;
@@ -159,7 +159,7 @@ public class Player {
     public boolean searchIgnoreList(String name) {
     	int listSize = ignoreList.size();
 		for( int x = 0; x < listSize; x++){
-			if( name.equals(ignoreList.get(x)))
+			if( name.equalsIgnoreCase(ignoreList.get(x)))
 				return true;
 		}
 		return false;
