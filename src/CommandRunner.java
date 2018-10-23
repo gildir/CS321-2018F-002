@@ -189,7 +189,7 @@ public class CommandRunner {
      *Creates a HashMap with the aliases of the commands
      */
     private HashMap getAliasesFromFile(){
-        String filePath = "CVSFile.csv";
+        String filePath = "aliases.csv";
         HashMap<String, String> map = new HashMap<String, String>();
         try{
         String line;
