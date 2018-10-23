@@ -426,6 +426,7 @@ public class GameCore implements GameCoreInterface {
     }  
 
     /* STOP 405_ignore */
+    //407
     public String listIgnoredPlayers(String name)
     {
         Player player = this.playerList.findPlayer(name);
