@@ -221,10 +221,11 @@ public class GameClient {
                             }
                     } //end of WHISPER case
                     break;
-							/* START 405_ignore */
+				/* START 405_ignore */
+                case "/I":
                 case "IGNORE":
                     if(tokens.isEmpty()) {
-                        System.err.println("You need to specify a player.");
+                        System.err.println("Please input a valid ignore command.");
                     }
                     else {
                         String choice = tokens.remove(0);
