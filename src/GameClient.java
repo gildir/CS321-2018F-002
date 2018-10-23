@@ -55,7 +55,7 @@ public class GameClient {
         System.out.println("  SHOUT message - Says 'message' to all players in the world.");
         System.out.println("  LISTPLAYERS   - List all the players in the world");
         System.out.println("  WHISPER player message - Says 'message' to specified 'player'.");
-        System.out.println("  IGNORE -l, -a, -r player - Use -a to add 'player' to ignore list, -r to remove, and -l (L) to show list.");
+        System.out.println("  IGNORE -l, -a, -r player - Use -a to add 'player' to ignore list, -r to remove, and -l (L) with no player name to show list.");
 		System.out.println("  LEFT          - Turns your player left 90 degrees.");
         System.out.println("  RIGHT         - Turns your player right 90 degrees.");
         System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
