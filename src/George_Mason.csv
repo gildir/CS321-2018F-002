@@ -43,58 +43,472 @@
 8, outside, Small Park (South), You stand in the southern half of a small park just south of Sub 1.
 17, You walk north, through the park.
 2, You head under the overpass towards the George Mason Clock Tower.
-18, Harris Theatre
-0, WIP
+18, You walk west into Harris Theatre
+11, You walk south into Robinson B.
 
 9, outside, Path, You stand on a path a ways east of the George Mason Clock Tower.
-0, WIP
-0, WIP
-0, WIP
-0, WIP
+0, You look to your north and see the library but can't get there from here.
+19, You head east towards the dorms.
+3, You head west towards the Clock Tower.
+0, You look to the south, in the distance you can see Planetary Hall and Corner Pocket. But you need to go further east in order to get there.
 
 10, inside, David King Hall, You stand inside of David King Hall.
-0, WIP
-0, WIP
-0, WIP
-0, WIP
+3, You exit David King Hall, heading onto the path north.
+20, You exit David King Hall into a loading dock area east. Are you even allowed to use that door?
+5, You exit David King Hall, heading west onto the path.
+21, You exit David King Hall, heading onto the southern path.
 
 11, inside, Robinson Hall B, You stand in Robinson Hall B. It's pretty rundown in here, when will they finally replace it?
-0, WIP
-0, WIP
-0, WIP
-0, WIP
+8, You exit Robinson B, entering a little park to the North.
+6, You walk east through the bridge to Robinson A.
+18, You walk from Robinson B into Harris Theatre, to the west.
+4, You exit Robinson B onto the path south.
 
 12, outside, George Mason Statue, You stand before the statue of George Mason.
-0, WIP
-0, WIP
-0, WIP
-0, WIP
+22, You walk north onto Aquia Creek Land.
+4, You walk east towards the George Mason Clock Tower.
+23, You walk west into the cul-de-sac.
+24, You walk along the path south.
 
 13, inside, Johnson Center Food Court, You stand inside the Johnson Center Food Court. Damn that smells good.
-0, WIP
-0, WIP
-0, WIP
-0, WIP
+4, You exit the food court, headed north.
+0, You look east but all you see are tables and study rooms.
+0, You look west but all you see are fast food places.
+25, You walk south into the lobby of JC.
 
-14, outside, Crossroads South of the Clock Tower, You stand at a crossroads south of the George Mason Clock Tower. To your west is the Johnson Center and to your east is Planetary Hall.
-0, WIP
-0, WIP
-0, WIP
-0, WIP
+14, outside, Crossroads South of the Clock Tower, You stand at a crossroads south of the George Mason Clock Tower. To your west is the Johnson Center and to your east is Planetary Hall. Far to the south is the Engineering Building.
+5, You walk north towards the Clock Tower.
+21, You walk east towards the Hub.
+25, You walk west into JC.
+26, You walk along the path south.
 
-15, outside, Big Park (South West Corner), You stand in a large park. To your north west is sub 1, and to your east is The Mix.
-0, WIP
-0, WIP
-0, WIP
-0, WIP
+15, outside, Big Park (South West Corner), You stand in a large park. There's a big path north of you, running through the middle of the par. To your north west is sub 1, and to your east is The Mix.
+27, You walk north onto the path.
+28, You walk east through the park.
+17, You walk west, heading down some stairs into a smaller park.
+6, You walk south into Robinson A.
 
 16, outside, Path, You stand on a path outside the Library.
+29, You walk north along the path.
+30, You walk east into the Library Building.
+0, You look east and see Robinson A, but you don't see a way to get there from here.
+7, You walk south along the path.
+
+17, outside, Small Park (North), You stand on the north side of a small park, just south of Sub 1.
+31, You walk north into Sub 1.
+15, You walk up some stairs east and into a large park.
+32, You walk west out of the park and onto Aquia Creek Lane.
+8, You walk south through the park.
+
+18, inside, Harris Theatre, You stand inside Harris Theatre.
+0, You look for a north exit to Harris Theatre, but find nothing.
+8, You exit east into a small park.
+22, You exit west onto Aquia Creek Lane.
+11, You exit south and head into Robinson B.
+
+19, outside, Crossroads South of Chesapeake River Lane, You stand at a crossroads. To your south is The Hub. If you go east you'll get to the Dorms. West leads to the GMU Clock Tower.
+33, You walk north along a sidewalk that runs along Chesapeake River Lane.
+34, You walk east along the path to the dorms.
+9, You walk west towards the Clock Tower.
+35, You walk south along the path.
+
+20, outside, Loading Dock Area, You stand in the loading dock parking lot east of David King Hall.
+0, You look north but don't see a way through.
+36, You walk east along an access road.
+10, You enter David King Hall to the west through the loading dock.
+0, You look south and see Planetary Hall, but don't see a way to get there from here.
+
+21, outside, Path, You stand on the stairway between David King Hall to the north and Exploratory Hall to the south. If you go east you'll hit the Hub, and West takes you towards JC.
+10, You enter David King Hall to the north.
+37, You walk east on the path towards the Hub.
+14, You walk west towards JC.
+38, You enter Exploratory Hall to the south.
+
+22, outside, Aquia Creek Lane, You stand on a sidewalk running along Aquia Creek Land.
+32, You walk north along Aquia Creek Lane.
+18, You enter Harris Theatre to the east.
+0, You look for a way west, but find nothing but trees.
+23, You walk south to a cul-de-sac just west of the George Mason Statue.
+
+23, outside, Cul-de-sac West of the Mason Statue, You stand in the Cul-de-sac west of the George Mason Statue.
+22, You walk north along Aquia Creek Lane.
+12, You walk east to the George Mason Statue.
+39, You walk west, stopping before some covered steps.
+40, You enter the de Laski Performing Arts Building to your south.
+
+24, outside, Path, You stand on a path just south of the George Mason Statue.
+12, You walk north to the George Mason Statue.
+0, You look for a way to go east, but it's just a brick wall.
+0, You look for a way to go west, but can't seem to get anywhere that way.
+41, You go south to a crossroads.
+
+25, inside, Johnson Center Lobby, You stand in the lobby of the Johnson Center.
+13, You walk north into the JC food court.
+14, You exit JC, going east.
+41, You exit JC, going west.
+42, You head south, going down some stairs.
+
+26, outside, Path, You stand on a path outside Exploratory Hall.
+14, You head north towards the George Mason Clock Tower.
+38, You head east, entering Exploratory Hall.
+0, You look west and see the Johnson Center, but need to go north before you can enter it.
+43, You walk south.
+
+27, outside, Path, You stand on a path in the middle of a large park just outside of Sub 1.
+44, You walk into the park area north.
+45, You walk east along the path.
+46, You enter Sub 1, to your west.
+15, You walk into the park area south.
+
+28, outside, Big Park (south east), You stand in the south eastern section of a large park with a path running through it.
+45, You walk north onto the path.
+29, You walk east onto the path to the Library.
+15, You walk west through the park.
+0, You look for a way to go south, but don't find anything.
+
+29, outside, Path, You stand on a path outside the Library. To your west is a large park.
+47, You walk north towards The Mix.
+48, You enter the study area to your east.
+28, You walk west into the park.
+16, You walk south along the path.
+
+30, inside, You stand at the base of the stairs leading up to the library, right outside a small cafe. To your north you can see a study area.
+48, You walk north into a small study area.
+49, You walk up the stairs into the library.
+16, You exit west onto the path.
+0, To your south is the cafe, it has no exit.
+
+31, inside, Sub 1 Food Court, You stand in a small food court inside of Sub 1.
+46, You walk north and up stairs into the lobby.
+0, To your east is only some office space, nothing for you to do there.
+0, To your west is some food. Tasty, but nowhere for you to walk to.
+17, You exit Sub 1 into a small park.
+
+32, outside, Aquia Creek Lane, You stand on a sidewalk running along Aquia Creek Land. If you head south you'll hit the George Mason Statue.
+50, You walk north along Aquia Creek Lane.
+46, You walk east and enter Sub 1.
+0, You look west but see only dense forest.
+22, You walk south along Aquia Creek Lane.
+
+33, outside, Chesapeake River Lane, You stand on a sidewalk running along Chesapeake River Lane.
+51, You walk north along Chesapeake River Lane.
+52, You walk east, entering the Skyline Fitness Center.
+0, You look west and see the Library, but the only way in says No Unauthorized Entry.
+19, You walk along the path south.
+
+34, outside, Path, You stand on a path between Skyline Fitness Center north and Southside Dining south of you.
+52, You walk north into the Skyline Fitness Center.
+53, You walk east towards the dorms.
+19, You walk west towards Chesapeake River Lane.
+54, You enter the Southside Dining Hall to your south.
+
+35, outside, Path, You stand on a path outside of the Southside Dining Hall.
+19, You walk north towards Chesapeake River Lane.
+54, You walk east into the Southside Dining Hall.
+36, You walk west towards The Hub.
+0, You look east, but don't see a way over.
+
+36, outside, Access Road, You stand at a crosswalk going over a small access road. To your south you see The Corner Pocket and the rest of the Hub. North you can see a stairway leading up to the Southside Dining Hall.
+35, You walk north towards Chesapeake River Lane.
+55, You walk east along the access road.
+20, You walk west into a loading dock area outside David King Hall.
+56, You walk south towards The Hub.
+
+37, outside, Path, You stand on a path just west of The Hub.
+0, You look north, but there isn't a path ahead.
+56, You walk east towards the hub.
+21, You walk east towards the Johnson Center.
+57, You walk south, entering Planetary Hall.
+
+38, inside, Exploratory Hall, You stand inside Exploratory Hall.
+21, You walk north, exiting Exploratory Hall.
+57, You walk east, into Planetary Hall.
+26, You exit Exploratory to the west.
+26, You exit Exploratory to the south.
+
+39, outside, Path, You stand at the top of some covered stairs. To your north is the Mason Pond Parking Deck, to your south the Concert Hall. Looking east you can see the George Mason Statue beyond a small cul-de-sac.
+0, You look north, but have no reason to enter the parking deck.
+23, You walk east towards the statue.
+58, You walk down your stairs to the west.
+59, You walk south, entering the concert hall.
+
+40, inside, de Laski Performing Arts Building, You artfully stand inside the de Laski Performing Arts Building.
+23, You exit the building north, entering a small cul-de-sac.
+0, There's no exit on the east side of the building.
+0, There's no exit on the west side of the building.
+60, You exit the building south, onto a covered path.
+
+41, outside, Crossroads South of the George Mason Statue, You stand at a crossroads. Form here you can head east into the Johnson Center, north to the George Mason Statue, or west towards Holton Plaza.
+24, You walk north towards the statue.
+25, You head into the Johnson Center, to your east.
+60, You walk east.
+0, There isn't a way through, south.
+
+42, inside, Johnson Center (South Plaza Entrance), You stand on the bottom floor of the Johnson Center, next to the Starbucks. Out the doors you can see the South Plaza.
+25, You head north, up some stairs.
+0, WIP
+0, WIP
+61, You exit JC south, into the plaza.
+
+43, outside, Crossroads at Planetarium Hall, You stand at a crossroads with Planetary Hall to your east, South Plaza to your west, and Enterprise Hall to your south.
+26, You walk north along the path.
+62, You walk east along the path.
+61, You walk west to the South Plaza.
+63, You walk south along the path.
+
+44, outside, Big Park (North West Corner), You stand in the north west corner of a big open park area surrounding the path to Sub 1.
+64, You walk north, between Krug Hall and West Building, into a quad.
+65, You walk east through the park.
+66, You walk west into the Aquia Building.
+27, You walk south onto the path.
+
+45, outside, Path, You stand on the path to Sub 1, surrounded by a large park.
+65, You walk north into the park.
+47, You walk along the path east.
+27, You walk west along the path.
+28, You walk south into the park.
+
+46, inside, Sub 1 Lobby, You stand inside the lobby of sub 1. You can see the clinic from here.
+66, You exit Sub 1 and head north into the Aquia Building.
+27, You exit the lobby east.
+50, You exit west onto Aquia Creek Lane.
+31, You head south, down some stairs, into the food court.
+
+47, outside, Crossroads at The Mix, You stand at a crossroads with The Mix on your east and Sub 1 on your west.
+67, You walk north along the path.
+68, You walk east, entering The Mix.
+45, You walk west along the path.
+29, You walk south along the path.
+
+48, inside, Study Area, You stand in a small study area under the Library.
+29, You exit the study area north.
+0, You look for a way east but there's nothing over there.
+0, You look out the windows west at the path outside, but there's no door here!
+30, You head south towards a small cafe.
+
+49, inside, Library (south side), You stand in the Library.
+69, You walk north through the library.
+0, You walk through the library but end up going nowhere.
+30, You walk west down the stairs, stopping by a small cafe.
+0, You wander through the library, but end up exactly where you started!
+
+50, outside, Aquia Creek Lane, You stand on a sidewalk that runs along Aquia Creek Lane. You see Sub 1 to your east.
+70, You walk north along Aquia Creek Lane.
+46, You walk east, entering Sub 1.
+0, You look for a way west but there's no path there.
+50, You walk south along Aquia Creek Lane.
+
+51, outside, Chesapeake River Lane, You stand on a sidewalk that runs along Chesapeake River Lane, outside Tidewater.
+71, You walk north along the sidewalk.
+72, You walk east into Tidewater.
+0, WIP
+33, You walk south along the sidewalk.
+
+52, inside, Skyline Fitness Center, You stand inside the Skyline Fitness Center. Looks like it's time for a workout!
+0, You look for a way north out of the fitness center, but get distracted by the fitness-ee stuff and don't go anywhere.
+73, You exit east, onto a path.
+33, You exit west, onto Chesapeake River Lane.
+34, You exit south, onto a path.
+
+53, outside, Crossroads West of the Dorms, You stand at a crossroads, to your north is a path stretching up to Commonwealth, and to your east are the dorm buildings. To your south you can see the back of The Hub.
+73, You head north along the path.
+74, You walk east along the path.
+34, You walk west along the path.
+75, You walk south towards The Hub.
+
+54, inside, Southside Dining, You stand inside the Southside Dining Hall. You can smell something tasty in the distance.
+34, You exit the dining hall to the north.
+0, You look around on the east side, but get distracted by the food and end up not going anywhere.
+35, You exit the dining hall to the west.
+0, You look around on the south side but there's no exit on that side.
+
+55, outside, Access Road, You stand on an access road just south of the Southside Dining Hall.
+0, You look north and see the Southside Dining Hall, but don't see a way to get there from here.
+75, You walk east along the road.
+36, You walk west along the road.
+0, You look south but don't see a path forward.
+
+56, outside, Crossroads at The Hub, You stand at a crossroads. To your east is The Corner Pocket and The Hub, to your west you can see the Johnson Center in the distance.
+36, You walk north to an access road.
+76, You walk east into the Hub Plaza.
+37, You walk west along the path.
+77, You walk south along an access road.
+
+57, inside, Planetary Hall (north), You stand in the northern lobby of Planetary Hall.
+37, You exit Planetary Hall to the north.
+77, You exit Planetary Hall east, onto an access road.
+38, You walk west through Planetary into Exploratory Hall.
+78, You walk south through Planetary Hall.
+
+58, outside, Mason Pond Drive, You stand on a sidewalk next to Mason Pond Drive. To your north you see the Mason Pond Parking Deck. To your south is the Concert Hall.
+0, You look north, but there's no reason for you to go that way.
+39, You walk east to find a stairway up behind Concert Hall.
+0, WIP
+79, You walk south along Mason Pong Drive.
+
+59, inside, Concert Hall, You stand inside the Concert Hall.
+39, You exit north.
+0, You look east, but there's nowhere for you to go that way.
+79, You exit west onto Mason Pond Drive.
+80, You exit south into the Holton Plaza.
+
+60, outside, Path, You stand on a covered path between de Laski to the north and the Music and Theater Building to your south.
+40, You walk north into the de Laski Performing Arts Building.
+41, You walk east, up some stairs, towards the Johnson Center.
+80, You walk west into the Holton Plaza.
+81, You walk south into the Music and Theater Building.
+
+61, outside, South Plaza, You stand in the South Plaza, south of the Johnson Center.
+42, You walk north into the Johnson Center.
+43, You walk along the path east.
+82, You walk west and find yourself on an Access Road.
+83, You walk south, along a path through the woods.
+
+62, outside, Path, You stand on a path, just outside of Planetary Hall.
+0, You look north, but there's no path forward.
+78, You enter Planetary Hall to your east.
+43, You walk west along the path.
+0, You look south and see a bus depot, but you decide you're just gonna walk today.
+
+63, outside, Path, You stand in an overpass under Enterprise Hall.
+43, You walk north along the path.
+84, You walk east, entering Enterprise Hall.
+85, You walk west, entering Enterprise Hall.
+86, You walk south along the path.
+
+64, outside, Aquia Creek Quad (south), You stand in the southern part of the Aquia Creek Quad.
 0, WIP
 0, WIP
 0, WIP
 0, WIP
 
-17, outside, Small Park (North), You stand on the north side of a small park, just south of Sub 1.
+65, outside, Big Park (north east corner), You stand in the north east section of a large park. To your south is a path running from The Mix to your east to Sub 1 to your west.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+66, inside, Aquia Building, You stand inside the Aquia Building.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+67, outside, Path, You stand on a path just outside The Mix.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+68, inside, The Mix, You stand inside The Mix.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+69, inside, Library (north), You stand in the library.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+70, outside, Aquia Creek Lane, You stand on a sidewalk running up Aquia Creek Lane, just west of Aquia Building.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+71, outside, Chesapeake River Lane, You stand on a sidewalk running along Aquia Creek Lane, just outside of Piedmont.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+72, inside, Tidewater, You stand inside Tidewater.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+73, outside, Path, You stand on a path west of the Skyline Fitness Center.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+74, outside, Path, You stand on a path just west of The Commons.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+75, outside, Access Road, You stand on an access road, just north of The Hub.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+76, outside, The Hub Plaza, You stand in the plaza of The Hub. I think it's time for some Wing Zone.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+77, outside, Access Road, You stand on an Access Road just east of Planetary Hall.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+78, inside, Planetary Hall (south), You stand inside Planetary Hall.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+79, outside, Mason Pond Drive, You stand on a sidewalk that runs along Mason Pond Drive.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+80, outside, Holton Plaza (north), You stand on the north side of Holton Plaza.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+81, inside, Music and Theater Building, You stand inside the Music and Theater Building.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+82, outside, Access Road, You stand on a sidewalk next to an access road, just south east of the Johnson Center.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+83, outside, Path, You stand on a path through the woods, south of the Johnson Center.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+84, inside, Enterprise Hall (east), You stand in the eastern half of Enterprise Hall.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+85, inside, Enterprise Hall (west), You stand in the western half of Enterprise Hall.
+0, WIP
+0, WIP
+0, WIP
+0, WIP
+
+86, outside, Crossroads North of Engineering, You stand at a crossroads. To your north is the center of campus. To your south is the Johnson Center.
 0, WIP
 0, WIP
 0, WIP
