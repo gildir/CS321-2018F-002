@@ -174,4 +174,11 @@ public class Player {
         return res;
     }
 
+   public void unIgnorePlayer(String name) {
+		ignoreList.remove(name);
+    }
+   
+ public void removeIgnoredBy( String name) {
+		ignoredByList.remove(name);
+    }
 }
