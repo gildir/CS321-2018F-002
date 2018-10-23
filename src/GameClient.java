@@ -185,7 +185,12 @@ public class GameClient {
                         System.err.println("You need to provide an object to pickup.");
                     }
                     else {
-                        System.out.println(remoteGameInterface.pickup(this.playerName, tokens.remove(0)));
+                        String itemName = tokens.remove(0);
+                        while (!tokens.isEmpty())
+                        {
+                            itemName += " " + tokens.remove(0);
+                        }
+                        System.out.println(remoteGameInterface.pickup(this.playerName, itemName));
                     }
                     break;
                 case "DROPOFF":
@@ -193,7 +198,12 @@ public class GameClient {
                         System.err.println("You need to provide an object to dropoff.");
                     }
                     else {
-                        System.out.println(remoteGameInterface.dropoff(this.playerName, tokens.remove(0)));
+                        String itemName = tokens.remove(0);
+                        while (!tokens.isEmpty())
+                        {
+                            itemName += " " + tokens.remove(0);
+                        }
+                        System.out.println(remoteGameInterface.dropoff(this.playerName, itemName));
                     }
                     break;
                 case "INVENTORY":
