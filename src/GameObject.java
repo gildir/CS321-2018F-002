@@ -175,4 +175,8 @@ public void scissors(String player) throws RemoteException
   core.scissors(player);
 }
 //Rock Paper Scissors Battle Code here--------------------------------------
+public String tutorial(String name) throws RemoteException
+{
+    return core.tutorial(name);
+}
 }
