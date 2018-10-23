@@ -99,6 +99,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.say(name, message);
     }
 
+    /**
+    * Shouts "message" to everyone in the game.
+    * @param name Name of the player shouting
+    * @param message Message to be shouted
+    * @return Message showing success
+    * @throws RemoteException
+    */
+    public String shout(String name, String message) throws RemoteException {
+        return core.shout(name, message);
+    }
+
     //Author Shayan AH
     public String listAllPlayers(String name)throws RemoteException
     {
@@ -165,5 +176,39 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         if(player != null) {
             player.getReplyWriter().close();
         }
-    }    
+    }
+
+     /* START 405_ignore */
+     /**
+     * Update ignore and ignoredBy lists, depending on player
+     * @param name Name of player committing ignore
+     * @param name Name of player being ignored
+     * @return Message showing success/failure
+     * @throws RemoteException
+     */
+    @Override
+    public String ignore(String name, String ignoreName) throws RemoteException{
+    	return core.ignore(name,ignoreName);
+    }
+
+    //407
+    @Override
+    public String listIgnoredPlayers(String playerName) throws RemoteException {
+        return core.listIgnoredPlayers(playerName);
+    }
+	/* END 405_ignore */    
+
+ /* START 408_ignore */
+     /**
+     * Update ignore and ignoredBy lists, depending on player
+     * @param name Name of player committing unignored
+     * @param name Name of player being unignored
+     * @return Message showing success/failure
+     * @throws RemoteException
+     */    
+    @Override
+    public String unIgnore(String name, String ignoreName) throws RemoteException{
+    	return core.unIgnore(name,ignoreName);
+    }
+	/* END 408_ignore */
 }
