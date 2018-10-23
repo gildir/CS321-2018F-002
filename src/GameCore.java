@@ -289,8 +289,13 @@ public class GameCore implements GameCoreInterface {
                 return "You cannot whisper yourself";
             else
             {
-                this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
-                return "message sent to " + playerReceiving.getName();
+                if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
+                    this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+                    return "message sent to " + playerReceiving.getName();
+                }
+                else {
+                    return "";
+                }
             }
         }
         else
@@ -299,8 +304,8 @@ public class GameCore implements GameCoreInterface {
                 return "That player isn't online.";
             return null;
         }
-
     }
+
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
@@ -405,7 +410,7 @@ public class GameCore implements GameCoreInterface {
 		//verify player being ignored exists
 		Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
 		if( ignoredPlayer == null )
-			return "Player " + ignoreName + "is not in the game.";
+			return "Player " + ignoreName + " is not in the game.";
 	
 		Player thisPlayer = this.playerList.findPlayer(name);
 		//verify player is not already in ignore list
@@ -454,7 +459,7 @@ public class GameCore implements GameCoreInterface {
 		//verify player being unignored exists
 		Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
 		if( unIgnoredPlayer == null )
-			return "Player " + unIgnoreName + "is not in the game.";
+			return "Player " + unIgnoreName + " is not in the game.";
 	
 		Player thisPlayer = this.playerList.findPlayer(name);
 
