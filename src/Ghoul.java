@@ -52,7 +52,11 @@ public class Ghoul extends NPC {
 
     // TODO WAIT FOR THAOVY
     private void dragPlayer(){
+        //gameCore.dragPlayer();
+    }
 
+    private void resetAnger(){
+        anger = 0;
     }
 
     // TODO
@@ -65,17 +69,20 @@ public class Ghoul extends NPC {
     
     public void poke(){
         increaseAnger();
+        if (anger >= MAXANGER){
+            resetAnger();
+            dragPlayer();
+        }
     }
     
     // if an item is gifted to the ghoul, decrease their anger
-    public void give(Item object){
+    public void give(){
         decreaseAnger();
     }
     
 
     // returns the anger level of the ghoul
     public int getAnger(){
-
         return anger;
     }
 
