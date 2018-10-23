@@ -199,7 +199,12 @@ public class GameClient {
                             System.err.println("You need to provide an item to offer.");
                         }
                         else {
-                            System.out.println(remoteGameInterface.offerItem(this.playerName, offeredPlayer, tokens.remove(0)));
+                            String itemName = tokens.remove(0);
+                            while (!tokens.isEmpty())
+                            {
+                                itemName += " " + tokens.remove(0);
+                            }
+                            System.out.println(remoteGameInterface.offerItem(this.playerName, offeredPlayer, itemName));
                         }
                     }
                     break;
