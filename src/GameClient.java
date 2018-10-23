@@ -55,9 +55,7 @@ public class GameClient {
         System.out.println("  SHOUT message - Says 'message' to all players in the world.");
         System.out.println("  LISTPLAYERS   - List all the players in the world");
         System.out.println("  WHISPER player message - Says 'message' to specified 'player'.");
-        System.out.println("  LISTIGNOREDPLAYERS  - List all the ignored players .");
-        System.out.println("  IGNORE player - ignore messages and whispers from 'player'.");       
-        System.out.println("  UNIGNORE player - unignore messages and whispers from 'player'."); 
+        System.out.println("  IGNORE -l, -a, -r player - Use -a to add 'player' to ignore list, -r to remove, and -l (L) to show list.");
 		System.out.println("  LEFT          - Turns your player left 90 degrees.");
         System.out.println("  RIGHT         - Turns your player right 90 degrees.");
         System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
@@ -227,25 +225,35 @@ public class GameClient {
                 case "IGNORE":
                     if(tokens.isEmpty()) {
                         System.err.println("You need to specify a player.");
-                    }else if(tokens.size()>1) {
-                        System.err.println("You can only ignore one player at a time.");
-					}
-                    else {
-                        System.out.println( remoteGameInterface.ignore( this.playerName, tokens.remove(0) ) );
                     }
-                    break;
-				//story 407
-                case "LISTIGNOREDPLAYERS":
-                    System.out.println(remoteGameInterface.listIgnoredPlayers(this.playerName));
-                    break;
-                case "UNIGNORE":
-                    if(tokens.isEmpty()) {
-                        System.err.println("You need to specify a player to unignore.");
-                    }else if(tokens.size()>1) {
-                        System.err.println("You can only unignore one player at a time.");
-					}
                     else {
-                        System.out.println( remoteGameInterface.unIgnore( this.playerName, tokens.remove(0) ) );
+                        String choice = tokens.remove(0);
+                        switch(choice.toUpperCase()) {
+                            case "-L":
+                                if(!tokens.isEmpty()) {
+                                    System.err.println("Don't enter a player name with list option.");
+                                }
+                                else {
+                                    System.out.println(remoteGameInterface.listIgnoredPlayers(this.playerName));
+                                }
+                                break;
+                            case "-A":
+                                if(tokens.isEmpty()) {
+                                    System.err.println("You need to specify a player to ignore.");
+                                }
+                                else {
+                                    System.out.println(remoteGameInterface.ignore(this.playerName, tokens.remove(0)));
+                                }
+                                break;
+                            case "-R":
+                                if(tokens.isEmpty()) {
+                                    System.err.println("You need to specify a player to unignore.");
+                                }
+                                else {
+                                    System.out.println(remoteGameInterface.unIgnore(this.playerName, tokens.remove(0)));
+                                }
+                                break;
+                        }
                     }
                     break;
                 case "MOVE":
