@@ -222,7 +222,7 @@ public class GameClient {
 				//story 407
                 case "LISTIGNOREDPLAYERS":
                     System.out.println(remoteGameInterface.listIgnoredPlayers(this.playerName));
-				/* START 405_ignore */
+                    break;
                 case "UNIGNORE":
                     if(tokens.isEmpty()) {
                         System.err.println("You need to specify a player to unignore.");
