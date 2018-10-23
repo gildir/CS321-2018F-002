@@ -449,7 +449,7 @@ public class GameCore implements GameCoreInterface {
     @Override
     public String unIgnore(String name, String unIgnoreName) {
 		if( name.equalsIgnoreCase(unIgnoreName) )
-			return "You can't ignore yourself.";
+			return "You can't unignore yourself since you can't ignore yourself...";
 	
 		//verify player being unignored exists
 		Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
