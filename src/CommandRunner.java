@@ -276,7 +276,7 @@ public class CommandRunner {
 
         for (String key : commands.keySet()) {
             Command command = commands.get(key);
-            String line = String.format("- %-30s%s\n", command.getId() + " " + command.getArguments(), command.getDescription());
+            String line = String.format("- %-30s%s\n", key.toUpperCase() + " " + command.getArguments(), command.getDescription());
             s += line;
         }
 
