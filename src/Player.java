@@ -148,22 +148,27 @@ public class Player {
       this.money.coins.addAll(moneyToAdd.getCoins());
     }
     
-    public Money giveMoney(double value){
-//      if(this.money.sum() < value){
-//        // disallow giving money
-//      }
-      // otherwise, player has enough to give
-      Money moneyToGive = new Money();
-        //moneyToGive.dollars.add(this.money.dollars[])
-        // use value to figure out how you'll split up into dollars and coins
-        // moneyToGive has an ArrayList called dollars so you can store dollars
-        // it also has an ArrayList called coins so you can store coins
-        // call this.money.dollars.remove() to get rid of the dollars you're giving away
-        // call this.money.coins.remove() to get rid of coins you're giving away
-        // return moneyToGive in the end 
+ public Money giveMoney(Player giver,Player receiver,double value){
+     Money moneyToGive = new Money();
+      replyWriter.println("You are giving away "+value); 
+      
+      if(this.money.sum() < value){
+        replyWriter.println("Not enough money!");
+      return moneyToGive; 
+      }
+      
+      
+        int i = 0; 
+        while(i < value){
+          
+          receiver.money.dollars.add(this.money.dollars.remove(0)); 
+          i++;
+        }
+         receiver.getReplyWriter().println("You received " +value + " dollars!"); 
+      
       return moneyToGive;
     }
-    
+  
     public String viewInventory() {
         String result = "";
         if(this.currentInventory.isEmpty() == true) {

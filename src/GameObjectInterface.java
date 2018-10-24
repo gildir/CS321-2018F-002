@@ -21,7 +21,7 @@ public interface GameObjectInterface extends Remote {
     public boolean joinGame(String name) throws RemoteException;
     
     
-    public String gift(String playerName, String name) throws RemoteException; 
+    public String gift(String playerName, String name, double amount) throws RemoteException; 
     /**
      * Returns a look at the area of the specified player.
      * @param name Player Name

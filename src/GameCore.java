@@ -1,8 +1,10 @@
-
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Scanner; 
 
 /**
  *
@@ -375,16 +377,30 @@ public class GameCore implements GameCoreInterface {
         }
     }    
     @Override 
-    public String gift(String yourname ,String name){
-        Player player = this.playerList.findPlayer(name); 
+    public String gift(String yourname ,String name, double amount){
+        Player receiver = this.playerList.findPlayer(name); 
         Player you = this.playerList.findPlayer(yourname); 
-      
-        System.out.println("YOUR NAME IS: " + you);
-        if(player != null){
-            this.broadcast(you, you.getName() + " offers a gift to " + player.getName());
-            return "You offer " + player.getName() + " a gift"; 
+        if(receiver != null){
+          if(you.getMoney().sum() < amount){
+           return "NOT ENOUGH MONEY!";  
+          }
+            this.broadcast(you, you.getName() + " offers a gift to " + receiver.getName());
+           Scanner read = new Scanner(System.in);
+           
+            receiver.getReplyWriter().println("Accept gift? (y/n):");
+            
+           String input = read.nextLine(); 
+             
+           if(input.toLowerCase().equals("y")) {
+         
+            receiver.acceptMoney(you.giveMoney(you,receiver,amount));
+            
+           return "User accepted gift!";
+           }
+           
+           return "User declined gift!";
       }else{
-            return null;  
+            return "NO USER WITH THAT NAME";  
       }   
     }
     

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Scanner; 
 
 /**
  *
@@ -213,17 +214,21 @@ public class GameClient {
         case "GIFT":
           if(tokens.isEmpty()){
           System.err.println("You need to provide a player name to gift.");
+           }else if(tokens.get(0).equals(this.playerName)){
+          System.err.println("Cannot gift to yourself!");
+        }else if(tokens.size()<2){
+          System.err.println("No gift amount given!"); 
         }else{                 
-          System.out.println(remoteGameInterface.gift(this.playerName, tokens.remove(0)));  
+          System.out.println(remoteGameInterface.gift(this.playerName, tokens.remove(0), Double.parseDouble(tokens.remove(0))));  
         }
         break;
         case "SELL":
-        	if(tokens.isEmpty()) {
-        		System.err.println("Provide an item name to sell.");
-        	}
-        	else {
-        		System.out.println(remoteGameInterface.sell(this.playerName, tokens.remove(0)));
-        	}
+         if(tokens.isEmpty()) {
+          System.err.println("Provide an item name to sell.");
+         }
+         else {
+          System.out.println(remoteGameInterface.sell(this.playerName, tokens.remove(0)));
+         }
         break;
         case "QUIT":
           remoteGameInterface.leave(this.playerName);
