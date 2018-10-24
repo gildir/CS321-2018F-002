@@ -13,6 +13,10 @@ public class GameCore implements GameCoreInterface {
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
+
+	// Added by Brendan
+	private Leaderboard leaderboard;
+
     /**
      * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -28,6 +32,9 @@ public class GameCore implements GameCoreInterface {
 
         activeBattles = new ArrayList<Battle>();
         pendingBattles = new ArrayList<Battle>();
+
+		// Added by Brendan
+		this.leaderboard = new Leaderboard();
 
         Thread objectThread = new Thread(new Runnable() {
             @Override
@@ -118,6 +125,10 @@ public class GameCore implements GameCoreInterface {
             // New player starts in a room.  Send a message to everyone else in that room,
             //  that the player has arrived.
             this.broadcast(newPlayer, newPlayer.getName() + " has arrived.");
+
+			// Added by Brendan
+			this.leaderboard.addScore(name);
+
             return newPlayer;
         }
         // A player of that name already exists.
@@ -565,6 +576,10 @@ public class GameCore implements GameCoreInterface {
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
+
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play2.getName());
+
       return;
     }
     else if(p1 == 1 && p2 == 3)
@@ -576,6 +591,10 @@ public class GameCore implements GameCoreInterface {
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
+
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName());
+
       return;
     }
     else if(p1 == 2 && p2 == 1)
@@ -587,6 +606,10 @@ public class GameCore implements GameCoreInterface {
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
+
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName());
+
       return;
     }
     else if(p1 == 2 && p2 == 3)
@@ -598,6 +621,10 @@ public class GameCore implements GameCoreInterface {
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
+
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play2.getName());
+
       return;
     }
     else if(p1 == 3 && p2 == 1)
@@ -609,6 +636,10 @@ public class GameCore implements GameCoreInterface {
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
+
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play2.getName());
+
       return;
     }
     else if(p1 == 3 && p2 == 2)
@@ -620,6 +651,10 @@ public class GameCore implements GameCoreInterface {
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);;
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
+
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName());
+
       return;
     }
   }
@@ -634,12 +669,14 @@ public class GameCore implements GameCoreInterface {
          }
          catch(IOException e) {}
     }
-
-
-
-
-
-
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
+	// Added by Brendan
+    public void checkBoard(String name) {
+        Player player = this.playerList.findPlayer(name);
+        if(player == null)
+            return;
+		String board = this.leaderboard.getBoard();
+        player.getReplyWriter().println(board);
+    }
 }

@@ -57,9 +57,10 @@ public class GameClient {
         System.out.println("  MOVE distance     - Tries to walk forward <distance> times.");
         System.out.println("  PICKUP obect      - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY         - Shows you what objects you have collected.");
-        System.out.println("  CHALLENGE player  - Challenges another player to a Rock Paper Scissors Battle.");
-        System.out.println("  ACCEPT player     - Accepts a Rock Paper Scissors Battle Challenge from a specified player.");
-        System.out.println("  REFUSE player     - Refuses a Rock Paper Scissors Battle Challenge from a specified player.");
+        System.out.println("  CHALLENGE player  - Challenges another player to a Rock-Paper-Scissors Battle.");
+        System.out.println("  ACCEPT player     - Accepts a Rock-Paper-Scissors Battle Challenge from a specified player.");
+        System.out.println("  REFUSE player     - Refuses a Rock-Paper-Scissors Battle Challenge from a specified player.");
+        System.out.println("  LEADERBOARD       - Check the Rock-Paper-Scissors Leaderboard.");
         System.out.println("  QUIT              - Quits the game.");
         System.out.println();
 
@@ -236,6 +237,11 @@ public class GameClient {
                 case "SCISSORS":
                     remoteGameInterface.scissors(this.playerName);
                     break;
+				
+				// Added by Brendan
+				case "LEADERBOARD":
+					remoteGameInterface.checkBoard(this.playerName);
+					break;
             }
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
