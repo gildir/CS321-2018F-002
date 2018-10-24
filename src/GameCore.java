@@ -246,7 +246,8 @@ public class GameCore implements GameCoreInterface {
     * @return Message showing success.
     */
     @Override
-    public String whisper(String name1, String name2, String message) {
+    public String whisper(String name1, String name2, String message)
+    {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
 	
