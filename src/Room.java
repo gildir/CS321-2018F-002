@@ -8,7 +8,7 @@ public class Room {
     private final int id;
     private final String title;
     private final String description;
-    private final LinkedList<String> objects;
+    private final LinkedList<Item> objects;
     private final LinkedList<Exit> exits;
     
     public Room(int id, String title, String description) {
@@ -31,9 +31,9 @@ public class Room {
         result += "You see paths in these directions: " + this.getExits() + "\n";
         //If player is at the clock tower, they are near the shop
         if(this.getId() == 1)
-        	result += "You see the shop nearby. ENTER SHOP to enter the shop.\n";
+         result += "You see the shop nearby. ENTER SHOP to enter the shop.\n";
         if(this.getId() == 10)
-        	result += "LEAVE to leave the shop\n";
+         result += "LEAVE to leave the shop\n";
         result += "...................\n";
         result += "You are facing: " + player.getCurrentDirection() + "\n";
         return result;
@@ -101,15 +101,15 @@ public class Room {
         }
     }
     
-    public void addObject(String obj) {
+    public void addObject(Item obj) {
         if(this.objects.size() < 5) {
             this.objects.add(obj);
         }
     }
     
-    public String removeObject(String target) {
-        for(String obj : this.objects) {
-            if(obj.equalsIgnoreCase(target)) {
+    public Item removeObject(String target) {
+        for(Item obj : this.objects) {
+            if(obj.getItemName().equalsIgnoreCase(target)) {
                 this.objects.remove(obj);
                 return obj;
             }

@@ -33,11 +33,11 @@ public class GameCore implements GameCoreInterface {
             public void run() {
                 Random rand = new Random();
                 Room room;
-                String object;
-                String[] objects = {"Flower", "Textbook", "Phone", "Newspaper"};
+                Item object;
+                Item[] objects = {new Item("Flower", 0.1, 0.0), new Item("Textbook", 4.8, 300), new Item("Phone", 0.3, 100), new Item("Newspaper", 0.6, 0)};
                 while(true) {
                     try {
-                        Thread.sleep(rand.nextInt(60000));
+                        Thread.sleep(rand.nextInt(10000));
                         object = objects[rand.nextInt(objects.length)];
                         room = map.randomRoom();
                         room.addObject(object);
@@ -220,10 +220,10 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
     public String move(String name, int distance) {
-    	System.out.println("Players in list from move function");
-    	for(Player players : this.playerList) {
-    		System.out.println(players.getName());
-    	}
+     System.out.println("Players in list from move function");
+     for(Player players : this.playerList) {
+      System.out.println(players.getName());
+     }
         Player player = this.playerList.findPlayer(name);
         if(player == null || distance <= 0) {
             return null;
@@ -310,7 +310,7 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             Room room = map.findRoom(player.getCurrentRoom());
-            String object = room.removeObject(target);
+            Item object = room.removeObject(target);
             if(object != null) {
                 player.addObjectToInventory(object);
                 this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
@@ -404,34 +404,37 @@ public class GameCore implements GameCoreInterface {
         return null;
     }       
     
-	
-	/**
+ 
+/**
      * Sell an item to the shop the player is currently in
      * @param playerName player who is selling
      * @param itemName item to sell
      * @return A string indicating success or failure
      */
-	public String sell(String playerName, String itemName) {
-		//format user input for item
-		itemName = itemName.toLowerCase();
-		itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
-		//check if player not in shop or does not have item
-		if(!shop.playerInShop(playerName)) {
-			return "You cannot sell if you are not in a shop!";
-		}
-		Player player = this.playerList.findPlayer(playerName);
-		if(player == null)
-			return null;
-		LinkedList<String> inventory = player.getCurrentInventory();
-		if(!inventory.contains(itemName)) {
-			return "You do not have " + itemName + " in your inventory!";
-		}
-		//remove item from inventory, update player inventory, increase money
-		inventory.remove(itemName);
-		player.setCurrentInventory(inventory);
-		shop.sellItem(itemName);
-		player.addMoney(5);
-		player.getReplyWriter().println(shop.displayShop());
-		return "You have sold " + itemName + " to the shop.";
-	}
+ public String sell(String playerName, String itemName) {
+  //format user input for item
+  itemName = itemName.toLowerCase();
+  itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
+  //check if player not in shop or does not have item
+  if(!shop.playerInShop(playerName)) {
+   return "You cannot sell if you are not in a shop!";
+  }
+  Player player = this.playerList.findPlayer(playerName);
+  if(player == null)
+   return null;
+  LinkedList<Item> inventory = player.getCurrentInventory();
+  Item object = player.removeObjectFomInventory(itemName);
+  if(object == null) {
+      return "You do not have " + itemName + " in your inventory!";
+  }
+  else {
+      //remove item from inventory, update player inventory, increase money
+      //inventory.remove(itemName);
+      player.setCurrentInventory(inventory);
+      shop.sellItem(itemName, object.getItemValue());
+      player.addMoney(object.getItemValue());
+      player.getReplyWriter().println(shop.displayShop());
+      return "You have sold " + itemName + " to the shop.";
+  }
+}
 }
