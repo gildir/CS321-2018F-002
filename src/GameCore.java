@@ -297,13 +297,32 @@ public class GameCore implements GameCoreInterface {
                     return "";
                 }
             }
+            this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+            playerReceiving.setLastWhisperName(name1);
+            return "Message sent to " + playerReceiving.getName();
         }
-        else
-        {
-            if(playerReceiving == null)
-                return "That player isn't online.";
+        else {
+            if(playerReceiving == null) {
+                return "Could not find player online.";
+            }
             return null;
         }
+    }
+
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    */
+    public String reply(String name, String message) {
+        Player playerSending = this.playerList.findPlayer(name);
+        if(playerSending.getLastWhisperName() == null) {
+            return "You have not received a whisper to reply to.";
+        }
+        String name2 = playerSending.getLastWhisperName();
+        Player playerReceiving = this.playerList.findPlayer(name2);
+        return this.whisper(name, name2, message);
     }
 
     /**
