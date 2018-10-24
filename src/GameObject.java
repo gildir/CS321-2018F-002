@@ -113,7 +113,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
     
     /**
-     * Attempts to enter <location>. Use if entering a room that is part of another
+     * Attempts to enter <location> shop. Use if entering a room that is part of another
      * room, instead of using move to walk to a separate room
      * @param name Name of the player to enter
      * @param location The place to enter
@@ -121,7 +121,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @throws RemoteException
      */
     public String enter(String name, String location) throws RemoteException{
-    	return core.enter(name, location);
+     return core.enter(name, location);
     }
     
     /**
@@ -130,7 +130,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @return Message showing success
      */
     public String leaveRoom(String name) {
-    	return core.leaveRoom(name);
+     return core.leaveRoom(name);
     }
     
     /**
@@ -145,6 +145,11 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.pickup(name, target);
     }    
     
+    @Override
+    public String gift(String yourname,String name, double amount) throws RemoteException {
+     return core.gift(yourname, name,amount);   
+    }
+    
     /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move
@@ -154,7 +159,33 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     @Override
     public String inventory(String name) throws RemoteException {
         return core.inventory(name);
-    }    
+    }   
+    
+    @Override
+    public String money(String name) throws RemoteException {
+        return core.money(name);
+    }  
+    
+     /**
+     * Returns a list of nearby players you can gift
+     * @param name Player Name
+     * @return String representation of nearby players.
+     * @throws RemoteException 
+     */
+    @Override
+    public String giftable(String playerName) throws RemoteException {
+        return core.giftable(playerName);
+    } 
+    
+    /**
+     * Sell an item to the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to sell
+     * @return A string indicating success or failure
+     */
+    public String sell(String playerName, String itemName) throws RemoteException{
+     return core.sell(playerName, itemName);
+    }
     
      /**
      * Leaves the game.

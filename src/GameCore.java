@@ -1,9 +1,10 @@
-
-
-
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Scanner; 
 
 /**
  *
@@ -12,6 +13,7 @@ import java.util.logging.Logger;
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
+    private final Shop shop;
     
     /**
      * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
@@ -26,13 +28,15 @@ public class GameCore implements GameCoreInterface {
         
         playerList = new PlayerList();
         
+        shop = new Shop();
+        
         Thread objectThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 Random rand = new Random();
                 Room room;
-                String object;
-                String[] objects = {"Flower", "Textbook", "Phone", "Newspaper"};
+                Item object;
+                Item[] objects = {new Item("Flower", 0.1, 0.0), new Item("Textbook", 4.8, 300), new Item("Phone", 0.3, 100), new Item("Newspaper", 0.6, 0)};
                 while(true) {
                     try {
                         Thread.sleep(rand.nextInt(60000));
@@ -218,6 +222,10 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
     public String move(String name, int distance) {
+     System.out.println("Players in list from move function");
+     for(Player players : this.playerList) {
+      System.out.println(players.getName());
+     }
         Player player = this.playerList.findPlayer(name);
         if(player == null || distance <= 0) {
             return null;
@@ -241,31 +249,33 @@ public class GameCore implements GameCoreInterface {
     }
     
     /**
-     * Attempts to enter <location>. Use if entering a room that is part of another
+     * Attempts to enter <location> shop. Use if entering a room that is part of another
      * room, instead of using move to walk to a separate room
      * @param name Name of the player to enter
      * @param location The place to enter
      * @return Message showing success
      */
     public String enter(String name, String location) {
-    	Player player = this.playerList.findPlayer(name);
-    	if(player == null) return null;
-    	int newID;
-    	//add more if statements for different shops
-    	if(location.equalsIgnoreCase("shop"))
-    		newID = 10;
-    	else
-    		return location + " is unknown.";
-    	//if player not near a shop, return.
-    	if(player.getCurrentRoom() != 1)
-    		return "Not near " + location;
-    	Room room = map.findRoom(player.getCurrentRoom());
-    	this.broadcast(player, player.getName() + " has walked off towards the shop");
-    	player.getReplyWriter().println("You enter the shop");
-    	player.setCurrentRoom(newID);
-    	this.broadcast(player, player.getName() + " just walked into the shop.");
-    	player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
-    	return "You stop moving and begin to stand around again.";
+      Player player = this.playerList.findPlayer(name);
+      if(player == null) return null;
+      int newID;
+      //add more if statements for different shops
+      if(location.equalsIgnoreCase("shop"))
+        newID = 10;
+      else
+        return location + " is unknown.";
+      //if player not near a shop, return.
+      if(player.getCurrentRoom() != 1)
+        return "Not near " + location;
+      Room room = this.map.findRoom(player.getCurrentRoom());
+      this.broadcast(player, player.getName() + " has walked off towards the shop");
+      player.getReplyWriter().println("You enter the shop");
+      player.setCurrentRoom(newID);
+      this.broadcast(player, player.getName() + " just walked into the shop.");
+      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
+      shop.addPlayer(name);
+      player.getReplyWriter().println(shop.displayShop());
+      return "You stop moving and begin to stand around again.";
     }
     
     /**
@@ -274,21 +284,22 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success
      */
     public String leaveRoom(String name) {
-    	Player player = this.playerList.findPlayer(name);
-    	if(player == null) return null;
-    	int newID;
-    	//add more if statements for different shops
-    	if(player.getCurrentRoom() == 10)
-    		newID = 1;
-    	else
-    		return "Can't leave, did you mean quit?";
-    	Room room = map.findRoom(player.getCurrentRoom());
-    	this.broadcast(player, player.getName() + " has left the shop");
-    	player.getReplyWriter().println("You leave the room");
-    	player.setCurrentRoom(newID);
-    	this.broadcast(player, player.getName() + " just walked into the area.");
-    	player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
-    	return "You stop moving and begin to stand around again.";
+      Player player = this.playerList.findPlayer(name);
+      if(player == null) return null;
+      int newID;
+      //add more if statements for different shops
+      if(player.getCurrentRoom() == 10)
+        newID = 1;
+      else
+        return "Can't leave, did you mean quit?";
+      Room room = this.map.findRoom(player.getCurrentRoom());
+      this.broadcast(player, player.getName() + " has left the shop");
+      player.getReplyWriter().println("You leave the room");
+      player.setCurrentRoom(newID);
+      this.broadcast(player, player.getName() + " just walked into the area.");
+      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
+      shop.removePlayer(name);
+      return "You stop moving and begin to stand around again.";
     }
     
     /**
@@ -301,7 +312,7 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             Room room = map.findRoom(player.getCurrentRoom());
-            String object = room.removeObject(target);
+            Item object = room.removeObject(target);
             if(object != null) {
                 player.addObjectToInventory(object);
                 this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
@@ -332,8 +343,67 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
+    } 
+    
+    /**
+     * Returns a list of nearby players you can gift
+     * @param name Player Name
+     * @return String representation of nearby players.
+     */
+    public String giftable(String playerName) {
+        Player player = playerList.findPlayer(playerName);
+        if(player != null) {        
+            // Find the room the player is in.
+            Room room = this.map.findRoom(player.getCurrentRoom());
+        
+            // Return a string representation of players in teh same room
+            String gift_list = "\nGiftable players near you: " + room.getPlayers(this.playerList);
+            gift_list = gift_list.replace(playerName, "");
+            return gift_list;
+      }
+      // No such player exists
+      else {
+            return null;
+      }
     }    
-
+    @Override
+    public String money(String name) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            return player.viewMoney();
+        }
+        else {
+            return null;
+        }
+    }    
+    @Override 
+    public String gift(String yourname ,String name, double amount){
+        Player receiver = this.playerList.findPlayer(name); 
+        Player you = this.playerList.findPlayer(yourname); 
+        if(receiver != null){
+          if(you.getMoney().sum() < amount){
+           return "NOT ENOUGH MONEY!";  
+          }
+            this.broadcast(you, you.getName() + " offers a gift to " + receiver.getName());
+           Scanner read = new Scanner(System.in);
+           
+            receiver.getReplyWriter().println("Accept gift? (y/n):");
+            
+           String input = read.nextLine(); 
+             
+           if(input.toLowerCase().equals("y")) {
+         
+            receiver.acceptMoney(you.giveMoney(you,receiver,amount));
+            
+           return "User accepted gift!";
+           }
+           
+           return "User declined gift!";
+      }else{
+            return "NO USER WITH THAT NAME";  
+      }   
+    }
+    
      /**
      * Leaves the game.
      * @param name Name of the player to leave
@@ -349,4 +419,38 @@ public class GameCore implements GameCoreInterface {
         }
         return null;
     }       
+    
+ 
+/**
+     * Sell an item to the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to sell
+     * @return A string indicating success or failure
+     */
+ public String sell(String playerName, String itemName) {
+  //format user input for item
+  itemName = itemName.toLowerCase();
+  itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
+  //check if player not in shop or does not have item
+  if(!shop.playerInShop(playerName)) {
+   return "You cannot sell if you are not in a shop!";
+  }
+  Player player = this.playerList.findPlayer(playerName);
+  if(player == null)
+   return null;
+  LinkedList<Item> inventory = player.getCurrentInventory();
+  Item object = player.removeObjectFomInventory(itemName);
+  if(object == null) {
+      return "You do not have " + itemName + " in your inventory!";
+  }
+  else {
+      //remove item from inventory, update player inventory, increase money
+      //inventory.remove(itemName);
+      player.setCurrentInventory(inventory);
+      shop.sellItem(object);
+      player.addMoney(object.getItemValue());
+      player.getReplyWriter().println(shop.displayShop());
+      return "You have sold " + itemName + " to the shop.";
+  }
+}
 }

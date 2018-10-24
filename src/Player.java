@@ -2,24 +2,29 @@
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.ArrayList;
 
 /**
  *
  * @author Kevin
  */
 public class Player {
-    private LinkedList<String> currentInventory;
+    private LinkedList<Item> currentInventory;
     private String name;
     private int currentRoom;
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
+    // add a money field to track player money
+    private Money money;
 
     public Player(String name) {
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
+        // set a default amount of money for each player
+        this.money = new Money(20);
     }
     
     public void turnLeft() {
@@ -64,16 +69,26 @@ public class Player {
         this.name = name;
     }
 
-    public LinkedList<String> getCurrentInventory() {
+    public LinkedList<Item> getCurrentInventory() {
         return currentInventory;
     }
 
-    public void setCurrentInventory(LinkedList<String> currentInventory) {
+    public void setCurrentInventory(LinkedList<Item> currentInventory) {
         this.currentInventory = currentInventory;
     }
     
-    public void addObjectToInventory(String object) {
+    public void addObjectToInventory(Item object) {
         this.currentInventory.add(object);
+    }
+    
+    public Item removeObjectFomInventory(String object) {
+        for(Item obj : this.currentInventory) {
+            if(obj.getItemName().equalsIgnoreCase(object)) {
+                this.currentInventory.remove(obj);
+                return obj;
+              }
+            }
+        return null;
     }
     
     public void setReplyWriter(PrintWriter writer) {
@@ -107,14 +122,60 @@ public class Player {
     public Direction getDirection() {
         return this.currentDirection;
     }
+    // get money 
+    public Money getMoney() {
+      return this.money;
+    }
+    //add money
+    public void addMoney(double amount) {
+
+     int dollars = (int) amount;
+     Money amountAdded = new Money(dollars);
+     double coins = amount - dollars;
+     coins *= 100;
+     for(int i = 0; i < coins; i++){
+         amountAdded.coins.add(new Penny());
+     }
+     acceptMoney(amountAdded);
+    }
+    // return a string to print to the screen when player wants to view money
+    public String viewMoney() {
+      return this.money.toString();
+    }
+    // allows a player to accept money from another player
+    public void acceptMoney(Money moneyToAdd){
+      this.money.dollars.addAll(moneyToAdd.getDollars());
+      this.money.coins.addAll(moneyToAdd.getCoins());
+    }
     
+ public Money giveMoney(Player giver,Player receiver,double value){
+     Money moneyToGive = new Money();
+      replyWriter.println("You are giving away "+value); 
+      
+      if(this.money.sum() < value){
+        replyWriter.println("Not enough money!");
+      return moneyToGive; 
+      }
+      
+      
+        int i = 0; 
+        while(i < value){
+          
+          receiver.money.dollars.add(this.money.dollars.remove(0)); 
+          i++;
+        }
+         receiver.getReplyWriter().println("You received " +value + " dollars!"); 
+      
+      return moneyToGive;
+    }
+  
     public String viewInventory() {
         String result = "";
         if(this.currentInventory.isEmpty() == true) {
             return "nothing.";
         }
         else {
-            for(String obj : this.currentInventory) {
+            for(Item obj : this.currentInventory) {
                 result += " " + obj;
             }
             result += ".";
