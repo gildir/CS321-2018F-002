@@ -86,7 +86,7 @@ public class Player {
             return "You have no items in your inventory.";
         }
         Random randInt = new Random();
-        int randItem = randInt.nextInt(this.currentInventory.size()-1);
+        int randItem = randInt.nextInt(this.currentInventory.size());
         String targetItem = this.currentInventory.remove(randItem);
         setCurrentInventory(this.currentInventory);
         return targetItem + " was removed from your inventory.";

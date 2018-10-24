@@ -320,7 +320,7 @@ public class GameCore implements GameCoreInterface {
                 //checking to see if the ghoulName matches any ghouls in the same room
                 for (int i = 0; i < npcsFound.size(); i++){
                     if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
-                        return playerName + " POKED " + npcsFound.get(i);
+                        return playerName + " POKED " + npcsFound.get(i) + "\n" + player.removeRandomItem();
                     }
                 }
             }
