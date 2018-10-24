@@ -60,7 +60,7 @@ public class GameClient {
         System.out.println("  INVENTORY        - Shows you what objects you have collected.");
         System.out.println("  QUIT             - Quits the game.");
         System.out.println();
-
+        
 
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
