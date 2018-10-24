@@ -152,37 +152,27 @@ public class CommandRunner {
      * @param commandsFile path to file with command descriptions
      * @return new CommandRunner
      */
-    public CommandRunner(GameObjectInterface rgi, String commandsFile) throws IOException{
+    public CommandRunner(GameObjectInterface rgi, String commandsFile) {
         this.remoteGameInterface = rgi;
         setupFunctions();
 
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
-		Scanner file_commands
-		try {
-			file_commands = new Scanner(new File(commandsFile));
-			
-			String currentline;
-			String command_name;
-			String[] command_description = new String[2];
+		try (Scanner file_commands = new Scanner(new File(commandsFile));) {
 			HashMap<String, String[]> file_map = new HashMap<String, String[]>();
 			
 			while(file_commands.hasNextLine()){
-				currentline = file_commands.nextLine();
+				String currentline = file_commands.nextLine();
 				String[] command_parts = currentline.split(",");
 				
-				command_name = command_parts[0];
-				command_description[0] = command_parts[1];
-				command_description[1] = command_parts[2];
+				String command_name = command_parts[0];
+				String[] command_description = new String[]{ command_parts[1], command_parts[2] };
 				
 				file_map.put(command_name, command_description);
 			}
 			createCommands(file_map);
-		}
-		finally {
-			if (file_commands != null) {
-				file_commands.close();
-			}
-		}	
+		} catch (IOException ex) {
+            Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
+        }	
     }
 
     /**
