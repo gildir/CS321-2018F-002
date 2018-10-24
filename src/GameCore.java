@@ -37,7 +37,7 @@ public class GameCore implements GameCoreInterface {
                 Item[] objects = {new Item("Flower", 0.1, 0.0), new Item("Textbook", 4.8, 300), new Item("Phone", 0.3, 100), new Item("Newspaper", 0.6, 0)};
                 while(true) {
                     try {
-                        Thread.sleep(rand.nextInt(10000));
+                        Thread.sleep(rand.nextInt(60000));
                         object = objects[rand.nextInt(objects.length)];
                         room = map.randomRoom();
                         room.addObject(object);
@@ -431,7 +431,7 @@ public class GameCore implements GameCoreInterface {
       //remove item from inventory, update player inventory, increase money
       //inventory.remove(itemName);
       player.setCurrentInventory(inventory);
-      shop.sellItem(itemName, object.getItemValue());
+      shop.sellItem(object);
       player.addMoney(object.getItemValue());
       player.getReplyWriter().println(shop.displayShop());
       return "You have sold " + itemName + " to the shop.";

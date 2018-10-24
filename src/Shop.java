@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Shop {
  
  private ArrayList<String> playersInShop;
- private ArrayList<String> items;
+ private ArrayList<Item> items;
  private int maxSize = 10;
  private double cur_value;
  
@@ -42,22 +42,21 @@ public class Shop {
  
  public Shop() {
   playersInShop = new ArrayList<String>();
-  items = new ArrayList<String>();
+  items = new ArrayList<Item>();
  }
  
  /**
   * Called from GameCore.java to keep track of items sold to shop
   * @param name
   */
- public void sellItem(String name, double value) {
-  cur_value = value;
+ public void sellItem(Item obj) {
   if(items.size() >= maxSize) {
    items.remove(0);
-   items.add(name);
+   items.add(obj);
    items.trimToSize();
    return;
   }
-  items.add(name);
+  items.add(obj);
  }
  
  /**
@@ -91,8 +90,8 @@ public class Shop {
   */
  public String displayShop() {
   ArrayList<ItemStock> itemList = new ArrayList<ItemStock>();
-  for(String item : this.items) {
-   ItemStock iStock = new ItemStock(item, 1, cur_value);
+  for(Item item : this.items) {
+   ItemStock iStock = new ItemStock(item.getItemName(), 1, item.getItemValue());
    if(!(itemList.contains(iStock))){
     itemList.add(iStock);
    }
