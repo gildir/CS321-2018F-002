@@ -19,9 +19,11 @@ import org.xml.sax.SAXException;
  */
 public class Map {   
     private final LinkedList<Room> map;
+    private final GameCore gameCore;
     
-    public Map() {
+    public Map(GameCore gameCore) {
         map = new LinkedList<>();
+        this.gameCore = gameCore;
         try {
             File mapFile = new File("./rooms.xml");
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -50,7 +52,7 @@ public class Map {
                 description = roomElement.getElementsByTagName("description").item(0).getTextContent();
                 
 //                System.out.println("Adding Room " + id + " with Title " + title + ": " + description);
-                newRoom = new Room(id, title, description);
+                newRoom = new Room(gameCore, id, title, description);
                 
                 xmlExits = roomElement.getElementsByTagName("exit");
                 for(int j = 0; j < xmlExits.getLength(); j++) {
