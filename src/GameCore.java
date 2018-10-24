@@ -291,15 +291,13 @@ public class GameCore implements GameCoreInterface {
             {
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
                     this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
-                    return "message sent to " + playerReceiving.getName();
+                    playerReceiving.setLastWhisperName(name1);
+                    return "Message sent to " + playerReceiving.getName();
                 }
                 else {
                     return "";
                 }
             }
-            this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
-            playerReceiving.setLastWhisperName(name1);
-            return "Message sent to " + playerReceiving.getName();
         }
         else {
             if(playerReceiving == null) {
