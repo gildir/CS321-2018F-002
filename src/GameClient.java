@@ -60,7 +60,7 @@ public class GameClient {
         System.out.println("  INVENTORY        - Shows you what objects you have collected.");
         System.out.println("  QUIT             - Quits the game.");
         System.out.println();
-        
+
 
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
@@ -214,7 +214,7 @@ public class GameClient {
 			System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");
 			System.exit(-1);
 		}
-        
+		
         System.out.println("[STARTUP] Game Client Now Starting...");
         new GameClient(args[0]);
     }
@@ -226,11 +226,11 @@ public class GameClient {
      */
     public class ReplyRemote implements Runnable {
 		private String host;
-        
+		
 		public ReplyRemote(String host) {
 			this.host = host;
 		}
-        
+		
         @Override
         public void run() {
             // This thread is interruptable, which will allow it to clean up before
