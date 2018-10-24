@@ -354,7 +354,7 @@ public class GameCore implements GameCoreInterface {
             if (! file.exists()) file.createNewFile();
             
             // Write to file
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
             BufferedWriter bw = new BufferedWriter(fw);
 
             bw.write(log);
