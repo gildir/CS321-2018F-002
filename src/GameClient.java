@@ -164,6 +164,7 @@ public class GameClient {
                 case "RIGHT":
                     System.out.println(remoteGameInterface.right(this.playerName));
                     break;
+                case "/S":
                 case "SAY":
                     if(tokens.isEmpty()) {
                         System.err.println("You need to say something in order to SAY.");
@@ -178,6 +179,7 @@ public class GameClient {
                         System.out.println(remoteGameInterface.say(this.playerName, message));
                     }
                     break;
+                case "/SH":
                 case "SHOUT":
                     if(tokens.isEmpty()) {
                         System.err.println("You need to write a message to shout.");
@@ -239,7 +241,7 @@ public class GameClient {
                     }
                     break;
 				/* START 405_ignore */
-                case "/I":
+                case "/IG":
                 case "IGNORE":
                     if(tokens.isEmpty()) {
                         System.err.println("Please input a valid ignore command.");
