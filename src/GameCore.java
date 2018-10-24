@@ -23,14 +23,14 @@ public class GameCore implements GameCoreInterface {
     /**
      * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
-     *
+     * 
      * This is the main core that both the RMI and non-RMI based servers will interface with.
      */
     public GameCore() {
-
+        
         // Generate the game map.
         map = new Map();
-
+        
         playerList = new PlayerList();
 
         activeBattles = new ArrayList<Battle>();
@@ -52,7 +52,7 @@ public class GameCore implements GameCoreInterface {
                         object = objects[rand.nextInt(objects.length)];
                         room = map.randomRoom();
                         room.addObject(object);
-
+                        
                         GameCore.this.broadcast(room, "You see a student rush past and drop a " + object + " on the ground.");
 
                     } catch (InterruptedException ex) {
@@ -64,12 +64,12 @@ public class GameCore implements GameCoreInterface {
         objectThread.setDaemon(true);
         objectThread.start();
     }
-
+    
     /**
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.
      * @param message Message to broadcast.
-     */
+     */   
     @Override
     public void broadcast(Player player, String message) {
         for(Player otherPlayer : this.playerList) {
@@ -78,12 +78,12 @@ public class GameCore implements GameCoreInterface {
             }
         }
     }
-
+  
     /**
      * Broadcasts a message to all players in the specified room.
      * @param room Room to broadcast the message to.
      * @param message Message to broadcast.
-     */
+     */   
     @Override
     public void broadcast(Room room, String message) {
         for(Player player : this.playerList) {
@@ -92,7 +92,7 @@ public class GameCore implements GameCoreInterface {
             }
         }
     }
-
+    
     /**
      * Returns the player with the given name or null if no such player.
      * @param name Name of the player to find.
@@ -107,10 +107,10 @@ public class GameCore implements GameCoreInterface {
         }
         return null;
     }
-
+    
     /**
      * Allows a player to join the game.  If a player with the same name (case-insensitive)
-     *  is already in the game, then this returns false.  Otherwise, adds a new player of
+     *  is already in the game, then this returns false.  Otherwise, adds a new player of 
      *  that name to the game.  The next step is non-coordinated, waiting for the player
      *  to open a socket for message events not initiated by the player (ie. other player actions)
      * @param name
@@ -124,7 +124,7 @@ public class GameCore implements GameCoreInterface {
             // New player, add them to the list and return true.
             newPlayer = new Player(name);
             this.playerList.addPlayer(newPlayer);
-
+            
             // New player starts in a room.  Send a message to everyone else in that room,
             //  that the player has arrived.
             this.broadcast(newPlayer, newPlayer.getName() + " has arrived.");
@@ -137,7 +137,7 @@ public class GameCore implements GameCoreInterface {
         // A player of that name already exists.
         return null;
     }
-
+   
     /**
      * Returns a look at the area of the specified player.
      * @param playerName Player Name
@@ -147,7 +147,7 @@ public class GameCore implements GameCoreInterface {
     public String look(String playerName) {
         Player player = playerList.findPlayer(playerName);
 
-        if(player != null) {
+        if(player != null) {        
             // Find the room the player is in.
             Room room = this.map.findRoom(player.getCurrentRoom());
 
@@ -161,8 +161,8 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }
-
+    }        
+   
     /**
      * Turns the player left.
      * @param name Player Name
@@ -174,10 +174,10 @@ public class GameCore implements GameCoreInterface {
         if(player != null) {
             // Compel the player to turn left 90 degrees.
             player.turnLeft();
-
+            
             // Send a message to every other player in the room that the player has turned left.
             this.broadcast(player, player.getName() + " turns to the left.");
-
+            
             // Return a string back to the calling function with an update.
             return "You turn to the left to face " + player.getCurrentDirection();
         }
@@ -185,7 +185,7 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }
-
+    
     /**
      * Turns the player right.
      * @param name Player Name
@@ -197,18 +197,18 @@ public class GameCore implements GameCoreInterface {
         if(player != null) {
             // Compel the player to turn left 90 degrees.
             player.turnRight();
-
+            
             // Send a message to every other player in the room that the player has turned right.
             this.broadcast(player, player.getName() + " turns to the right.");
-
+            
             // Return a string back to the calling function with an update.
             return "You turn to the right to face " + player.getCurrentDirection();
         }
         else {
             return null;
         }
-    }
-
+    }    
+    
     /**
      * Says "message" to everyone in the current area.
      * @param name Name of the player to speak
@@ -225,8 +225,8 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }
-
+    }  
+    
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
@@ -256,13 +256,13 @@ public class GameCore implements GameCoreInterface {
         }
         return "You stop moving and begin to stand around again.";
     }
-
+    
     /**
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
      * @param target The case-insensitive name of the object to pickup.
-     * @return Message showing success.
-     */
+     * @return Message showing success. 
+     */    
     public String pickup(String name, String target) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
@@ -281,13 +281,13 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }
-
+    }       
+    
     /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move
      * @return Message showing success.
-     */
+     */    
     @Override
     public String inventory(String name) {
         Player player = this.playerList.findPlayer(name);
@@ -298,13 +298,13 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }
+    }    
 
      /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @return Player that was just removed.
-     */
+     */    
     @Override
     public Player leave(String name) {
         Player player = this.playerList.findPlayer(name);
