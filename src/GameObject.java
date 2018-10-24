@@ -157,7 +157,6 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
 	{
 		core.accept(challenger,player2);
 	}
-	
 	public void refuse(String challenger, String player2) throws RemoteException
 	{
 		core.refuse(challenger, player2);
@@ -174,10 +173,12 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
 	{
 		core.scissors(player);
 	}
-	//Rock Paper Scissors Battle Code here--------------------------------------
-
-	// Added by Brendan
+  public String tutorial(String name) throws RemoteException
+  {
+      return core.tutorial(name);
+  }
 	public void checkBoard(String player) throws RemoteException {
 		core.checkBoard(player);
 	}
+  //Rock Paper Scissors Battle Code here--------------------------------------
 }

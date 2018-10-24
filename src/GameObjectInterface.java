@@ -86,9 +86,6 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public void leave(String name) throws RemoteException;
-
-
-
 //Rock Paper Scissors Battle Code Here---------------------------------
     public void challenge(String challenger, String player2) throws RemoteException;
     public void accept(String challenger, String player2) throws RemoteException;
@@ -96,9 +93,7 @@ public interface GameObjectInterface extends Remote {
     public void rock(String player) throws RemoteException;
     public void paper(String player) throws RemoteException;
     public void scissors(String player) throws RemoteException;
-	
-//Rock Paper Scissors Battle Code Here---------------------------------
-
-	// Added by Brendan
+	  public String tutorial(String name) throws RemoteException;
     public void checkBoard(String player) throws RemoteException;
+//Rock Paper Scissors Battle Code Here---------------------------------  
 }

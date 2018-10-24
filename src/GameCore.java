@@ -290,7 +290,7 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             this.broadcast(player, "You see " + player.getName() + " looking through their pockets.");
-            return "You look through your pockets and see" + player.viewInventory();
+            return "You look through your pockets and see " + player.viewInventory();
         }
         else {
             return null;
@@ -679,4 +679,32 @@ public class GameCore implements GameCoreInterface {
 		String board = this.leaderboard.getBoard();
         player.getReplyWriter().println(board);
     }
+
+  public String tutorial(String name)
+  {
+      Player player = this.playerList.findPlayer(name);
+      String message = "";
+      if(player != null) {
+          message += ("\\  \\     / /__| | ___  ___  _ __ ___   ___ \n" +
+                  " \\ \\ /\\ / / _ \\ |/ _  / _ \\| '_ ` _ \\ / _ \\ \n" +
+                  "  \\ V  V /  __/ | (_ | (_) | | | | | |  __/\n" +
+                  "   \\_/\\_/ \\___|_|\\___ \\___/|_| |_| |_|\\___|\n");
+          message += ("This is your Rock-Paper-Scissors Tutorial with me, the Professor.\n" +
+                  "This is the basic rock paper scissors game that everyone knows and loves. Two players each pick one of rock, paper, and scissors.\n" +
+                  "Rock beats scissors, scissors beats paper, paper beats rock, and a mirror matchup is always a tie.\n\n" +
+                  "\t\t\t How to Play:\n" +
+                  "If you want to play someone, you have to challenge them.\n" +
+                  "You can challenge someone by using the 'CHALLENGE' command and entering the name of the player you wish to challenge.\n" +
+                  "In order to help you challenge someone, you can see the list of names of players in the same room as you and pick one as the player to challenge.\n" +
+                  "If you enter a name that does not belong to any player or belongs to a player that isn't in the same room as you, you will be prompted to enter another command.\n" +
+                  "For example, if you're 'p1' and you see someone named 'p2' that you want to challenge, entering 'CHALLENGE p2' will send p2 a challenge.\n" +
+                  "If you enter 'CHALLENGE p3' instead and there is nobody with the name 'p3', you'll be prompted to enter another command.\n" +
+                  "Likewise, if there is a 'p3' but he's in a different room, you'll be prompted to enter another command\n" +
+                  "\nIf you get challenged by someone else, you can either accept or refuse the challenge request.\n" +
+                  "In order to accept, you have to enter 'ACCEPT playername' where playername is the name of the person that challenged you.\n" +
+                  "In order to refuse, you have to enter 'REFUSE playername' where playername is the name of the person that challenged you.\n" +
+                  "For example, if you get challenged by Bob, you can accept by entering 'ACCEPT Bob' or refuse by entering 'REFUSE Bob'");
+      }
+      return message;
+  }
 }
