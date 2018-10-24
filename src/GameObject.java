@@ -184,7 +184,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @return A string indicating success or failure
      */
     public String sell(String playerName, String itemName) throws RemoteException{
-    	return core.sell(playerName, itemName);
+     return core.sell(playerName, itemName);
     }
     
      /**

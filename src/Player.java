@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @author Kevin
  */
 public class Player {
-    private LinkedList<String> currentInventory;
+    private LinkedList<Item> currentInventory;
     private String name;
     private int currentRoom;
     private Direction currentDirection;
@@ -69,16 +69,26 @@ public class Player {
         this.name = name;
     }
 
-    public LinkedList<String> getCurrentInventory() {
+    public LinkedList<Item> getCurrentInventory() {
         return currentInventory;
     }
 
-    public void setCurrentInventory(LinkedList<String> currentInventory) {
+    public void setCurrentInventory(LinkedList<Item> currentInventory) {
         this.currentInventory = currentInventory;
     }
     
-    public void addObjectToInventory(String object) {
+    public void addObjectToInventory(Item object) {
         this.currentInventory.add(object);
+    }
+    
+    public Item removeObjectFomInventory(String object) {
+        for(Item obj : this.currentInventory) {
+            if(obj.getItemName().equalsIgnoreCase(object)) {
+                this.currentInventory.remove(obj);
+                return obj;
+              }
+            }
+        return null;
     }
     
     public void setReplyWriter(PrintWriter writer) {
@@ -118,8 +128,8 @@ public class Player {
     }
     //add money
     public double addMoney(double amount) {
-    	this.money += amount;
-    	return this.money;
+     this.money += amount;
+     return this.money;
     }
     // return a string to print to the screen when player wants to view money
     public String viewMoney() {
@@ -153,7 +163,7 @@ public class Player {
             return "nothing.";
         }
         else {
-            for(String obj : this.currentInventory) {
+            for(Item obj : this.currentInventory) {
                 result += " " + obj;
             }
             result += ".";
