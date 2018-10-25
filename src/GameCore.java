@@ -39,7 +39,7 @@ public class GameCore implements GameCoreInterface {
                 Item[] objects = {new Item("Flower", 0.1, 0.0), new Item("Textbook", 4.8, 300), new Item("Phone", 0.3, 100), new Item("Newspaper", 0.6, 0)};
                 while(true) {
                     try {
-                        Thread.sleep(rand.nextInt(60000));
+                        Thread.sleep(rand.nextInt(20000));
                         object = objects[rand.nextInt(objects.length)];
                         room = map.randomRoom();
                         room.addObject(object);
