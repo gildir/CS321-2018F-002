@@ -15,7 +15,7 @@ public class Player {
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
     // add a money field to track player money
-    private double money;
+    private Money money;
 
     public Player(String name) {
         this.currentRoom = 1;
@@ -23,7 +23,7 @@ public class Player {
         this.name = name;
         this.currentInventory = new LinkedList<>();
         // set a default amount of money for each player
-        this.money = 20.0;
+        this.money = new Money(20);
     }
     
     public void turnLeft() {
@@ -122,11 +122,11 @@ public class Player {
         return this.currentDirection;
     }
     // get money 
-    public double getMoney() {
+    public Money getMoney() {
       return this.money;
     }
     //add money
-    public double addMoney(double amount) {
+    public void addMoney(double amount) {
         int dollars = (int) amount;
         Money amountAdded = new Money(dollars);
         double coins = amount - dollars;
@@ -138,9 +138,13 @@ public class Player {
     }
     // return a string to print to the screen when player wants to view money
     public String viewMoney() {
-      return this.name + ", you have " + this.money + " dollars.";
+      return this.money.toString();
     }
-    
+    //allows a player to accept money from other sources
+    public void acceptMoney(Money moneyToAdd){
+      this.money.dollars.addAll(moneyToAdd.getDollars());
+      this.money.coins.addAll(moneyToAdd.getCoins());
+    }
     public String viewInventory() {
         String result = "";
         if(this.currentInventory.isEmpty() == true) {

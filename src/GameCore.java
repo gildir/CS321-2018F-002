@@ -434,7 +434,7 @@ public class GameCore implements GameCoreInterface {
       shop.sellItem(object);
       player.addMoney(object.getItemValue());
       player.getReplyWriter().println(shop.displayShop());
-      return "You have sold " + itemName + " to the shop.";
+      return "You have sold a " + itemName + " to the shop for $" + object.getItemValue() + ".";
   }
 }
 }
