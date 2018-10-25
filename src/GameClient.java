@@ -212,6 +212,8 @@ public class GameClient {
           System.out.println(remoteGameInterface.money(this.playerName));
           break; 
         case "GIFT":
+
+	//gift money
           if(tokens.isEmpty()){
           System.err.println("You need to provide a player name to gift.");
            }else if(tokens.get(0).equals(this.playerName)){
