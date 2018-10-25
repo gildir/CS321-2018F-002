@@ -18,6 +18,6 @@ a player is being added to/removed from the player list when they should not be
 added or removed.
 
 
-![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/src/login_logout_log.PNG)
+![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/login_logout_log.PNG)
 
 Written by: Joseph Saah
