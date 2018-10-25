@@ -15,6 +15,16 @@ Written by: Haroon Tanveer
 
 After an account has been created, the user can use those credentials to log back into their account. 
 When the user runs the client and connects to the server, they can choose to 'login with a previously created account.' Once the user chooses this option, they go through the following steps:
+
+<details>
+           <summary>Logging In</summary>
+           <p>Content 1 Content 1 Content 1 Content 1 Content 1</p>
+         </details>
+
+<details>
+           <summary>Logging Out</summary>
+           <p>Content 1 Content 1 Content 1 Content 1 Content 1</p>
+         </details>
 --The user enters their account username
 --The username is matched with the Player Database to ensure that it exists. If not, the user is prompted to enter
 --The system ensures the user is not currently logged in 
