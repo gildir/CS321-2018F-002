@@ -4,20 +4,25 @@
 Written by: Cody Kidwell
 
 
+
 ## Account Creation
 Written by: Cody Kidwell
+
 
 
 ## Logging In/Out
 Written by: Haroon Tanveer
 
 
-# Permanently Removing Account
+
+## Permanently Removing Account
 Written by: Brett Mullins
 
 
-# Timeout Due to Inactivity
+
+## Timeout Due to Inactivity
 Written by: Haroon Tanveer
+
 
 
 ## Login/Logout Log File
