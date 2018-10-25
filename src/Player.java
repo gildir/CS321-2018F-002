@@ -147,7 +147,7 @@ public class Player {
       this.money.dollars.addAll(moneyToAdd.getDollars());
       this.money.coins.addAll(moneyToAdd.getCoins());
     }
-    
+//gives money to receiver    
  public Money giveMoney(Player giver,Player receiver,double value){
      Money moneyToGive = new Money();
       replyWriter.println("You are giving away "+value); 
