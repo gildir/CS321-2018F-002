@@ -28,11 +28,11 @@ When the player enters the "QUIT" option to log out, they are given the option t
 
 Logging In:
 
-
 ![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/login.png)
 
 
 Logging Out:
+
 ![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/logout.png)
 
 
