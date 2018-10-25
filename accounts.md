@@ -5,8 +5,16 @@ Written by: Cody Kidwell
 
 
 
+
+
+
+
 ## Account Creation
 Written by: Cody Kidwell
+
+
+
+
 
 
 
@@ -40,8 +48,15 @@ Logging Out:
 
 
 
+
+
+
 ## Permanently Removing Account
 Written by: Brett Mullins
+
+
+
+
 
 
 
@@ -58,6 +73,9 @@ GameClient.java.
 
 
 ![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/timeout.png)
+
+
+
 
 
 
