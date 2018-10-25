@@ -222,27 +222,33 @@ public class GameClient {
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         try{
+            boolean newuser = false;
+        do{ 
             do{//loop repeats if an active username is entered
                 System.out.println("Please enter your username");
                 System.out.print("> ");
                 this.playerName = keyboardInput.readLine(); new Time();
-                if(remoteGameInterface.joinGame(this.playerName) == false) {
-                    System.out.println("This player is already logged in");
-                }
-                //if username already exists, ask user to enter new name
-                else if(PlayerDatabase.isPlayer(playerName)) break;
+                if(PlayerDatabase.isPlayer(playerName)) break;
+                else System.out.println("Username is incorrect... Please enter a new username");
             }while(true); //exits the loop only through a break
            
-            boolean conf = false;
+            boolean conf = false; newuser = false;
             while(!conf){ //While loop verifies user password
                 System.out.println("Please enter your password");
                 System.out.print("> ");
                 this.playerPassword = keyboardInput.readLine(); new Time();
-                if(PlayerDatabase.isPassword(playerName, playerPassword)){
-                    System.out.println("Login Successful");
+                if(PlayerDatabase.isPassword(playerName, playerPassword) == true){
+                    
+                    if(remoteGameInterface.joinGame(this.playerName) == false){
+                        System.out.println("User is already online...login with different account");
+                        newuser = true;
+                    }
+                    else System.out.println("Login Successful");
                     conf = true;
                 }
+                else System.out.println("Password does not match");
             }
+        }while(newuser == true);
         }catch (IOException ex) {
             System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
             System.exit(-1);
