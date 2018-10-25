@@ -127,8 +127,14 @@ public class Player {
     }
     //add money
     public double addMoney(double amount) {
-     this.money += amount;
-     return this.money;
+        int dollars = (int) amount;
+        Money amountAdded = new Money(dollars);
+        double coins = amount - dollars;
+        coins *= 100;
+        for(int i = 0; i < coins; i++){
+            amountAdded.coins.add(new Penny());
+        }
+        acceptMoney(amountAdded);
     }
     // return a string to print to the screen when player wants to view money
     public String viewMoney() {
