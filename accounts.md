@@ -25,7 +25,14 @@ When the user runs the client and connects to the server, they can choose to 'lo
 
 When the player enters the "QUIT" option to log out, they are given the option to permanently delete their account. If they choose no (N), they will immediately be logged out of the server.
 
-![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/login_logout.png)
+
+Logging In:
+![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/login.png)
+
+
+Logging Out:
+![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/logout.png)
+
 
 
 
@@ -47,6 +54,7 @@ GameClient.java.
 
 
 ![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/timeout.png)
+
 
 
 
