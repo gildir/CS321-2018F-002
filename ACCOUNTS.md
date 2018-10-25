@@ -1,6 +1,27 @@
 # Accounts and Login
 
+## Player Database
+Written by: Cody Kidwell
+
+
+## Account Creation
+Written by: Cody Kidwell
+
+
+## Logging In/Out
+Written by: Haroon Tanveer
+
+
+# Permanently Removing Account
+Written by: Brett Mullins
+
+
+# Timeout Due to Inactivity
+Written by: Haroon Tanveer
+
+
 ## Login/Logout Log File
+Written by: Joseph Saah
 
 This file keeps track of players logging in and logging out. Whenver a
 player successfully logs into the game server, a message is written to the log
@@ -19,5 +40,3 @@ added or removed.
 
 
 ![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/login_logout_log.PNG)
-
-Written by: Joseph Saah
