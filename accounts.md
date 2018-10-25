@@ -39,7 +39,7 @@ and is still active on the server. The Time class has been implemented inside of
 GameClient.java.
 
 
-![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/timeout.PNG)
+![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/timeout.png)
 
 
 ## Login/Logout Log File
