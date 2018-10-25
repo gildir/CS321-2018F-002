@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -10,14 +11,16 @@ public class Room {
     private final String description;
     private final LinkedList<String> objects;
     private final LinkedList<Exit> exits;
+    private final GameCore gameCore;
     
-    public Room(int id, String title, String description) {
+    public Room(GameCore gameCore, int id, String title, String description) {
         this.objects = new LinkedList<>();
         this.exits = new LinkedList<>();        
         
         this.id = id;
         this.title = title;
         this.description = description;
+        this.gameCore = gameCore;
     }
     
     public String toString(PlayerList playerList, Player player) {
@@ -28,6 +31,7 @@ public class Room {
         result += "...................\n";
         result += "Objects in the area: " + this.getObjects() + "\n";
         result += "Players in the area: " + this.getPlayers(playerList) + "\n";
+        result += "Ghouls in the area: " + this.getGhoulsString() + "\n";
         result += "You see paths in these directions: " + this.getExits() + "\n";
         result += "...................\n";
         result += "You are facing: " + player.getCurrentDirection() + "\n";
@@ -139,14 +143,11 @@ public class Room {
         }
     }
 
-    //Finding NPCs in the same room as a player. Returning a list of those NPCs
-    public ArrayList<String> getLocalNPC(Set<NPC> npcList){
+    public ArrayList<String> getNamesOfNpcs(Set<NPC> npcSet){
 
         ArrayList<String> npcsFound = new ArrayList<>();
 
-        //traverse the list of all NPCs
-        for (NPC npc : npcList) {
-            //finding NPCs in the same room as a player
+        for (NPC npc : npcSet) {
             if (npc.getCurrentRoom() == this.id) {
                 npcsFound.add(npc.getName());
             }
@@ -156,5 +157,30 @@ public class Room {
         }
         return npcsFound;
     }
-    
+
+    /**
+     * @return a set of all the Ghouls in this room.
+     * If there are no ghouls in this room, returns an empty set of Ghouls.
+     */
+    public Set<Ghoul> getGhouls() {
+        Set<Ghoul> ghouls = new HashSet<>();
+        for (NPC npc : gameCore.getNpcSet()) {
+            if (npc instanceof Ghoul && npc.getCurrentRoom() == id) {
+                ghouls.add((Ghoul) npc);
+            }
+        }
+        return ghouls;
+    }
+
+    public String getGhoulsString() {
+        Set<Ghoul> ghouls = getGhouls();
+        String ghoulsString;
+        if (ghouls.isEmpty())
+            ghoulsString = "None";
+        else {
+            List<String> ghoulNames = ghouls.stream().map(Ghoul::toString).collect(Collectors.toList());
+            ghoulsString = String.join(" ", ghoulNames);
+        }
+        return ghoulsString;
+    }
 }

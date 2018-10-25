@@ -9,6 +9,7 @@ import java.util.Random;
  * @author Adam Denton
  */
 
+// 
 public class Ghoul extends NPC {
 
     // anger level
@@ -16,12 +17,11 @@ public class Ghoul extends NPC {
     // total anger level
     public static final int MAXANGER = 100;
 
+    // Calling NPC's constructor
     Ghoul(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds){
 
         super(gameCore, name, currentRoom, aiPeriodSeconds);
-        this.anger = 0;
     }
-
 
     // If anger goes below 0 and into the negative it will go back to zero
     // (possibly use negative int numbers as a friendly aggro or revamp)
@@ -36,6 +36,7 @@ public class Ghoul extends NPC {
         
     }
 
+    // Randomly increases the Ghouls anger between 1 through 5
     private void increaseAnger(){
 
         if (anger < MAXANGER){
@@ -52,7 +53,12 @@ public class Ghoul extends NPC {
 
     // TODO WAIT FOR THAOVY
     private void dragPlayer(){
+        //gameCore.dragPlayer();
+    }
 
+    // When called resets the ghouls anger back to the inital state
+    private void resetAnger(){
+        anger = 0;
     }
 
     // TODO
@@ -63,24 +69,31 @@ public class Ghoul extends NPC {
     }
     */
     
+    // If poked, increase anger, and if that anger goes over the
+    // threshold, reset the anger and call gameCore.dragPlayer()
+    // Used in gameCore.pokeGhoul()
     public void poke(){
         increaseAnger();
+        if (anger >= MAXANGER){
+            resetAnger();
+            dragPlayer();
+        }
     }
     
-    // if an item is gifted to the ghoul, decrease their anger
-    public void give(Item object){
+    // If an item is gifted to the ghoul, decrease their anger
+    // Use in gameCore.giftGhoul()
+    public void give(){
         decreaseAnger();
     }
     
 
-    // returns the anger level of the ghoul
+    // Getter for anger
     public int getAnger(){
-
         return anger;
     }
 
-
-   private static int getRandomNumberInRange(int min, int max) {
+    // Random number generator in the given range of min through max
+    private static int getRandomNumberInRange(int min, int max) {
 
        if (min >= max) {
            throw new IllegalArgumentException("max must be greater than min");
@@ -89,4 +102,5 @@ public class Ghoul extends NPC {
         Random r = new Random();
         return r.nextInt((max - min) + 1) + min;
    }
-}
+
+} //EOF Ghoul.java
