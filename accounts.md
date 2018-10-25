@@ -15,23 +15,13 @@ Written by: Haroon Tanveer
 
 After an account has been created, the user can use those credentials to log back into their account. 
 When the user runs the client and connects to the server, they can choose to 'login with a previously created account.' Once the user chooses this option, they go through the following steps:
-
-<details>
-           <summary>Logging In</summary>
-           <p>Content 1 Content 1 Content 1 Content 1 Content 1</p>
-         </details>
-
-<details>
-           <summary>Logging Out</summary>
-           <p>Content 1 Content 1 Content 1 Content 1 Content 1</p>
-         </details>
---The user enters their account username
---The username is matched with the Player Database to ensure that it exists. If not, the user is prompted to enter
---The system ensures the user is not currently logged in 
---If the username exists in the Database and is not logged in, the player will be prompted to enter their password
---The password will be verified using the username and the stored password in the Database
---If the password is incorrect, the user is prompted to enter the password
---The system ensures the user is not currently logged in 
+*The user enters their account username
+*The username is matched with the Player Database to ensure that it exists. If not, the user is prompted to enter
+*The system ensures the user is not currently logged in 
+*If the username exists in the Database and is not logged in, the player will be prompted to enter their password
+*The password will be verified using the username and the stored password in the Database
+*If the password is incorrect, the user is prompted to enter the password
+*The system ensures the user is not currently logged in 
 
 When the player enters the "QUIT" option to log out, they are given the option to permanently delete their account. If they choose no (N), they will immediately be logged out of the server.
 
