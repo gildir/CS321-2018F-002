@@ -25,6 +25,8 @@ When the user runs the client and connects to the server, they can choose to 'lo
 
 When the player enters the "QUIT" option to log out, they are given the option to permanently delete their account. If they choose no (N), they will immediately be logged out of the server.
 
+**NOTE:** GameClient.java file uses the login() method to complete the login process. The player's credentials are verified using boolean isPlayer() and boolean isPassword() located in PlayerDatabase.java
+
 
 Logging In:
 
