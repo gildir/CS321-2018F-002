@@ -23,6 +23,23 @@ Written by: Brett Mullins
 ## Timeout Due to Inactivity
 Written by: Haroon Tanveer
 
+Before this feature was added, when a player exited the system (whether using the 
+QUIT command or Ctrl + C), the user was never actually logged out of the system. 
+This feature adds a timeout to each account if they have been inactive for 5 minutes. 
+Each time the user types an input and hits enter, the time will reset back to 0
+for that user. If that time reaches 5 minutes, the user will be "kicked off" the 
+server. This enables users to log back in if they were accidentally signed off.
+During testing, the time may be set to a different amount (in milliseconds) to force 
+the account to time out quicker or delay the time.
+
+**NOTE:** To reset the timer after each input, the developer must add the following line:
+new Time();
+This line will reset the timer back to 0 indicating that the user has entered an input
+and is still active on the server. The Time class has been implemented inside of
+GameClient.java.
+
+
+![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/timeout.PNG)
 
 
 ## Login/Logout Log File
