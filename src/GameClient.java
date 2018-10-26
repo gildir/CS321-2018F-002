@@ -23,6 +23,7 @@ import javafx.scene.input.KeyCharacterCombinationBuilder;
  * @author Kevin
  */
 public class GameClient {
+	
     // Control flag for running the game.
     private boolean runGame;
 
@@ -60,7 +61,7 @@ public class GameClient {
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         String keyboardStatement;
 
-        try {
+       try {
             // Establish RMI connection with the server
             System.setSecurityManager(new SecurityManager());
             String strName = "rmi://"+host+"/GameService";
@@ -70,12 +71,19 @@ public class GameClient {
             //   Lets the player choose a name and checks it with the server.  If the name is
             //    already taken or the user doesn't like their input, they can choose again.
             while(nameSat == false) {
+            	new Time(); 
                 try {
                     boolean nameConf = true; //Name Confirmation
+                    new Time();
+
                     System.out.println("Please enter a name for your player.");
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine();
-                    do{
+                    //if username already exists, ask user to enter new name
+                    if(PlayerDatabase.isPlayer(playerName))
+                        continue;
+                 do{
+
                     System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this name?");
                     System.out.print("(Y/N) > ");
 
@@ -98,11 +106,19 @@ public class GameClient {
                         nameConf = false; nameSat = true; //Will reprompt confirmation
                         continue;
                     }
+
+                    System.out.println("Please enter a password.");
+                    System.out.print("> ");
+					new Time();
+                    String password = keyboardInput.readLine();
+                    PlayerDatabase.addPlayer(this.playerName, password);
                 }while(!nameConf);
                 } catch (IOException ex) {
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                     System.exit(-1);
                 }
+
+            
             }
 
             // Player has joined, now start up the remote socket.
