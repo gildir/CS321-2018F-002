@@ -87,4 +87,4 @@ abstract class NPC {
         moveRandomly();
     }
   }
-}
+} //EOF

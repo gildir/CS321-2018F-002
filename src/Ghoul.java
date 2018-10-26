@@ -1,15 +1,12 @@
 
-import java.io.DataOutputStream;
-import java.io.PrintWriter;
-import java.util.LinkedList;
 import java.util.Random;
+import java.lang;
 
 /**
  *
  * @author Adam Denton
  */
 
-// 
 public class Ghoul extends NPC {
 
     // anger level
@@ -51,24 +48,10 @@ public class Ghoul extends NPC {
         super.broadcast("Grrrr, do not poke me! *the ghouls anger level rises*");
     }
 
-
-    // TODO WAIT FOR THAOVY
-    private void dragPlayer(){
-        //gameCore.dragPlayer();
-    }
-
     // When called resets the ghouls anger back to the inital state
     private void resetAnger(){
         anger = 0;
     }
-
-    // TODO
-    /*
-    private String pickPlayer(){
-
-        return "";
-    }
-    */
     
     // If poked, increase anger, and if that anger goes over the
     // threshold, reset the anger and call gameCore.dragPlayer()
@@ -77,7 +60,7 @@ public class Ghoul extends NPC {
         increaseAnger();
         if (anger >= MAXANGER){
             resetAnger();
-            dragPlayer();
+            // then a call to dragPlayer will happen
         }
     }
     
@@ -87,10 +70,14 @@ public class Ghoul extends NPC {
         decreaseAnger();
     }
     
-
     // Getter for anger
     public int getAnger(){
         return anger;
+    }
+
+    // String representation of Ghouls anger
+    public String angerString(){
+        return String.format("%d/%d", anger, MAXANGER);
     }
 
     // Random number generator in the given range of min through max
@@ -103,5 +90,5 @@ public class Ghoul extends NPC {
         Random r = new Random();
         return r.nextInt((max - min) + 1) + min;
    }
-
+   
 } //EOF Ghoul.java

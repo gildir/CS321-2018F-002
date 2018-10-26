@@ -410,31 +410,4 @@ public class GameCore implements GameCoreInterface {
         }
         return null;
     }
-
-
-    
-    /**
-     * Ghoul "drags" player.
-     * @param name Name of the player to "drag"
-     * @return void.
-     */
-     /*  
-    public void dragPlayer(int currentRoom) {
-       
-        // Find the room the Ghoul is in.
-        Room room = this.map.findRoom(Ghoul.getCurrentRoom());
-
-            // Send a message to all other players in the room that this player is looking around.
-            this.broadcast(player, player.getName() + " takes a look around.");
-
-            // Return a string representation of the room state.
-            return room.toString(this.playerList, player);
-        }
-        // No such player exists
-        else {
-            return null;
-        }
-
-    }
-    */
-}
+} //EOF
