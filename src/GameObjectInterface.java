@@ -98,4 +98,13 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
+    
+//Rock Paper Scissors Battle Code Here---------------------------------
+    public void challenge(String challenger, String player2) throws RemoteException;
+    public void accept(String challenger, String player2) throws RemoteException;
+    public void refuse(String challenger, String player2) throws RemoteException;
+    public void rock(String player) throws RemoteException;
+    public void paper(String player) throws RemoteException;
+    public void scissors(String player) throws RemoteException;
+//Rock Paper Scissors Battle Code Here---------------------------------
 }
