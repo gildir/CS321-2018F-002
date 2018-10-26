@@ -16,6 +16,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.scene.input.KeyCharacterCombinationBuilder;
+
 /**
  *
  * @author Kevin
@@ -53,12 +55,17 @@ public class GameClient {
         System.out.println("The game allows you to use the following commands:");
         System.out.println("  LOOK          - Shows you the area around you");
         System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
+        System.out.println("  WHISPER player message - Says 'message' to specified 'player'.");
         System.out.println("  LEFT          - Turns your player left 90 degrees.");
         System.out.println("  RIGHT         - Turns your player right 90 degrees.");
-        System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
+        System.out.println("  MOVE 	       - Tries to walk forward.");
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
+        System.out.println("  DROPOFF object   - Drop off object from player inventory.");
         System.out.println("  INVENTORY     - Shows you what objects you have collected.");
         System.out.println("  QUIT          - Quits the game.");
+        System.out.println("  CHALLENGE player  - Challenges another player to a Rock Paper Scissors Battle.");
+        System.out.println("  ACCEPT player     - Accepts a Rock Paper Scissors Battle Challenge from a specified player.");
+        System.out.println("  REFUSE player     - Refuses a Rock Paper Scissors Battle Challenge from a specified player.");
         System.out.println();
         
 
@@ -67,7 +74,7 @@ public class GameClient {
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         String keyboardStatement;
 
-        try {
+       try {
             // Establish RMI connection with the server
             System.setSecurityManager(new SecurityManager());
             String strName = "rmi://"+host+"/GameService";
@@ -77,20 +84,23 @@ public class GameClient {
             //   Lets the player choose a name and checks it with the server.  If the name is
             //    already taken or the user doesn't like their input, they can choose again.
             while(nameSat == false) {
+            	new Time(); 
                 try {
+                    boolean nameConf = true; //Name Confirmation
+                    new Time();
+
                     System.out.println("Please enter a name for your player.");
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine();
                     //if username already exists, ask user to enter new name
                     if(PlayerDatabase.isPlayer(playerName))
                         continue;
-                    System.out.println("Please enter a password.");
-                    System.out.print("> ");
-                    String password = keyboardInput.readLine();
-                    PlayerDatabase.addPlayer(this.playerName, password);
+                 do{
+
                     System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this name?");
-                    System.out.print("(Y/N) >");
-                    if(keyboardInput.readLine().equalsIgnoreCase("Y")) {
+                    System.out.print("(Y/N) > ");
+                    String entry = keyboardInput.readLine();
+                    if(entry.equalsIgnoreCase("Y")) {
                         // Attempt to join the server
                         if(remoteGameInterface.joinGame(this.playerName) == false) {
                             System.out.println("I'm sorry, " + this.playerName + ", but someone else is already logged in with your name. Please pick another.");
@@ -98,11 +108,29 @@ public class GameClient {
                         else {
                             nameSat = true;
                         }
+                        nameConf = true;
                     }
+                    else if (entry.equalsIgnoreCase("N")){
+                        nameConf = true; nameSat = false; //Will reprompt to enter name
+                        continue;
+                    }
+                    else{
+                        nameConf = false; nameSat = true; //Will reprompt confirmation
+                        continue;
+                    }
+
+                    System.out.println("Please enter a password.");
+                    System.out.print("> ");
+					new Time();
+                    String password = keyboardInput.readLine();
+                    PlayerDatabase.addPlayer(this.playerName, password);
+                }while(!nameConf);
                 } catch (IOException ex) {
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                     System.exit(-1);
                 }
+
+            
             }
 
             // Player has joined, now start up the remote socket.
@@ -179,13 +207,30 @@ public class GameClient {
                         System.out.println(remoteGameInterface.say(this.playerName, message));
                     }
                     break;
-                case "MOVE":
+                case "WHISPER":
                     if(tokens.isEmpty()) {
-                        System.err.println("You need to provide a distance in order to move.");
+                        System.err.println("You need to specify a player and write a message in order to WHISPER.");
                     }
                     else {
-                        System.out.println(remoteGameInterface.move(this.playerName, Integer.parseInt(tokens.remove(0))));
-                    }
+                        String receivingName = tokens.remove(0);
+			if( tokens.isEmpty() ){	//check if message is empty
+				
+				System.out.println("You need to add a message.");
+			}
+			else{
+                        	while(tokens.isEmpty() == false) {	
+                            		message += tokens.remove(0);
+                            		if(tokens.isEmpty() == false) {    
+						message += " ";
+                            	}
+                        }
+			System.out.println(remoteGameInterface.whisper(this.playerName, receivingName, message));
+                    	
+		   	}
+		    } //end of WHISPER case
+                    break;
+                case "MOVE":
+                    System.out.println(remoteGameInterface.move(this.playerName));
                     break;
                 case "PICKUP":
                     if(tokens.isEmpty()) {
@@ -195,12 +240,59 @@ public class GameClient {
                         System.out.println(remoteGameInterface.pickup(this.playerName, tokens.remove(0)));
                     }
                     break;
+                case "DROPOFF":
+                    if(tokens.isEmpty()) {
+                        System.err.println("You need to provide an object to dropoff.");
+                    }
+                    else {
+                        System.out.println(remoteGameInterface.dropoff(this.playerName, tokens.remove(0)));
+                    }
+                    break;
                 case "INVENTORY":
                     System.out.println(remoteGameInterface.inventory(this.playerName));
                     break;                                                            
                 case "QUIT":
                     remoteGameInterface.leave(this.playerName);
                     runListener = false;
+                    break;
+                case "CHALLENGE":
+                    if(tokens.isEmpty())
+                    {
+                      System.err.println("You need to specify another player to challenge.");
+                    }
+                    else
+                    {
+                      remoteGameInterface.challenge(this.playerName,tokens.remove(0));
+                    }
+                    break;
+                case "ACCEPT":
+                    if(tokens.isEmpty())
+                    {
+                      System.err.println("You need to specify the player whose challenge you are accepting.");
+                    }
+                    else
+                    {
+                      remoteGameInterface.accept(tokens.remove(0),this.playerName);
+                    }
+                    break;
+                case "REFUSE":
+                    if(tokens.isEmpty())
+                    {
+                      System.err.println("You need to specify the player whose challenge you are refusing.");
+                    }
+                    else
+                    {
+                      remoteGameInterface.refuse(tokens.remove(0),this.playerName);
+                    }
+                    break;
+                case "ROCK":
+                    remoteGameInterface.rock(this.playerName);
+                    break;
+                case "PAPER":
+                    remoteGameInterface.paper(this.playerName);
+                    break;
+                case "SCISSORS":
+                    remoteGameInterface.scissors(this.playerName);
                     break;
             }
         } catch (RemoteException ex) {

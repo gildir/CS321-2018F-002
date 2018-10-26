@@ -98,6 +98,19 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String say(String name, String message) throws RemoteException {
         return core.say(name, message);
     }
+
+    /**
+    * Whispers "message" to specified player.
+    * @param name1 Name of player sending message
+    * @param name2 Name of player receiving message
+    * @param message Message to whisper
+    * @return Message showing success.
+    * @throws RemoteException
+    */
+    @Override
+    public String whisper(String name1, String name2, String message) throws RemoteException {
+        return core.whisper(name1, name2, message);
+    }
       
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
@@ -108,8 +121,8 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @throws RemoteException 
      */
     @Override
-    public String move(String name, int distance) throws RemoteException {
-        return core.move(name, distance);
+    public String move(String name) throws RemoteException {
+        return core.move(name);
     }
       
     /**
@@ -123,6 +136,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String pickup(String name, String target) throws RemoteException {
         return core.pickup(name, target);
     }    
+    /**
+     * Attempts to drop off an object < target >. Will return a message on any success or failure.
+     * @param name Name of the player to move
+     * @param target The case-insensitive name of the object to dropoff.
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    @Override
+    public String dropoff(String name, String target) throws RemoteException {
+        return core.dropoff(name, target);
+    }
     
     /**
      * Returns a string representation of all objects you are carrying.
@@ -147,4 +171,31 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
             player.getReplyWriter().close();
         }
     }    
+//Rock Paper Scissors Battle Code here--------------------------------------
+public void challenge(String challenger, String player2) throws RemoteException
+{
+  core.challenge(challenger, player2);
+}
+public void accept(String challenger, String player2) throws RemoteException
+{
+ core.accept(challenger,player2);
+}
+
+public void refuse(String challenger, String player2) throws RemoteException
+{
+  core.refuse(challenger, player2);
+}
+public void rock(String player) throws RemoteException
+{
+  core.rock(player);
+}
+public void paper(String player) throws RemoteException
+{
+  core.paper(player);
+}
+public void scissors(String player) throws RemoteException
+{
+  core.scissors(player);
+}
+//Rock Paper Scissors Battle Code here--------------------------------------
 }
