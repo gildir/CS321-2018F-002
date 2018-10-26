@@ -112,6 +112,13 @@ public class Room {
         return null;
     }
     
+    public Item getLastObject() {
+    	if(this.objects.isEmpty()) 
+            return null;
+    	else
+    		return this.objects.removeLast();    
+    }
+    
     public String getPlayers(PlayerList players) {
         String localPlayers = "";
         for(Player player : players) {

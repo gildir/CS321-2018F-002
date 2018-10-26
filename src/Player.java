@@ -75,6 +75,15 @@ public class Player {
     public void addObjectToInventory(String object) {
         this.currentInventory.add(object);
     }
+    public Item removeObjectFomInventory(String object) {
+        for(Item obj : this.currentInventory) {
+            if(obj.getItemName().equalsIgnoreCase(object)) {
+                this.currentInventory.remove(obj);
+                return obj;
+              }
+            }
+        return null;
+    }
     
     public void setReplyWriter(PrintWriter writer) {
         this.replyWriter = writer;
@@ -107,11 +116,15 @@ public class Player {
     public Direction getDirection() {
         return this.currentDirection;
     }
+
+    public void setDirection(Direction direction){
+	    this.currentDirection = direction;
+    }
     
     public String viewInventory() {
         String result = "";
         if(this.currentInventory.isEmpty() == true) {
-            return "nothing.";
+            return " nothing.";
         }
         else {
             for(String obj : this.currentInventory) {
