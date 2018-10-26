@@ -112,7 +112,7 @@ public class Room {
         return null;
     }
     
-    public String getLastObject() {
+    public Item getLastObject() {
     	if(this.objects.isEmpty()) 
             return null;
     	else

@@ -274,7 +274,7 @@ public class GameCore implements GameCoreInterface {
         if (target.equals("all")) {
 
           int obj_count = 0;
-          String object;
+          Item object;
           String AllObjects = room.getObjects();
 
           while((object = room.getLastObject()) != null){
@@ -288,7 +288,7 @@ public class GameCore implements GameCoreInterface {
             return "No objects in this room";
 
         } else {
-          String object = room.removeObject(target);
+          Item object = room.removeObject(target);
 
           if(object != null) {
             player.addObjectToInventory(object);
