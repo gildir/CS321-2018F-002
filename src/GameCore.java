@@ -3,6 +3,7 @@
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.LinkedList;
 
 /**
  *
@@ -22,7 +23,7 @@ public class GameCore implements GameCoreInterface {
     public GameCore() {
         
         // Generate the game map.
-        map = new Map();
+        map = new Map(this);
         playerList = new PlayerList();
         npcSet = new HashSet<>();
 
@@ -314,12 +315,12 @@ public class GameCore implements GameCoreInterface {
         if (player != null){
             Room room = map.findRoom(player.getCurrentRoom());
             //find all the NPCs in the room that the player's in
-            npcsFound = room.getLocalNPC(npcSet);
+            npcsFound = room.getNamesOfNpcs(npcSet);
             if (npcsFound != null){
                 //checking to see if the ghoulName matches any ghouls in the same room
                 for (int i = 0; i < npcsFound.size(); i++){
                     if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
-                        return playerName + " POKED " + npcsFound.get(i);
+                        return playerName + " POKED " + npcsFound.get(i) + "\n" + player.removeRandomItem();
                     }
                 }
             }
@@ -350,7 +351,7 @@ public class GameCore implements GameCoreInterface {
             Room room = map.findRoom(player.getCurrentRoom());
             //find all the NPCs in the room that the player's in
             ArrayList<String> npcsFound = new ArrayList<>();
-            npcsFound = room.getLocalNPC(npcSet);
+            npcsFound = room.getNamesOfNpcs(npcSet);
             if (npcsFound != null){
                 //checking to see if the ghoulName matches any ghouls in the same room
                 for (int i = 0;(i < npcsFound.size() && ghoulNotFound); i++){

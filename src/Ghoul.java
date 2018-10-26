@@ -20,7 +20,6 @@ public class Ghoul extends NPC {
         super(gameCore, name, currentRoom, aiPeriodSeconds);
     }
 
-
     // If anger goes below 0 and into the negative it will go back to zero
     // (possibly use negative int numbers as a friendly aggro or revamp)
     private void decreaseAnger(){
