@@ -54,9 +54,9 @@ Logging Out:
 ## Permanently Removing Account
 Written by: Brett Mullins
 
+If the user wants to remove his or her character permantly from the game, then the user should follow these steps to accomplish deletion. First, if the user is not already logged in, log into the game as you normally would. The next step would be to enter the quit command into the user prompt. At that point, the user will be prompted if he or she wants to permeantly delete their player and account. The user should then type "Y" (for yes). The user will then be prompted for his or her password. This is to prevent unwanted or accidental deletion of the character and account. After the password is enter correctly, the removal proccess will take place. If the password is entered incorrectly, the user is not deleted and is logged out normally.  
 
-
-
+//Not finished
 
 
 
