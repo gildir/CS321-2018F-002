@@ -307,24 +307,45 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success. 
      */    
     public String pickup(String name, String target) {
-        Player player = this.playerList.findPlayer(name);
-        if(player != null) {
-            Room room = map.findRoom(player.getCurrentRoom());
-            String object = room.removeObject(target);
-            if(object != null) {
-                player.addObjectToInventory(object);
-                this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
-                return "You bend over and pick up a " + target + ".";
-            }
-            else {
-                this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
-                return "You look around for a " + target + ", but can't find one.";
-            }
+      Player player = this.playerList.findPlayer(name);
+
+      if(player != null) {
+        Room room = map.findRoom(player.getCurrentRoom());
+        // System.out.print(target);
+        if (target.equals("all")) {
+
+          int obj_count = 0;
+          Item object;
+          String AllObjects = room.getObjects();
+
+          while((object = room.getLastObject()) != null){
+            player.addObjectToInventory(object);
+            obj_count++;
+          }
+
+          if(obj_count > 0)
+            return "You bend over and pick up all the objects";
+          else
+            return "No objects in this room";
+
+        } else {
+          Item object = room.removeObject(target);
+
+          if(object != null) {
+            player.addObjectToInventory(object);
+            this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
+            return "You bend over and pick up a " + target + ".";
+          } else {
+            this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
+            return "You look around for a " + target + ", but can't find one.";
+          }
         }
-        else {
-            return null;
-        }
-    }       
+      }
+      else {
+        return null;
+      }
+}   
+     
     /**
      * Attempts to drop off an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
