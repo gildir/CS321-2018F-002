@@ -58,6 +58,9 @@ public class GameClient {
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY     - Shows you what objects you have collected.");
         System.out.println("  QUIT          - Quits the game.");
+        System.out.println("  CHALLENGE player  - Challenges another player to a Rock Paper Scissors Battle.");
+        System.out.println("  ACCEPT player     - Accepts a Rock Paper Scissors Battle Challenge from a specified player.");
+        System.out.println("  REFUSE player     - Refuses a Rock Paper Scissors Battle Challenge from a specified player.");
         System.out.println();
         
 
@@ -193,6 +196,45 @@ public class GameClient {
                 case "QUIT":
                     remoteGameInterface.leave(this.playerName);
                     runListener = false;
+                    break;
+                case "CHALLENGE":
+                    if(tokens.isEmpty())
+                    {
+                      System.err.println("You need to specify another player to challenge.");
+                    }
+                    else
+                    {
+                      remoteGameInterface.challenge(this.playerName,tokens.remove(0));
+                    }
+                    break;
+                case "ACCEPT":
+                    if(tokens.isEmpty())
+                    {
+                      System.err.println("You need to specify the player whose challenge you are accepting.");
+                    }
+                    else
+                    {
+                      remoteGameInterface.accept(tokens.remove(0),this.playerName);
+                    }
+                    break;
+                case "REFUSE":
+                    if(tokens.isEmpty())
+                    {
+                      System.err.println("You need to specify the player whose challenge you are refusing.");
+                    }
+                    else
+                    {
+                      remoteGameInterface.refuse(tokens.remove(0),this.playerName);
+                    }
+                    break;
+                case "ROCK":
+                    remoteGameInterface.rock(this.playerName);
+                    break;
+                case "PAPER":
+                    remoteGameInterface.paper(this.playerName);
+                    break;
+                case "SCISSORS":
+                    remoteGameInterface.scissors(this.playerName);
                     break;
             }
         } catch (RemoteException ex) {

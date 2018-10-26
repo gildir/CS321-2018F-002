@@ -9,7 +9,7 @@ public class Room {
     private final String title;
     private final String description;
     private final String location;
-    private final LinkedList<String> objects;
+    private final LinkedList<Item> objects;
     private final LinkedList<Exit> exits;
     
     public Room(int id, String title, String description, String location) {
@@ -103,15 +103,15 @@ public class Room {
         }
     }
     
-    public void addObject(String obj) {
+    public void addObject(Item obj) {
         if(this.objects.size() < 5) {
             this.objects.add(obj);
         }
     }
     
-    public String removeObject(String target) {
-        for(String obj : this.objects) {
-            if(obj.equalsIgnoreCase(target)) {
+    public Item removeObject(String target) {
+        for(Item obj : this.objects) {
+            if(obj.getItemName().equalsIgnoreCase(target)) {
                 this.objects.remove(obj);
                 return obj;
             }
