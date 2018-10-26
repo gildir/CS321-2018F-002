@@ -12,6 +12,13 @@ public interface GameCoreInterface {
      * @param message Message to broadcast.
      */   
     public void broadcast(Player player, String message);    
+    /**
+    * Broadcasts a message to a specified player.
+    * @param sendingPlayer Player sending message
+    * @param receivingPlayer Player receiving message
+    * @param message Message to broadcast
+    */
+    public void broadcast(Player sendingPlayer, Player receivingPlayer, String message);
     
     /**
      * Broadcasts a message to all players in the specified room.
@@ -68,6 +75,15 @@ public interface GameCoreInterface {
     public String say(String name, String message);
     
     /**
+    * Whispers "message" to specified player.
+    * @param name1 Name of player sending message
+    * @param name2 Name of player receiving message
+    * @param message Message to whisper
+    * @return Message Showing success.
+    */
+    public String whisper(String name1, String name2, String message);
+    
+    /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move
      * @return Message showing success.
@@ -78,9 +94,8 @@ public interface GameCoreInterface {
      * Leaves the game.
      * @param name Name of the player to leave
      * @return Player that was just removed.
-     */
-    public Player leave(String name);
-
+     */    
+    public Player leave(String name);    
 //Rock Paper Scissors Battle Code here--------------------------------------
 public void challenge(String challenger, String player2);
 public void accept(String challenger, String player2);

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
-
+    
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
     /**
@@ -28,10 +28,9 @@ public class GameCore implements GameCoreInterface {
         map = new Map();
         
         playerList = new PlayerList();
-
+        
         activeBattles = new ArrayList<Battle>();
         pendingBattles = new ArrayList<Battle>();
-
         Thread objectThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -69,6 +68,19 @@ public class GameCore implements GameCoreInterface {
             if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()) {
                 otherPlayer.getReplyWriter().println(message);
             }
+        }
+    }
+  
+    /**
+    * Broadcasts a message to the specified player.
+    * @param sendingPlayer Player sending message
+    * @param receivingPlayer Player receiving message
+    * @param message Message to broadcast
+    */
+    @Override
+    public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
+        if(sendingPlayer != receivingPlayer) {
+            receivingPlayer.getReplyWriter().println(message);
         }
     }
   
@@ -216,6 +228,35 @@ public class GameCore implements GameCoreInterface {
         }
     }  
     
+
+    /**
+    * Whispers "message" to a specified player.
+    * @param name1 Name of player sending whisper
+    * @param name2 Name of player receiving whisper
+    * @param message Message to whisper
+    * @return Message showing success.
+    */
+    @Override
+    public String whisper(String name1, String name2, String message) {
+        Player playerSending = this.playerList.findPlayer(name1);
+        Player playerReceiving = this.playerList.findPlayer(name2);
+	
+        if(playerSending != null && playerReceiving != null) {
+	
+	if(name1.equalsIgnoreCase(name2)){
+		return "Cannot whisper yourself";}
+	
+            this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+            return "message sent to " + playerReceiving.getName();
+        }
+        else {
+            if(playerReceiving == null) {
+                return "That player isn't online.";
+            }
+            return null;
+        }
+    }
+
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
@@ -223,14 +264,29 @@ public class GameCore implements GameCoreInterface {
      * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      */
-    public String move(String name, int distance) {
+    public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
-        if(player == null || distance <= 0) {
+        if(player == null) {
             return null;
         }
         Room room;
-        while(distance-- != 0) {
-            room = map.findRoom(player.getCurrentRoom());
+        room = map.findRoom(player.getCurrentRoom());
+	switch(direction.toUpperCase()){
+		case "NORTH":
+			player.setDirection(Direction.NORTH);
+			break;
+		case "EAST":
+			player.setDirection(Direction.EAST);
+			break;
+		case "WEST":
+			player.setDirection(Direction.WEST);
+			break;
+		case "SOUTH":
+			player.setDirection(Direction.SOUTH);
+			break;
+		default:
+			return "Please enter a valid direction. Valid directions are North, South, East, or West.";
+	}
             if(room.canExit(player.getDirection())) {
                 this.broadcast(player, player.getName() + " has walked off to the " + player.getCurrentDirection());
                 player.getReplyWriter().println(room.exitMessage(player.getDirection()));
@@ -242,7 +298,6 @@ public class GameCore implements GameCoreInterface {
                 player.getReplyWriter().println(room.exitMessage(player.getDirection()));
                 return "You grumble a little and stop moving.";
             }
-        }
         return "You stop moving and begin to stand around again.";
     }
     
@@ -253,24 +308,71 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success. 
      */    
     public String pickup(String name, String target) {
+      Player player = this.playerList.findPlayer(name);
+
+      if(player != null) {
+        Room room = map.findRoom(player.getCurrentRoom());
+        // System.out.print(target);
+        if (target.equals("all")) {
+
+          int obj_count = 0;
+          Item object;
+          String AllObjects = room.getObjects();
+
+          while((object = room.getLastObject()) != null){
+            player.addObjectToInventory(object);
+            obj_count++;
+          }
+
+          if(obj_count > 0)
+            return "You bend over and pick up all the objects";
+          else
+            return "No objects in this room";
+
+        } else {
+          Item object = room.removeObject(target);
+
+          if(object != null) {
+            player.addObjectToInventory(object);
+            this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
+            return "You bend over and pick up a " + target + ".";
+          } else {
+            this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
+            return "You look around for a " + target + ", but can't find one.";
+          }
+        }
+      }
+      else {
+        return null;
+      }
+}   
+     
+    /**
+     * Attempts to drop off an object < target >. Will return a message on any success or failure.
+     * @param name Name of the player to move
+     * @param target The case-insensitive name of the object to dropoff.
+     * @return Message showing success.
+     */
+    public String dropoff(String name, String target) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
+            Item object = player.removeObjectFomInventory(target);
             Room room = map.findRoom(player.getCurrentRoom());
-            String object = room.removeObject(target);
             if(object != null) {
-                player.addObjectToInventory(object);
-                this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
-                return "You bend over and pick up a " + target + ".";
+                room.addObject(object);
+                this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
+                return "You just dropped off a " + target + ".";
             }
             else {
-                this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
-                return "You look around for a " + target + ", but can't find one.";
+                this.broadcast(player, player.getName() + " tried to drop off something, but doesn't seem to find what they were looking for.");
+                return "You just tried to drop off a " + target + ", but you don't have one.";
             }
         }
         else {
             return null;
         }
-    }       
+    }
+
     
     /**
      * Returns a string representation of all objects you are carrying.
@@ -303,7 +405,7 @@ public class GameCore implements GameCoreInterface {
             return player;
         }
         return null;
-    }
+    }       
 
 
 //Rock Paper Scissors Battle Methods -------------------------------------------
