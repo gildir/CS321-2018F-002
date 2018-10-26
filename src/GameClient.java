@@ -54,7 +54,7 @@ public class GameClient {
         System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
         System.out.println("  LEFT          - Turns your player left 90 degrees.");
         System.out.println("  RIGHT         - Turns your player right 90 degrees.");
-        System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
+        System.out.println("  MOVE 	       - Tries to walk forward.");
         System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
         System.out.println("  DROPOFF object   - Drop off object from player inventory.");
         System.out.println("  INVENTORY     - Shows you what objects you have collected.");
@@ -176,12 +176,7 @@ public class GameClient {
                     }
                     break;
                 case "MOVE":
-                    if(tokens.isEmpty()) {
-                        System.err.println("You need to provide a distance in order to move.");
-                    }
-                    else {
-                        System.out.println(remoteGameInterface.move(this.playerName, Integer.parseInt(tokens.remove(0))));
-                    }
+                    System.out.println(remoteGameInterface.move(this.playerName));
                     break;
                 case "PICKUP":
                     if(tokens.isEmpty()) {
