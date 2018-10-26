@@ -16,17 +16,22 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.scene.input.KeyCharacterCombinationBuilder;
+
 /**
  *
  * @author Kevin
  */
 public class GameClient {
+	
     // Control flag for running the game.
     private boolean runGame;
 
     // Remote object for RMI server access
     protected GameObjectInterface remoteGameInterface;
-    
+
+    // Helper Object to run commands in the game
+    protected CommandRunner commandRunner;
     // Members for running the remote receive connection (for non-managed events)
     private boolean runListener;
     protected ServerSocket remoteListener;
@@ -64,13 +69,12 @@ public class GameClient {
         System.out.println();
         
 
-
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         String keyboardStatement;
 
-        try {
+       try {
             // Establish RMI connection with the server
             System.setSecurityManager(new SecurityManager());
             String strName = "rmi://"+host+"/GameService";
@@ -80,13 +84,24 @@ public class GameClient {
             //   Lets the player choose a name and checks it with the server.  If the name is
             //    already taken or the user doesn't like their input, they can choose again.
             while(nameSat == false) {
+            	new Time(); 
                 try {
+                    boolean nameConf = true; //Name Confirmation
+                    new Time();
+
                     System.out.println("Please enter a name for your player.");
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine();
+                    //if username already exists, ask user to enter new name
+                    if(PlayerDatabase.isPlayer(playerName))
+                        continue;
+                 do{
+
                     System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this name?");
-                    System.out.print("(Y/N) >");
-                    if(keyboardInput.readLine().equalsIgnoreCase("Y")) {
+                    System.out.print("(Y/N) > ");
+
+                    String entry = keyboardInput.readLine();
+                    if(entry.equalsIgnoreCase("Y")) {
                         // Attempt to join the server
                         if(remoteGameInterface.joinGame(this.playerName) == false) {
                             System.out.println("I'm sorry, " + this.playerName + ", but someone else is already logged in with your name. Please pick another.");
@@ -94,11 +109,29 @@ public class GameClient {
                         else {
                             nameSat = true;
                         }
+                        nameConf = true;
                     }
+                    else if (entry.equalsIgnoreCase("N")){
+                        nameConf = true; nameSat = false; //Will reprompt to enter name
+                        continue;
+                    }
+                    else{
+                        nameConf = false; nameSat = true; //Will reprompt confirmation
+                        continue;
+                    }
+
+                    System.out.println("Please enter a password.");
+                    System.out.print("> ");
+					new Time();
+                    String password = keyboardInput.readLine();
+                    PlayerDatabase.addPlayer(this.playerName, password);
+                }while(!nameConf);
                 } catch (IOException ex) {
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                     System.exit(-1);
                 }
+
+            
             }
 
             // Player has joined, now start up the remote socket.
@@ -107,9 +140,14 @@ public class GameClient {
             remoteOutputThread.setDaemon(true);
             remoteOutputThread.start();
 
+            // Init the CommandRunner
+            commandRunner = new CommandRunner(remoteGameInterface);
+            commandRunner.run("help", null, this.playerName);
+
             // Collect input for the game.
             while(runGame) {
                 try {
+                    // System.out.print("> ");
                     keyboardStatement = keyboardInput.readLine();
                     parseInput(keyboardStatement);
                 } catch (IOException ex) {
@@ -146,7 +184,7 @@ public class GameClient {
             System.out.println("The keyboard input had no commands.");
             return;
         }
-        
+
         String message = "";
 
         try {
@@ -241,6 +279,11 @@ public class GameClient {
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+
+        String command = tokens.remove(0);
+        commandRunner.run(command, tokens, this.playerName);
+
     }
     
     public static void main(String[] args) {
@@ -248,7 +291,7 @@ public class GameClient {
 			System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");
 			System.exit(-1);
 		}
-		
+
         System.out.println("[STARTUP] Game Client Now Starting...");
         new GameClient(args[0]);
     }
