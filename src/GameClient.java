@@ -16,6 +16,8 @@ import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.scene.input.KeyCharacterCombinationBuilder;
+
 /**
  *
  * @author Kevin
@@ -81,12 +83,15 @@ public class GameClient {
             //    already taken or the user doesn't like their input, they can choose again.
             while(nameSat == false) {
                 try {
+                    boolean nameConf = true; //Name Confirmation
                     System.out.println("Please enter a name for your player.");
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine();
+                    do{
                     System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this name?");
-                    System.out.print("(Y/N) >");
-                    if(keyboardInput.readLine().equalsIgnoreCase("Y")) {
+                    System.out.print("(Y/N) > ");
+                    String entry = keyboardInput.readLine();
+                    if(entry.equalsIgnoreCase("Y")) {
                         // Attempt to join the server
                         if(remoteGameInterface.joinGame(this.playerName) == false) {
                             System.out.println("I'm sorry, " + this.playerName + ", but someone else is already logged in with your name. Please pick another.");
@@ -94,7 +99,17 @@ public class GameClient {
                         else {
                             nameSat = true;
                         }
+                        nameConf = true;
                     }
+                    else if (entry.equalsIgnoreCase("N")){
+                        nameConf = true; nameSat = false; //Will reprompt to enter name
+                        continue;
+                    }
+                    else{
+                        nameConf = false; nameSat = true; //Will reprompt confirmation
+                        continue;
+                    }
+                }while(!nameConf);
                 } catch (IOException ex) {
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                     System.exit(-1);
