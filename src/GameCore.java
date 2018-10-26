@@ -70,6 +70,19 @@ public class GameCore implements GameCoreInterface {
             }
         }
     }
+
+    /**
+    * Broadcasts a message to the specified player.
+    * @param sendingPlayer Player sending message
+    * @param receivingPlayer Player receiving message
+    * @param message Message to broadcast
+    */
+    @Override
+    public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
+        if(sendingPlayer != receivingPlayer) {
+            receivingPlayer.getReplyWriter().println(message);
+        }
+    }
   
     /**
      * Broadcasts a message to all players in the specified room.
@@ -215,6 +228,34 @@ public class GameCore implements GameCoreInterface {
         }
     }  
     
+    /**
+    * Whispers "message" to a specified player.
+    * @param name1 Name of player sending whisper
+    * @param name2 Name of player receiving whisper
+    * @param message Message to whisper
+    * @return Message showing success.
+    */
+    @Override
+    public String whisper(String name1, String name2, String message) {
+        Player playerSending = this.playerList.findPlayer(name1);
+        Player playerReceiving = this.playerList.findPlayer(name2);
+	
+        if(playerSending != null && playerReceiving != null) {
+	
+	if(name1.equalsIgnoreCase(name2)){
+		return "Cannot whisper yourself";}
+	
+            this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+            return "message sent to " + playerReceiving.getName();
+        }
+        else {
+            if(playerReceiving == null) {
+                return "That player isn't online.";
+            }
+            return null;
+        }
+    }
+
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
