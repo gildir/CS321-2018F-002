@@ -52,6 +52,15 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public String say(String name, String message) throws RemoteException;
+
+    /**
+    * Whispers "message" to specified player.
+    * @param name1 Name of players sending message
+    * @param name2 Name of player receiving message
+    * @param message Message to whisper
+    * @return Message showing success.
+    */
+    public String whisper(String name1, String name2, String message) throws RemoteException;
     
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
@@ -61,7 +70,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException 
      */
-    public String move(String name, int distance) throws RemoteException;
+    public String move(String name) throws RemoteException;
 
     /**
      * Attempts to pick up an object < object >. Will return a message on any success or failure.
@@ -71,6 +80,14 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public String pickup(String name, String object) throws RemoteException;
+    /**
+     * Attempts to drop off an object < object >. Will return a message on any success or failure.
+     * @param name Name of the player to dropoff an object
+     * @param object The case-insensitive name of the object to drop off.
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    public String dropoff(String name, String object) throws RemoteException;
     
      /**
      * Returns a string representation of all objects you are carrying.
