@@ -79,6 +79,15 @@ public class Player {
     public void addObjectToInventory(String object) {
         this.currentInventory.add(object);
     }
+    public Item removeObjectFomInventory(String object) {
+        for(Item obj : this.currentInventory) {
+            if(obj.getItemName().equalsIgnoreCase(object)) {
+                this.currentInventory.remove(obj);
+                return obj;
+              }
+            }
+        return null;
+    }
     
     public void setReplyWriter(PrintWriter writer) {
         this.replyWriter = writer;
@@ -111,11 +120,15 @@ public class Player {
     public Direction getDirection() {
         return this.currentDirection;
     }
-    // get money 
+
+    public void setDirection(Direction direction){
+	    this.currentDirection = direction;
+    }
+  
     public double getMoney() {
       return this.money;
     }
-    // return a string to print to the screen when player wants to view money
+    
     public String viewMoney() {
       return this.name + ", you have " + this.money + " dollars.";
     }
@@ -123,7 +136,7 @@ public class Player {
     public String viewInventory() {
         String result = "";
         if(this.currentInventory.isEmpty() == true) {
-            return "nothing.";
+            return " nothing.";
         }
         else {
             for(String obj : this.currentInventory) {
