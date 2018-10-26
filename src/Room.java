@@ -8,7 +8,7 @@ public class Room {
     private final int id;
     private final String title;
     private final String description;
-    private final LinkedList<Item> objects;
+    private final LinkedList<String> objects;
     private final LinkedList<Exit> exits;
     
     public Room(int id, String title, String description) {
@@ -96,15 +96,15 @@ public class Room {
         }
     }
     
-    public void addObject(Item obj) {
+    public void addObject(String obj) {
         if(this.objects.size() < 5) {
             this.objects.add(obj);
         }
     }
     
-    public Item removeObject(String target) {
-        for(Item obj : this.objects) {
-            if(obj.getItemName().equalsIgnoreCase(target)) {
+    public String removeObject(String target) {
+        for(String obj : this.objects) {
+            if(obj.equalsIgnoreCase(target)) {
                 this.objects.remove(obj);
                 return obj;
             }
