@@ -91,7 +91,7 @@ public class Shop {
  public String displayShop() {
   ArrayList<ItemStock> itemList = new ArrayList<ItemStock>();
   for(Item item : this.items) {
-   ItemStock iStock = new ItemStock(item.getItemName(), 1, (item.getItemValue()*1.2));
+   ItemStock iStock = new ItemStock(item.getItemName(), 1, item.getItemValue());
    if(!(itemList.contains(iStock))){
     itemList.add(iStock);
    }
