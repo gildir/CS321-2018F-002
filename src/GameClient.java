@@ -50,15 +50,18 @@ public class GameClient {
         System.out.println("You will be able to see if any other players are in the same area as well as what");
         System.out.println("objects are on the ground and what direction you are facing.\n");
         System.out.println("The game allows you to use the following commands:");
-        System.out.println("  LOOK             - Shows you the area around you");
-        System.out.println("  SAY message      - Says 'message' to any other players in the same area.");
-        System.out.println("  LEFT             - Turns your player left 90 degrees.");
-        System.out.println("  RIGHT            - Turns your player right 90 degrees.");
-        System.out.println("  MOVE distance    - Tries to walk forward <distance> times.");
-        System.out.println("  PICKUP object    - Tries to pick up an object in the same area.");
+        System.out.println("  LOOK          - Shows you the area around you");
+        System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
+        System.out.println("  LEFT          - Turns your player left 90 degrees.");
+        System.out.println("  RIGHT         - Turns your player right 90 degrees.");
+        System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
+        System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
         System.out.println("  DROPOFF object   - Drop off object from player inventory.");
-        System.out.println("  INVENTORY        - Shows you what objects you have collected.");
-        System.out.println("  QUIT             - Quits the game.");
+        System.out.println("  INVENTORY     - Shows you what objects you have collected.");
+        System.out.println("  QUIT          - Quits the game.");
+        System.out.println("  CHALLENGE player  - Challenges another player to a Rock Paper Scissors Battle.");
+        System.out.println("  ACCEPT player     - Accepts a Rock Paper Scissors Battle Challenge from a specified player.");
+        System.out.println("  REFUSE player     - Refuses a Rock Paper Scissors Battle Challenge from a specified player.");
         System.out.println();
         
 
@@ -202,6 +205,45 @@ public class GameClient {
                 case "QUIT":
                     remoteGameInterface.leave(this.playerName);
                     runListener = false;
+                    break;
+                case "CHALLENGE":
+                    if(tokens.isEmpty())
+                    {
+                      System.err.println("You need to specify another player to challenge.");
+                    }
+                    else
+                    {
+                      remoteGameInterface.challenge(this.playerName,tokens.remove(0));
+                    }
+                    break;
+                case "ACCEPT":
+                    if(tokens.isEmpty())
+                    {
+                      System.err.println("You need to specify the player whose challenge you are accepting.");
+                    }
+                    else
+                    {
+                      remoteGameInterface.accept(tokens.remove(0),this.playerName);
+                    }
+                    break;
+                case "REFUSE":
+                    if(tokens.isEmpty())
+                    {
+                      System.err.println("You need to specify the player whose challenge you are refusing.");
+                    }
+                    else
+                    {
+                      remoteGameInterface.refuse(tokens.remove(0),this.playerName);
+                    }
+                    break;
+                case "ROCK":
+                    remoteGameInterface.rock(this.playerName);
+                    break;
+                case "PAPER":
+                    remoteGameInterface.paper(this.playerName);
+                    break;
+                case "SCISSORS":
+                    remoteGameInterface.scissors(this.playerName);
                     break;
             }
         } catch (RemoteException ex) {
