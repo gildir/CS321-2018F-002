@@ -50,14 +50,7 @@ public class CommandRunner {
             }
         });
         commandFunctions.put("MOVE",     (name, args) -> {
-            try {
-                int distance = Integer.parseInt(args.get(0));
-                return remoteGameInterface.move(name, distance);
-            } catch (Exception e) {
-                // System.err.println(e);
-                // return "[ERROR] " + e.getMessage();
-                return "[ERROR] Couldn't parse arguments";
-            }
+            return remoteGameInterface.move(name);
         });
         commandFunctions.put("PICKUP",    (name, args) -> {
             try {
@@ -119,6 +112,36 @@ public class CommandRunner {
         commandFunctions.put("ROCK", (name, args) -> { remoteGameInterface.rock(name); return null; });
         commandFunctions.put("PAPER", (name, args) -> { remoteGameInterface.paper(name); return null; });
         commandFunctions.put("SCISSORS", (name, args) -> { remoteGameInterface.scissors(name); return null; });
+        commandFunctions.put("WHISPER", (name, args) -> {
+            try {
+                String receiver = args.remove(0);
+                String message = String.join(" ", args);
+
+                if (receiver.equals("")) {
+                    return "[ERROR] You need to specify another player to whisper.";
+                } else if (message.equals("")) {
+                    return "[ERROR] You need to include a message to whisper.";
+                } else {
+                    remoteGameInterface.whisper(name, receiver, message);
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] You need to specify another player to challenge.";
+            }
+        });
+        commandFunctions.put("DROPOFF",    (name, args) -> {
+            try {
+                String object = args.get(0);
+
+                if (object.equals("")) {
+                    return "[ERROR] No object specified";
+                } else {
+                    return remoteGameInterface.dropoff(name, object);
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No object specified";
+            }
+        });
     }
 
     /**
@@ -228,6 +251,10 @@ public class CommandRunner {
         descriptions.put("ROCK",      new String[]{"",         "Play ROCK in your current Rock Paper Scissors Battle"});
         descriptions.put("PAPER",     new String[]{"",         "Play PAPER in your current Rock Paper Scissors Battle"});
         descriptions.put("SCISSORS",  new String[]{"",         "Play SCISSORS in your current Rock Paper Scissors Battle"});
+
+        descriptions.put("WHISPER",   new String[]{"PLAYER MESSAGE",   "Says <MESSAGE> to specified <PLAYER>"});
+        descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Drop off <OBJECT> from player inventory"});
+
         // Create them
         createCommands(descriptions);
     }
