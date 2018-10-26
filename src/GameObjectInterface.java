@@ -81,7 +81,8 @@ public interface GameObjectInterface extends Remote {
      */
     //author Shayan AH
     public String listAllPlayers(String name) throws RemoteException;
-    public String move(String name, int distance) throws RemoteException;
+  
+    public String move(String name) throws RemoteException;
 
     /**
      * Attempts to pick up an object < object >. Will return a message on any success or failure.
@@ -91,6 +92,14 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public String pickup(String name, String object) throws RemoteException;
+    /**
+     * Attempts to drop off an object < object >. Will return a message on any success or failure.
+     * @param name Name of the player to dropoff an object
+     * @param object The case-insensitive name of the object to drop off.
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    public String dropoff(String name, String object) throws RemoteException;
     
      /**
      * Returns a string representation of all objects you are carrying.
@@ -106,4 +115,12 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public void leave(String name) throws RemoteException;       
+//Rock Paper Scissors Battle Code Here---------------------------------
+    public void challenge(String challenger, String player2) throws RemoteException;
+    public void accept(String challenger, String player2) throws RemoteException;
+    public void refuse(String challenger, String player2) throws RemoteException;
+    public void rock(String player) throws RemoteException;
+    public void paper(String player) throws RemoteException;
+    public void scissors(String player) throws RemoteException;
+//Rock Paper Scissors Battle Code Here---------------------------------
 }
