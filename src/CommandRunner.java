@@ -73,6 +73,51 @@ public class CommandRunner {
         });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
         commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
+        commandFunctions.put("CHALLENGE", (name, args) -> {
+            try {
+                String opponent = args.get(0);
+
+                if (opponent.equals("")) {
+                    return "[ERROR] You need to specify another player to challenge.";
+                } else {
+                    remoteGameInterface.challenge(name, opponent);
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] You need to specify another player to challenge.";
+            }
+        });
+        commandFunctions.put("ACCEPT", (name, args) -> {
+            try {
+                String opponent = args.get(0);
+
+                if (opponent.equals("")) {
+                    return "[ERROR] You need to specify the player whose challenge you are accepting.";
+                } else {
+                    remoteGameInterface.accept(opponent, name);
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] You need to specify the player whose challenge you are accepting.";
+            }
+        });
+        commandFunctions.put("REFUSE", (name, args) -> {
+            try {
+                String opponent = args.get(0);
+
+                if (opponent.equals("")) {
+                    return "[ERROR] You need to specify the player whose challenge you are refusing.";
+                } else {
+                    remoteGameInterface.refuse(opponent, name);
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] You need to specify the player whose challenge you are refusing.";
+            }
+        });
+        commandFunctions.put("ROCK", (name, args) -> { remoteGameInterface.rock(name); return null; });
+        commandFunctions.put("PAPER", (name, args) -> { remoteGameInterface.paper(name); return null; });
+        commandFunctions.put("SCISSORS", (name, args) -> { remoteGameInterface.scissors(name); return null; });
     }
 
     /**
@@ -175,6 +220,13 @@ public class CommandRunner {
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
 
+        descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another player to a Rock Paper Scissors Battle"});
+        descriptions.put("ACCEPT",    new String[]{"PLAYER",   "Accepts a Rock Paper Scissors Battle Challenge from a specified player"});
+        descriptions.put("REFUSE",    new String[]{"PLAYER",   "Refuses a Rock Paper Scissors Battle Challenge from a specified player"});
+
+        descriptions.put("ROCK",      new String[]{"",         "Play ROCK in your current Rock Paper Scissors Battle"});
+        descriptions.put("PAPER",     new String[]{"",         "Play PAPER in your current Rock Paper Scissors Battle"});
+        descriptions.put("SCISSORS",  new String[]{"",         "Play SCISSORS in your current Rock Paper Scissors Battle"});
         // Create them
         createCommands(descriptions);
     }
