@@ -40,8 +40,8 @@ public class GameCore implements GameCoreInterface {
             public void run() {
                 Random rand = new Random();
                 Room room;
-                Item object;
-                Item[] objects = {new Item("Flower", 0.1, 0.0), new Item("Textbook", 4.8, 300), new Item("Phone", 0.3, 100), new Item("Newspaper", 0.6, 0)};
+                String object;
+                String[] objects = {"Flower", "Textbook", "Phone", "Newspaper"};
                 while(true) {
                     try {
                         Thread.sleep(rand.nextInt(60000));
@@ -72,6 +72,19 @@ public class GameCore implements GameCoreInterface {
             if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()) {
                 otherPlayer.getReplyWriter().println(message);
             }
+        }
+    }
+
+    /**
+    * Broadcasts a message to the specified player.
+    * @param sendingPlayer Player sending message
+    * @param receivingPlayer Player receiving message
+    * @param message Message to broadcast
+    */
+    @Override
+    public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
+        if(sendingPlayer != receivingPlayer) {
+            receivingPlayer.getReplyWriter().println(message);
         }
     }
   
@@ -220,6 +233,34 @@ public class GameCore implements GameCoreInterface {
     }  
     
     /**
+    * Whispers "message" to a specified player.
+    * @param name1 Name of player sending whisper
+    * @param name2 Name of player receiving whisper
+    * @param message Message to whisper
+    * @return Message showing success.
+    */
+    @Override
+    public String whisper(String name1, String name2, String message) {
+        Player playerSending = this.playerList.findPlayer(name1);
+        Player playerReceiving = this.playerList.findPlayer(name2);
+	
+        if(playerSending != null && playerReceiving != null) {
+	
+	if(name1.equalsIgnoreCase(name2)){
+		return "Cannot whisper yourself";}
+	
+            this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+            return "message sent to " + playerReceiving.getName();
+        }
+        else {
+            if(playerReceiving == null) {
+                return "That player isn't online.";
+            }
+            return null;
+        }
+    }
+
+    /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
      * @param name Name of the player to move
@@ -308,6 +349,32 @@ public class GameCore implements GameCoreInterface {
         return null;
       }
 }   
+     
+    /**
+     * Attempts to drop off an object < target >. Will return a message on any success or failure.
+     * @param name Name of the player to move
+     * @param target The case-insensitive name of the object to dropoff.
+     * @return Message showing success.
+     */
+    public String dropoff(String name, String target) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            Item object = player.removeObjectFomInventory(target);
+            Room room = map.findRoom(player.getCurrentRoom());
+            if(object != null) {
+                room.addObject(object);
+                this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
+                return "You just dropped off a " + target + ".";
+            }
+            else {
+                this.broadcast(player, player.getName() + " tried to drop off something, but doesn't seem to find what they were looking for.");
+                return "You just tried to drop off a " + target + ", but you don't have one.";
+            }
+        }
+        else {
+            return null;
+        }
+    }
     
     /**
      * Returns a string representation of all objects you are carrying.

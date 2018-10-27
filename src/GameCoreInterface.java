@@ -12,6 +12,14 @@ public interface GameCoreInterface {
      * @param message Message to broadcast.
      */   
     public void broadcast(Player player, String message);    
+
+    /**
+    * Broadcasts a message to a specified player.
+    * @param sendingPlayer Player sending message
+    * @param receivingPlayer Player receiving message
+    * @param message Message to broadcast
+    */
+    public void broadcast(Player sendingPlayer, Player receivingPlayer, String message);
     
     /**
      * Broadcasts a message to all players in the specified room.
@@ -66,6 +74,15 @@ public interface GameCoreInterface {
      * @return Message showing success.
      */
     public String say(String name, String message);
+
+    /**
+    * Whispers "message" to specified player.
+    * @param name1 Name of player sending message
+    * @param name2 Name of player receiving message
+    * @param message Message to whisper
+    * @return Message Showing success.
+    */
+    public String whisper(String name1, String name2, String message);
     
     /**
      * Returns a string representation of all objects you are carrying.
