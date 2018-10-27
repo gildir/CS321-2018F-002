@@ -175,6 +175,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String pickup(String name, String target) throws RemoteException {
         return core.pickup(name, target);
     }    
+  
     /**
      * Attempts to drop off an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
@@ -259,9 +260,29 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
 		core.scissors(player);
 	}
 	//Rock Paper Scissors Battle Code here--------------------------------------
-
 	// Added by Brendan
 	public void checkBoard(String player) throws RemoteException {
 		core.checkBoard(player);
 	}
+public void refuse(String challenger, String player2) throws RemoteException
+{
+  core.refuse(challenger, player2);
+}
+public void rock(String player) throws RemoteException
+{
+  core.rock(player);
+}
+public void paper(String player) throws RemoteException
+{
+  core.paper(player);
+}
+public void scissors(String player) throws RemoteException
+{
+  core.scissors(player);
+}
+//Rock Paper Scissors Battle Code here--------------------------------------
+public String tutorial(String name) throws RemoteException
+{
+    return core.tutorial(name);
+}
 }
