@@ -56,7 +56,7 @@ Written by: Brett Mullins
 
 If the user wants to remove his or her character permanently from the game, then the user should follow these steps to accomplish deletion. It is important for the user to realize this process is PERMANTENT and once an account is deleted it can NEVER be recovered. First, if the user is not already logged in, log into the game as a user normally would. The next step would be to enter the quit command into the user prompt. At that point, the user will be prompted if he or she wants to permanently delete their player and account. The user should then type "Y" (for yes). The user will then be prompted for his or her password. This is to prevent unwanted or accidental deletion of the character and account. After the password is entered correctly, the removal process will take place. If the password is entered incorrectly, the user is not deleted and is logged out normally.
 
-![alt text]()
+![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/removePlayer.png)
 
 
 
