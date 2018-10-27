@@ -295,13 +295,29 @@ public class GameCore implements GameCoreInterface {
      * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      */
-    public String move(String name) {
+    public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
         if(player == null) {
             return null;
         }
         Room room;
         room = map.findRoom(player.getCurrentRoom());
+	switch(direction.toUpperCase()){
+		case "NORTH":
+			player.setDirection(Direction.NORTH);
+			break;
+		case "EAST":
+			player.setDirection(Direction.EAST);
+			break;
+		case "WEST":
+			player.setDirection(Direction.WEST);
+			break;
+		case "SOUTH":
+			player.setDirection(Direction.SOUTH);
+			break;
+		default:
+			return "Please enter a valid direction. Valid directions are North, South, East, or West.";
+	}
             if(room.canExit(player.getDirection())) {
                 this.broadcast(player, player.getName() + " has walked off to the " + player.getCurrentDirection());
                 player.getReplyWriter().println(room.exitMessage(player.getDirection()));
@@ -323,24 +339,45 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success. 
      */    
     public String pickup(String name, String target) {
-        Player player = this.playerList.findPlayer(name);
-        if(player != null) {
-            Room room = map.findRoom(player.getCurrentRoom());
-            String object = room.removeObject(target);
-            if(object != null) {
-                player.addObjectToInventory(object);
-                this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
-                return "You bend over and pick up a " + target + ".";
-            }
-            else {
-                this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
-                return "You look around for a " + target + ", but can't find one.";
-            }
+      Player player = this.playerList.findPlayer(name);
+
+      if(player != null) {
+        Room room = map.findRoom(player.getCurrentRoom());
+        // System.out.print(target);
+        if (target.equals("all")) {
+
+          int obj_count = 0;
+          Item object;
+          String AllObjects = room.getObjects();
+
+          while((object = room.getLastObject()) != null){
+            player.addObjectToInventory(object);
+            obj_count++;
+          }
+
+          if(obj_count > 0)
+            return "You bend over and pick up all the objects";
+          else
+            return "No objects in this room";
+
+        } else {
+          Item object = room.removeObject(target);
+
+          if(object != null) {
+            player.addObjectToInventory(object);
+            this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
+            return "You bend over and pick up a " + target + ".";
+          } else {
+            this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
+            return "You look around for a " + target + ", but can't find one.";
+          }
         }
-        else {
-            return null;
-        }
-    }       
+      }
+      else {
+        return null;
+      }
+}   
+     
     /**
      * Attempts to drop off an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
