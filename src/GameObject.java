@@ -140,7 +140,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @throws RemoteException 
      */
     @Override
-    public String move(String name, Integer direction) throws RemoteException {
+    public String move(String name, String direction) throws RemoteException {
         return core.move(name, direction);
     }
     

@@ -82,7 +82,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException
      */
-    public String move(String name, Integer direction) throws RemoteException;
+    public String move(String name, String direction) throws RemoteException;
 
     /**
      * Attempts to enter <location>. Use if entering a room that is part of another
