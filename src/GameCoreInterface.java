@@ -27,6 +27,7 @@ public interface GameCoreInterface {
      */   
     public void broadcast(Room room, String message);
     
+    public String gift(String playerName, String name); 
     
     /**
      * Returns the player with the given name or null if no such player.
@@ -91,9 +92,27 @@ public interface GameCoreInterface {
     public String inventory(String name);
     
     /**
+     * Returns a list of nearby players you can gift
+     * @param name Player Name
+     * @return String representation of nearby players.
+     */
+    public String giftable(String name);
+    
+    /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @return Player that was just removed.
+     */   
+    public Player leave(String name);   
+    
+    /**
+     * Returns a string representation of money you have
+     * @param name Name of the player 
+     * @return Player who wants to see his/her money 
+     */ 
+    public String money(String name);
+    
+
      */    
     public Player leave(String name);    
 //Rock Paper Scissors Battle Code here--------------------------------------

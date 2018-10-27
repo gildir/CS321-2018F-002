@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -145,7 +143,7 @@ public class GameClient {
             remoteOutputThread.start();
 
             // Init the CommandRunner
-            commandRunner = new CommandRunner(remoteGameInterface);
+            commandRunner = new CommandRunner(remoteGameInterface, "Commands.csv");
             commandRunner.run("help", null, this.playerName);
 
             // Collect input for the game.
@@ -288,6 +286,16 @@ public class GameClient {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+          else {
+            while(tokens.isEmpty() == false) {
+              message += tokens.remove(0);
+              if(tokens.isEmpty() == false) {
+                message += " ";
+              }
+            }                        
+            System.out.println(remoteGameInterface.say(this.playerName, message));
+          }
+          break;
 
         String command = tokens.remove(0);
         commandRunner.run(command, tokens, this.playerName);
