@@ -379,7 +379,11 @@ public class GameCore implements GameCoreInterface {
 
         } else {
           Item object = room.removeObject(target);
-
+          if (player.getCurrentInventory().size() >= 10)
+          {
+              this.broadcast(player, player.getName() + " tried to pick something up, but was holding too many items.");
+              return "You try to pick up the " + target + ", but can't because you're holding too many items.";
+          }
           if(object != null) {
             player.addObjectToInventory(object);
             this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
@@ -406,6 +410,7 @@ public class GameCore implements GameCoreInterface {
         if(player != null) {
             Item object = player.removeObjectFomInventory(target);
             Room room = map.findRoom(player.getCurrentRoom());
+
             if(object != null) {
                 room.addObject(object);
                 this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
