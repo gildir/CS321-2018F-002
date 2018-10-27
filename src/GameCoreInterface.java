@@ -124,5 +124,6 @@ public void rock(String player);
 public void paper(String player);
 public void scissors(String player);
 //Rock Paper Scissors Battle Code here--------------------------------------
+public void checkBoard(String player);
 public String tutorial(String name);
 }

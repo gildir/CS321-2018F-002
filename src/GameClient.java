@@ -62,15 +62,14 @@ public class GameClient {
         System.out.println("  MOVE distance     - Tries to walk forward <distance> times.");
         System.out.println("  PICKUP obect      - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY         - Shows you what objects you have collected.");
-        System.out.println("  CHALLENGE player  - Challenges another player to a Rock Paper Scissors Battle.");
-        System.out.println("  ACCEPT player     - Accepts a Rock Paper Scissors Battle Challenge from a specified player.");
-        System.out.println("  REFUSE player     - Refuses a Rock Paper Scissors Battle Challenge from a specified player.");
+        System.out.println("  CHALLENGE player  - Challenges another player to a Rock-Paper-Scissors Battle.");
+        System.out.println("  ACCEPT player     - Accepts a Rock-Paper-Scissors Battle Challenge from a specified player.");
+        System.out.println("  REFUSE player     - Refuses a Rock-Paper-Scissors Battle Challenge from a specified player.");
+        System.out.println("  LEADERBOARD       - Check the Rock-Paper-Scissors Leaderboard.");
         System.out.println("  TUTORIAL          - Opens up a tutorial for Rock Paper Scissors Battles from the Professor");
         System.out.println("  QUIT              - Quits the game.");
         System.out.println();
         
-
-
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
@@ -186,7 +185,7 @@ public class GameClient {
             System.out.println("The keyboard input had no commands.");
             return;
         }
-        
+
         String message = "";
 
         try {
@@ -277,15 +276,16 @@ public class GameClient {
                 case "SCISSORS":
                     remoteGameInterface.scissors(this.playerName);
                     break;
+				        case "LEADERBOARD":
+				          	remoteGameInterface.checkBoard(this.playerName);
+					          break;
                 case "TUTORIAL":
                     System.out.println(remoteGameInterface.tutorial(this.playerName));
                     break;
-
             }
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-
           else {
             while(tokens.isEmpty() == false) {
               message += tokens.remove(0);
