@@ -98,7 +98,6 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String say(String name, String message) throws RemoteException {
         return core.say(name, message);
     }
-
     //Author Shayan AH
     public String listAllPlayers(String name)throws RemoteException
     {
