@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javafx.scene.input.KeyCharacterCombinationBuilder;
 
@@ -39,13 +41,42 @@ public class GameClient {
     // Members related to the player in the game.
     protected String playerName;
     
+    /**
+     * Class will be used to determine if the user has been timed out after 5 minutes
+     * USE new Time() each time getting input
+     */
+    private class Time{
+        Timer timer;  
+
+        public Time(){
+            timer = new Timer();
+            timer.schedule(new timeoutTask(), 300000);
+        }
+
+        class timeoutTask extends TimerTask{
+            public void run(){
+                try{
+                    remoteGameInterface.leave(playerName);
+                    runListener = false;
+                    System.out.println("User has been inactive for 5 minutes.. logging off");  
+                    timer.cancel();
+                    System.exit(-1);
+                } 
+                catch (RemoteException ex) {
+                	Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+    
     /** 
      * Main class for running the game client.
      */
     public GameClient(String host) {
         this.runGame = true;
         boolean nameSat = false;
-        
+        new Time();
+                
         System.out.println("Welcome to the client for an RMI based online game.\n");
         System.out.println("This game allows you to connect to a server an walk around a virtual,");
         System.out.println(" text-based version of the George Mason University campus.\n");
@@ -86,6 +117,7 @@ public class GameClient {
             while(nameSat == false) {
             	new Time(); 
                 try {
+                    new Time();
                     boolean nameConf = true; //Name Confirmation
                     new Time();
 
@@ -115,6 +147,7 @@ public class GameClient {
                         nameConf = true; nameSat = false; //Will reprompt to enter name
                         continue;
                     }
+                    new Time();
                     else{
                         nameConf = false; nameSat = true; //Will reprompt confirmation
                         continue;
@@ -138,8 +171,11 @@ public class GameClient {
             this.runListener = true;
             remoteOutputThread = new Thread(new GameClient.ReplyRemote(host));
             remoteOutputThread.setDaemon(true);
-            remoteOutputThread.start();
-
+            remoteOutputThread.start();            
+            // Collect input for the game.
+            while(runGame) {
+                try {
+                    new Time();
             // Init the CommandRunner
             commandRunner = new CommandRunner(remoteGameInterface, "Commands.csv");
             commandRunner.run("help", null, this.playerName);
@@ -151,6 +187,7 @@ public class GameClient {
                     keyboardStatement = keyboardInput.readLine();
                     parseInput(keyboardStatement);
                 } catch (IOException ex) {
+                    new Time();
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                     System.exit(-1);
                 }
@@ -172,18 +209,20 @@ public class GameClient {
      */
     private void parseInput(String input) {
         boolean reply;
-        
+        new Time();
+
         // First, tokenize the raw input.
         StringTokenizer commandTokens = new StringTokenizer(input);
         ArrayList<String> tokens = new ArrayList<>();
         while(commandTokens.hasMoreTokens() == true) {
             tokens.add(commandTokens.nextToken());
         }
-
+        new Time();
         if(tokens.isEmpty()) {
             System.out.println("The keyboard input had no commands.");
             return;
         }
+        new Time();
         String message = "";
 
         try {
