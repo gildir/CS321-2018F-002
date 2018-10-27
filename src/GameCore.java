@@ -281,7 +281,6 @@ public class GameCore implements GameCoreInterface {
             }
             return null;
         }
-
     }
     /**
     * Sends a whisper the last player that whispered.
@@ -298,6 +297,7 @@ public class GameCore implements GameCoreInterface {
         Player playerReceiving = this.playerList.findPlayer(name2);
         return this.whisper(name, name2, message);
     }
+
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
@@ -602,6 +602,7 @@ public class GameCore implements GameCoreInterface {
       }
     }
     play2.getReplyWriter().println("\n" + challenger + " has challenged you to a Rock Paper Scissors Battle. \n\nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\n\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
+
     pendingBattles.add(new Battle(challenger, player2));
     System.out.println("Player: " + challenger + " Challenged: " + player2);
   }

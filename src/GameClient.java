@@ -275,108 +275,13 @@ public class GameClient {
                 case "SCISSORS":
                     remoteGameInterface.scissors(this.playerName);
                     break;
-            }
-        } catch (RemoteException ex) {
-            Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-
-        String message = "";
-
-        try {
-            switch(tokens.remove(0).toUpperCase()) {
-
-                case "LOOK":
-                    System.out.println(remoteGameInterface.look(this.playerName));
-                    break;
-                case "LEFT":
-                    System.out.println(remoteGameInterface.left(this.playerName));
-                    break;
-                case "RIGHT":
-                    System.out.println(remoteGameInterface.right(this.playerName));
-                    break;
-                case "SAY":
-                    if(tokens.isEmpty()) {
-                        System.err.println("You need to say something in order to SAY.");
-                    }
-                    else {
-                        while(tokens.isEmpty() == false) {
-                            message += tokens.remove(0);
-                            if(tokens.isEmpty() == false) {
-                                message += " ";
-                            }
-                        }                        
-                        System.out.println(remoteGameInterface.say(this.playerName, message));
-                    }
-                    break;
-                case "MOVE":
-                    if(tokens.isEmpty()) {
-                        System.err.println("You need to provide a distance in order to move.");
-                    }
-                    else {
-                        System.out.println(remoteGameInterface.move(this.playerName, Integer.parseInt(tokens.remove(0))));
-                    }
-                    break;
-                case "PICKUP":
-                    if(tokens.isEmpty()) {
-                        System.err.println("You need to provide an object to pickup.");
-                    }
-                    else {
-                        System.out.println(remoteGameInterface.pickup(this.playerName, tokens.remove(0)));
-                    }
-                    break;
-                case "INVENTORY":
-                    System.out.println(remoteGameInterface.inventory(this.playerName));
-                    break;                                                            
-                case "QUIT":
-                    remoteGameInterface.leave(this.playerName);
-                    runListener = false;
-                    break;
-                case "CHALLENGE":
-                    if(tokens.isEmpty())
-                    {
-                      System.err.println("You need to specify another player to challenge.");
-                    }
-                    else
-                    {
-                      remoteGameInterface.challenge(this.playerName,tokens.remove(0));
-                    }
-                    break;
-                case "ACCEPT":
-                    if(tokens.isEmpty())
-                    {
-                      System.err.println("You need to specify the player whose challenge you are accepting.");
-                    }
-                    else
-                    {
-                      remoteGameInterface.accept(tokens.remove(0),this.playerName);
-                    }
-                    break;
-                case "REFUSE":
-                    if(tokens.isEmpty())
-                    {
-                      System.err.println("You need to specify the player whose challenge you are refusing.");
-                    }
-                    else
-                    {
-                      remoteGameInterface.refuse(tokens.remove(0),this.playerName);
-                    }
-                    break;
-                case "ROCK":
-                    remoteGameInterface.rock(this.playerName);
-                    break;
-                case "PAPER":
-                    remoteGameInterface.paper(this.playerName);
-                    break;
-                case "SCISSORS":
-                    remoteGameInterface.scissors(this.playerName);
-                    break;
 				        case "LEADERBOARD":
 				          	remoteGameInterface.checkBoard(this.playerName);
 					          break;
                 case "TUTORIAL":
                     System.out.println(remoteGameInterface.tutorial(this.playerName));
                     break;
+
             }
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -392,9 +297,9 @@ public class GameClient {
           }
           break;
 
+
         String command = tokens.remove(0);
         commandRunner.run(command, tokens, this.playerName);
-
     }
     
     public static void main(String[] args) {
