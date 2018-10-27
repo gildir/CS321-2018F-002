@@ -104,7 +104,6 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
         return core.listAllPlayers(name);
     }
-
     /**
     * Whispers "message" to specified player.
     * @param name1 Name of player sending message
@@ -176,13 +175,14 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String pickup(String name, String target) throws RemoteException {
         return core.pickup(name, target);
     }    
+  
     /**
      * Attempts to drop off an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
      * @param target The case-insensitive name of the object to dropoff.
      * @return Message showing success.
-     * @throws RemoteException
-     */
+     * @throws RemoteException 
+     */    
     @Override
     public String dropoff(String name, String target) throws RemoteException {
         return core.dropoff(name, target);
@@ -259,4 +259,8 @@ public void scissors(String player) throws RemoteException
   core.scissors(player);
 }
 //Rock Paper Scissors Battle Code here--------------------------------------
+public String tutorial(String name) throws RemoteException
+{
+    return core.tutorial(name);
+}
 }

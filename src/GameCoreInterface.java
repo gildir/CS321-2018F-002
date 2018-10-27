@@ -12,7 +12,6 @@ public interface GameCoreInterface {
      * @param message Message to broadcast.
      */   
     public void broadcast(Player player, String message);    
-
     /**
     * Broadcasts a message to a specified player.
     * @param sendingPlayer Player sending message
@@ -75,7 +74,7 @@ public interface GameCoreInterface {
      * @return Message showing success.
      */
     public String say(String name, String message);
-
+    
     /**
     * Whispers "message" to specified player.
     * @param name1 Name of player sending message
@@ -125,5 +124,5 @@ public void rock(String player);
 public void paper(String player);
 public void scissors(String player);
 //Rock Paper Scissors Battle Code here--------------------------------------
-
+public String tutorial(String name);
 }
