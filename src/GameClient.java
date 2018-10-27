@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,7 +29,10 @@ public class GameClient {
 
     // Remote object for RMI server access
     protected GameObjectInterface remoteGameInterface;
-    
+
+
+    // Helper Object to run commands in the game
+    protected CommandRunner commandRunner;
     // Members for running the remote receive connection (for non-managed events)
     private boolean runListener;
     protected ServerSocket remoteListener;
@@ -76,7 +77,7 @@ public class GameClient {
     public GameClient(String host) {
         this.runGame = true;
         new Time();
-        
+                
         System.out.println("Welcome to the client for an RMI based online game.\n");
         System.out.println("This game allows you to connect to a server an walk around a virtual,");
         System.out.println(" text-based version of the George Mason University campus.\n");
@@ -84,24 +85,13 @@ public class GameClient {
         System.out.println("When you do, you will join the game at the George Mason Clock, in the main quad.");
         System.out.println("You will be able to see if any other players are in the same area as well as what");
         System.out.println("objects are on the ground and what direction you are facing.\n");
-        System.out.println("The game allows you to use the following commands:");
-        System.out.println("  LOOK          - Shows you the area around you");
-        System.out.println("  SAY message   - Says 'message' to any other players in the same area.");
-        System.out.println("  LEFT          - Turns your player left 90 degrees.");
-        System.out.println("  RIGHT         - Turns your player right 90 degrees.");
-        System.out.println("  MOVE distance - Tries to walk forward <distance> times.");
-        System.out.println("  PICKUP obect  - Tries to pick up an object in the same area.");
-        System.out.println("  INVENTORY     - Shows you what objects you have collected.");
-        System.out.println("  QUIT          - Quits the game.");
-        System.out.println();
-        
 
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         String keyboardStatement;
 
-        try {
+       try {
             // Establish RMI connection with the server
             System.setSecurityManager(new SecurityManager());
             String strName = "rmi://"+host+"/GameService";
@@ -136,13 +126,19 @@ public class GameClient {
             remoteOutputThread = new Thread(new GameClient.ReplyRemote(host));
             remoteOutputThread.setDaemon(true);
             remoteOutputThread.start();
+            
+            // Init the CommandRunner
+            commandRunner = new CommandRunner(remoteGameInterface, "Commands.csv");
+            commandRunner.run("help", null, this.playerName);
 
             // Collect input for the game.
             while(runGame) {
                 try {
+                    // System.out.print("> ");
                     keyboardStatement = keyboardInput.readLine();
                     parseInput(keyboardStatement);
                 } catch (IOException ex) {
+                    new Time();
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                     System.exit(-1);
                 }
@@ -299,7 +295,8 @@ public class GameClient {
      * @param input 
      */
     private void parseInput(String input) {
-        
+        boolean reply;
+        new Time();
         // First, tokenize the raw input.
         StringTokenizer commandTokens = new StringTokenizer(input);
         ArrayList<String> tokens = new ArrayList<>();
@@ -311,12 +308,9 @@ public class GameClient {
             System.out.println("The keyboard input had no commands.");
             return;
         }
-        
-        String message = "";
-
-        try {
-            switch(tokens.remove(0).toUpperCase()) {
-
+        new Time();
+    try{
+        switch(token.remove(0).toUpperCase()){
                 case "LOOK":
                     System.out.println(remoteGameInterface.look(this.playerName));
                     break;
@@ -368,6 +362,8 @@ public class GameClient {
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+        String command = tokens.remove(0);
+        commandRunner.run(command, tokens, this.playerName);
     }
     
     public static void main(String[] args) {
@@ -375,7 +371,7 @@ public class GameClient {
 			System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");
 			System.exit(-1);
 		}
-		
+
         System.out.println("[STARTUP] Game Client Now Starting...");
         new GameClient(args[0]);
     }
