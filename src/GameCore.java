@@ -282,7 +282,6 @@ public class GameCore implements GameCoreInterface {
             }
             return null;
         }
-
     }
     /**
     * Sends a whisper the last player that whispered.
@@ -299,6 +298,7 @@ public class GameCore implements GameCoreInterface {
         Player playerReceiving = this.playerList.findPlayer(name2);
         return this.whisper(name, name2, message);
     }
+
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
@@ -568,30 +568,43 @@ public class GameCore implements GameCoreInterface {
     Player play1 = this.playerList.findPlayer(challenger);
     Player play2 = this.playerList.findPlayer(player2);
 
-    if(challenger.equalsIgnoreCase(player2))
+    if(play2 == null)//other player doesnt exist
+    {
+      play1.getReplyWriter().println("That player doesn't exist.");
+      return;
+    }
+
+    if(challenger.equalsIgnoreCase(player2)) // Challenger is challenging himself. Stupid challenger...
     {
       play1.getReplyWriter().println("\nYou can't challenge yourself.\n");
       return;
     }
 
-    if(play2 == null)//other player doesnt exist
+    for(Battle b : activeBattles)
     {
-      play1.getReplyWriter().println("That player doesn't exist.");
-    }
-    else
-    {
-      for(Battle b : pendingBattles)
+      if(b.containsPlayer(challenger))// Challenger is already in an active battle
       {
-        if(b.hasPlayers(challenger,player2))
-        {
-          play1.getReplyWriter().println("You already have a pending challenge request with "+ player2 +".");
-          return;
-        }
+        play1.getReplyWriter().println("You can only be in one battle at a time. Finish the current one you are in before challenging someone else.");
+        return;
       }
-      play2.getReplyWriter().println(challenger + " has challenged you to a Rock Paper Scissors Battle. \nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
-      pendingBattles.add(new Battle(challenger, player2));
-      System.out.println("Player: " + challenger + " Challenged: " + player2);
+      if(b.containsPlayer(player2))// Other Player is already in an active battle.
+      {
+        play1.getReplyWriter().println("You cant challenge " + player2 + " right now, they're currently in a battle. ");
+        return;
+      }
     }
+
+    for(Battle b : pendingBattles)//Challenger already asked this person to battle and is waiting for a response still.
+    {
+      if(b.hasPlayers(challenger,player2))
+      {
+        play1.getReplyWriter().println("You already have a pending challenge request with "+ player2 +".");
+        return;
+      }
+    }
+    play2.getReplyWriter().println(challenger + " has challenged you to a Rock Paper Scissors Battle. \n\nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\n\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
+    pendingBattles.add(new Battle(challenger, player2));
+    System.out.println("Player: " + challenger + " Challenged: " + player2);
   }
 
   public void accept(String challenger, String player2)

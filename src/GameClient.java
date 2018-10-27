@@ -185,7 +185,6 @@ public class GameClient {
             System.out.println("The keyboard input had no commands.");
             return;
         }
-
         String message = "";
 
         try {
@@ -282,6 +281,7 @@ public class GameClient {
                 case "TUTORIAL":
                     System.out.println(remoteGameInterface.tutorial(this.playerName));
                     break;
+
             }
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -297,9 +297,9 @@ public class GameClient {
           }
           break;
 
+
         String command = tokens.remove(0);
         commandRunner.run(command, tokens, this.playerName);
-
     }
     
     public static void main(String[] args) {
