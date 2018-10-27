@@ -224,8 +224,23 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }  
-    
+    }
+    //author Shayan AH
+    public String listAllPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Players in the world: ";
+
+        if(player != null)
+        {
+            l += playerList.toString();
+            return l;
+        }
+        else
+        {
+            return null;
+        }
+    }
     /**
     * Whispers "message" to a specified player.
     * @param name1 Name of player sending whisper
@@ -234,24 +249,41 @@ public class GameCore implements GameCoreInterface {
     * @return Message showing success.
     */
     @Override
-    public String whisper(String name1, String name2, String message) {
+    public String whisper(String name1, String name2, String message)
+    {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
 	
         if(playerSending != null && playerReceiving != null) {
-	
-	if(name1.equalsIgnoreCase(name2)){
-		return "Cannot whisper yourself";}
-	
+            if(name1.equalsIgnoreCase(name2)) {
+                return "You cannot whisper yourself.";
+            }
             this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
-            return "message sent to " + playerReceiving.getName();
+            playerReceiving.setLastWhisperName(name1);
+            return "Message sent to " + playerReceiving.getName();
         }
         else {
             if(playerReceiving == null) {
-                return "That player isn't online.";
+                return "Could not find player online.";
             }
             return null;
         }
+
+    }
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    */
+    public String reply(String name, String message) {
+        Player playerSending = this.playerList.findPlayer(name);
+        if(playerSending.getLastWhisperName() == null) {
+            return "You have not received a whisper to reply to.";
+        }
+        String name2 = playerSending.getLastWhisperName();
+        Player playerReceiving = this.playerList.findPlayer(name2);
+        return this.whisper(name, name2, message);
     }
 
     /**
