@@ -31,7 +31,6 @@ public class GameClient {
 
     // Helper Object to run commands in the game
     protected CommandRunner commandRunner;
-
     // Members for running the remote receive connection (for non-managed events)
     private boolean runListener;
     protected ServerSocket remoteListener;
@@ -69,7 +68,7 @@ public class GameClient {
         System.out.println("  TUTORIAL          - Opens up a tutorial for Rock Paper Scissors Battles from the Professor");
         System.out.println("  QUIT              - Quits the game.");
         System.out.println();
-        
+
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
@@ -286,6 +285,7 @@ public class GameClient {
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
         }
+
           else {
             while(tokens.isEmpty() == false) {
               message += tokens.remove(0);

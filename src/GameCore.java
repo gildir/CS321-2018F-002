@@ -1,4 +1,9 @@
 
+
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -784,6 +789,7 @@ public class GameCore implements GameCoreInterface {
           message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
+          writeLog(challenger, player2, "Rock", "Rock", "a tie");
           return;
         case 2:
           play1.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
@@ -791,6 +797,7 @@ public class GameCore implements GameCoreInterface {
           message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
+          writeLog(challenger, player2, "Paper", "Paper", "a tie");
           return;
         case 3:
           play1.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
@@ -798,6 +805,7 @@ public class GameCore implements GameCoreInterface {
           message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
+          writeLog(challenger, player2, "Scissor", "Scissor", "a tie");
           return;
       }
     }
@@ -809,10 +817,9 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
-
+      writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play2.getName());
-
       return;
     }
     else if(p1 == 1 && p2 == 3)
@@ -823,6 +830,7 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
+      writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName());
@@ -837,6 +845,7 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
+      writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName());
@@ -851,6 +860,7 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
+      writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play2.getName());
@@ -865,6 +875,7 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
+      writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play2.getName());
@@ -879,6 +890,7 @@ public class GameCore implements GameCoreInterface {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);;
       activeBattles.remove(b);
+      writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName());
@@ -886,6 +898,23 @@ public class GameCore implements GameCoreInterface {
       return;
     }
   }
+
+    public void writeLog(String play1, String play2, String p1, String p2, String winner)
+    {
+         try(BufferedWriter writer = new BufferedWriter(new FileWriter("battlelog.txt",true)))
+         {
+             String str = play1 + " Challenged " + play2 + " picking " + p1 + " against " + p2 + " resulting in " + winner + "\r\n\n";
+             writer.write(str);
+             writer.close();
+         }
+         catch(IOException e) {}
+    }
+
+
+
+
+
+
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
 	// Added by Brendan
