@@ -98,7 +98,12 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String say(String name, String message) throws RemoteException {
         return core.say(name, message);
     }
-      
+
+    //Author Shayan AH
+    public String listAllPlayers(String name)throws RemoteException
+    {
+        return core.listAllPlayers(name);
+    }
     /**
     * Whispers "message" to specified player.
     * @param name1 Name of player sending message
@@ -108,10 +113,23 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     * @throws RemoteException
     */
     @Override
-    public String whisper(String name1, String name2, String message) throws RemoteException {
+    public String whisper(String name1, String name2, String message) throws RemoteException
+    {
         return core.whisper(name1, name2, message);
     }
-      
+
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    * @throws RemoteException
+    */
+    public String reply(String name, String message) throws RemoteException
+    {
+        return core.reply(name, message);
+    }
+
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.

@@ -144,6 +144,21 @@ public class CommandRunner {
                 return "[ERROR] You need to specify another player to challenge.";
             }
         });
+        commandFunctions.put("REPLY", (name, args) -> {
+            try {
+                String message = String.join(" ", args);
+
+                if(message.equals("")) {
+                    return "[ERROR] You need to include a message to reply.";
+                }
+                else {
+                    return remoteGameInterface.reply(name, message);
+                }
+            }
+            catch(IndexOutOfBoundsException ex) {
+                return "[ERROR] You need to include a message to reply.";
+            }
+        });
         commandFunctions.put("DROPOFF",    (name, args) -> {
             try {
                 String object = args.get(0);
@@ -283,6 +298,7 @@ public class CommandRunner {
         descriptions.put("SCISSORS",  new String[]{"",         "Play SCISSORS in your current Rock Paper Scissors Battle"});
 
         descriptions.put("WHISPER",   new String[]{"PLAYER MESSAGE",   "Says <MESSAGE> to specified <PLAYER>"});
+        descriptions.put("REPLY",   new String[]{"MESSAGE",   "Says <MESSAGE> to last player that whispered you."});
         descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Drop off <OBJECT> from player inventory"});
 
         // Create them
