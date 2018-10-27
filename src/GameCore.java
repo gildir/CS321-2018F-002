@@ -1,6 +1,4 @@
 
-
-
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -238,8 +236,23 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }  
-    
+    }
+    //author Shayan AH
+    public String listAllPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Players in the world: ";
+
+        if(player != null)
+        {
+            l += playerList.toString();
+            return l;
+        }
+        else
+        {
+            return null;
+        }
+    }
     /**
     * Whispers "message" to a specified player.
     * @param name1 Name of player sending whisper
@@ -248,24 +261,41 @@ public class GameCore implements GameCoreInterface {
     * @return Message showing success.
     */
     @Override
-    public String whisper(String name1, String name2, String message) {
+    public String whisper(String name1, String name2, String message)
+    {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
 	
         if(playerSending != null && playerReceiving != null) {
-	
-	if(name1.equalsIgnoreCase(name2)){
-		return "Cannot whisper yourself";}
-	
+            if(name1.equalsIgnoreCase(name2)) {
+                return "You cannot whisper yourself.";
+            }
             this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
-            return "message sent to " + playerReceiving.getName();
+            playerReceiving.setLastWhisperName(name1);
+            return "Message sent to " + playerReceiving.getName();
         }
         else {
             if(playerReceiving == null) {
-                return "That player isn't online.";
+                return "Could not find player online.";
             }
             return null;
         }
+
+    }
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    */
+    public String reply(String name, String message) {
+        Player playerSending = this.playerList.findPlayer(name);
+        if(playerSending.getLastWhisperName() == null) {
+            return "You have not received a whisper to reply to.";
+        }
+        String name2 = playerSending.getLastWhisperName();
+        Player playerReceiving = this.playerList.findPlayer(name2);
+        return this.whisper(name, name2, message);
     }
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
@@ -312,6 +342,57 @@ public class GameCore implements GameCoreInterface {
     }
     
     /**
+     * Attempts to enter <location>. Use if entering a room that is part of another
+     * room, instead of using move to walk to a separate room
+     * @param name Name of the player to enter
+     * @param location The place to enter
+     * @return Message showing success
+     */
+    public String enter(String name, String location) {
+      Player player = this.playerList.findPlayer(name);
+      if(player == null) return null;
+      int newID;
+      //add more if statements for different shops
+      if(location.equalsIgnoreCase("shop"))
+        newID = 10;
+      else
+        return location + " is unknown.";
+      //if player not near a shop, return.
+      if(player.getCurrentRoom() != 1)
+        return "Not near " + location;
+      Room room = map.findRoom(player.getCurrentRoom());
+      this.broadcast(player, player.getName() + " has walked off towards the shop");
+      player.getReplyWriter().println("You enter the shop");
+      player.setCurrentRoom(newID);
+      this.broadcast(player, player.getName() + " just walked into the shop.");
+      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+      return "You stop moving and begin to stand around again.";
+    }
+    
+    /**
+     * Makes player leave a room e.g shop
+     * @param name Player Name
+     * @return Message showing success
+     */
+    public String leaveRoom(String name) {
+      Player player = this.playerList.findPlayer(name);
+      if(player == null) return null;
+      int newID;
+      //add more if statements for different shops
+      if(player.getCurrentRoom() == 10)
+        newID = 1;
+      else
+        return "Can't leave, did you mean quit?";
+      Room room = map.findRoom(player.getCurrentRoom());
+      this.broadcast(player, player.getName() + " has left the shop");
+      player.getReplyWriter().println("You leave the room");
+      player.setCurrentRoom(newID);
+      this.broadcast(player, player.getName() + " just walked into the area.");
+      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+      return "You stop moving and begin to stand around again.";
+    }
+    
+    /**
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
      * @param target The case-insensitive name of the object to pickup.
@@ -341,7 +422,11 @@ public class GameCore implements GameCoreInterface {
 
         } else {
           Item object = room.removeObject(target);
-
+          if (player.getCurrentInventory().size() >= 10)
+          {
+              this.broadcast(player, player.getName() + " tried to pick something up, but was holding too many items.");
+              return "You try to pick up the " + target + ", but can't because you're holding too many items.";
+          }
           if(object != null) {
             player.addObjectToInventory(object);
             this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
@@ -368,6 +453,7 @@ public class GameCore implements GameCoreInterface {
         if(player != null) {
             Item object = player.removeObjectFomInventory(target);
             Room room = map.findRoom(player.getCurrentRoom());
+
             if(object != null) {
                 room.addObject(object);
                 this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
@@ -399,8 +485,53 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
+    } 
+    
+    /**
+     * Returns a list of nearby players you can gift
+     * @param name Player Name
+     * @return String representation of nearby players.
+     */
+    public String giftable(String playerName) {
+        Player player = playerList.findPlayer(playerName);
+        if(player != null) {        
+            // Find the room the player is in.
+            Room room = this.map.findRoom(player.getCurrentRoom());
+        
+            // Return a string representation of players in teh same room
+            String gift_list = "\nGiftable players near you: " + room.getPlayers(this.playerList);
+            gift_list = gift_list.replace(playerName, "");
+            return gift_list;
+      }
+      // No such player exists
+      else {
+            return null;
+      }
     }    
-
+    @Override
+    public String money(String name) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            return player.viewMoney();
+        }
+        else {
+            return null;
+        }
+    }    
+    @Override 
+    public String gift(String yourname ,String name){
+        Player player = this.playerList.findPlayer(name); 
+        Player you = this.playerList.findPlayer(yourname); 
+      
+        System.out.println("YOUR NAME IS: " + you);
+        if(player != null){
+            this.broadcast(you, you.getName() + " offers a gift to " + player.getName());
+            return "You offer " + player.getName() + " a gift"; 
+      }else{
+            return null;  
+      }   
+    }
+    
      /**
      * Leaves the game.
      * @param name Name of the player to leave

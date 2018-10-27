@@ -10,16 +10,21 @@ import java.util.LinkedList;
 public class Player {
     private LinkedList<String> currentInventory;
     private String name;
+    private String lastWhisperName;
     private int currentRoom;
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
+    // add a money field to track player money
+    private double money;
 
     public Player(String name) {
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
+        // set a default amount of money for each player
+        this.money = 20.0;
     }
     
     public void turnLeft() {
@@ -62,6 +67,14 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setLastWhisperName(String name) {
+        this.lastWhisperName = name;
+    }
+
+    public String getLastWhisperName() {
+        return this.lastWhisperName;
     }
 
     public LinkedList<String> getCurrentInventory() {
@@ -119,6 +132,14 @@ public class Player {
 
     public void setDirection(Direction direction){
 	    this.currentDirection = direction;
+    }
+  
+    public double getMoney() {
+      return this.money;
+    }
+    
+    public String viewMoney() {
+      return this.name + ", you have " + this.money + " dollars.";
     }
     
     public String viewInventory() {
