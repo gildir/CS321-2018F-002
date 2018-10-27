@@ -110,11 +110,15 @@ public interface GameCoreInterface {
      * @param name Name of the player 
      * @return Player who wants to see his/her money 
      */ 
-    public String money(String name);
-    
+    public String money(String name);  
 
-     */    
-    public Player leave(String name);    
+    /**
+     * Logs a string into a file
+     * @param fileName name of the file to log in
+     * @param log      message to log
+     */
+    public void log(String fileName, String log);
+
 //Rock Paper Scissors Battle Code here--------------------------------------
 public void challenge(String challenger, String player2);
 public void accept(String challenger, String player2);

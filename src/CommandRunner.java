@@ -172,6 +172,8 @@ public class CommandRunner {
                 return "[ERROR] No object specified";
             }
         });
+        commandFunctions.put("TUTORIAL",    (name, args) -> remoteGameInterface.tutorial(name));
+        commandFunctions.put("LEADERBOARD",    (name, args) -> remoteGameInterface.checkBoard(name));
     }
 
     /**
@@ -301,6 +303,9 @@ public class CommandRunner {
         descriptions.put("REPLY",   new String[]{"MESSAGE",   "Says <MESSAGE> to last player that whispered you."});
         descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Drop off <OBJECT> from player inventory"});
 
+        descriptions.put("LEADERBOARD",   new String[]{"",   "Check the Rock-Paper-Scissors Leaderboard"});
+        descriptions.put("TUTORIAL",   new String[]{"",   "Opens up a tutorial for Rock Paper Scissors Battles from the Professor"});
+
         // Create them
         createCommands(descriptions);
     }
@@ -380,6 +385,8 @@ public class CommandRunner {
                 String result = cmd.run(playerName, args);
                 if (result != null)
                     System.out.println(result);
+		
+		remoteGameInterface.logInteraction(playerName, command, args, result);
             } catch (RemoteException ex) {
                 Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
             }
