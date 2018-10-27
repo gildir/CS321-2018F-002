@@ -1,5 +1,3 @@
-
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -166,11 +164,16 @@ public class GameClient {
         while(commandTokens.hasMoreTokens() == true) {
             tokens.add(commandTokens.nextToken());
         }
-
-        if(tokens.isEmpty()) {
-            System.out.println("The keyboard input had no commands.");
-            return;
-        }
+          else {
+            while(tokens.isEmpty() == false) {
+              message += tokens.remove(0);
+              if(tokens.isEmpty() == false) {
+                message += " ";
+              }
+            }                        
+            System.out.println(remoteGameInterface.say(this.playerName, message));
+          }
+          break;
 
         String command = tokens.remove(0);
         commandRunner.run(command, tokens, this.playerName);
