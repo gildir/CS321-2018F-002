@@ -5,6 +5,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Scanner;
+import java.io.*;
+
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 
 public class CommandRunner {
 
@@ -228,9 +237,24 @@ public class CommandRunner {
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
         this.remoteGameInterface = rgi;
         setupFunctions();
-        createCommands();
 
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
+		try (Scanner file_commands = new Scanner(new File(commandsFile));) {
+			HashMap<String, String[]> file_map = new HashMap<String, String[]>();
+			
+			while(file_commands.hasNextLine()){
+				String currentline = file_commands.nextLine();
+				String[] command_parts = currentline.split(",");
+				
+				String command_name = command_parts[0];
+				String[] command_description = new String[]{ command_parts[1], command_parts[2] };
+				
+				file_map.put(command_name, command_description);
+			}
+			createCommands(file_map);
+		} catch (IOException ex) {
+            Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
+        }	
     }
 
     /**
@@ -264,20 +288,63 @@ public class CommandRunner {
         // Create them
         createCommands(descriptions);
     }
-
+    /**
+     *Creates a HashMap with the aliases of the commands
+     */
+    private HashMap getAliasesFromFile(){
+        String filePath = "aliases.csv";
+        HashMap<String, String> map = new HashMap<String, String>();
+        try{
+        String line;
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        while ((line = reader.readLine()) != null)
+        {
+            String[] parts = line.split(",", 2);
+            if (parts.length >= 2)
+            {
+                String key = parts[0];
+                String value = parts[1];
+                map.put(key, value);
+                //System.out.println(parts[0] +"," + parts[1]);
+            } 
+        }
+    
+        // for (String key : map.keySet())
+        // {
+        //     System.out.println(key + "," + map.get(key));
+        // }
+        reader.close();
+    }
+    catch (Exception ex) {
+        ex.printStackTrace();
+     }
+        return map;
+    }
     /**
      * @param descriptions map with command names as keys and their descriptions as values
      */
     private void createCommands(HashMap<String, String[]> descriptions) {
-        for (String key : descriptions.keySet()) {
-            String arguments = descriptions.get(key)[0];
-            String description = descriptions.get(key)[1];
-            CommandFunction<String, ArrayList<String>, String> function = commandFunctions.get(key);
+        
+            HashMap<String, String> aliasesMap = getAliasesFromFile();
+       
+            for (String key : descriptions.keySet()) {
+                String arguments = descriptions.get(key)[0];
+                String description = descriptions.get(key)[1];
+                CommandFunction<String, ArrayList<String>, String> function = commandFunctions.get(key);
 
-            if (function != null) {
-                commands.put(key, new Command(key, arguments, description, function));
-            }
-        }
+                if (function != null) {
+                    Command new_command = new Command(key, arguments, description, function);
+                    commands.put(key, new_command );
+                    String alias = aliasesMap.get(key);
+                    if (alias != null){
+                        
+                            commands.put(alias.toUpperCase(), new_command);
+                        
+                    }
+               
+                }
+            }   
+        
     }
 
     /**
@@ -301,7 +368,8 @@ public class CommandRunner {
                 Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        // TODO: prompt command not found
+	// prompt command not found
+	else{System.out.println("Command not found. Type HELP for command list.");} 
     }
 
     /**
@@ -312,7 +380,7 @@ public class CommandRunner {
 
         for (String key : commands.keySet()) {
             Command command = commands.get(key);
-            String line = String.format("- %-30s%s\n", command.getId() + " " + command.getArguments(), command.getDescription());
+            String line = String.format("- %-30s%s\n", key.toUpperCase() + " " + command.getArguments(), command.getDescription());
             s += line;
         }
 
