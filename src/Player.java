@@ -15,11 +15,8 @@ public class Player {
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
-<<<<<<< HEAD
-=======
     // add a money field to track player money
     private double money;
->>>>>>> f778a276480a50a1569cbd0fc004f2cd0acceb1a
 
     public Player(String name) {
         this.currentRoom = 1;
