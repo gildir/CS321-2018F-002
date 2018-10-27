@@ -4,7 +4,14 @@
 
 ## Ghouls
 
-### Ghoul Aggro System
+The purpose of Ghouls to provide dynamic events and interactions to the world. Ghouls are a type
+of NPC (non-playable character) that any player can interact with. At the start of the game, several ghouls will spawn into the world, "wandering around"
+different rooms in given time intervals.
+
+The player can interact with the ghoul with the "pokeGhoul" command. This allows the player to poke the Ghoul, causing the Ghoul's aggravation to rise. The player and the ghoul must be in the same room for this interaction to happen. The ghoul keeps track of the player's current aggravation until the player leaves the server. If the player pokes the ghoul too many times, the ghoul will "drag" the player back to the the starting room, removing a random item from the player's inventory.
+
+The player can also give an item to the ghoul with the "giftGhoul" command. This causes the Ghoul's current anger with the player to decrease. The player must be in the same room with the ghoul and have at least one item in their inventory to perform this command.
+
 
 ## Spirits
 
