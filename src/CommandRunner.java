@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Scanner;
+import java.io.*;
 
 public class CommandRunner {
 
@@ -228,9 +230,24 @@ public class CommandRunner {
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
         this.remoteGameInterface = rgi;
         setupFunctions();
-        createCommands();
 
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
+		try (Scanner file_commands = new Scanner(new File(commandsFile));) {
+			HashMap<String, String[]> file_map = new HashMap<String, String[]>();
+			
+			while(file_commands.hasNextLine()){
+				String currentline = file_commands.nextLine();
+				String[] command_parts = currentline.split(",");
+				
+				String command_name = command_parts[0];
+				String[] command_description = new String[]{ command_parts[1], command_parts[2] };
+				
+				file_map.put(command_name, command_description);
+			}
+			createCommands(file_map);
+		} catch (IOException ex) {
+            Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
+        }	
     }
 
     /**
