@@ -1,7 +1,6 @@
 # Items, Player Inventory, Trade
 
 ## Player Inventory
-
 The player’s inventory is currently a list of item objects that the player has acquired through various means. This inventory is limited to only ten items. If a player attempts to pickup any additional items, they will be greeted with a message informing them that they have too many items and are unable to pick up any more. Items can be moved into and out of a player’s inventory by picking them up off the ground, dropping them onto the ground, or through trade.
 
 ![Inventory](InventoryLinkedList.png "Inventory Linked List")
