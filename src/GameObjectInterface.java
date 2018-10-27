@@ -63,6 +63,15 @@ public interface GameObjectInterface extends Remote {
     * @return Message showing success.
     */
     public String whisper(String name1, String name2, String message) throws RemoteException;
+
+
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    */
+    public String reply(String name, String message) throws RemoteException;
     
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
@@ -108,7 +117,7 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public String dropoff(String name, String object) throws RemoteException;
-    
+
      /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to view their inventory
@@ -146,5 +155,7 @@ public interface GameObjectInterface extends Remote {
     public void rock(String player) throws RemoteException;
     public void paper(String player) throws RemoteException;
     public void scissors(String player) throws RemoteException;
+	  public void checkBoard(String player) throws RemoteException;
+    public String tutorial(String name) throws RemoteException;
 //Rock Paper Scissors Battle Code Here---------------------------------
 }

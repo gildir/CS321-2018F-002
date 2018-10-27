@@ -28,6 +28,7 @@ public class GameClient {
     // Remote object for RMI server access
     protected GameObjectInterface remoteGameInterface;
 
+
     // Helper Object to run commands in the game
     protected CommandRunner commandRunner;
 
@@ -61,13 +62,14 @@ public class GameClient {
         System.out.println("  MOVE distance     - Tries to walk forward <distance> times.");
         System.out.println("  PICKUP obect      - Tries to pick up an object in the same area.");
         System.out.println("  INVENTORY         - Shows you what objects you have collected.");
-        System.out.println("  CHALLENGE player  - Challenges another player to a Rock Paper Scissors Battle.");
-        System.out.println("  ACCEPT player     - Accepts a Rock Paper Scissors Battle Challenge from a specified player.");
-        System.out.println("  REFUSE player     - Refuses a Rock Paper Scissors Battle Challenge from a specified player.");
+        System.out.println("  CHALLENGE player  - Challenges another player to a Rock-Paper-Scissors Battle.");
+        System.out.println("  ACCEPT player     - Accepts a Rock-Paper-Scissors Battle Challenge from a specified player.");
+        System.out.println("  REFUSE player     - Refuses a Rock-Paper-Scissors Battle Challenge from a specified player.");
+        System.out.println("  LEADERBOARD       - Check the Rock-Paper-Scissors Leaderboard.");
+        System.out.println("  TUTORIAL          - Opens up a tutorial for Rock Paper Scissors Battles from the Professor");
         System.out.println("  QUIT              - Quits the game.");
         System.out.println();
-
-
+        
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
@@ -273,6 +275,13 @@ public class GameClient {
                 case "SCISSORS":
                     remoteGameInterface.scissors(this.playerName);
                     break;
+				        case "LEADERBOARD":
+				          	remoteGameInterface.checkBoard(this.playerName);
+					          break;
+                case "TUTORIAL":
+                    System.out.println(remoteGameInterface.tutorial(this.playerName));
+                    break;
+
             }
         } catch (RemoteException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -298,6 +307,7 @@ public class GameClient {
 			System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");
 			System.exit(-1);
 		}
+
         System.out.println("[STARTUP] Game Client Now Starting...");
         new GameClient(args[0]);
     }
