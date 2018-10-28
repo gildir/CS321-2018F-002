@@ -2,6 +2,7 @@
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.Random;
 
 /**
  *
@@ -75,6 +76,21 @@ public class Player {
     public void addObjectToInventory(String object) {
         this.currentInventory.add(object);
     }
+
+    /**
+     * Allows an an object to be taken away from player's inventory.
+     * @return Message showing success.
+     */  
+    public String removeRandomItem()  {
+        if (this.currentInventory.isEmpty()){
+            return "You have no items in your inventory.";
+        }
+        Random randInt = new Random();
+        int randItem = randInt.nextInt(this.currentInventory.size());
+        String targetItem = this.currentInventory.remove(randItem);
+        setCurrentInventory(this.currentInventory);
+        return targetItem + " was removed from your inventory.";
+    }
     
     public void setReplyWriter(PrintWriter writer) {
         this.replyWriter = writer;
@@ -110,15 +126,13 @@ public class Player {
     
     public String viewInventory() {
         String result = "";
-        if(this.currentInventory.isEmpty() == true) {
+        if(this.currentInventory.isEmpty()) {
             return "nothing.";
         }
-        else {
-            for(String obj : this.currentInventory) {
-                result += " " + obj;
-            }
-            result += ".";
+        for(String obj : this.currentInventory) {
+            result += " " + obj;
         }
+        result += ".";
         return result;
     }
 
