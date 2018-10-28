@@ -1,4 +1,5 @@
-import java.util.LinkedList;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -10,14 +11,16 @@ public class Room {
     private final String description;
     private final LinkedList<String> objects;
     private final LinkedList<Exit> exits;
+    private final GameCore gameCore;
     
-    public Room(int id, String title, String description) {
+    public Room(GameCore gameCore, int id, String title, String description) {
         this.objects = new LinkedList<>();
         this.exits = new LinkedList<>();        
         
         this.id = id;
         this.title = title;
         this.description = description;
+        this.gameCore = gameCore;
     }
     
     public String toString(PlayerList playerList, Player player) {
@@ -28,6 +31,7 @@ public class Room {
         result += "...................\n";
         result += "Objects in the area: " + this.getObjects() + "\n";
         result += "Players in the area: " + this.getPlayers(playerList) + "\n";
+        result += "Ghouls in the area: " + this.getGhoulsString() + "\n";
         result += "You see paths in these directions: " + this.getExits() + "\n";
         //If player is at the clock tower, they are near the shop
         if(this.getId() == 1)
@@ -42,7 +46,11 @@ public class Room {
     public int getId() {
         return this.id;
     }
-    
+
+    public Room getRoom(int id){
+      return this;
+    }
+
     public String getExits() {
         String result = "";
         for(Exit exit : this.exits) {
@@ -82,6 +90,13 @@ public class Room {
             }
         }
         return 0; 
+    }
+    
+    public Exit randomValidExit(){
+        List<Exit> validExits = new LinkedList<>(exits);
+        validExits.removeIf(exit -> exit.getRoom() == 0);
+        int index = new Random().nextInt(validExits.size());
+      return validExits.get(index);
     }
     
     public String getDescription() {
@@ -127,7 +142,7 @@ public class Room {
     public String getPlayers(PlayerList players) {
         String localPlayers = "";
         for(Player player : players) {
-System.err.println("Checking to see if " + player.getName() + " in room " + player.getCurrentRoom() + " is in this room (" + this.id + ")");
+          System.err.println("Checking to see if " + player.getName() + " in room " + player.getCurrentRoom() + " is in this room (" + this.id + ")");
             if(player.getCurrentRoom() == this.id) {
                 localPlayers += player.getName() + " ";
             }
@@ -138,5 +153,46 @@ System.err.println("Checking to see if " + player.getName() + " in room " + play
         else {
             return localPlayers;
         }
+    }
+
+    public ArrayList<String> getNamesOfNpcs(Set<NPC> npcSet){
+
+        ArrayList<String> npcsFound = new ArrayList<>();
+
+        for (NPC npc : npcSet) {
+            if (npc.getCurrentRoom() == this.id) {
+                npcsFound.add(npc.getName());
+            }
+        }
+        if (npcsFound.isEmpty()){
+            return null;
+        }
+        return npcsFound;
+    }
+
+    /**
+     * @return a set of all the Ghouls in this room.
+     * If there are no ghouls in this room, returns an empty set of Ghouls.
+     */
+    public Set<Ghoul> getGhouls() {
+        Set<Ghoul> ghouls = new HashSet<>();
+        for (NPC npc : gameCore.getNpcSet()) {
+            if (npc instanceof Ghoul && npc.getCurrentRoom() == id) {
+                ghouls.add((Ghoul) npc);
+            }
+        }
+        return ghouls;
+    }
+
+    public String getGhoulsString() {
+        Set<Ghoul> ghouls = getGhouls();
+        String ghoulsString;
+        if (ghouls.isEmpty())
+            ghoulsString = "None";
+        else {
+            List<String> ghoulNames = ghouls.stream().map(Ghoul::toString).collect(Collectors.toList());
+            ghoulsString = String.join(" ", ghoulNames);
+        }
+        return ghoulsString;
     }
 }

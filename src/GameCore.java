@@ -1,5 +1,6 @@
 
 
+<<<<<<< HEAD
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -12,6 +13,12 @@ import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
+=======
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.LinkedList;
+>>>>>>> origin/dev
 
 /**
  *
@@ -20,15 +27,19 @@ import java.util.ArrayList;
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Map map;
+<<<<<<< HEAD
     
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
 
 	// Added by Brendan
 	private Leaderboard leaderboard;
+=======
+    private final Set<NPC> npcSet;
+>>>>>>> origin/dev
 
     /**
-     * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
+     * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
      * 
      * This is the main core that both the RMI and non-RMI based servers will interface with.
@@ -36,9 +47,28 @@ public class GameCore implements GameCoreInterface {
     public GameCore() {
         
         // Generate the game map.
-        map = new Map();
-        
+        map = new Map(this);
         playerList = new PlayerList();
+        npcSet = new HashSet<>();
+
+        // Initialize starting NPCs
+        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 14),
+                                    new Ghoul(this, "Ghoul2", 2, 14),
+                                    new Ghoul(this, "Ghoul3", 3, 14)));
+
+        Thread npcThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    synchronized (npcSet) {
+                        for (NPC npc : npcSet)
+                            npc.tryAi();
+                    }
+                }
+            }
+        });
+        npcThread.setDaemon(true);
+        npcThread.start();
         
         activeBattles = new ArrayList<Battle>();
         pendingBattles = new ArrayList<Battle>();
@@ -70,8 +100,24 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
     }
-    
+
+    /**
+     * Basic getter methods for GameCore.
+     */ 
+    public PlayerList getPlayerList(){
+      return this.playerList;
+    }
+
+    public Map getMap(){
+      return this.map;
+    }
+
+    public Set<NPC> getNpcSet() {
+        return npcSet;
+    }
+
     /**
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.
@@ -480,7 +526,87 @@ public class GameCore implements GameCoreInterface {
         }
     }
 
+<<<<<<< HEAD
     
+=======
+    /**
+     * Player pokes a ghoul that is in the same room.
+     * @param playerName Name of the player that pokes the ghoul.
+     * @param ghoulName Name of the ghoul that is poked
+     * @return Message showing success or failure of poke action.
+     */
+    public String pokeGhoul(String playerName, String ghoulName) {
+        Player player = this.playerList.findPlayer(playerName);
+        ArrayList<String> npcsFound = new ArrayList<>();
+        //check if player exists
+        if (player != null){
+            Room room = map.findRoom(player.getCurrentRoom());
+            //find all the NPCs in the room that the player's in
+            npcsFound = room.getNamesOfNpcs(npcSet);
+            if (npcsFound != null){
+                //checking to see if the ghoulName matches any ghouls in the same room
+                for (int i = 0; i < npcsFound.size(); i++){
+                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
+                        return playerName + " POKED " + npcsFound.get(i) + "\n" + player.removeRandomItem();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
+     * @param playerName Name of the player that gifts the ghoul.
+     * @param ghoulName Name of the ghoul to give the item to.
+     * @param itemName Name of the item to give to the ghoul.
+     * @return Message showing success or failure of the gifting action.
+     */
+
+
+    public String giftGhoul(String playerName, String ghoulName, String itemName) {
+
+        Player player = this.playerList.findPlayer(playerName);
+        boolean ghoulNotFound = true;
+        LinkedList<String> playerIn = player.getCurrentInventory();
+        //check if inventory is empty
+        if (player.getCurrentInventory().isEmpty()){
+            return "Inventory is empty.";
+        }
+        //check if player exists
+        if (player != null){
+            Room room = map.findRoom(player.getCurrentRoom());
+            //find all the NPCs in the room that the player's in
+            ArrayList<String> npcsFound = new ArrayList<>();
+            npcsFound = room.getNamesOfNpcs(npcSet);
+            if (npcsFound != null){
+                //checking to see if the ghoulName matches any ghouls in the same room
+                for (int i = 0;(i < npcsFound.size() && ghoulNotFound); i++){
+                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
+                        i = 9999;
+                        ghoulNotFound = false;
+                    }
+                }
+                if (!ghoulNotFound){
+                    //check if the player has the object in their inventory
+                    for (int i = 0; i < playerIn.size(); i++){
+                        if (itemName.equalsIgnoreCase(playerIn.get(i))){
+                            playerIn.remove(i);
+                            player.setCurrentInventory(playerIn);//updating the inventory
+                            return playerName + " gifted " + ghoulName + " a " + itemName;
+                        }
+                    }
+                    return "Player doesn't have a " + itemName + " in their inventory.";
+                }
+                else{
+                    return ghoulName + " is not in the same room as you.";
+                }
+            }
+        }
+        return null;
+    }
+
+>>>>>>> origin/dev
     /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move
@@ -557,6 +683,7 @@ public class GameCore implements GameCoreInterface {
             return player;
         }
         return null;
+<<<<<<< HEAD
     }       
 
     /**
@@ -991,3 +1118,7 @@ public class GameCore implements GameCoreInterface {
       return message;
   }
 }
+=======
+    }
+} //EOF
+>>>>>>> origin/dev

@@ -175,6 +175,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     @Override
     public String pickup(String name, String target) throws RemoteException {
         return core.pickup(name, target);
+<<<<<<< HEAD
     }    
   
     /**
@@ -193,6 +194,35 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String gift(String yourname,String name) throws RemoteException {
      return core.gift(yourname, name);  
     }
+=======
+    }
+
+    /**
+     * Player pokes a ghoul that is in the same room.
+     * @param ghoulName Name of the ghoul that is poked
+     * @param playerName Name of the player that pokes the ghoul.
+     * @return Message showing success or failure of the poking action.
+     */
+
+    public String pokeGhoul(String playerName, String ghoulName) throws RemoteException {
+        return core.pokeGhoul(playerName, ghoulName);
+    }
+
+
+    /**
+     * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
+     * @param playerName Name of the player that gifts the ghoul.
+     * @param target The case-insensitive name of the object that is gifted.
+     * @param ghoulName Name of the ghoul that receives the gift.
+     * @return Message showing success or failure of the gifting action.
+     */
+
+
+    public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException {
+        return core.giftGhoul(playerName, ghoulName, target);
+    }
+
+>>>>>>> origin/dev
     
     /**
      * Returns a string representation of all objects you are carrying.
