@@ -113,7 +113,7 @@ public class PlayerDatabase {
       }
       return false;
 	}
-	
+
 	/**
 	 * Removes a player's username and password from the database if the username
 	 * does already exist in the system
