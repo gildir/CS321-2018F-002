@@ -315,7 +315,7 @@ public class GameCore implements GameCoreInterface {
      * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      */
-    public String move(String name, Integer direction) {
+    public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
         if(player == null) {
             return null;
