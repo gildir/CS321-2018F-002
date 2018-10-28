@@ -84,22 +84,7 @@ public class GameClient {
         System.out.println("When you do, you will join the game at the George Mason Clock, in the main quad.");
         System.out.println("You will be able to see if any other players are in the same area as well as what");
         System.out.println("objects are on the ground and what direction you are facing.\n");
-<<<<<<< HEAD
-=======
-        System.out.println("The game allows you to use the following commands:");
-        System.out.println("  POKE <ghoul>             - Pokes a ghoul with the given name");
-        System.out.println("  GIFT <ghoul> <object>    - Gifts a ghoul an object with the given name");
-        System.out.println("  LOOK                     - Shows you the area around you");
-        System.out.println("  SAY message              - Says 'message' to any other players in the same area.");
-        System.out.println("  LEFT                     - Turns your player left 90 degrees.");
-        System.out.println("  RIGHT                    - Turns your player right 90 degrees.");
-        System.out.println("  MOVE distance            - Tries to walk forward <distance> times.");
-        System.out.println("  PICKUP object            - Tries to pick up an object in the same area.");
-        System.out.println("  INVENTORY                - Shows you what objects you have collected.");
-        System.out.println("  QUIT                     - Quits the game.");
-        System.out.println();
-        
->>>>>>> origin/dev
+
 
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
@@ -361,6 +346,5 @@ public class GameClient {
                 Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
             }            
         }
-    }    
-    
+    }
 }
