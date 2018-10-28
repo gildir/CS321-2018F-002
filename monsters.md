@@ -34,3 +34,15 @@ Ghouls have an aggression system set in the ghoul object. The ghouls anger level
 
 ## NPC System
 
+The NPCs in the game are all decendants of the abstract NPC class. This class provides basic functionality such as the ability to move randomly throughout the world, the required interface to perform certain actions automatically on a specified time interval, as well as other basic functionality.
+
+The NPCs get activated in a continuous loop on the npcThread in GameCore, constantly calling the tryAi() method on every NPC. This method checks if it is time for that NPC to perform some AI action(s), and if so, calls the doAi() method on that NPC. If it is not time for that NPC to perform some ai action(s), the cycle of tryAi() calls continues.
+
+The default doAi() implementation is simply to call the given moveRandomly() method, which moves the NPC to a random adjacent room in the world. This method, as well as tryAi(), can be overridden to allow any AI actions or timing schedules to be implemented. The only requirement is that tryAi() is the entrypoint to the AI actions, as that is what is called from the npcThread.
+
+#### Synchronization
+
+Due to the existance of multiple threads (npcThread as well as the Player's calls to gameCore) changing objects in the game, proper synchronization is necessary to prevent race conditions and bugs in the game. How we deal with this is by using Java's built in synchronization blocks that will lock on an object or class before messing with it.
+
+Here is a simple set of guidelines to determine if you should lock on an object before messing with it:
+( diagram will go here )
