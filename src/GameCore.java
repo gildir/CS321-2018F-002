@@ -1,7 +1,4 @@
 
-
-<<<<<<< HEAD
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,12 +10,10 @@ import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.ArrayList;
-=======
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.LinkedList;
->>>>>>> origin/dev
 
 /**
  *
@@ -26,17 +21,12 @@ import java.util.LinkedList;
  */
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
+    private final Set<NPC> npcSet;
     private final Map map;
-<<<<<<< HEAD
-    
+
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
-
-	// Added by Brendan
-	private Leaderboard leaderboard;
-=======
-    private final Set<NPC> npcSet;
->>>>>>> origin/dev
+    private Leaderboard leaderboard;
 
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
@@ -358,7 +348,6 @@ public class GameCore implements GameCoreInterface {
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
      * @param name Name of the player to move
-     * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      */
     public String move(String name, String direction) {
@@ -448,77 +437,26 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
       return "You stop moving and begin to stand around again.";
     }
-    
+
     /**
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
      * @param target The case-insensitive name of the object to pickup.
      * @return Message showing success. 
-     */    
-    public String pickup(String name, String target) {
-      Player player = this.playerList.findPlayer(name);
-
-      if(player != null) {
-        Room room = map.findRoom(player.getCurrentRoom());
-        // System.out.print(target);
-        if (target.equals("all")) {
-
-          int obj_count = 0;
-          Item object;
-          String AllObjects = room.getObjects();
-
-          while((object = room.getLastObject()) != null){
-            player.addObjectToInventory(object);
-            obj_count++;
-          }
-
-          if(obj_count > 0)
-            return "You bend over and pick up all the objects";
-          else
-            return "No objects in this room";
-
-        } else {
-          Item object = room.removeObject(target);
-          if (player.getCurrentInventory().size() >= 10)
-          {
-              this.broadcast(player, player.getName() + " tried to pick something up, but was holding too many items.");
-              return "You try to pick up the " + target + ", but can't because you're holding too many items.";
-          }
-          if(object != null) {
-            player.addObjectToInventory(object);
-            this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
-            return "You bend over and pick up a " + target + ".";
-          } else {
-            this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
-            return "You look around for a " + target + ", but can't find one.";
-          }
-        }
-      }
-      else {
-        return null;
-      }
-}   
-     
-    /**
-     * Attempts to drop off an object < target >. Will return a message on any success or failure.
-     * @param name Name of the player to move
-     * @param target The case-insensitive name of the object to dropoff.
-     * @return Message showing success.
      */
-    public String dropoff(String name, String target) {
+    public String pickup(String name, String target) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
-            Item object = player.removeObjectFomInventory(target);
             Room room = map.findRoom(player.getCurrentRoom());
-
+            String object = room.removeObject(target);
             if(object != null) {
-                room.addObject(object);
-                this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
-                return "You just dropped off a " + target + ".";
+                player.addObjectToInventory(object);
+                this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
+                return "You bend over and pick up a " + target + ".";
             }
             else {
-                this.broadcast(player, player.getName() + " tried to drop off something, but doesn't seem to find what they were looking for.");
-                return "You just tried to drop off a " + target + ", but you don't have one.";
+                this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
+                return "You look around for a " + target + ", but can't find one.";
             }
         }
         else {
@@ -526,9 +464,6 @@ public class GameCore implements GameCoreInterface {
         }
     }
 
-<<<<<<< HEAD
-    
-=======
     /**
      * Player pokes a ghoul that is in the same room.
      * @param playerName Name of the player that pokes the ghoul.
@@ -606,7 +541,6 @@ public class GameCore implements GameCoreInterface {
         return null;
     }
 
->>>>>>> origin/dev
     /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move
@@ -626,7 +560,7 @@ public class GameCore implements GameCoreInterface {
     
     /**
      * Returns a list of nearby players you can gift
-     * @param name Player Name
+     * @param playerName Player Name
      * @return String representation of nearby players.
      */
     public String giftable(String playerName) {
@@ -683,7 +617,6 @@ public class GameCore implements GameCoreInterface {
             return player;
         }
         return null;
-<<<<<<< HEAD
     }       
 
     /**
@@ -1118,7 +1051,3 @@ public class GameCore implements GameCoreInterface {
       return message;
   }
 }
-=======
-    }
-} //EOF
->>>>>>> origin/dev
