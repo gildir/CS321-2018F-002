@@ -7,6 +7,7 @@ The player database was created for the storage of all user account information.
 
 **NOTE:** PlayerDatabase.java file was created for the use of all user account information needs. The class contains addPlayer(String name, String password) to add a new player to the database, isPlayer(String name) to check if the user already exists, isPassword(String name, String password) to ensure the password is correct to that user, and removePlayer(String name) to remove that player from the database. This class also includes other methods that are required for other features (well documented inside the Java file).
 
+![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/userdatabase.png)
 
 ## Account Creation
 Written by: Cody Kidwell
@@ -14,6 +15,8 @@ Written by: Cody Kidwell
 When a player first boots up the game they will be prompted to login or create a new account. New players will need to prompt the second option to create a new account. The game server will ask the user to input a new username they would like to have for their account. If the username is not available, it will tell them that that username is not available and prompt them to enter a new username. Otherwise, if the username is available they will be asked to verify that they want that username. Once they verify the username, they will enter their new password. Following this, they will be logged in and their account login information will be saved to the database for future login attempts. Previous users do not need to create a new account each time they boot the game, but now be able to login with their already created accounts.
 
 **NOTE:** GameClient.java file uses the createAccount() method to complete the account creation request. The player's username is verified using boolean isPlayer().
+
+![alt text](https://github.com/htanvee/CS321-2018F-002/blob/G1_Readme/accountcreation.png)
 
 ## Logging In/Out
 Written by: Haroon Tanveer
