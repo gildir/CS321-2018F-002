@@ -42,7 +42,7 @@ The default doAi() implementation is simply to call the given moveRandomly() met
 
 #### Synchronization
 
-Due to the existance of multiple threads (npcThread as well as the Player's calls to gameCore) changing objects in the game, proper synchronization is necessary to prevent race conditions and bugs in the game. How we deal with this is by using Java's built in synchronization blocks that will lock on an object or class before messing with it.
+Due to the existence of multiple threads (npcThread as well as the Player's calls to gameCore) changing objects in the game, proper synchronization is necessary to prevent race conditions and bugs in the game. How we deal with this is by using Java's built in synchronization blocks that will lock on an object or class before messing with it.
 
 Here is a simple set of guidelines to determine if you should lock on an object before messing with it:
 ( diagram will go here )
