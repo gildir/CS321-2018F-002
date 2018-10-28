@@ -89,16 +89,6 @@ public class Player {
     public void addObjectToInventory(String object) {
         this.currentInventory.add(object);
     }
-<<<<<<< HEAD
-    public Item removeObjectFomInventory(String object) {
-        for(Item obj : this.currentInventory) {
-            if(obj.getItemName().equalsIgnoreCase(object)) {
-                this.currentInventory.remove(obj);
-                return obj;
-              }
-            }
-        return null;
-=======
 
     /**
      * Allows an an object to be taken away from player's inventory.
@@ -113,7 +103,6 @@ public class Player {
         String targetItem = this.currentInventory.remove(randItem);
         setCurrentInventory(this.currentInventory);
         return targetItem + " was removed from your inventory.";
->>>>>>> origin/dev
     }
     
     public void setReplyWriter(PrintWriter writer) {
@@ -162,13 +151,8 @@ public class Player {
     
     public String viewInventory() {
         String result = "";
-<<<<<<< HEAD
-        if(this.currentInventory.isEmpty() == true) {
-            return " nothing.";
-=======
         if(this.currentInventory.isEmpty()) {
             return "nothing.";
->>>>>>> origin/dev
         }
         for(String obj : this.currentInventory) {
             result += " " + obj;

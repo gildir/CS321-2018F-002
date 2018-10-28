@@ -78,7 +78,6 @@ public interface GameObjectInterface extends Remote {
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
      * @param name Name of the player to move
-     * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      * @throws RemoteException
      */
@@ -125,8 +124,7 @@ public interface GameObjectInterface extends Remote {
      * @param name Name of the player to view their inventory
      * @return Message showing success.
      * @throws RemoteException 
-     */    
-<<<<<<< HEAD
+     */
     public String inventory(String name) throws RemoteException; 
     
     /**
@@ -143,9 +141,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message containing player money
      * @throws RemoteException 
      */    
-    public String money(String name) throws RemoteException;   
-=======
-    public String inventory(String name) throws RemoteException;
+    public String money(String name) throws RemoteException;
 
     /**
      * Player pokes a ghoul that is in the same room.
@@ -153,7 +149,6 @@ public interface GameObjectInterface extends Remote {
      * @param playerName Name of the player that pokes the ghoul.
      * @return Message showing success or failure of the poking action.
      */
-
     public String pokeGhoul(String playerName, String ghoulName) throws RemoteException;
 
     /**
@@ -163,12 +158,7 @@ public interface GameObjectInterface extends Remote {
      * @param ghoulName Name of the ghoul that receives the gift.
      * @return Message showing success or failure of the gifting action.
      */
-
-
     public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException;
-
-
->>>>>>> origin/dev
     
      /**
      * Leaves the game.
