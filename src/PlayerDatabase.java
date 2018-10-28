@@ -74,11 +74,11 @@ public class PlayerDatabase {
             String[] info = line.split(",");
              
              //checks if the username on this line is equal to the given username
-				 if(info[0].equals(name)) {
-                    return true;
-             }
-			 }
-		}
+            if(info[0].equals(name)) {
+               return true;
+            }
+         }
+      }
       catch(IOException e) {
          return false;
       }
