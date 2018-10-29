@@ -1,0 +1,12 @@
+**_challenge()_ method for Rock Paper Scissor**
+
+**_Description_**
+_Challenge_ is a void method that is part of the new feature game of Rock Paper Scissor. This is the first method that the game will call upon. _Challenge_ pass in two Strings of the players' names as parameters. The first player is the challenger and the second player is the one being challenged. Once the players have been initialized, _challenge_ will check for any non-permissible conditions. If everything is good, it will call _pendingBattles_ method and continue with the game.
+**_Features_**
+The non-permissible conditions are built in as features of the _challenge_ method. The first feature is player cannot challenge a non-existence player. Second feature is player cannot challenge himself or herself. The third feature is players can only be in one battle at the time. Finally, player must wait for reply to a pending challenge request. 
+**_Command_**
+To run Rock Paper Scissor in the game, type 'challenge', follow by a 'space', and then the name of the player to challenge.
+**_Development_**
+More features and further developments are still being work on to improve the experience of the game.
+
+
