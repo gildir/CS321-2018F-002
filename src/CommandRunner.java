@@ -42,6 +42,7 @@ public class CommandRunner {
         commandFunctions.put("SAY",     (name, args) -> {
             // Create empty string
             String message = String.join(" ", args);
+            System.out.println("[" + message + "]");
 
             if (message.equals("")) {
                 return "[ERROR] Empty message";
@@ -50,12 +51,16 @@ public class CommandRunner {
             }
         });
         commandFunctions.put("MOVE",     (name, args) -> {
-            String direction = args.get(0);
+            try {
+                String direction = args.get(0);
 
-            if (direction.equals("")) {
+                if (direction.equals("")) {
+                    return "[ERROR] No direction specified";
+                } else {
+                    return remoteGameInterface.move(name, direction);
+                }
+            } catch (IndexOutOfBoundsException ex) {
                 return "[ERROR] No direction specified";
-            } else {
-                return remoteGameInterface.move(name, direction);
             }
         });
         commandFunctions.put("PICKUP",    (name, args) -> {
