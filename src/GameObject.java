@@ -2,7 +2,11 @@
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+import java.rmi.server.UnicastRemoteObject;
+>>>>>>> a54c2852703bd4568148034103e1367c88d65074
 
 /**
  *
@@ -54,6 +58,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException
      */
+<<<<<<< HEAD
     public String say(String name, String message) throws RemoteException;
     
     /**
@@ -74,6 +79,13 @@ public interface GameObjectInterface extends Remote {
     */
     public String reply(String name, String message) throws RemoteException;
     
+=======
+    @Override
+    public String say(String name, String message) throws RemoteException {
+        return core.say(name, message);
+    }
+      
+>>>>>>> a54c2852703bd4568148034103e1367c88d65074
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
@@ -82,6 +94,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException
      */
+<<<<<<< HEAD
     public String move(String name, String direction) throws RemoteException;
 
     /**
@@ -102,11 +115,19 @@ public interface GameObjectInterface extends Remote {
      */
     public String leaveRoom(String name) throws RemoteException;
     
+=======
+    @Override
+    public String move(String name, int distance) throws RemoteException {
+        return core.move(name, distance);
+    }
+      
+>>>>>>> a54c2852703bd4568148034103e1367c88d65074
     /**
      * Attempts to pick up an object < object >. Will return a message on any success or failure.
      * @param name Name of the player to pickup an object
      * @param object The case-insensitive name of the object to pickup.
      * @return Message showing success.
+<<<<<<< HEAD
      * @throws RemoteException
      */
     public String pickup(String name, String object) throws RemoteException;
@@ -121,11 +142,22 @@ public interface GameObjectInterface extends Remote {
     public String dropoff(String name, String object) throws RemoteException;
 
      /**
+=======
+     * @throws RemoteException 
+     */    
+    @Override
+    public String pickup(String name, String target) throws RemoteException {
+        return core.pickup(name, target);
+    }    
+    
+    /**
+>>>>>>> a54c2852703bd4568148034103e1367c88d65074
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to view their inventory
      * @return Message showing success.
      * @throws RemoteException 
      */    
+<<<<<<< HEAD
     public String inventory(String name) throws RemoteException; 
     
     /**
@@ -143,10 +175,17 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public String money(String name) throws RemoteException;   
+=======
+    @Override
+    public String inventory(String name) throws RemoteException {
+        return core.inventory(name);
+    }    
+>>>>>>> a54c2852703bd4568148034103e1367c88d65074
     
      /**
      * Leaves the game.
      * @param name Name of the player to leave
+<<<<<<< HEAD
      * @throws RemoteException
      */
     public void leave(String name) throws RemoteException;
@@ -172,4 +211,42 @@ public interface GameObjectInterface extends Remote {
 	  public void checkBoard(String player) throws RemoteException;
     public String tutorial(String name) throws RemoteException;
 //Rock Paper Scissors Battle Code Here---------------------------------
+=======
+     * @throws RemoteException 
+     */    
+    @Override
+    public void leave(String name) throws RemoteException {
+        Player player = core.leave(name);
+        if(player != null) {
+            player.getReplyWriter().close();
+        }
+    }    
+//Rock Paper Scissors Battle Code here--------------------------------------
+public void challenge(String challenger, String player2) throws RemoteException
+{
+  core.challenge(challenger, player2);
+}
+public void accept(String challenger, String player2) throws RemoteException
+{
+ core.accept(challenger,player2);
+}
+
+public void refuse(String challenger, String player2) throws RemoteException
+{
+  core.refuse(challenger, player2);
+}
+public void rock(String player) throws RemoteException
+{
+  core.rock(player);
+}
+public void paper(String player) throws RemoteException
+{
+  core.paper(player);
+}
+public void scissors(String player) throws RemoteException
+{
+  core.scissors(player);
+}
+//Rock Paper Scissors Battle Code here--------------------------------------
+>>>>>>> a54c2852703bd4568148034103e1367c88d65074
 }

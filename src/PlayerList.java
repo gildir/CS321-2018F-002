@@ -33,22 +33,11 @@ public class PlayerList implements Iterable<Player> {
         return null;
     }
     
-    public void removePlayer(String name)
-    {
+    public void removePlayer(String name) {
         Player player = findPlayer(name);
         if(player != null) {
             this.playerList.remove(player);
             PlayerDatabase.loginLog(name, false);
         }
-    }
-    //author Shayan AH
-    public String toString()
-    {
-        String res = "";
-        for(Player player : this.playerList)
-        {
-            res += player.getName() + " ";
-        }
-        return res;
     }
 }
