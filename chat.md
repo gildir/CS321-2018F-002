@@ -24,8 +24,15 @@ class GameCore
 {
     public String listAllPlayers(String palyer_name); 
 }
-
+class PlayerList
+{
+    private final LinkedList<Player> playerList;
+    public String toString();
+}
 ```
+### Code Analysis 
+PlayerList class keep a linked list of players called palyerList. toString methods returns the one string separated by space of all players in the linked list. 
+GameCore class is responsible for underlying actions. ListAllPlayers is a method in this class that gets the player name, if the player name is valid then it returns a string of all players int the world using toString method of playerList.  
 ## Ignore
 ### Usage
 There are two ways to ignore messages from a player:
@@ -95,8 +102,13 @@ class GameCore
 {
      public String listIgnoredPlayers(String player_name);
 }
-
+class Player
+{
+     private ArrayList<String> ignoreList;
+     public String showIgnoreList();
+}
 ```
+### Code Analysis
 ## Unignore
 
 ## Shout
