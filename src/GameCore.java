@@ -5,6 +5,10 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
+import java.io.IOException;
+import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 /**
  *
@@ -36,8 +40,8 @@ public class GameCore implements GameCoreInterface {
             public void run() {
                 Random rand = new Random();
                 Room room;
-                String object;
-                String[] objects = {"Flower", "Textbook", "Phone", "Newspaper"};
+                Item object;
+                Item[] objects = {new Item("Flower", 0.26, 1.5), new Item("Textbook", 4.8, 300), new Item("Phone", 0.03, 100), new Item("Newspaper", 0.06, 1)};
                 while(true) {
                     try {
                         Thread.sleep(rand.nextInt(60000));
@@ -222,25 +226,41 @@ public class GameCore implements GameCoreInterface {
      * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      */
-    public String move(String name, int distance) {
+    public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
-        if(player == null || distance <= 0) {
+        if(player == null) {
             return null;
         }
+        
         Room room;
-        while(distance-- != 0) {
-            room = map.findRoom(player.getCurrentRoom());
-            if(room.canExit(player.getDirection())) {
-                this.broadcast(player, player.getName() + " has walked off to the " + player.getCurrentDirection());
-                player.getReplyWriter().println(room.exitMessage(player.getDirection()));
-                player.setCurrentRoom(room.getLink(player.getDirection()));
-                this.broadcast(player, player.getName() + " just walked into the area.");
-                player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
-            }
-            else {
-                player.getReplyWriter().println(room.exitMessage(player.getDirection()));
-                return "You grumble a little and stop moving.";
-            }
+        room = map.findRoom(player.getCurrentRoom());
+
+        switch(direction.toUpperCase()){
+          case "NORTH":
+            player.setDirection(Direction.NORTH);
+            break;
+          case "EAST":
+            player.setDirection(Direction.EAST);
+            break;
+          case "WEST":
+            player.setDirection(Direction.WEST);
+            break;
+          case "SOUTH":
+            player.setDirection(Direction.SOUTH);
+            break;
+          default:
+            return "Please enter a valid direction. Valid directions are North, South, East, or West.";
+        }
+        if(room.canExit(player.getDirection())) {
+          this.broadcast(player, player.getName() + " has walked off to the " + player.getCurrentDirection());
+          player.getReplyWriter().println(room.exitMessage(player.getDirection()));
+          player.setCurrentRoom(room.getLink(player.getDirection()));
+          this.broadcast(player, player.getName() + " just walked into the area.");
+          player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+        }
+        else {
+          player.getReplyWriter().println(room.exitMessage(player.getDirection()));
+          return "You grumble a little and stop moving.";
         }
         return "You stop moving and begin to stand around again.";
     }
@@ -255,21 +275,39 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             Room room = map.findRoom(player.getCurrentRoom());
-            String object = room.removeObject(target);
-            if(object != null) {
+            System.out.print(target);
+            if(target.equals("all")){
+                
+              int obj_count = 0;
+              Item object;
+              String AllObjects = room.getObjects();
+              while((object = room.getLastObject()) != null){
                 player.addObjectToInventory(object);
-                this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
-                return "You bend over and pick up a " + target + ".";
+                obj_count++;
+              }
+              if(obj_count > 0)
+                return "You bend over and pick up all the objects";
+              else
+                return "No objects in this room";
             }
-            else {
-                this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
-                return "You look around for a " + target + ", but can't find one.";
+            else{
+              
+              Item object = room.removeObject(target);
+              if(object != null) {
+                  player.addObjectToInventory(object);
+                  this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
+                  return "You bend over and pick up a " + target + ".";
+              }
+              else {
+                  this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
+                  return "You look around for a " + target + ", but can't find one.";
+              }
             }
         }
         else {
             return null;
         }
-    }       
+    }  
     
     /**
      * Returns a string representation of all objects you are carrying.
@@ -303,6 +341,35 @@ public class GameCore implements GameCoreInterface {
         }
         return null;
     }       
+
+    /**
+     * Logs a string into a file
+     * @param fileName name of the file to log in
+     * @param log      message to log
+     */
+    @Override
+    public void log(String fileName, String log) {
+        String PATH = "log";
+
+        try {
+            // Check if log directory exists
+            File directory = new File(PATH);
+            if (! directory.exists()) directory.mkdirs();
+
+            // Check for file
+            File file = new File(PATH + "/" + fileName);
+            if (! file.exists()) file.createNewFile();
+            
+            // Write to file
+            FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            bw.write(log);
+            bw.close();
+        } catch (IOException ex){
+            Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
 
 //Rock Paper Scissors Battle Methods -------------------------------------------

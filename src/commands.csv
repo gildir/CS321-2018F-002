@@ -1,0 +1,13 @@
+LOOK,,Shows you the area around you
+SAY,MESSAGE,Says <message> to any other players in the same area.
+MOVE,DIRECTION,Tries to walk in <direction>.
+PICKUP,OBJECT,Tries to pick up an object in the same area.
+INVENTORY,,Shows you what objects you have collected.
+QUIT,,Quits the game.
+HELP,,Displays the list of available commands
+CHALLENGE,PLAYER,Challenges another <PLAYER> to a Rock Paper Scissors Battle.
+ACCEPT,PLAYER,Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.
+REFUSE,PLAYER,Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.
+ROCK,,Play <ROCK> in your current Rock Paper Scissors Battle.
+PAPER,,Play <PAPER> in your current Rock Paper Scissors Battle.
+SCISSORS,,Play <SCISSORS> in your current Rock Paper Scissors Battle.

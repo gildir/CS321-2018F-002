@@ -2,11 +2,8 @@
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-<<<<<<< HEAD
 import java.util.ArrayList;
-=======
 import java.rmi.server.UnicastRemoteObject;
->>>>>>> a54c2852703bd4568148034103e1367c88d65074
 
 /**
  *
@@ -51,15 +48,6 @@ public interface GameObjectInterface extends Remote {
      */
     public String right(String name) throws RemoteException;
 
-    /**
-     * Says "message" to everyone in the current area.
-     * @param name Name of the player to speak
-     * @param message Message to speak
-     * @return Message showing success.
-     * @throws RemoteException
-     */
-<<<<<<< HEAD
-    public String say(String name, String message) throws RemoteException;
     
     /**
     * Whispers "message" to specified player.
@@ -79,24 +67,11 @@ public interface GameObjectInterface extends Remote {
     */
     public String reply(String name, String message) throws RemoteException;
     
-=======
     @Override
     public String say(String name, String message) throws RemoteException {
         return core.say(name, message);
     }
       
->>>>>>> a54c2852703bd4568148034103e1367c88d65074
-    /**
-     * Attempts to walk forward < distance > times.  If unable to make it all the way,
-     *  a message will be returned.  Will display LOOK on any partial success.
-     * @param name Name of the player to move
-     * @param distance Number of rooms to move forward through.
-     * @return Message showing success.
-     * @throws RemoteException
-     */
-<<<<<<< HEAD
-    public String move(String name, String direction) throws RemoteException;
-
     /**
      * Attempts to enter <location>. Use if entering a room that is part of another
      * room, instead of using move to walk to a separate room
@@ -115,22 +90,11 @@ public interface GameObjectInterface extends Remote {
      */
     public String leaveRoom(String name) throws RemoteException;
     
-=======
     @Override
-    public String move(String name, int distance) throws RemoteException {
-        return core.move(name, distance);
+    public String move(String name, String direction) throws RemoteException {
+        return core.move(name, direction);
     }
       
->>>>>>> a54c2852703bd4568148034103e1367c88d65074
-    /**
-     * Attempts to pick up an object < object >. Will return a message on any success or failure.
-     * @param name Name of the player to pickup an object
-     * @param object The case-insensitive name of the object to pickup.
-     * @return Message showing success.
-<<<<<<< HEAD
-     * @throws RemoteException
-     */
-    public String pickup(String name, String object) throws RemoteException;
 
     /**
      * Attempts to drop off an object < object >. Will return a message on any success or failure.
@@ -142,7 +106,6 @@ public interface GameObjectInterface extends Remote {
     public String dropoff(String name, String object) throws RemoteException;
 
      /**
-=======
      * @throws RemoteException 
      */    
     @Override
@@ -150,15 +113,6 @@ public interface GameObjectInterface extends Remote {
         return core.pickup(name, target);
     }    
     
-    /**
->>>>>>> a54c2852703bd4568148034103e1367c88d65074
-     * Returns a string representation of all objects you are carrying.
-     * @param name Name of the player to view their inventory
-     * @return Message showing success.
-     * @throws RemoteException 
-     */    
-<<<<<<< HEAD
-    public String inventory(String name) throws RemoteException; 
     
     /**
      * Returns a list of nearby players you can gift.
@@ -175,20 +129,21 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public String money(String name) throws RemoteException;   
-=======
     @Override
     public String inventory(String name) throws RemoteException {
         return core.inventory(name);
     }    
->>>>>>> a54c2852703bd4568148034103e1367c88d65074
     
-     /**
-     * Leaves the game.
-     * @param name Name of the player to leave
-<<<<<<< HEAD
-     * @throws RemoteException
-     */
-    public void leave(String name) throws RemoteException;
+
+     * @throws RemoteException 
+     */    
+    @Override
+    public void leave(String name) throws RemoteException {
+        Player player = core.leave(name);
+        if(player != null) {
+            player.getReplyWriter().close();
+        }
+    }    
 
     /**
      * Logs a player interaction with the world, ie the execution of a command.
@@ -199,29 +154,28 @@ public interface GameObjectInterface extends Remote {
      * @param  output  String containing the result of executing the command
      * @throws RemoteException
      */
-    public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
-    
-//Rock Paper Scissors Battle Code Here---------------------------------
-    public void challenge(String challenger, String player2) throws RemoteException;
-    public void accept(String challenger, String player2) throws RemoteException;
-    public void refuse(String challenger, String player2) throws RemoteException;
-    public void rock(String player) throws RemoteException;
-    public void paper(String player) throws RemoteException;
-    public void scissors(String player) throws RemoteException;
-	  public void checkBoard(String player) throws RemoteException;
-    public String tutorial(String name) throws RemoteException;
-//Rock Paper Scissors Battle Code Here---------------------------------
-=======
-     * @throws RemoteException 
-     */    
     @Override
-    public void leave(String name) throws RemoteException {
-        Player player = core.leave(name);
-        if(player != null) {
-            player.getReplyWriter().close();
-        }
-    }    
-//Rock Paper Scissors Battle Code here--------------------------------------
+    public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException {
+        StringBuilder sb = new StringBuilder();
+
+        // Add timestamp and name of the player to begining of string
+        sb.append("[" + new java.util.Date() + "] [" + name.toUpperCase() + "]\n");
+
+        // Append command and args. If no args append null
+        if (args != null)   sb.append("\t-> " + command + "(" + String.join(", ", args) + ")\n");
+        else                sb.append("\t-> " + command + "()\n");
+
+        // Append output. If no output append null
+        if (output != null) sb.append("\t<- \"" + output + "\"\n");
+        else                sb.append("\t<- \"null\"\n");
+
+        String file = name + ".log";
+        String log = sb.toString();
+        
+        core.log(file, log);
+    }
+
+//Rock Paper Scissors Battle Code here
 public void challenge(String challenger, String player2) throws RemoteException
 {
   core.challenge(challenger, player2);
@@ -247,6 +201,5 @@ public void scissors(String player) throws RemoteException
 {
   core.scissors(player);
 }
-//Rock Paper Scissors Battle Code here--------------------------------------
->>>>>>> a54c2852703bd4568148034103e1367c88d65074
+//Rock Paper Scissors Battle Code here
 }
