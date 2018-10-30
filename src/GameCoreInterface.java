@@ -12,14 +12,6 @@ public interface GameCoreInterface {
      * @param message Message to broadcast.
      */   
     public void broadcast(Player player, String message);    
-
-    /**
-    * Broadcasts a message to a specified player.
-    * @param sendingPlayer Player sending message
-    * @param receivingPlayer Player receiving message
-    * @param message Message to broadcast
-    */
-    public void broadcast(Player sendingPlayer, Player receivingPlayer, String message);
     
     /**
      * Broadcasts a message to all players in the specified room.
@@ -74,15 +66,6 @@ public interface GameCoreInterface {
      * @return Message showing success.
      */
     public String say(String name, String message);
-
-    /**
-    * Whispers "message" to specified player.
-    * @param name1 Name of player sending message
-    * @param name2 Name of player receiving message
-    * @param message Message to whisper
-    * @return Message Showing success.
-    */
-    public String whisper(String name1, String name2, String message);
     
     /**
      * Returns a string representation of all objects you are carrying.
@@ -97,4 +80,21 @@ public interface GameCoreInterface {
      * @return Player that was just removed.
      */    
     public Player leave(String name);    
+
+    /**
+     * Logs a string into a file
+     * @param fileName name of the file to log in
+     * @param log      message to log
+     */
+    public void log(String fileName, String log);
+    
+//Rock Paper Scissors Battle Code here--------------------------------------
+public void challenge(String challenger, String player2);
+public void accept(String challenger, String player2);
+public void refuse(String challenger, String player2);
+public void doBattle(String challenger, String player2, int p1, int p2, Battle b);
+public void rock(String player);
+public void paper(String player);
+public void scissors(String player);
+//Rock Paper Scissors Battle Code here--------------------------------------
 }

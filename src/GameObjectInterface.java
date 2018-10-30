@@ -2,6 +2,7 @@
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  *
@@ -52,15 +53,6 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public String say(String name, String message) throws RemoteException;
-
-    /**
-    * Whispers "message" to specified player.
-    * @param name1 Name of players sending message
-    * @param name2 Name of player receiving message
-    * @param message Message to whisper
-    * @return Message showing success.
-    */
-    public String whisper(String name1, String name2, String message) throws RemoteException;
     
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
@@ -70,7 +62,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException 
      */
-    public String move(String name, int distance) throws RemoteException;
+    public String move(String name, String direction) throws RemoteException;
 
     /**
      * Attempts to pick up an object < object >. Will return a message on any success or failure.
@@ -95,4 +87,24 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public void leave(String name) throws RemoteException;       
+
+    /**
+     * Logs a player interaction with the world, ie the execution of a command.
+     *
+     * @param  name    Name of the player
+     * @param  command String containing the command called
+     * @param  args    Array containing the arguments as strings
+     * @param  output  String containing the result of executing the command
+     * @throws RemoteException
+     */
+    public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
+
+//Rock Paper Scissors Battle Code Here---------------------------------
+    public void challenge(String challenger, String player2) throws RemoteException;
+    public void accept(String challenger, String player2) throws RemoteException;
+    public void refuse(String challenger, String player2) throws RemoteException;
+    public void rock(String player) throws RemoteException;
+    public void paper(String player) throws RemoteException;
+    public void scissors(String player) throws RemoteException;
+//Rock Paper Scissors Battle Code Here---------------------------------
 }
