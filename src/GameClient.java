@@ -97,7 +97,7 @@ public class GameClient {
             remoteOutputThread.start();
 
             // Init the CommandRunner
-            commandRunner = new CommandRunner(remoteGameInterface);
+            commandRunner = new CommandRunner(remoteGameInterface, "commands.csv");
             commandRunner.run("help", null, this.playerName);
 
             // Collect input for the game.
