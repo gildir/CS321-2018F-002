@@ -11,9 +11,9 @@ each with unique values. These values are fixed and do not change upon initial r
 to change over the course of playing.
 
 For the technical aspect, an item is a simple class aptly named Item, with corresponding fields for the name (a string), the weight 
-(a double), and the value (also a double). It has a constructor which when this class in instatiated sets a value for each field.
+(a double), and the value (also a double). It has a constructor which when this class is instatiated, sets a value for each field.
 To go along with this are getter methods to obtain values from elsewhere, but no setters since these values will not change initially.
 
-[Below is an image of the class diagram for the Item Class:] (CS321-2018F-002/Item_Class_UML_Diagram)
+![Below is an image of the class diagram for the Item Class:]()
 
 

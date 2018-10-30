@@ -1,8 +1,12 @@
 import java.util.*;
 
+// Class to represent items. Each item has certain attributes, but potentially has unique values for each.
 public class Item{
+	// The name of the item.
 	private String itemName;
+	// The weight of the item.
 	private double itemWeight;
+	// The value of the item (monetarily).
 	private double itemValue;
 
 	// Constructor
