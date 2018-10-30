@@ -109,6 +109,9 @@ class Player
 }
 ```
 ### Code Analysis
+In the class Player we keep track of ignored players in an arraylist called ignoreList. The showIgnoreList is a wrapper that prints out all ignored player in a string. 
+In the class GameCore we list ignored players by calling showIgnoreList, which granted the permission to access ignored players' names. 
+By issuing ignore -l you are able to use this functionality.  
 ## Unignore
 
 ## Shout
