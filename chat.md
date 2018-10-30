@@ -12,6 +12,8 @@ To assist players in location, or searching for the correct spelling for a playe
 ## 404) Reply
 
 ## 402) List Players in Game
+### Description
+List active players' name in the world. A world consist of several rooms, and these rooms are separated from one another. You might list players' name to be able to communicate with them with whisper functionality. Listplayers is your personal contact list, so you want to keep it safe.
 ### Command
 ```
 listplayers 
@@ -35,7 +37,7 @@ Ignored and ignoring players are tracked on separate lists residing in the Playe
 
 To provide the ignore functionality these classes were edited: Player, GameCore, GameClient, GameCoreInterface, GameObject, GameObjectInterface. Of these, the bulk of the logic can be found in classes Player and GameCore
 
-### Class: Player, File:Player.java
+#### Class: Player, File:Player.java
 The following variables were added to track ignored and ignoring players:
 ```
 private ArrayList<String> ignoreList;
@@ -54,7 +56,7 @@ public boolean searchIgnoredBy(String name)
 public boolean searchIgnoreList(String name)
 ```
 
-### Class: GameCore, File:Player.java
+#### Class: GameCore, File:Player.java
 The following changes were made to this class:
 1. Function added
 ```
@@ -81,6 +83,8 @@ Does not broadcast to ignoring players
 
 
 ## 407) List Ignore Users
+### Description
+List all players who are ignored by you. This function allows you to list all the players that you muted. You might mute players due to misbehavior. You might to use this functionality to find out about those players in case you want to unmute them back or just for checking.  
 ### Command
 ```
 IGNORE -l 
