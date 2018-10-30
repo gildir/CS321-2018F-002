@@ -5,6 +5,10 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
+import java.io.IOException;
+import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 /**
  *
@@ -337,6 +341,35 @@ public class GameCore implements GameCoreInterface {
         }
         return null;
     }       
+
+    /**
+     * Logs a string into a file
+     * @param fileName name of the file to log in
+     * @param log      message to log
+     */
+    @Override
+    public void log(String fileName, String log) {
+        String PATH = "log";
+
+        try {
+            // Check if log directory exists
+            File directory = new File(PATH);
+            if (! directory.exists()) directory.mkdirs();
+
+            // Check for file
+            File file = new File(PATH + "/" + fileName);
+            if (! file.exists()) file.createNewFile();
+            
+            // Write to file
+            FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            bw.write(log);
+            bw.close();
+        } catch (IOException ex){
+            Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
 
 //Rock Paper Scissors Battle Methods -------------------------------------------
