@@ -12,11 +12,11 @@ To assist players in location, or searching for the correct spelling for a playe
 ## 404) Reply
 
 ## 402) List Players in Game
-###Command
+### Command
 ```
 listplayers 
 ```
-###implementation
+### Implementation
 ```java
 class GameCore
 {
@@ -81,11 +81,11 @@ Does not broadcast to ignoring players
 
 
 ## 407) List Ignore Users
-###Command
+### Command
 ```
 IGNORE -l 
 ```
-###implementation
+### Implementation
 ```java
 class GameCore
 {
