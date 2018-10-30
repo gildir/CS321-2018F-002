@@ -1,23 +1,36 @@
-# Game Chat Introduction
-The game chat system allows a player to send a message to different game locations or specific players. Originally, the game included the ability for a player to SAY a message to all players in the same area. Chat functionality has been expended to WHISPER a message to a player, which behaves similar to a private message. A player’s REPLY to a WHISPER has been streamlined to avoid typing the recipient’s name. Players can also SHOUT, sending a message to every player in the game.
+# CS321-2018F-002
+# Player Chat System ![CI status](https://img.shields.io/badge/build-passing-brightgreen.svg)
+## Introduction
+The game chat system allows a player to communicate with one anther in the world. As a player you can send a message to different game locations or specific players. Chat functionality has been expended to WHISPER a message to a player, which behaves similar to a private message. A player’s REPLY to a WHISPER has been streamlined to avoid typing the recipient’s name. Players can also SHOUT, sending a message to every player in the game.
 
 Also added is the ability to IGNORE all messages from a specific player, regardless of how the message was sent. Individual player ignore lists can be displayed to screen. If desired, the player that owns the ignore list can remove a specific player. 
 To assist players in location, or searching for the correct spelling for a player name, players have the ability to view all players in the game world with the aptly named LISTPLAYERS command. 
 
+## 400) Say
+## 401) Whisper
 
-# Whisper
+## 404) Reply
 
-# Reply
+## 402) List Players in Game
+###Command
+```
+listplayers 
+```
+###implementation
+```java
+class GameCore
+{
+    public String listAllPlayers(String palyer_name); 
+}
 
-# List Players in Game
-
-# Ignore
-## Usage
+```
+## Ignore
+### Usage
 There are two ways to ignore messages from a player:
 1. **IGNORE -A <player_name>**
 2. **/I -A <player_name>**
 
-## Command Implementation
+### Command Implementation
 Ignored and ignoring players are tracked on separate lists residing in the Player object. If p1 wants to ignore p2, p2 would execute command “IGNORE –A p2”. This would add p2’s name to p1’s ignoreList, and would add p1’s name to p2’s ignoredByList. 
 
 To provide the ignore functionality these classes were edited: Player, GameCore, GameClient, GameCoreInterface, GameObject, GameObjectInterface. Of these, the bulk of the logic can be found in classes Player and GameCore
@@ -67,8 +80,28 @@ Does not broadcast to ignoring players
 
 
 
-# List Ignore Users
+## 407) List Ignore Users
+###Command
+```
+IGNORE -l 
+```
+###implementation
+```java
+class GameCore
+{
+     public String listIgnoredPlayers(String player_name);
+}
 
-# Unignore
+```
+## Unignore
 
-# Shout
+## Shout
+
+## Team Members
+* Shayan Amirhosseini
+* Thomas Klock
+* Amilcar Martinez
+* Julius A
+
+## License
+[GNU GENERAL PUBLIC LICENSE](http://fsf.org/)
