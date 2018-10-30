@@ -31,6 +31,8 @@ Ghouls are phantom like beings that roam around in the game. The ghouls class in
 
 Ghouls have an aggression system set in the ghoul object. The ghouls anger level can increase, maximum anger level is five and decrease, minimum anger level is zero, based on a player’s actions towards the ghoul. If a player pokes a ghoul then the ghoul’s anger level increments and if a player gifts a ghoul an object from their inventory then the ghoul’s anger level decrements. Keep in mind, a player must be in the same room as the ghoul to poke and gift the ghoul, the player also must have at least one object to gift the ghoul or else the player does not have anything to gift. There are already methods set in place for the ghoul’s class’s aggression system.
 
+![Aggression System Flowchart](AggroFlowchart.png)
+
 ## NPC System
 
 The NPCs in the game are all decendants of the abstract NPC class. This class provides basic functionality such as the ability to move randomly throughout the world, the required interface to perform certain actions automatically on a specified time interval, as well as other basic functionality.
