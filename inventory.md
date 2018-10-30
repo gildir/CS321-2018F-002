@@ -14,6 +14,6 @@ For the technical aspect, an item is a simple class aptly named Item, with corre
 (a double), and the value (also a double). It has a constructor which when this class is instatiated, sets a value for each field.
 To go along with this are getter methods to obtain values from elsewhere, but no setters since these values will not change initially.
 
-![Below is an image of the class diagram for the Item Class:]()
+![Below is an image of the class diagram for the Item Class:](https://github.com/torourk/CS321-2018F-002/blob/items_inventory_doc_itemsActual/Item_Class_UML_Diagram-1.png)
 
 
