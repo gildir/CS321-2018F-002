@@ -1,19 +1,39 @@
 # Player-World Interactions
-TODO: Explain what this covers
-
+In this section we discuss:
+* How the *User* might make use of the client
+* How the *Game* performs interactions with the world
+* The way *Client* and *Server* interact
 
 ## How to use it
 
 ### Interacting with the game (Joseph)
-TODO: how to enter commands
+
+Interactions in the game are done through a menu where a user can input commands to their player.  interface. The interactions are done through user command input. When a player logs-in, a menu with a list of commands will appear.
+
+![GameMenu](./GameMenuShot.png)
+
+Each option on the list states the command and a description of what the command performs when typed.
+
+An example is when the user types PICKUP ALL. Typing the command allows the player to pickup all of the items in the current room.
+
+![PickupExample](./PickupExample.png)
+
+If there is difficulty in putting in the commands, the player is prompted by the game to type in HELP and have the command menu appear again.
 
 ### Available commands (Andrew)
-TODO: which commands available. include latests commands!
+Below is a list of the currently available commands as well as their arguments and a brief description of what each command does.
+
 
 ### Command Aliases (Laura)
-TODO: explain how to use the alias file
 
-
+There is a `aliases.cvs` file available where you can specify a new name for an existing command so it is easier for you to remember all of them.
+Once you fill the gap you would be able to use both names for one command.
+The command configuration file has this appearance:
+ ```java
+MOVE, GO
+LOOK,
+```
+The first column of the CVS file, where you have all the existing commands provided by the game, should not be modified. The next column is used to put the equivalent word you want to use as an alias so you can modify it. If you do not want to add an alias to some specific command you can just leave a blank space.
 
 ## Notes for developers
 
@@ -56,24 +76,56 @@ commandFunctions.put("ROCK", (name, args) -> {
 If in fact you need to do any preprocessing, you are gonna end up with something like the **MOVE** command:
 ```java
 commandFunctions.put("MOVE", (name, args) -> {
-    String direction = args.get(0);
+    try {
+        String direction = args.get(0);
 
-    if (direction.equals("")) {
+        if (direction.equals("")) {
+            return "[ERROR] No direction specified";
+        } else {
+            return remoteGameInterface.move(name, direction);
+        }
+    } catch (IndexOutOfBoundsException ex) {
         return "[ERROR] No direction specified";
-    } else {
-        return remoteGameInterface.move(name, direction);
     }
 });
 ```
 You can refer to other commands in the `CommandRunner.java` file for more examples.
 
-#### 2. Include a description
-(see next section)
+#### 2. Include a description (Laura)
 
-### Configuring commands (Laura)
-TODO: how to use file to change descriptions/arguments
+You need to add a description for the command. You'll need to do so in two places:
+* Default `createCommands()` method. Add a line like:
+```java
+descriptions.put("", new String[]{"", ""});
+```
+where you include the name of the command, the arguments it takes (if none, an empty string ""; if more than one, separate them by spaces "ARG1 ARG2") and its description.
+* You need to add the same info in the `commands.csv` file. 
+The configuration file has a line for each command where the first element will be the name of the command, the second column should include the arguments needed to run it and the last one a short description about what it does, to ensure the client knows about the functionality of the command. In this file, you should add these command specifications separated by commas:
+```CSV
+LOOK,,Shows you the area around you
+SAY,MESSAGE,Says <MESSAGE> to any other players in the same area.
+...
+<NAME>,<ARGS>,<DESCRIPTION>
+```
 
 ### Debugging interactions (Joseph)
+Whenever a player performs an action, the action is recorded to a file. The file is recorded through the run() method in CommandRunner.java.
 
-TODO: explain how logging works
+The method looks at the command that was inputted in the game and checks if the command that was entered is valid
 
+```
+if (cmd != null) {
+
+            try {
+                String result = cmd.run(playerName, args);
+                if (result != null)
+                    System.out.println(result);
+
+                remoteGameInterface.logInteraction(playerName, command, args, result);
+            } catch (RemoteException ex) {
+                Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+```
+
+If the entered command is valid, the method call, remoteGameInterface.logInteraction(playerName, command, args, result), records the completed.
