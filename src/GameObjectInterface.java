@@ -2,6 +2,7 @@
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  *
@@ -86,6 +87,18 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public void leave(String name) throws RemoteException;       
+
+    /**
+     * Logs a player interaction with the world, ie the execution of a command.
+     *
+     * @param  name    Name of the player
+     * @param  command String containing the command called
+     * @param  args    Array containing the arguments as strings
+     * @param  output  String containing the result of executing the command
+     * @throws RemoteException
+     */
+    public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
+
 //Rock Paper Scissors Battle Code Here---------------------------------
     public void challenge(String challenger, String player2) throws RemoteException;
     public void accept(String challenger, String player2) throws RemoteException;

@@ -80,6 +80,14 @@ public interface GameCoreInterface {
      * @return Player that was just removed.
      */    
     public Player leave(String name);    
+
+    /**
+     * Logs a string into a file
+     * @param fileName name of the file to log in
+     * @param log      message to log
+     */
+    public void log(String fileName, String log);
+    
 //Rock Paper Scissors Battle Code here--------------------------------------
 public void challenge(String challenger, String player2);
 public void accept(String challenger, String player2);

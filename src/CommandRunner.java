@@ -289,6 +289,8 @@ public class CommandRunner {
                 String result = cmd.run(playerName, args);
                 if (result != null)
                     System.out.println(result);
+
+                remoteGameInterface.logInteraction(playerName, command, args, result);
             } catch (RemoteException ex) {
                 Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
             }
