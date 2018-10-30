@@ -158,6 +158,43 @@ By issuing ignore -l you are able to use this functionality.
 ## Unignore
 
 ## Shout
+### Usage
+There is one way to invoke the shout command:
+1. **SHOUT \<message>**
+
+### Command Implementation
+The shout command works very similarily to the say command, only it doesn't check if players are in the same room. When a player uses the shout command everyone in the game will see the message. Unless they have ignored the player of course.
+
+To provide shout functionality the following classes were edited: GameClient, GameCore, GameObject, GameObjectInterface. The main logic for shout resides in the GameCore.java file where two new methods were added.
+
+### Clase: GameCore, File: GameCore.java
+The following changes were made to this class:
+1. Function added
+```java
+public String shout(String name, String message) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            this.broadcastShout(player, player.getName() + " shouts, \"" + message + "\"");
+            return "You shout, \"" + message + "\"";
+        }
+        else {
+            return null;
+        }
+    }
+```
+
+2. Function added
+```java
+public void broadcastShout(Player player, String message) {
+        for(Player otherPlayer : this.playerList) {
+            if(otherPlayer != player && !player.searchIgnoredBy( otherPlayer.getName())) {
+                otherPlayer.getReplyWriter().println(message);
+            }
+        }
+    }
+```
+
+The broadcast function is where the ignore check occurs.
 
 ## Team Members
 * Shayan Amirhosseini
