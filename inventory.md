@@ -1,11 +1,25 @@
 # Items, Player Inventory, Trade
 
 ## Table of Contents
-1. Items
+1. [Items](#items)
 2. [Player Inventory](#player-inventory)
 3. [Trading](#trading)
 4. [Item Creation](#item-creation)
 5. User Commands
+
+## Items
+Items are within the game and are obtainable for pickup by a player, which are then put into the player's inventory upon doing so. These 
+items have the same properties, a name, a weight, and a value, each with unique values. These values are fixed and do not change upon 
+initial retrieval of the item, though will later be subject to change over the course of playing. Since the player can only carry so much,
+the item weight is there to determine if they can carry anymore than the player's max weight, though a player can only carry 10 items on 
+them at a time. Items can also be sold at the shop, as well as traded to other players or even NPCs within the game.
+
+For the technical aspect, an item is a simple class aptly named Item, with corresponding fields for the name (a String), the weight 
+(a double), and the value (also a double). It has a constructor which when this class is instatiated, a value for each field must be set.
+To go along with this are getter methods to obtain values from elsewhere, but no setters since these values will not change initially.
+For reference, below is an image of the class diagram for the Item class:
+
+![Item Class Diagram](Item_Class_UML_Diagram-1.png "Item Class Diagram")
 
 ## Player Inventory
 The player’s inventory is currently a list of item objects that the player has acquired through various means. This inventory is limited to only ten items. If a player attempts to pickup any additional items, they will be greeted with a message informing them that they have too many items and are unable to pick up any more. Items can be moved into and out of a player’s inventory by picking them up off the ground, dropping them onto the ground, or through trade.
