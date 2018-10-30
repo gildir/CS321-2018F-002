@@ -57,17 +57,22 @@ public class CommandRunner {
             }
         });
         commandFunctions.put("WHISPER", (name, args) -> {
-            String receiver = args.remove(0);
-            String message = String.join(" ", args);
-            if (receiver.equals("")) {
-            return "[ERROR] You need to specify another player to whisper.";
+            try {
+                String receiver = args.remove(0);
+                String message = String.join(" ", args);
+                if (receiver.equals("")) {
+                return "[ERROR] You need to specify another player to whisper.";
+                }
+                else if (message.equals("")) {
+                    return "[ERROR] You need to include a message to whisper.";
+                }
+                else {
+                    return remoteGameInterface.whisper(name, receiver, message);
+                    //return null;
+                }
             }
-            else if (message.equals("")) {
-                return "[ERROR] You need to include a message to whisper.";
-            }
-            else {
-                return remoteGameInterface.whisper(name, receiver, message);
-                //return null;
+            catch(IndexOutOfBoundsException ex) {
+                return "[ERROR] No name specified.";
             }
         });
         commandFunctions.put("MOVE",     (name, args) -> {
