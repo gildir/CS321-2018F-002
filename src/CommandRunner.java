@@ -275,7 +275,10 @@ public class CommandRunner {
                 Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        // TODO: prompt command not found
+        // prompt command not found
+        else{
+            System.out.println("Command not found. Type HELP for command list.");
+        } 
     }
 
     /**
