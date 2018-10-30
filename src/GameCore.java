@@ -381,7 +381,7 @@ public class GameCore implements GameCoreInterface {
 
         Player player = this.playerList.findPlayer(playerName);
         boolean ghoulNotFound = true;
-        LinkedList<String> playerIn = player.getCurrentInventory();
+        LinkedList<Item> playerIn = player.getCurrentInventory();
         //check if inventory is empty
         if (player.getCurrentInventory().isEmpty()){
             return "Inventory is empty.";
@@ -403,7 +403,7 @@ public class GameCore implements GameCoreInterface {
                 if (!ghoulNotFound){
                     //check if the player has the object in their inventory
                     for (int i = 0; i < playerIn.size(); i++){
-                        if (itemName.equalsIgnoreCase(playerIn.get(i))){
+                        if (itemName.equalsIgnoreCase(playerIn.get(i).getItemName())){
                             playerIn.remove(i);
                             player.setCurrentInventory(playerIn);//updating the inventory
                             return playerName + " gifted " + ghoulName + " a " + itemName;
