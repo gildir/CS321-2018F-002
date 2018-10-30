@@ -11,8 +11,8 @@ To assist players in location, or searching for the correct spelling for a playe
 
 ## 404) Reply
 ### Usage
-There is one way to invoke the replay command:
-1. **REPLY <message>**
+There is one way to invoke the reply command:
+1. **REPLY \<message>**
 
 ### Command Implmentation
 When a player recieves a whipser the name of the player who sent it is tracked with a field in the Player class. The field stores only the name of the last person who sent a whisper to the player. If they recieve another whisper the most recent senders name will overwrite the old one.
