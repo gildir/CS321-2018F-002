@@ -1,7 +1,7 @@
 # CS321-2018F-002
 # Player Chat System ![CI status](https://img.shields.io/badge/build-passing-brightgreen.svg)
 ## Introduction
-The game chat system allows a player to communicate with one anther in the world. As a player you can send a message to different game locations or specific players. Chat functionality has been expended to WHISPER a message to a player, which behaves similar to a private message. A player’s REPLY to a WHISPER has been streamlined to avoid typing the recipient’s name. Players can also SHOUT, sending a message to every player in the game.
+The game chat system allows players to communicate with one another in the world. As a player you can send a message to different game locations or specific players. Chat functionality has been expanded to WHISPER a message to a player, which behaves similar to a private message. A player’s REPLY to a WHISPER has been streamlined to avoid typing the recipient’s name. Players can also SHOUT, sending a message to every player in the game.
 
 Also added is the ability to IGNORE all messages from a specific player, regardless of how the message was sent. Individual player ignore lists can be displayed to screen. If desired, the player that owns the ignore list can remove a specific player. 
 To assist players in location, or searching for the correct spelling for a player name, players have the ability to view all players in the game world with the aptly named LISTPLAYERS command. 
@@ -89,7 +89,7 @@ To provide the ignore functionality these classes were edited: Player, GameCore,
 
 #### Class: Player, File:Player.java
 The following variables were added to track ignored and ignoring players:
-```
+```java
 private ArrayList<String> ignoreList;
 private ArrayList<String> ignoredByList;
 ```
@@ -101,7 +101,7 @@ public void addIgnoredBy( String name)
 ```
 
 The following methods are used to search the lists. If a player is found in a specific list, the corresponding function returns a true, otherwise false.
-```
+```java
 public boolean searchIgnoredBy(String name)
 public boolean searchIgnoreList(String name)
 ```
@@ -109,7 +109,7 @@ public boolean searchIgnoreList(String name)
 #### Class: GameCore, File:Player.java
 The following changes were made to this class:
 1. Function added
-```
+```java
 public  String  ignore (String  name , String  ignoreName )                                  
 ```
 Updates ignore lists, after performing the following checks:  
@@ -118,13 +118,13 @@ b. Verifies that player being ignored exists
 c. Verifies player is not already in ignore list |
 
 1. Function Changed
-```
+```java
 public  void  broadcast (Player player , String message  )
 ```
 Does not broadcast to ignoring players  
 
 3. Function Changed
-```
+```java
 public  void  broadcast (Player  sendingPlayer , Player  receivingPlayer , String  message )
 ```
 Does not broadcast to ignoring players
