@@ -245,7 +245,7 @@ public class GameCore implements GameCoreInterface {
         }
         else {
             if(playerReceiving == null) {
-                return "That player isn't online.";
+                return "Couldn't find player online.";
             }
             return null;
         }
