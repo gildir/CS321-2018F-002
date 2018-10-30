@@ -41,7 +41,28 @@ The default doAi() implementation is simply to call the given moveRandomly() met
 
 #### Synchronization
 
-Due to the existence of multiple threads (npcThread as well as the Player's calls to gameCore) changing objects in the game, proper synchronization is necessary to prevent race conditions and bugs in the game. How we deal with this is by using Java's built in synchronization blocks that will lock on an object or class before messing with it.
+Due to the existence of multiple threads (npcThread as well as the players' calls to gameCore) changing objects in the game, proper synchronization is necessary to prevent race conditions and bugs from appearing. How we deal with this is by using Java's built in synchronization blocks that will lock an object or class when necessary.
 
 Here is a simple set of guidelines to determine if you should lock on an object before messing with it:
-( diagram will go here )
+![Synchronization Guidelines Flowchart](synchronization_flowchart.png)
+
+Objects that can be modified by the npcThread:
+ * Player objects
+ * NPC objects
+ * The npcSet object in GameCore.java
+
+Example synchronization block use: 
+
+```java
+//in abstract class NPC
+
+  // Instance method that moves this NPC to a randomly selected adjacent room.
+  protected void moveRandomly() {
+    synchronized (this) { // Synchronize on this NPC object. The thread will block (wait) on this line until its turn, when it will have exclusive access over this object and execute the code block.
+      Exit exit = gameCore.getMap().findRoom(currentRoom).randomValidExit(); // This is included in the synchronized block because once exit is initialized, it must remain accurate for the duration of the moveRandomly steps.
+      broadcast(name + " walked off to the " + exit.getDirection());
+      setCurrentRoom(exit.getRoom()); // setCurrentRoom is an instance method that modifies the current room state of this NPC object. This must obviously be in the synchronized block. However, one important note is that for completeness, the implementation of setCurrentRoom also includes a synchronized (this) block. This might seem like a problem if you think that both methods can't have a lock on this NPC object at the same time, and would result in a deadlock. But this is not the case, because the lock is a ReentrantLock (technical term, look it up for more info) which will detect that it is the same thread trying to acquire the lock on this object, and let the thread proceed because it already has the lock.
+      broadcast(name + " walked into the area");
+    }
+  }
+```
