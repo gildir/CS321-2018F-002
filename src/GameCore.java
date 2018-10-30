@@ -222,25 +222,39 @@ public class GameCore implements GameCoreInterface {
      * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      */
-    public String move(String name, int distance) {
+    public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
-        if(player == null || distance <= 0) {
+        if(player == null) {
             return null;
         }
         Room room;
-        while(distance-- != 0) {
-            room = map.findRoom(player.getCurrentRoom());
-            if(room.canExit(player.getDirection())) {
-                this.broadcast(player, player.getName() + " has walked off to the " + player.getCurrentDirection());
-                player.getReplyWriter().println(room.exitMessage(player.getDirection()));
-                player.setCurrentRoom(room.getLink(player.getDirection()));
-                this.broadcast(player, player.getName() + " just walked into the area.");
-                player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
-            }
-            else {
-                player.getReplyWriter().println(room.exitMessage(player.getDirection()));
-                return "You grumble a little and stop moving.";
-            }
+        room = map.findRoom(player.getCurrentRoom());
+        switch(direction.toUpperCase()){
+          case "NORTH":
+            player.setDirection(Direction.NORTH);
+            break;
+          case "EAST":
+            player.setDirection(Direction.EAST);
+            break;
+          case "WEST":
+            player.setDirection(Direction.WEST);
+            break;
+          case "SOUTH":
+            player.setDirection(Direction.SOUTH);
+            break;
+          default:
+            return "Please enter a valid direction. Valid directions are North, South, East, or West.";
+        }
+        if(room.canExit(player.getDirection())) {
+          this.broadcast(player, player.getName() + " has walked off to the " + player.getCurrentDirection());
+          player.getReplyWriter().println(room.exitMessage(player.getDirection()));
+          player.setCurrentRoom(room.getLink(player.getDirection()));
+          this.broadcast(player, player.getName() + " just walked into the area.");
+          player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+        }
+        else {
+          player.getReplyWriter().println(room.exitMessage(player.getDirection()));
+          return "You grumble a little and stop moving.";
         }
         return "You stop moving and begin to stand around again.";
     }
