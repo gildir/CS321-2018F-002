@@ -58,8 +58,8 @@ Example synchronization block use:
   // Instance method that moves this NPC to a randomly selected adjacent room.
   protected void moveRandomly() {
 
-  	// Synchronize on this NPC object. The thread will block (wait) on this line until its turn,
-  	// when it will have exclusive access over this object and execute the code block.
+    // Synchronize on this NPC object. The thread will block (wait) on this line until its turn,
+    // when it will have exclusive access over this object and execute the code block.
     synchronized (this) {
 
       // This is included in the synchronized block because once exit is initialized,
