@@ -71,12 +71,31 @@ public class CommandRunner {
         });
         commandFunctions.put("PICKUP",    (name, args) -> {
             try {
-                String object = args.get(0);
+                String object = args.remove(0);
+                while (!args.isEmpty()) {
+                    object += " " + args.remove(0);
+                }
 
                 if (object.equals("")) {
                     return "[ERROR] No object specified";
                 } else {
                     return remoteGameInterface.pickup(name, object);
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No object specified";
+            }
+        });
+        commandFunctions.put("DROPOFF",   (name, args) -> {
+            try {
+                String object = args.remove(0);
+                while (!args.isEmpty()) {
+                    object += " " + args.remove(0);
+                }
+
+                if (object.equals("")) {
+                    return "[ERROR] No object specified";
+                } else {
+                    return remoteGameInterface.dropoff(name, object);
                 }
             } catch (IndexOutOfBoundsException ex) {
                 return "[ERROR] No object specified";
@@ -244,6 +263,7 @@ public class CommandRunner {
         descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
         descriptions.put("MOVE",      new String[]{"DIRECTION","Tries to walk in a <DIRECTION>."});
         descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
+        descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});
         descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});

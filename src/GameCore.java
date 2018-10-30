@@ -275,7 +275,6 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             Room room = map.findRoom(player.getCurrentRoom());
-            System.out.print(target);
             if(target.equals("all")){
                 
               int obj_count = 0;
