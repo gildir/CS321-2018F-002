@@ -9,7 +9,7 @@ import java.util.Random;
  * @author Kevin
  */
 public class Player {
-    private LinkedList<String> currentInventory;
+    private LinkedList<Item> currentInventory;
     private String name;
     private int currentRoom;
     private Direction currentDirection;
@@ -22,7 +22,7 @@ public class Player {
         this.name = name;
         this.currentInventory = new LinkedList<>();
     }
-    
+
     public void turnLeft() {
         switch(this.currentDirection.toString()) {
             case "North":
@@ -36,10 +36,10 @@ public class Player {
                 break;
             case "West":
                 this.currentDirection = Direction.SOUTH;
-                break;                
+                break;
         }
     }
-    
+
     public void turnRight() {
         switch(this.currentDirection.toString()) {
             case "North":
@@ -53,10 +53,10 @@ public class Player {
                 break;
             case "West":
                 this.currentDirection = Direction.NORTH;
-                break;                
+                break;
         }
     }
-    
+
     public String getName() {
         return name;
     }
@@ -65,22 +65,22 @@ public class Player {
         this.name = name;
     }
 
-    public LinkedList<String> getCurrentInventory() {
+    public LinkedList<Item> getCurrentInventory() {
         return currentInventory;
     }
 
-    public void setCurrentInventory(LinkedList<String> currentInventory) {
+    public void setCurrentInventory(LinkedList<Item> currentInventory) {
         this.currentInventory = currentInventory;
     }
-    
-    public void addObjectToInventory(String object) {
+
+    public void addObjectToInventory(Item object) {
         this.currentInventory.add(object);
     }
 
     /**
      * Allows an an object to be taken away from player's inventory.
      * @return Message showing success.
-     */  
+     */
     public String removeRandomItem()  {
         if (this.currentInventory.isEmpty()){
             return "You have no items in your inventory.";
@@ -91,46 +91,53 @@ public class Player {
         setCurrentInventory(this.currentInventory);
         return targetItem + " was removed from your inventory.";
     }
-    
+
     public void setReplyWriter(PrintWriter writer) {
         this.replyWriter = writer;
     }
-    
+
     public PrintWriter getReplyWriter() {
         return this.replyWriter;
     }
-    
+
     public void setOutputWriter(DataOutputStream writer) {
         this.outputWriter = writer;
     }
-    
+
     public DataOutputStream getOutputWriter() {
         return this.outputWriter;
     }
-    
+
     public int getCurrentRoom() {
         return this.currentRoom;
     }
-    
+
     public void setCurrentRoom(int room) {
         this.currentRoom = room;
     }
-    
+
     public String getCurrentDirection() {
         return this.currentDirection.name();
     }
-    
+
     public Direction getDirection() {
         return this.currentDirection;
     }
-    
+
+    public void setDirection(Direction direction){
+        this.currentDirection = direction;
+    }
+
     public String viewInventory() {
         String result = "";
         if(this.currentInventory.isEmpty()) {
             return "nothing.";
         }
-        for(String obj : this.currentInventory) {
-            result += " " + obj;
+        else {
+            for(Item obj : this.currentInventory) {
+                result += " " + obj;
+            }
+            result += ".";
         }
         result += ".";
         return result;
