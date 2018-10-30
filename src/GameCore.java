@@ -227,8 +227,10 @@ public class GameCore implements GameCoreInterface {
         if(player == null) {
             return null;
         }
+        
         Room room;
         room = map.findRoom(player.getCurrentRoom());
+
         switch(direction.toUpperCase()){
           case "NORTH":
             player.setDirection(Direction.NORTH);
