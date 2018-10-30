@@ -5,12 +5,6 @@ TODO: Explain what this covers
 ## How to use it
 
 ### Interacting with the game (Joseph)
-
-Interactions in the game are done through a menu where a user can input commands to their player.  interface. The interactions are done through user command input. When a player logs-in, a menu with a list of commands will appear.
-
-Each option on the list states the command and a description of what the command performs when typed.
-
-If there is difficulty in putting in the commands, the player can type in HELP to have the menu of commands appear.
 TODO: how to enter commands
 
 ### Available commands (Andrew)
@@ -25,8 +19,11 @@ TODO: explain how to use the alias file
 
 ### Client-Server command execution (Kevin)
 ![Client-Server Interaction Diagram](./server-client-interaction-diagram.png)
-The game works by making use of Java's RMI. Specifically, there's an RMI server running alongside the `GameServer`. Said server is bound to a `GameObject`, which acts as a middleman between *Server* and *Client*. 
+
+The game works by making use of Java's RMI. Specifically, there's an RMI server running alongside the `GameServer`. Said server is bound to a `GameObject`, which acts as a middleman between *Server* and *Client*.
+
 When a player starts the `GameClient`, this connects to the RMI server to get the *Object* intance and to the *Server* to request a web socket to allow for communication between clients.
+
 The *Client* makes then use of the `GameObject` interface to call interactions from the user to the *world*. The middleman then calls to the `GameCore`, who actually performs the interactions. If there's anything needed to be returned to the *Client*, the *Core* will give it back to the *Object*, and this one to the *Client*. After this, the result will be treated as defined by the processing of the command that is being executed (see [Registering new commands](#Registering-new-commands-Kevin)).
 
 ### Commands for interacting (Andrew)
