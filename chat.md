@@ -10,6 +10,49 @@ To assist players in location, or searching for the correct spelling for a playe
 ## 401) Whisper
 
 ## 404) Reply
+### Usage
+There is one way to invoke the replay command:
+1. **REPLY <message>**
+
+### Command Implmentation
+When a player recieves a whipser the name of the player who sent it is tracked with a field in the Player class. The field stores only the name of the last person who sent a whisper to the player. If they recieve another whisper the most recent senders name will overwrite the old one.
+
+To provide reply functionality the following classes were edited: Player, GameCore, GameClient, GameObjectInterface, GameObject. The logic for reply can be found in GameCore and utilizes the logic of the whisper command.
+
+### Class Player, File: Player.java
+The following variable was added to track the name of the last player who whispered you:
+```
+private String lastWhisperName;
+```
+
+The variable can be accessed  with the following methods:
+```
+public void setLastWhisperName(String name)
+public String getLastWhisperName()
+```
+
+### Clase GameCore, File: GameCore.java
+The following changes were made to this class:
+1. Function added
+```java
+public String reply(String name, String message) {
+        Player playerSending = this.playerList.findPlayer(name);
+        if(playerSending.getLastWhisperName() == null) {
+            return "You have not received a whisper to reply to.";
+        }
+        String name2 = playerSending.getLastWhisperName();
+        Player playerReceiving = this.playerList.findPlayer(name2);
+        return this.whisper(name, name2, message);
+    }
+```
+
+2. Function modified
+```java
+this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+playerReceiving.setLastWhisperName(name1);
+return "Message sent to " + playerReceiving.getName();
+```
+The above modification set the variable mentioned earlier when a whisper command successfully returns.
 
 ## 402) List Players in Game
 ### Description
