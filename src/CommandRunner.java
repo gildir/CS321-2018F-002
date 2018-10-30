@@ -78,6 +78,53 @@ public class CommandRunner {
         });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
         commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
+
+        // PvP Commands
+        commandFunctions.put("CHALLENGE",    (name, args) -> {
+            try {
+                String player = args.get(0);
+
+                if (player.equals("")) {
+                    return "[ERROR] No player specified";
+                } else {
+                    remoteGameInterface.challenge(name, player);
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No player specified";
+            }
+        });
+        commandFunctions.put("ACCEPT",    (name, args) -> {
+            try {
+                String player = args.get(0);
+
+                if (player.equals("")) {
+                    return "[ERROR] No player specified";
+                } else {
+                    remoteGameInterface.accept(player, name);
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No player specified";
+            }
+        });
+        commandFunctions.put("REFUSE",    (name, args) -> {
+            try {
+                String player = args.get(0);
+
+                if (player.equals("")) {
+                    return "[ERROR] No player specified";
+                } else {
+                    remoteGameInterface.refuse(player, name);
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No player specified";
+            }
+        });
+        commandFunctions.put("ROCK",       (name, args) -> { remoteGameInterface.rock(name); return null; });
+        commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
+        commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
     }
 
     /**
@@ -169,16 +216,24 @@ public class CommandRunner {
     private void createCommands() {
         HashMap<String, String[]> descriptions = new HashMap<String, String[]>();
 
-        // Insert commands
+        // Default commands
         descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
-        // descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
-        // descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
-        descriptions.put("SAY",       new String[]{"WORDS",    "Says 'message' to any other players in the same area."});
-        descriptions.put("MOVE",      new String[]{"DIRECTION", "Tries to walk in <direction>."});
-        descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an object in the same area."});
+        descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
+        descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
+        descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
+        descriptions.put("MOVE",      new String[]{"DIRECTION","Tries to walk in a <DIRECTION>."});
+        descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
         descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
+
+        // PvP Commands
+        descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another <PLAYER> to a Rock Paper Scissors Battle."});
+        descriptions.put("ACCEPT",    new String[]{"PLAYER",   "Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
+        descriptions.put("REFUSE",    new String[]{"PLAYER",   "Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
+        descriptions.put("ROCK",      new String[]{"",         "Play <ROCK> in your current Rock Paper Scissors Battle."});
+        descriptions.put("PAPER",     new String[]{"",         "Play <PAPER> in your current Rock Paper Scissors Battle."});
+        descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
 
         // Create them
         createCommands(descriptions);

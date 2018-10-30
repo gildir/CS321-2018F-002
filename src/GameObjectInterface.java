@@ -61,7 +61,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException 
      */
-    public String move(String name, String direction) throws RemoteException;
+    public String move(String name, int distance) throws RemoteException;
 
     /**
      * Attempts to pick up an object < object >. Will return a message on any success or failure.
@@ -86,4 +86,12 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public void leave(String name) throws RemoteException;       
+//Rock Paper Scissors Battle Code Here---------------------------------
+    public void challenge(String challenger, String player2) throws RemoteException;
+    public void accept(String challenger, String player2) throws RemoteException;
+    public void refuse(String challenger, String player2) throws RemoteException;
+    public void rock(String player) throws RemoteException;
+    public void paper(String player) throws RemoteException;
+    public void scissors(String player) throws RemoteException;
+//Rock Paper Scissors Battle Code Here---------------------------------
 }

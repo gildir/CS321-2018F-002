@@ -29,22 +29,22 @@ public class GameClient {
 
     // Helper Object to run commands in the game
     protected CommandRunner commandRunner;
-
+    
     // Members for running the remote receive connection (for non-managed events)
     private boolean runListener;
     protected ServerSocket remoteListener;
-    private Thread remoteOutputThread;
-
+    private Thread remoteOutputThread;  
+    
     // Members related to the player in the game.
     protected String playerName;
-
-    /**
+    
+    /** 
      * Main class for running the game client.
      */
     public GameClient(String host) {
         this.runGame = true;
         boolean nameSat = false;
-
+        
         System.out.println("Welcome to the client for an RMI based online game.\n");
         System.out.println("This game allows you to connect to a server an walk around a virtual,");
         System.out.println(" text-based version of the George Mason University campus.\n");
@@ -52,6 +52,7 @@ public class GameClient {
         System.out.println("When you do, you will join the game at the George Mason Clock, in the main quad.");
         System.out.println("You will be able to see if any other players are in the same area as well as what");
         System.out.println("objects are on the ground and what direction you are facing.\n");
+        
 
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
@@ -64,7 +65,7 @@ public class GameClient {
             String strName = "rmi://"+host+"/GameService";
             remoteGameInterface = (GameObjectInterface) Naming.lookup(strName);
 
-            // Start by remotely executing the joinGame method.
+            // Start by remotely executing the joinGame method.  
             //   Lets the player choose a name and checks it with the server.  If the name is
             //    already taken or the user doesn't like their input, they can choose again.
             while(nameSat == false) {
@@ -73,7 +74,7 @@ public class GameClient {
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine();
                     System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this name?");
-                    System.out.print("(Y/N) > ");
+                    System.out.print("(Y/N) >");
                     if(keyboardInput.readLine().equalsIgnoreCase("Y")) {
                         // Attempt to join the server
                         if(remoteGameInterface.joinGame(this.playerName) == false) {
@@ -102,14 +103,13 @@ public class GameClient {
             // Collect input for the game.
             while(runGame) {
                 try {
-                    // System.out.print("> ");
                     keyboardStatement = keyboardInput.readLine();
                     parseInput(keyboardStatement);
                 } catch (IOException ex) {
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                     System.exit(-1);
                 }
-            }
+            }                
         } catch (NotBoundException ex) {
             Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
         } catch (MalformedURLException ex) {
@@ -118,16 +118,16 @@ public class GameClient {
             System.err.println("[CRITICAL ERROR] There was a severe error with the RMI mechanism.");
             System.err.println("[CRITICAL ERROR] Code: " + re);
             System.exit(-1);
-        }
+        }        
     }
-
-    /**
+    
+    /** 
      * Simple method to parse the local input and remotely execute the RMI commands.
-     * @param input
+     * @param input 
      */
     private void parseInput(String input) {
         boolean reply;
-
+        
         // First, tokenize the raw input.
         StringTokenizer commandTokens = new StringTokenizer(input);
         ArrayList<String> tokens = new ArrayList<>();
@@ -143,41 +143,42 @@ public class GameClient {
         String command = tokens.remove(0);
         commandRunner.run(command, tokens, this.playerName);
     }
-
+    
     public static void main(String[] args) {
 		if(args.length < 1) {
 			System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");
 			System.exit(-1);
 		}
+		
         System.out.println("[STARTUP] Game Client Now Starting...");
         new GameClient(args[0]);
     }
 
     /**
-     * Inner class to handle remote message input to this program.
+     * Inner class to handle remote message input to this program.  
      *  - Runs as a separate thread.  Interrupt it to kill it.
      *  - Spawns multiple threads, one for each remote connection.
      */
     public class ReplyRemote implements Runnable {
 		private String host;
-
+		
 		public ReplyRemote(String host) {
 			this.host = host;
 		}
-
+		
         @Override
         public void run() {
             // This thread is interruptable, which will allow it to clean up before
-
+            
             // Attempt communcations with the server.
             try (Socket remoteMessageSocket = new Socket(host, 13500)) {
-
-                // Get stream reader and writer.
+                
+                // Get stream reader and writer. 
                 //  Writer is only used once, to register this socket with a player.
                 //  Otherwise, this is read only to receive non-locally generated event notifications.
                 BufferedReader remoteReader = new BufferedReader(new InputStreamReader(remoteMessageSocket.getInputStream()));
                 PrintWriter remoteWriter = new PrintWriter(remoteMessageSocket.getOutputStream(), true);
-
+                
                 // Register the socket with the player.
                 remoteWriter.println(GameClient.this.playerName);
                 remoteReader.readLine();
@@ -191,8 +192,8 @@ public class GameClient {
                         System.exit(-1);
                     }
                     System.out.println(message);
-                }
-
+                }                
+            
                 // Close the socket
                 remoteMessageSocket.close();
             } catch(ConnectException ex) {
@@ -201,8 +202,8 @@ public class GameClient {
                 System.exit(-1);
             } catch (IOException ex) {
                 Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            }            
         }
-    }
-
+    }    
+    
 }
