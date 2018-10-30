@@ -35,9 +35,8 @@ public class GameCore implements GameCoreInterface {
         npcSet = new HashSet<>();
 
         // Initialize starting NPCs
-        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 14),
-                                    new Ghoul(this, "Ghoul2", 2, 14),
-                                    new Ghoul(this, "Ghoul3", 3, 14)));
+        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
+                                    new Ghoul(this, "Ghoul2", 3, 25)));
 
         Thread npcThread = new Thread(new Runnable() {
             @Override
