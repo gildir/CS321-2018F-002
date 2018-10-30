@@ -52,16 +52,32 @@ Objects that can be modified by the npcThread:
  * The npcSet object in GameCore.java
 
 Example synchronization block use: 
-
 ```java
 //in abstract class NPC
 
   // Instance method that moves this NPC to a randomly selected adjacent room.
   protected void moveRandomly() {
-    synchronized (this) { // Synchronize on this NPC object. The thread will block (wait) on this line until its turn, when it will have exclusive access over this object and execute the code block.
-      Exit exit = gameCore.getMap().findRoom(currentRoom).randomValidExit(); // This is included in the synchronized block because once exit is initialized, it must remain accurate for the duration of the moveRandomly steps.
+
+  	// Synchronize on this NPC object. The thread will block (wait) on this line until its turn,
+  	// when it will have exclusive access over this object and execute the code block.
+    synchronized (this) {
+
+      // This is included in the synchronized block because once exit is initialized,
+      // it must remain accurate for the duration of the moveRandomly steps.
+      Exit exit = gameCore.getMap().findRoom(currentRoom).randomValidExit(); 
+
       broadcast(name + " walked off to the " + exit.getDirection());
-      setCurrentRoom(exit.getRoom()); // setCurrentRoom is an instance method that modifies the current room state of this NPC object. This must obviously be in the synchronized block. However, one important note is that for completeness, the implementation of setCurrentRoom also includes a synchronized (this) block. This might seem like a problem if you think that both methods can't have a lock on this NPC object at the same time, and would result in a deadlock. But this is not the case, because the lock is a ReentrantLock (technical term, look it up for more info) which will detect that it is the same thread trying to acquire the lock on this object, and let the thread proceed because it already has the lock.
+
+      // setCurrentRoom is an instance method that modifies the current room state of this NPC object.
+      // This must obviously be in the synchronized block. However, one important note is that 
+      // for completeness, the implementation of setCurrentRoom also includes a synchronized (this) block.
+      // This might seem like a problem if you think that both methods can't have a lock on
+      // this NPC object at the same time, and would result in a deadlock. But this is not the case,
+      // because the lock is a ReentrantLock (technical term, look it up for more info) which
+      // will detect that it is the same thread trying to acquire the lock on this object,
+      // and let the thread proceed because it already has the lock.
+      setCurrentRoom(exit.getRoom());
+
       broadcast(name + " walked into the area");
     }
   }
