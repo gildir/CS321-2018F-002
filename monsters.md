@@ -35,7 +35,7 @@ Here is an example of how the Spirit might work:
 
 # Developers
 
-## Ghouls
+## Ghouls - Thomas Washington
 
 Ghouls are phantom like beings that roam around in the game. The ghouls class in Java extends the Non-Playable Character (NPC) class, this means that the ghouls class inherits all the variables, constructors, and methods from the NPC class since ghouls are a type of a NPC.
 
