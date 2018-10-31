@@ -71,5 +71,9 @@ G00541199
                 <message>You look towards Exploratory Hall, but decide to just admire the view from where you are.</message>
             </exit>                        
         </exits>
-    </room>     
+    </room>    
+    <room id = "10">
+        <title>Shop near the Clock</title>
+        <description>You are in the Shop</description>
+    </room> 
 </rooms>
