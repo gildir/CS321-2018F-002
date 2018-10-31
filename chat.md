@@ -37,6 +37,28 @@ The function sends the private message to player name2, only after the following
 
 On sucessfull execution, the function returns a string confirming success.
 
+## 402) List Players in Game ![list](/images/database.svg)
+### Description
+You can list active players in the world. A world consists of several rooms, and these rooms are separated from one another. You might list players' name to be able to communicate with them with whisper functionality. ListPlayers has many functionalities. You might want to list players for shopping or challenging them into battles. It also gives you a good sense of your environment and online players in the game.  Listplayers is your personal contact list, so you want to keep it safe.
+### Command
+```
+listplayers 
+```
+### Implementation
+```java
+class GameCore
+{
+    public String listAllPlayers(String palyer_name); 
+}
+class PlayerList
+{
+    private final LinkedList<Player> playerList;
+    public String toString();
+}
+```
+### Code Analysis 
+PlayerList class keep a linked list of players called palyerList. toString methods returns the one string separated by space of all players in the linked list. 
+GameCore class is responsible for underlying actions. ListAllPlayers is a method in this class that gets the player name, if the player name is valid then it returns a string of all players int the world using toString method of playerList.  
 ## 404) Reply
 ### Usage
 There is one way to invoke the reply command:
@@ -85,29 +107,6 @@ The above modification set the variable mentioned earlier when a whisper command
 This is an example of reply in action:
 
 ![Image of reply](/images/404_reply.png)
-
-## 402) List Players in Game ![list](/images/database.svg)
-### Description
-You can list active players in the world. A world consists of several rooms, and these rooms are separated from one another. You might list players' name to be able to communicate with them with whisper functionality. ListPlayers has many functionalities. You might want to list players for shopping or challenging them into battles. It also gives you a good sense of your environment and online players in the game.  Listplayers is your personal contact list, so you want to keep it safe.
-### Command
-```
-listplayers 
-```
-### Implementation
-```java
-class GameCore
-{
-    public String listAllPlayers(String palyer_name); 
-}
-class PlayerList
-{
-    private final LinkedList<Player> playerList;
-    public String toString();
-}
-```
-### Code Analysis 
-PlayerList class keep a linked list of players called palyerList. toString methods returns the one string separated by space of all players in the linked list. 
-GameCore class is responsible for underlying actions. ListAllPlayers is a method in this class that gets the player name, if the player name is valid then it returns a string of all players int the world using toString method of playerList.  
 ## 405) Ignore
 ### Usage
 There are two ways to ignore messages from a player:
