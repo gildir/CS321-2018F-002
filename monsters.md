@@ -2,6 +2,8 @@
 
 ## Ghosts
 
+Written by: Thaovy Van
+
 The purpose of Ghosts is to add flavor text, text that's unrelated to the rules or gameplay, and random events to the world the player is in. The addition of the Ghosts creates a more immersive and unique world for each individual player and also provides entertainment while they play the game. The Ghosts roam around the map and appear in random rooms. When players enter a certain room, the Ghosts will periodically say funny or scary messages in the chat in the current room that they are located in. This will be seen by the users currently in the same room as the Ghosts saying those certain phrases. The phrases said by the Ghosts will be random and will be said in the chat at random times too.
 
 The user cannot interact with the Ghosts. The Ghosts are simply decorations in the game to make the game more interesting for the user.
@@ -10,6 +12,8 @@ Here is a preview of what a ghost might say:
 ![Ghost Sayings Preview](GhostSayings.png)
 
 ## Ghouls
+
+Written by: Thomas Washington
 
 The purpose of Ghouls to provide dynamic events and interactions to the world. Ghouls are a type
 of NPC (non-playable character) that any player can interact with. At the start of the game, several ghouls will spawn into the world, "wandering around"
@@ -24,6 +28,8 @@ Here is an example of how a player can interact with a ghoul:
 
 ## Spirits
 
+Written by: Adam Denton
+
 The purpose of Spirits is to search for them throughout the map, and once found, the Spirits can be captured. They are a collectible for the world to give the player more activities to do. There are twenty unique Spirit types for the player to collect. Different Spirit types spawn randomly throughout the world and move around, occasionally shifting in and out of reality. The Spirits are supposed to be a hard collectible to catch, so it becomes a challenge capturing them all.
 
 The player may capture the Spirits, using the “capture” command. The player has a checklist of Spirits. If a new Spirit type is captured, and the type is not crossed off on the list, the list will automatically update when the new Spirit type is captured.
@@ -35,7 +41,7 @@ Here is an example of how the Spirit might work:
 
 # Developers
 
-## Ghouls - Thomas Washington
+## Ghouls
 
 Written by: Habib Khalid
 
@@ -46,6 +52,8 @@ Ghouls have an aggression system set in the ghoul object. The ghouls anger level
 ![Aggression System Flowchart](AggroFlowchart.png)
 
 ## NPC System
+
+Written by: Kevin Rickard
 
 The NPCs in the game are all decendants of the abstract NPC class. This class provides basic functionality such as the ability to move randomly throughout the world, the required interface to perform certain actions automatically on a specified time interval, as well as other basic functionality.
 
