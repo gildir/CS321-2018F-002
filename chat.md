@@ -9,11 +9,12 @@ To assist players in location, or searching for the correct spelling for a playe
 ## 400) Say
 ## 401) Whisper
 ### Usage
-The whisper command is used to send another player a private message. There is only one way to send a whisper:
-WHISPER playerName message
+The whisper command is used to send another player a private message. There is only one way to invoke a whisper:
+1. **WHISPER playerName message**
 
 For example. If p1 wants to whisper p2, p1 would use the WHISPER command as follows:
-WHISPER p2 What do you have in your inventory?
+
+**WHISPER p2 What do you have in your inventory?**
 
 On sucessfull command execution, p1 receives an onscreen message indicating the message was successfull sent.
 
