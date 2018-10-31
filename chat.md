@@ -6,7 +6,7 @@ The game chat system allows players to communicate with one another in the world
 Also added is the ability to IGNORE all messages from a specific player, regardless of how the message was sent. Individual player ignore lists can be displayed to screen. If desired, the player that owns the ignore list can remove a specific player. 
 To assist players in location, or searching for the correct spelling for a player name, players have the ability to view all players in the game world with the aptly named LISTPLAYERS command. 
 
-## 401) Whisper
+## 401) Whisper ![chat](/images/comment-discussion.svg)
 ### Usage
 The whisper command is used to send another player a private message. There is only one way to invoke a whisper:
 1. **WHISPER playerName message**
@@ -107,7 +107,7 @@ The above modification set the variable mentioned earlier when a whisper command
 This is an example of reply in action:
 
 ![Image of reply](/images/404_reply.png)
-## 405) Ignore
+## 405) Ignore ![mute](/images/mute.svg)
 ### Usage
 There are two ways to ignore messages from a player:
 1. **IGNORE -A <player_name>**
@@ -187,7 +187,7 @@ In the class Player we keep track of ignored players in an arraylist called igno
 In the class GameCore we list ignored players by calling showIgnoreList, which granted the permission to access ignored players' names. Beware that the order of printing the players name is based on the order you have added them to your list.  
 By issuing ignore -l you are able to use this functionality.
 
-## 408) Unignore
+## 408) Unignore ![unmute](/images/unmute.svg)
 ### Description
 Unignore a player that is currently in your ignore list. When player is unignored you are able to see their chat logs and their whisper logs in-game. 
 ### Command
