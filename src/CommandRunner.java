@@ -43,6 +43,7 @@ public class CommandRunner {
         // Help command
         commandFunctions.put("HELP",    (name, args) -> listCommands() );
         commandFunctions.put("LOOK",    (name, args) -> remoteGameInterface.look(name));
+        commandFunctions.put("LISTPLAYERS", (name, args) -> remoteGameInterface.listAllPlayers(name));
         commandFunctions.put("LEFT",    (name, args) -> remoteGameInterface.left(name));
         commandFunctions.put("RIGHT",   (name, args) -> remoteGameInterface.right(name));
         commandFunctions.put("SAY",     (name, args) -> {
@@ -299,6 +300,7 @@ public class CommandRunner {
 
         // Default commands
         descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
+        descriptions.put("LISTPLAYERS",      new String[]{"", "Shows a list of all the players in the world."});
         descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
         descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
         descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});

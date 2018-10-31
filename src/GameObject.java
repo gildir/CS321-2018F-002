@@ -64,7 +64,13 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     @Override
     public String look(String playerName) throws RemoteException {
         return core.look(playerName);
-    }        
+    }       
+
+    //Author Shayan AH
+    public String listAllPlayers(String name)throws RemoteException
+    {
+        return core.listAllPlayers(name);
+    } 
      
     /**
      * Turns the player left.
