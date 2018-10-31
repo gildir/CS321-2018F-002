@@ -85,24 +85,15 @@ public String getLastWhisperName()
 The following changes were made to this class:
 1. Function added
 ```java
-public String reply(String name, String message) {
-        Player playerSending = this.playerList.findPlayer(name);
-        if(playerSending.getLastWhisperName() == null) {
-            return "You have not received a whisper to reply to.";
-        }
-        String name2 = playerSending.getLastWhisperName();
-        Player playerReceiving = this.playerList.findPlayer(name2);
-        return this.whisper(name, name2, message);
-    }
+public String reply(String name, String message)
 ```
+The reply function only requires the name of the player sending the message and the message itself. This is because using the new variable in the Player class it can get the name of the player who will receive the reply, and then it can invoke the whisper command to actually send the message.
 
 2. Function modified
 ```java
-this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
 playerReceiving.setLastWhisperName(name1);
-return "Message sent to " + playerReceiving.getName();
 ```
-The above modification set the variable mentioned earlier when a whisper command successfully returns.
+The above modification is right before the return in the whisper command. When a player is successfully able to send a whisper it will put their name in the lastWhisperName field in the Player class.
 
 This is an example of reply in action:
 
@@ -226,30 +217,15 @@ To provide shout functionality the following classes were edited: GameClient, Ga
 The following changes were made to this class:
 1. Function added
 ```java
-public String shout(String name, String message) {
-        Player player = this.playerList.findPlayer(name);
-        if(player != null) {
-            this.broadcastShout(player, player.getName() + " shouts, \"" + message + "\"");
-            return "You shout, \"" + message + "\"";
-        }
-        else {
-            return null;
-        }
-    }
+public String shout(String name, String message)
 ```
+The function for shout is pretty much identical to say. It only rquires a name for the player shouting and their message. It will then call a broadcast function to write the message to other players. The broadcast function used is explained just below.
 
 2. Function added
 ```java
-public void broadcastShout(Player player, String message) {
-        for(Player otherPlayer : this.playerList) {
-            if(otherPlayer != player && !player.searchIgnoredBy( otherPlayer.getName())) {
-                otherPlayer.getReplyWriter().println(message);
-            }
-        }
-    }
+public void broadcastShout(Player player, String message)
 ```
-
-The broadcast function is where the ignore check occurs.
+The shout command required a new broadcast function with a specific name. This broadcastShout method is similar to the broadcast method used by say. The difference is that this method doesn't check if the players are in the same room as the one shouting since shouts should be heard everywhere. Due to this difference we were unable to get say and shout to work with the same broadcast method, so we created this one.
 
 ## Team Members
 * Shayan Amirhosseini
