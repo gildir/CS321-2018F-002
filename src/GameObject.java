@@ -134,7 +134,7 @@ public interface GameObjectInterface extends Remote {
         return core.inventory(name);
     }    
     
-
+    /*
      * @throws RemoteException 
      */    
     @Override
