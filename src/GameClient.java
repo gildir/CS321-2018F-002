@@ -155,7 +155,7 @@ public class GameClient {
      * If the user does not have an account, this method will help the user create a username and password
      * that will be stored in the database
      */
-    public void createAccount(){
+    private void createAccount(){
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         boolean nameSat = false; boolean nameConf = false;
@@ -252,7 +252,7 @@ public class GameClient {
      * Method called when player is exiting that prompts if the user wants to delete 
      * his or her character then proceeds to remove the user name and password if prompted to
      */
-    public void deleteCharacter() {
+    private void deleteCharacter() {
     	InputStreamReader keyboardReader = new InputStreamReader(System.in);
     	BufferedReader keyboardInput = new BufferedReader(keyboardReader);
     	String keyboardStatement = "";
@@ -291,8 +291,7 @@ public class GameClient {
             System.exit(-1);
         }catch(RemoteException re){
             System.exit(-1);
-        }
-        
+        } 
     }
 
     /**
@@ -320,7 +319,7 @@ public class GameClient {
         }
         new Time();
         commandRunner.run(command, tokens, this.playerName);
-        //new Time();
+        new Time();
     }
 
     public static void main(String[] args) {

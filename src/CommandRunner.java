@@ -358,7 +358,7 @@ public class CommandRunner {
         descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
         descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});
         descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
-        descriptions.put("QUIT",      new String[]{"",         "Quits the game after asking if you want to delete character"});
+        descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
 
         // Ghoul commands
