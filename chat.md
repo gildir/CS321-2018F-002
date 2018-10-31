@@ -214,7 +214,7 @@ class GameObject
 The unignore feature essentially takes in two arguments, name of player as well as unignore name. First, our function checks whether the player is attempting to unignore himself in which case an exception occurs, and if not true, the function begins to verify if the ignored player even exists in the game. If the player that the current player wants to ignore exists and is in their ignored list, then the player becomes unignored and we remove them from the ignored list within the player class.
 
 
-## 412) Shout
+## 412) Shout ![Image of reply](/images/megaphone.svg)
 ### Usage
 There is one way to invoke the shout command:
 1. **SHOUT \<message>**
