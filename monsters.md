@@ -2,6 +2,13 @@
 
 ## Ghosts
 
+The purpose of Ghosts is to add flavor text, text that's unrelated to the rules or gameplay, and random events to the world the player is in. The addition of the Ghosts creates a more immersive and unique world for each individual player and also provides entertainment while they play the game. The Ghosts roam around the map and appear in random rooms. When players enter a certain room, the Ghosts will periodically say funny or scary messages in the chat in the current room that they are located in. This will be seen by the users currently in the same room as the Ghosts saying those certain phrases. The phrases said by the Ghosts will be random and will be said in the chat at random times too.
+
+The user cannot interact with the Ghosts. The Ghosts are simply decorations in the game to make the game more interesting for the user.
+
+Here is a preview of what a ghost might say:
+![Ghost Sayings Preview](GhostSayings.png)
+
 ## Ghouls
 
 The purpose of Ghouls to provide dynamic events and interactions to the world. Ghouls are a type
@@ -12,6 +19,8 @@ The player can interact with the ghoul with the "pokeGhoul" command. This allows
 
 The player can also give an item to the ghoul with the "giftGhoul" command. This causes the Ghoul's current anger with the player to decrease. The player must be in the same room with the ghoul and have at least one item in their inventory to perform this command.
 
+Here is an example of how a player can interact with a ghoul:
+![Ghoul Interaction Preview](GhoulInteractions.png)
 
 ## Spirits
 
@@ -21,11 +30,12 @@ The player may capture the Spirits, using the “capture” command. The player 
 
 The Spirit checklist may be displayed with the command, “spirit log”. Any type already captured will end each line with a “-C”.
 
+Here is an example of how the Spirit might work:
+![Spirit Interaction Preview](Spirit_Demo.png)
+
 # Developers
 
-## Ghouls
-
-## Ghoul Aggro System
+## Ghouls - Thomas Washington
 
 Written by: Habib Khalid
 
