@@ -1,10 +1,6 @@
 FOR USERS
 --------------------
 
-WORLD GENERATION FILE
-Originally, the game would accept an xml document containing information about the world to
-generate the world--now it accepts a csv document instead.
-
 QUESTS AND OBJECTIVES
 The game will soon have quests. Upon discovering a quest, you will be shown
 the relevant current objectives. NOTE: you will only be shown current objectives (see example diagram below).

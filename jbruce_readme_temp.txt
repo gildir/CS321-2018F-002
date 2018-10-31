@@ -5,7 +5,7 @@ When starting a new server, make sure to signify the csv file containing the roo
 
 ./clean.sh
 ./build.sh
-./runServer.sh rooms.csv
+./runServer.sh game_room_file.csv
 
 This was a feature added to allow multiple servers to run with different worlds to explore.
 
