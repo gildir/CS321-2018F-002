@@ -120,7 +120,85 @@ public class GameClient {
             System.exit(-1);
         }        
     }
-    
+           
+   /**
+     * Method helps the user login with their username and password
+     */
+    private void login(){
+        InputStreamReader keyboardReader = new InputStreamReader(System.in);
+        BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+        try{
+            boolean newuser = false;
+        do{ 
+            do{//loop repeats if an active username is entered
+                System.out.println("Please enter your username");
+                System.out.print("> ");
+                this.playerName = keyboardInput.readLine(); new Time();
+                if(PlayerDatabase.isPlayer(playerName)) break;
+                else System.out.println("Username is incorrect... Please enter a new username");
+            }while(true); //exits the loop only through a break
+           
+            boolean conf = false; newuser = false;
+            while(!conf){ //While loop verifies user password
+                System.out.println("Please enter your password");
+                System.out.print("> ");
+                this.playerPassword = keyboardInput.readLine(); new Time();
+                if(PlayerDatabase.isPassword(playerName, playerPassword) == true){
+                    
+                    if(remoteGameInterface.joinGame(this.playerName) == false){
+                        System.out.println("User is already online...login with different account");
+                        newuser = true;
+                    }
+                    else System.out.println("Login Successful");
+                    conf = true;
+                }
+                else System.out.println("Password does not match");
+            }
+        }while(newuser == true);
+        }catch (IOException ex) {
+            System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
+            System.exit(-1);
+        }    
+    }
+
+    /**
+     * Method called when player is exiting that prompts if the user wants to delete 
+     * his or her character then proceeds to remove the user name and password if prompted to
+     */
+    private void deleteCharacter() {
+    	InputStreamReader keyboardReader = new InputStreamReader(System.in);
+    	BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+    	String keyboardStatement = "";
+    	boolean removeApproval = false;
+    	
+    	try {
+			do {
+				if (keyboardStatement.equalsIgnoreCase("Y")) {
+					System.out.print("Enter password: ");
+                    keyboardStatement = keyboardInput.readLine();
+                    new Time();
+                    if(PlayerDatabase.isPassword(playerName, keyboardStatement)){
+                        removeApproval = true;
+                        break;
+                    }
+					else System.out.println("Password incorrect.");
+				} else if (keyboardStatement.equalsIgnoreCase("N")) {
+					break;
+                } 
+                System.out.print("Would you like to permanently delete your player and account? (Y/N)");
+                keyboardStatement = keyboardInput.readLine();
+                new Time();
+			} while (true);
+		}  catch (IOException ex) {
+			System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
+            System.exit(-1);
+		}
+		if(removeApproval) {
+    		if(PlayerDatabase.removePlayer(playerName))
+    			System.out.println(playerName + " has been removed.");
+    		else System.out.println(playerName + " could not be removed.");
+		}
+    }
     /** 
      * Simple method to parse the local input and remotely execute the RMI commands.
      * @param input 
