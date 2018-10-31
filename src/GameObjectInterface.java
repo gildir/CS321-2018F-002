@@ -20,7 +20,9 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public boolean joinGame(String name) throws RemoteException;
-    
+        
+    public String gift(String playerName, String name, double amount) throws RemoteException; 
+
     /**
      * Returns a look at the area of the specified player.
      * @param name Player Name
@@ -126,7 +128,47 @@ public interface GameObjectInterface extends Remote {
      */
     public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException;
     
-     /**
+    /**
+     * Returns a list of nearby players you can gift.
+     * @param name Player Name
+     * @return String representation of nearby players.
+     * @throws RemoteException 
+     */
+    public String giftable(String name) throws RemoteException;
+
+    /**
+     * Returns a string representation of money you have
+     * @param name Name of the player to view their money
+     * @return Message containing player money
+     * @throws RemoteException 
+     */    
+    public String money(String name) throws RemoteException;   
+    
+    /**
+     * Sell an item to the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to sell
+     * @return A string indicating success or failure
+     * @throws RemoteException
+     */
+    public String sell(String playerName, String itemName) throws RemoteException;
+    
+    /**
+     * Leaves the shop.
+     * @param name Name of the player to leave
+     * @throws RemoteException 
+     */   
+    public String leaveRoom(String playerName) throws RemoteException; 
+    
+    /**
+     * Enters the shop.
+     * @param name Name of the player to enter, shop for location
+     * @throws RemoteException 
+     */   
+    public String enter(String playerName, String location) throws RemoteException;
+    
+    
+    /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @throws RemoteException 

@@ -206,6 +206,40 @@ public class CommandRunner {
                 return remoteGameInterface.pokeGhoul(name, args.remove(0));
             }
         });
+        commandFunctions.put("ENTER", (name, args) -> { 
+            if(args.size() != 1){
+                return "Specify the room you want to enter";
+            }
+            else{
+                return remoteGameInterface.enter(name, args.get(0)); 
+            }
+        });
+        commandFunctions.put("LEAVE", (name, args) -> { return remoteGameInterface.leaveRoom(name); });
+        commandFunctions.put("SELL",       (name, args) -> { return remoteGameInterface.sell(name, args.get(0));  });
+        commandFunctions.put("MONEY",      (name, args) -> { return remoteGameInterface.money(name);  });
+        commandFunctions.put("GIFTABLE",   (name, args) -> { return remoteGameInterface.giftable(name);  });
+        commandFunctions.put("GIVE",       (name, args) -> { 
+            try {//merged with new command list 
+                if(args.size() != 2){
+                    System.out.println("Invalid name or value, please try again");
+                    return null;
+                }
+                else{
+                    String receiver = args.remove(0);
+                    Double amount = Double.parseDouble(args.remove(0));
+                    
+                    if(amount > 0){
+                        remoteGameInterface.gift(name, receiver, amount);
+                        return "";
+                    }
+                    else {
+                        return "Amount of money gifted must be greater than 0";
+                    }
+                }
+            } catch (NumberFormatException e){
+                return "invalid amount of money specified";
+            } 
+        });
     }
 
     /**
@@ -338,6 +372,14 @@ public class CommandRunner {
         descriptions.put("ROCK",      new String[]{"",         "Play <ROCK> in your current Rock Paper Scissors Battle."});
         descriptions.put("PAPER",     new String[]{"",         "Play <PAPER> in your current Rock Paper Scissors Battle."});
         descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
+        
+        //Shops & Money
+        descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });
+        descriptions.put("LEAVE",     new String[]{"SHOP",     "Leaves shop" });
+        descriptions.put("SELL",      new String[]{"ITEM",     "Sell item in your inventory to the shop" });
+        descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
+        descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
+        descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
 
         // Create them
         createCommands(descriptions);

@@ -2,7 +2,9 @@
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Random;
+
 
 /**
  *
@@ -16,12 +18,14 @@ public class Player {
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
+    private Money money;
 
     public Player(String name) {
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
+        this.money = new Money(20);
     }
 
     public void turnLeft() {
@@ -85,6 +89,7 @@ public class Player {
     public void addObjectToInventory(Item object) {
         this.currentInventory.add(object);
     }
+
     public Item removeObjectFomInventory(String object) {
         for(Item obj : this.currentInventory) {
             if(obj.getItemName().equalsIgnoreCase(object)) {
@@ -141,11 +146,48 @@ public class Player {
     public Direction getDirection() {
         return this.currentDirection;
     }
-
+    public Money getMoney() {
+      return this.money;
+    }
+    
+    public void addMoney(double amount) {
+        int dollars = (int) amount;
+        Money amountAdded = new Money(dollars);
+        double coins = amount - dollars;
+        coins *= 100;
+        for(int i = 0; i < coins; i++){
+            amountAdded.coins.add(new Penny());
+        }
+        acceptMoney(amountAdded);
+    }
+    public String viewMoney() {
+        return this.money.toString();
+    }
+    public void acceptMoney(Money moneyToAdd){
+        this.money.dollars.addAll(moneyToAdd.getDollars());
+        this.money.coins.addAll(moneyToAdd.getCoins());
+    }
     public void setDirection(Direction direction){
         this.currentDirection = direction;
     }
-
+    
+    public Money giveMoney(Player giver,Player receiver,double value){
+        Money moneyToGive = new Money();
+        replyWriter.println("You are giving away "+value); 
+        
+        if(this.money.sum() < value){
+            replyWriter.println("Not enough money!");
+            return moneyToGive; 
+        }        
+        int i = 0; 
+        while(i < value){
+            receiver.money.dollars.add(this.money.dollars.remove(0)); 
+            i++;
+        }
+        receiver.getReplyWriter().println("You received " +value + " dollars!"); 
+        return moneyToGive;
+    }
+  
     public String viewInventory() {
         String result = "";
         if(this.currentInventory.isEmpty() == true) {
