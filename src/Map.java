@@ -14,12 +14,13 @@ public class Map
 {
 	
 	private final LinkedList<Room> map;
+	private final GameCore gameCore;
 	//Constructor now takes a filename as an argument
-	public Map(String filename)
+	public Map(GameCore gameCore, String filename)
 	{
 		
 		map = new LinkedList<>();
-		
+		this.gameCore = gameCore;
 		try
 		{
 			
@@ -42,7 +43,7 @@ public class Map
 				csvFileScanner.useDelimiter("\n");			// don't use comma as delimiter, we want the remainder of the line for the description (which may include commas)
 				csvFileScanner.skip(", ");					// skip the characters ", " at the beginning of the next token
 				description = csvFileScanner.next();		// get the description of this room
-				newRoom = new Room(id, title, description, location);
+				newRoom = new Room(gameCore, id, title, description, location);
 				
 				/*
 				ADD THE EXITS TO THIS ROOM
@@ -127,5 +128,4 @@ public class Map
 		Random rand = new Random();
 		return map.get(rand.nextInt(map.size()));
 	}
-	
 }
