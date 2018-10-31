@@ -17,6 +17,8 @@ public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Set<NPC> npcSet;
     private final Map map;
+    //Specifies a minimum and maximum amount of time until next item spawn
+    private final int minimumSpawnTime=100, maximumSpawnTime=600;
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
@@ -31,7 +33,8 @@ public class GameCore implements GameCoreInterface {
     public GameCore(String filename) {
         
         // Generate the game map. with the proper filename!
-        map = new Map(this, filename);
+        map = new Map(filename, this);
+        
         playerList = new PlayerList();
         npcSet = new HashSet<>();
 
@@ -64,7 +67,8 @@ public class GameCore implements GameCoreInterface {
                 Item[] objects = {new Item("Flower", 0.26, 1.5), new Item("Textbook", 4.8, 300), new Item("Phone", 0.03, 100), new Item("Newspaper", 0.06, 1)};
                 while(true) {
                     try {
-                        Thread.sleep(rand.nextInt(60000));
+			//Math.random() allows us to easily generate a number between a given min and max (CONTACT TEAM THREE BEFORE CHANGING)
+			Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
                         object = objects[rand.nextInt(objects.length)];
                         room = map.randomRoom();
                         room.addObject(object);
