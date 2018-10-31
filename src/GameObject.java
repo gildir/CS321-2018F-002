@@ -99,6 +99,20 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String say(String name, String message) throws RemoteException {
         return core.say(name, message);
     }
+
+    /**
+    * Whispers "message" to specified player.
+    * @param name1 Name of player sending message
+    * @param name2 Name of player receiving message
+    * @param message Message to whisper
+    * @return Message showing success.
+    * @throws RemoteException
+    */
+    @Override
+    public String whisper(String name1, String name2, String message) throws RemoteException
+    {
+        return core.whisper(name1, name2, message);
+    }
       
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
@@ -146,6 +160,38 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String pickup(String name, String target) throws RemoteException {
         return core.pickup(name, target);
     }    
+    /**
+     * Attempts to drop off an object < target >. Will return a message on any success or failure.
+     * @param name Name of the player to move
+     * @param target The case-insensitive name of the object to dropoff.
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    @Override
+    public String dropoff(String name, String target) throws RemoteException {
+        return core.dropoff(name, target);
+    }
+
+    /**
+     * Player pokes a ghoul that is in the same room.
+     * @param ghoulName Name of the ghoul that is poked
+     * @param playerName Name of the player that pokes the ghoul.
+     * @return Message showing success or failure of the poking action.
+     */
+    public String pokeGhoul(String playerName, String ghoulName) throws RemoteException {
+        return core.pokeGhoul(playerName, ghoulName);
+    }
+
+    /**
+     * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
+     * @param playerName Name of the player that gifts the ghoul.
+     * @param target The case-insensitive name of the object that is gifted.
+     * @param ghoulName Name of the ghoul that receives the gift.
+     * @return Message showing success or failure of the gifting action.
+     */
+    public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException {
+        return core.giftGhoul(playerName, ghoulName, target);
+    }
     
 
     @Override

@@ -1,7 +1,9 @@
 LOOK,,Shows you the area around you
 SAY,MESSAGE,Says <message> to any other players in the same area.
+WHISPER,PLAYER MESSAGE,Says <MESSAGE> to specified <PLAYER>.
 MOVE,DIRECTION,Tries to walk in <direction>.
 PICKUP,OBJECT,Tries to pick up an object in the same area.
+DROPOFF,OBJECT,Tries to drop off an object in the same area.
 INVENTORY,,Shows you what objects you have collected.
 QUIT,,Quits the game.
 HELP,,Displays the list of available commands
@@ -16,4 +18,6 @@ LEAVE,SHOP,Leaves shop
 SELL,ITEM,Sell item in your inventory to the shop
 MONEY,,Line-by-line display of money
 GIFTABLE,,List players in the same room that you can give money to
-GIFT,,Give amount of money to a friend
+GIVE,,Give amount of money to a friend
+GIFT, GHOULNAME ITEM, Player gifts a ghoul an object; this action decreases the ghoul's aggression.
+POKE, GHOULNAME, Player pokes a ghoul that is in the same room.

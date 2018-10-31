@@ -1,3 +1,4 @@
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
@@ -6,6 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Scanner; 
 import java.util.ArrayList;
+import java.util.*;
+import java.util.LinkedList;
 import java.io.IOException;
 import java.io.File;
 import java.io.BufferedWriter;
@@ -18,13 +21,16 @@ import java.io.FileWriter;
  */
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
+    private final Set<NPC> npcSet;
     private final Map map;
+
     private final Shop shop;
     
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
+
     /**
-     * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
+     * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
      * 
      * This is the main core that both the RMI and non-RMI based servers will interface with.
@@ -32,12 +38,31 @@ public class GameCore implements GameCoreInterface {
     public GameCore() {
         
         // Generate the game map.
-        map = new Map();
-        
+        map = new Map(this);
         playerList = new PlayerList();
 
         shop = new Shop();
 
+        npcSet = new HashSet<>();
+
+        // Initialize starting NPCs
+        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
+                                    new Ghoul(this, "Ghoul2", 3, 25)));
+
+        Thread npcThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    synchronized (npcSet) {
+                        for (NPC npc : npcSet)
+                            npc.tryAi();
+                    }
+                }
+            }
+        });
+        npcThread.setDaemon(true);
+        npcThread.start();
+        
         activeBattles = new ArrayList<Battle>();
         pendingBattles = new ArrayList<Battle>();
 
@@ -66,8 +91,24 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
     }
-    
+
+    /**
+     * Basic getter methods for GameCore.
+     */ 
+    public PlayerList getPlayerList(){
+      return this.playerList;
+    }
+
+    public Map getMap(){
+      return this.map;
+    }
+
+    public Set<NPC> getNpcSet() {
+        return npcSet;
+    }
+
     /**
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.
@@ -93,6 +134,18 @@ public class GameCore implements GameCoreInterface {
             if(player.getCurrentRoom() == room.getId()) {
                 player.getReplyWriter().println(message);
             }
+        }
+    }
+
+    /**
+    * Broadcasts a message to the specified player.
+    * @param sendingPlayer Player sending message
+    * @param receivingPlayer Player receiving message
+    * @param message Message to broadcast
+    */
+    public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
+        if(sendingPlayer != receivingPlayer) { //405_ignore, don't broadcast to players ignoring you
+            receivingPlayer.getReplyWriter().println(message);
         }
     }
     
@@ -227,10 +280,36 @@ public class GameCore implements GameCoreInterface {
     }  
     
     /**
+    * Whispers "message" to a specified player.
+    * @param name1 Name of player sending whisper
+    * @param name2 Name of player receiving whisper
+    * @param message Message to whisper
+    * @return Message showing success.
+    */
+    public String whisper(String name1, String name2, String message) {
+        Player playerSending = this.playerList.findPlayer(name1);
+        Player playerReceiving = this.playerList.findPlayer(name2);
+ 
+        if(playerSending != null && playerReceiving != null) {
+ 
+ if(name1.equalsIgnoreCase(name2)){
+  return "Cannot whisper yourself";}
+ 
+            this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+            return "message sent to " + playerReceiving.getName();
+        }
+        else {
+            if(playerReceiving == null) {
+                return "Couldn't find player online.";
+            }
+            return null;
+        }
+    }
+
+    /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
      * @param name Name of the player to move
-     * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      */
 
@@ -272,7 +351,7 @@ public class GameCore implements GameCoreInterface {
         }
         return "You stop moving and begin to stand around again.";
     }
-    
+
     /**
      * Attempts to enter <location> shop. Use if entering a room that is part of another
      * room, instead of using move to walk to a separate room
@@ -331,13 +410,12 @@ public class GameCore implements GameCoreInterface {
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
      * @param target The case-insensitive name of the object to pickup.
-     * @return Message showing success. 
-     */    
+     * @return Message showing success.
+     */
     public String pickup(String name, String target) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             Room room = map.findRoom(player.getCurrentRoom());
-            System.out.print(target);
             if(target.equals("all")){
                 
               int obj_count = 0;
@@ -369,8 +447,108 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
+    }       
+    /**
+     * Attempts to drop off an object < target >. Will return a message on any success or failure.
+     * @param name Name of the player to move
+     * @param target The case-insensitive name of the object to dropoff.
+     * @return Message showing success.
+     */
+    public String dropoff(String name, String target) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            Item object = player.removeObjectFomInventory(target);
+            Room room = map.findRoom(player.getCurrentRoom());
+            if(object != null) {
+                room.addObject(object);
+                this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
+                return "You just dropped off a " + target + ".";
+            }
+            else {
+                this.broadcast(player, player.getName() + " tried to drop off something, but doesn't seem to find what they were looking for.");
+                return "You just tried to drop off a " + target + ", but you don't have one.";
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * Player pokes a ghoul that is in the same room.
+     * @param playerName Name of the player that pokes the ghoul.
+     * @param ghoulName Name of the ghoul that is poked
+     * @return Message showing success or failure of poke action.
+     */
+    public String pokeGhoul(String playerName, String ghoulName) {
+        Player player = this.playerList.findPlayer(playerName);
+        ArrayList<String> npcsFound = new ArrayList<>();
+        //check if player exists
+        if (player != null){
+            Room room = map.findRoom(player.getCurrentRoom());
+            //find all the NPCs in the room that the player's in
+            npcsFound = room.getNamesOfNpcs(npcSet);
+            if (npcsFound != null){
+                //checking to see if the ghoulName matches any ghouls in the same room
+                for (int i = 0; i < npcsFound.size(); i++){
+                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
+                        return playerName + " POKED " + npcsFound.get(i) + "\n" + player.removeRandomItem();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
+     * @param playerName Name of the player that gifts the ghoul.
+     * @param ghoulName Name of the ghoul to give the item to.
+     * @param itemName Name of the item to give to the ghoul.
+     * @return Message showing success or failure of the gifting action.
+     */
+    public String giftGhoul(String playerName, String ghoulName, String itemName) {
+
+        Player player = this.playerList.findPlayer(playerName);
+        boolean ghoulNotFound = true;
+        LinkedList<Item> playerIn = player.getCurrentInventory();
+        //check if inventory is empty
+        if (player.getCurrentInventory().isEmpty()){
+            return "Inventory is empty.";
+        }
+        //check if player exists
+        if (player != null){
+            Room room = map.findRoom(player.getCurrentRoom());
+            //find all the NPCs in the room that the player's in
+            ArrayList<String> npcsFound = new ArrayList<>();
+            npcsFound = room.getNamesOfNpcs(npcSet);
+            if (npcsFound != null){
+                //checking to see if the ghoulName matches any ghouls in the same room
+                for (int i = 0;(i < npcsFound.size() && ghoulNotFound); i++){
+                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
+                        i = 9999;
+                        ghoulNotFound = false;
+                    }
+                }
+                if (!ghoulNotFound){
+                    //check if the player has the object in their inventory
+                    for (int i = 0; i < playerIn.size(); i++){
+                        if (itemName.equalsIgnoreCase(playerIn.get(i).getItemName())){
+                            playerIn.remove(i);
+                            player.setCurrentInventory(playerIn);//updating the inventory
+                            return playerName + " gifted " + ghoulName + " a " + itemName;
+                        }
+                    }
+                    return "Player doesn't have a " + itemName + " in their inventory.";
+                }
+                else{
+                    return ghoulName + " is not in the same room as you.";
+                }
+            }
+        }
+        return null;
     }  
-    
+
     /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move

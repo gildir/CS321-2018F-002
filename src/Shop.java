@@ -104,7 +104,7 @@ public class Shop {
   if(items.size() == 0)
    result += "shop is empty\n";
   for(ItemStock item : itemList) {
-   result += "" + item.amount + " ..................... " + item.itemName + " $" + item.value+"\n";
+   result += "" + item.amount + " ..................... " + item.itemName + " $" + (String.format("%.2f",item.value)) +"\n";
   }
   result += "To sell an item enter SELL <ITEM>\n\n";
   return result;
