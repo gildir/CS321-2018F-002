@@ -135,6 +135,25 @@ public class CommandRunner {
                 return "[ERROR] No object specified";
             }
         });
+        commandFunctions.put("OFFERITEM",   (name, args) -> {
+            if(args.isEmpty()) {
+                return "You need to provide a player to offer an item.";
+            }
+            else {
+                String offeredPlayer = args.remove(0);
+                if(args.isEmpty()) {
+                    return "You need to provide an item to offer.";
+                }
+                else {
+                    String itemName = args.remove(0);
+                    while (!args.isEmpty())
+                    {
+                        itemName += " " + args.remove(0);
+                    }
+                    return remoteGameInterface.offerItem(name, offeredPlayer, itemName);
+                }
+            }
+        });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
         commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
 
