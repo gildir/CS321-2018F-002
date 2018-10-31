@@ -95,7 +95,7 @@ public class GameClient {
             String strName = "rmi://"+host+"/GameService";
             remoteGameInterface = (GameObjectInterface) Naming.lookup(strName);
 
-            // Start by remotely executing the joinGame method.
+            // Start by remotely executing the joinGame method.  
             //   Lets the player choose a name and checks it with the server.  If the name is
             //    already taken or the user doesn't like their input, they can choose again.
            
@@ -333,7 +333,7 @@ public class GameClient {
     }
 
     /**
-     * Inner class to handle remote message input to this program.
+     * Inner class to handle remote message input to this program.  
      *  - Runs as a separate thread.  Interrupt it to kill it.
      *  - Spawns multiple threads, one for each remote connection.
      */
@@ -351,7 +351,7 @@ public class GameClient {
             // Attempt communcations with the server.
             try (Socket remoteMessageSocket = new Socket(host, 13500)) {
 
-                // Get stream reader and writer.
+                // Get stream reader and writer. 
                 //  Writer is only used once, to register this socket with a player.
                 //  Otherwise, this is read only to receive non-locally generated event notifications.
                 BufferedReader remoteReader = new BufferedReader(new InputStreamReader(remoteMessageSocket.getInputStream()));
@@ -384,3 +384,4 @@ public class GameClient {
         }
     }
 }
+
