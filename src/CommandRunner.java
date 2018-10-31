@@ -191,7 +191,14 @@ public class CommandRunner {
                 return remoteGameInterface.pokeGhoul(name, args.remove(0));
             }
         });
-        commandFunctions.put("ENTER", (name, args) -> { return remoteGameInterface.enter(name, args.get(0)); });
+        commandFunctions.put("ENTER", (name, args) -> { 
+            if(args.size() != 1){
+                return "Specify the room you want to enter";
+            }
+            else{
+                return remoteGameInterface.enter(name, args.get(0)); 
+            }
+        });
         commandFunctions.put("LEAVE", (name, args) -> { return remoteGameInterface.leaveRoom(name); });
         commandFunctions.put("SELL",       (name, args) -> { return remoteGameInterface.sell(name, args.get(0));  });
         commandFunctions.put("MONEY",      (name, args) -> { return remoteGameInterface.money(name);  });
