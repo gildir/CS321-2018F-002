@@ -83,6 +83,10 @@ return "Message sent to " + playerReceiving.getName();
 ```
 The above modification set the variable mentioned earlier when a whisper command successfully returns.
 
+This is an example of reply in action:
+
+![Image of reply](/images/404_reply.png)
+
 ## 402) List Players in Game
 ### Description
 List active players' name in the world. A world consist of several rooms, and these rooms are separated from one another. You might list players' name to be able to communicate with them with whisper functionality. Listplayers is your personal contact list, so you want to keep it safe.
@@ -216,11 +220,11 @@ There is one way to invoke the shout command:
 1. **SHOUT \<message>**
 
 ### Command Implementation
-The shout command works very similarily to the say command, only it doesn't check if players are in the same room. When a player uses the shout command everyone in the game will see the message. Unless they have ignored the player of course.
+The shout command works very similarly to the say command, only it doesn't check if players are in the same room. When a player uses the shout command everyone in the game will see the message. Unless they have ignored the player of course.
 
 To provide shout functionality the following classes were edited: GameClient, GameCore, GameObject, GameObjectInterface. The main logic for shout resides in the GameCore.java file where two new methods were added.
 
-### Clase: GameCore, File: GameCore.java
+### Class: GameCore, File: GameCore.java
 The following changes were made to this class:
 1. Function added
 ```java
