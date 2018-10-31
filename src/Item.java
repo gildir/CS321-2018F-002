@@ -3,12 +3,14 @@ public class Item{
  private String itemName;
  private double itemWeight;
  private double itemValue;
+
  // Constructor
- Item(String itemName, double itemWeight,double itemValue){
+ Item(String itemName, double itemWeight, double itemValue){
   this.itemName = itemName;
   this.itemWeight = itemWeight;
   this.itemValue = itemValue;
  }
+
  // Getter functions
  public String getItemName(){
   return this.itemName;
@@ -29,4 +31,5 @@ public class Item{
   String valueString = String.format("%.2f", itemValue);
   return itemName + "(" + weightString + " lb, $" + valueString +")";
  }
+
 }

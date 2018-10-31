@@ -28,10 +28,6 @@ G00541199
             </exit>                        
         </exits>
     </room>
-    <room id = "10">
-        <title>Shop near the Clock</title>
-        <description>You are in the Shop</description>
-    </room>
     <room id = "2">
         <title>Mason Statue</title>
         <description>There is a large statue of George Mason resting at the end of the sidewalk. The Mason statue is currently wearing a green Patriots basketball t-shirt.</description>

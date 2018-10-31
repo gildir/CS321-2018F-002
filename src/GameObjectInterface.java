@@ -2,6 +2,7 @@
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,9 +20,9 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public boolean joinGame(String name) throws RemoteException;
-    
-    
+        
     public String gift(String playerName, String name, double amount) throws RemoteException; 
+
     /**
      * Returns a look at the area of the specified player.
      * @param name Player Name
@@ -63,26 +64,8 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException 
      */
-    public String move(String name, int distance) throws RemoteException;
+    public String move(String name, String direction) throws RemoteException;
 
-    /**
-     * Attempts to enter <location>. Use if entering a room that is part of another
-     * room, instead of using move to walk to a separate room
-     * @param name Name of the player to enter
-     * @param location The place to enter
-     * @return Message showing success
-     * @throws RemoteException 
-     */
-    public String enter(String name, String location) throws RemoteException;
-    
-    /**
-     * Makes player leave a room e.g shop
-     * @param name Player Name
-     * @return Message showing success
-     * @throws RemoteException 
-     */
-    public String leaveRoom(String name) throws RemoteException;
-    
     /**
      * Attempts to pick up an object < object >. Will return a message on any success or failure.
      * @param name Name of the player to pickup an object
@@ -98,6 +81,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException 
      */    
+
     public String inventory(String name) throws RemoteException; 
     
     /**
@@ -124,10 +108,46 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public String sell(String playerName, String itemName) throws RemoteException;
-     /**
+    
+    /**
+     * Leaves the shop.
+     * @param name Name of the player to leave
+     * @throws RemoteException 
+     */   
+    public String leaveRoom(String playerName) throws RemoteException; 
+    
+    /**
+     * Enters the shop.
+     * @param name Name of the player to enter, shop for location
+     * @throws RemoteException 
+     */   
+    public String enter(String playerName, String location) throws RemoteException;
+    
+    
+    /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @throws RemoteException 
      */    
     public void leave(String name) throws RemoteException;       
+
+    /**
+     * Logs a player interaction with the world, ie the execution of a command.
+     *
+     * @param  name    Name of the player
+     * @param  command String containing the command called
+     * @param  args    Array containing the arguments as strings
+     * @param  output  String containing the result of executing the command
+     * @throws RemoteException
+     */
+    public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
+
+//Rock Paper Scissors Battle Code Here---------------------------------
+    public void challenge(String challenger, String player2) throws RemoteException;
+    public void accept(String challenger, String player2) throws RemoteException;
+    public void refuse(String challenger, String player2) throws RemoteException;
+    public void rock(String player) throws RemoteException;
+    public void paper(String player) throws RemoteException;
+    public void scissors(String player) throws RemoteException;
+//Rock Paper Scissors Battle Code Here---------------------------------
 }
