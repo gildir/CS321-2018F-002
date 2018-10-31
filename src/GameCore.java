@@ -202,6 +202,22 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }        
+
+    //author Shayan AH
+    public String listAllPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Players in the world: ";
+         if(player != null)
+        {
+            l += playerList.listOfPlayers();
+            return l;
+        }
+        else
+            {
+                return null;
+            }
+    }
    
     /**
      * Turns the player left.

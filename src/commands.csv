@@ -1,4 +1,5 @@
 LOOK,,Shows you the area around you
+LISTPLAYERS,,Shows a list of all the players in the world.
 SAY,MESSAGE,Says <message> to any other players in the same area.
 WHISPER,PLAYER MESSAGE,Says <MESSAGE> to specified <PLAYER>.
 REPLY,MESSAGE,Says <MESSAGE> to last player who whispered you.

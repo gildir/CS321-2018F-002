@@ -28,6 +28,9 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public String look(String name) throws RemoteException;
+
+    //author Shayan AH
+    public String listAllPlayers(String name) throws RemoteException;
     
     /**
      * Turns the player left.
