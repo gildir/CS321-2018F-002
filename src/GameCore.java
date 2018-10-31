@@ -1,10 +1,19 @@
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.FileWriter;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.*;
+import java.util.LinkedList;
+import java.io.IOException;
+import java.io.File;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
 
 /**
  *
@@ -12,40 +21,60 @@ import java.util.ArrayList;
  */
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
+    private final Set<NPC> npcSet;
     private final Map map;
+
+    private final Shop shop;
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
 
-	// Added by Brendan
-	private Leaderboard leaderboard;
-
     /**
-     * Creates a new GameCoreObject.  Namely, creates the map for the rooms in the game,
+     * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
      *
      * This is the main core that both the RMI and non-RMI based servers will interface with.
      */
-    public GameCore() {
+     //now takes filename for Map
+    public GameCore(String filename) {
 
-        // Generate the game map.
-        map = new Map();
-
+        // Generate the game map. with the proper filename!
+        map = new Map(this, filename);
         playerList = new PlayerList();
+
+        shop = new Shop();
+
+        npcSet = new HashSet<>();
+
+        // Initialize starting NPCs
+        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
+                                    new Ghoul(this, "Ghoul2", 3, 25)));
+
+        Thread npcThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    synchronized (npcSet) {
+                        for (NPC npc : npcSet)
+                            npc.tryAi();
+                    }
+                }
+            }
+        });
+        npcThread.setDaemon(true);
+        npcThread.start();
 
         activeBattles = new ArrayList<Battle>();
         pendingBattles = new ArrayList<Battle>();
-
-		// Added by Brendan
-		this.leaderboard = new Leaderboard();
 
         Thread objectThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 Random rand = new Random();
                 Room room;
-                String object;
-                String[] objects = {"Flower", "Textbook", "Phone", "Newspaper"};
+                Item object;
+                Item[] objects = {new Item("Flower", 0.26, 1.5), new Item("Textbook", 4.8, 300), new Item("Phone", 0.03, 100), new Item("Newspaper", 0.06, 1)};
+
                 while(true) {
                     try {
                         Thread.sleep(rand.nextInt(60000));
@@ -63,6 +92,22 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
+    }
+
+    /**
+     * Basic getter methods for GameCore.
+     */
+    public PlayerList getPlayerList(){
+      return this.playerList;
+    }
+
+    public Map getMap(){
+      return this.map;
+    }
+
+    public Set<NPC> getNpcSet() {
+        return npcSet;
     }
 
     /**
@@ -90,6 +135,18 @@ public class GameCore implements GameCoreInterface {
             if(player.getCurrentRoom() == room.getId()) {
                 player.getReplyWriter().println(message);
             }
+        }
+    }
+
+    /**
+    * Broadcasts a message to the specified player.
+    * @param sendingPlayer Player sending message
+    * @param receivingPlayer Player receiving message
+    * @param message Message to broadcast
+    */
+    public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
+        if(sendingPlayer != receivingPlayer) { //405_ignore, don't broadcast to players ignoring you
+            receivingPlayer.getReplyWriter().println(message);
         }
     }
 
@@ -128,10 +185,6 @@ public class GameCore implements GameCoreInterface {
             // New player starts in a room.  Send a message to everyone else in that room,
             //  that the player has arrived.
             this.broadcast(newPlayer, newPlayer.getName() + " has arrived.");
-
-			// Added by Brendan
-			this.leaderboard.addScore(name);
-
             return newPlayer;
         }
         // A player of that name already exists.
@@ -161,6 +214,22 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
+    }
+
+    //author Shayan AH
+    public String listAllPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Players in the world: ";
+         if(player != null)
+        {
+            l += playerList.listOfPlayers();
+            return l;
+        }
+        else
+            {
+                return null;
+            }
     }
 
     /**
@@ -228,33 +297,146 @@ public class GameCore implements GameCoreInterface {
     }
 
     /**
+    * Whispers "message" to a specified player.
+    * @param name1 Name of player sending whisper
+    * @param name2 Name of player receiving whisper
+    * @param message Message to whisper
+    * @return Message showing success.
+    */
+    public String whisper(String name1, String name2, String message) {
+        Player playerSending = this.playerList.findPlayer(name1);
+        Player playerReceiving = this.playerList.findPlayer(name2);
+
+        if(playerSending != null && playerReceiving != null) {
+            if(name1.equalsIgnoreCase(name2)){
+                return "Cannot whisper yourself";
+            }
+            this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+            playerReceiving.setLastWhisperName(name1);
+            return "message sent to " + playerReceiving.getName();
+        }
+        else {
+            if(playerReceiving == null) {
+                return "Couldn't find player online.";
+            }
+            return null;
+        }
+    }
+
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    */
+    public String reply(String name, String message) {
+        Player playerSending = this.playerList.findPlayer(name);
+        if(playerSending.getLastWhisperName() == null) {
+            return "You have not received a whisper to reply to.";
+        }
+        String name2 = playerSending.getLastWhisperName();
+        Player playerReceiving = this.playerList.findPlayer(name2);
+        return this.whisper(name, name2, message);
+    }
+
+    /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
      * @param name Name of the player to move
-     * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      */
-    public String move(String name, int distance) {
+
+    public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
-        if(player == null || distance <= 0) {
+        if(player == null) {
             return null;
         }
+
         Room room;
-        while(distance-- != 0) {
-            room = map.findRoom(player.getCurrentRoom());
-            if(room.canExit(player.getDirection())) {
-                this.broadcast(player, player.getName() + " has walked off to the " + player.getCurrentDirection());
-                player.getReplyWriter().println(room.exitMessage(player.getDirection()));
-                player.setCurrentRoom(room.getLink(player.getDirection()));
-                this.broadcast(player, player.getName() + " just walked into the area.");
-                player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
-            }
-            else {
-                player.getReplyWriter().println(room.exitMessage(player.getDirection()));
-                return "You grumble a little and stop moving.";
-            }
+        room = map.findRoom(player.getCurrentRoom());
+
+        switch(direction.toUpperCase()){
+          case "NORTH":
+            player.setDirection(Direction.NORTH);
+            break;
+          case "EAST":
+            player.setDirection(Direction.EAST);
+            break;
+          case "WEST":
+            player.setDirection(Direction.WEST);
+            break;
+          case "SOUTH":
+            player.setDirection(Direction.SOUTH);
+            break;
+          default:
+            return "Please enter a valid direction. Valid directions are North, South, East, or West.";
+        }
+        if(room.canExit(player.getDirection())) {
+          this.broadcast(player, player.getName() + " has walked off to the " + player.getCurrentDirection());
+          player.getReplyWriter().println(room.exitMessage(player.getDirection()));
+          player.setCurrentRoom(room.getLink(player.getDirection()));
+          this.broadcast(player, player.getName() + " just walked into the area.");
+          player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(playerList, player));
+        }
+        else {
+          player.getReplyWriter().println(room.exitMessage(player.getDirection()));
+          return "You grumble a little and stop moving.";
         }
         return "You stop moving and begin to stand around again.";
+    }
+
+    /**
+     * Attempts to enter <location> shop. Use if entering a room that is part of another
+     * room, instead of using move to walk to a separate room
+     * @param name Name of the player to enter
+     * @param location The place to enter
+     * @return Message showing success
+     */
+    public String enter(String name, String location) {
+      Player player = this.playerList.findPlayer(name);
+      if(player == null) return null;
+      int newID;
+      //add more if statements for different shops
+      if(location.equalsIgnoreCase("shop"))
+        newID = 172;
+      else
+        return location + " is unknown.";
+      //if player not near a shop, return.
+      if(player.getCurrentRoom() != 1)
+        return "Not near " + location;
+      Room room = this.map.findRoom(player.getCurrentRoom());
+      this.broadcast(player, player.getName() + " has walked off towards the shop");
+      player.getReplyWriter().println("You enter the shop");
+      player.setCurrentRoom(newID);
+      this.broadcast(player, player.getName() + " just walked into the shop.");
+      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
+      shop.addPlayer(name);
+      player.getReplyWriter().println(shop.displayShop());
+      return "You stop moving and begin to stand around again.";
+    }
+
+    /**
+     * Makes player leave a room e.g shop
+     * @param name Player Name
+     * @return Message showing success
+     */
+    public String leaveRoom(String name) {
+      Player player = this.playerList.findPlayer(name);
+      if(player == null) return null;
+      int newID;
+      //add more if statements for different shops
+      if(player.getCurrentRoom() == 172)
+        newID = 1;
+      else
+        return "Can't leave, did you mean quit?";
+      Room room = this.map.findRoom(player.getCurrentRoom());
+      this.broadcast(player, player.getName() + " has left the shop");
+      player.getReplyWriter().println("You leave the room");
+      player.setCurrentRoom(newID);
+      this.broadcast(player, player.getName() + " just walked into the area.");
+      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
+      shop.removePlayer(name);
+      return "You stop moving and begin to stand around again.";
     }
 
     /**
@@ -267,20 +449,147 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             Room room = map.findRoom(player.getCurrentRoom());
-            String object = room.removeObject(target);
-            if(object != null) {
+            if(target.equals("all")){
+
+              int obj_count = 0;
+              Item object;
+              String AllObjects = room.getObjects();
+              while((object = room.getLastObject()) != null){
+                if (player.getCurrentInventory().size() >= 10)
+                {
+                  room.addObject(object); //Adds the removed objecct back in
+                  return "Could not pickup every object, there was not enough room in your inventory";
+                }
                 player.addObjectToInventory(object);
-                this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
-                return "You bend over and pick up a " + target + ".";
+                obj_count++;
+              }
+              if(obj_count > 0)
+                return "You bend over and pick up all the objects";
+              else
+                return "No objects in this room";
             }
-            else {
-                this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
-                return "You look around for a " + target + ", but can't find one.";
+            else{
+
+              if (player.getCurrentInventory().size() >= 10)
+              {
+                  this.broadcast(player, player.getName() + " tried to pick something up, but was holding too many items.");
+                  return "You try to pick up the " + target + ", but can't because you're holding too many items.";
+              }
+              Item object = room.removeObject(target);
+              if(object != null) {
+                  player.addObjectToInventory(object);
+                  this.broadcast(player, player.getName() + " bends over to pick up a " + target + " that was on the ground.");
+                  return "You bend over and pick up a " + target + ".";
+              }
+              else {
+                  this.broadcast(player, player.getName() + " bends over to pick up something, but doesn't seem to find what they were looking for.");
+                  return "You look around for a " + target + ", but can't find one.";
+              }
             }
         }
         else {
             return null;
         }
+    }
+    /**
+     * Attempts to drop off an object < target >. Will return a message on any success or failure.
+     * @param name Name of the player to move
+     * @param target The case-insensitive name of the object to dropoff.
+     * @return Message showing success.
+     */
+    public String dropoff(String name, String target) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            Item object = player.removeObjectFomInventory(target);
+            Room room = map.findRoom(player.getCurrentRoom());
+            if(object != null) {
+                room.addObject(object);
+                this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
+                return "You just dropped off a " + target + ".";
+            }
+            else {
+                this.broadcast(player, player.getName() + " tried to drop off something, but doesn't seem to find what they were looking for.");
+                return "You just tried to drop off a " + target + ", but you don't have one.";
+            }
+        }
+        else {
+            return null;
+        }
+    }
+
+    /**
+     * Player pokes a ghoul that is in the same room.
+     * @param playerName Name of the player that pokes the ghoul.
+     * @param ghoulName Name of the ghoul that is poked
+     * @return Message showing success or failure of poke action.
+     */
+    public String pokeGhoul(String playerName, String ghoulName) {
+        Player player = this.playerList.findPlayer(playerName);
+        ArrayList<String> npcsFound = new ArrayList<>();
+        //check if player exists
+        if (player != null){
+            Room room = map.findRoom(player.getCurrentRoom());
+            //find all the NPCs in the room that the player's in
+            npcsFound = room.getNamesOfNpcs(npcSet);
+            if (npcsFound != null){
+                //checking to see if the ghoulName matches any ghouls in the same room
+                for (int i = 0; i < npcsFound.size(); i++){
+                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
+                        return playerName + " POKED " + npcsFound.get(i) + "\n" + player.removeRandomItem();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
+     * @param playerName Name of the player that gifts the ghoul.
+     * @param ghoulName Name of the ghoul to give the item to.
+     * @param itemName Name of the item to give to the ghoul.
+     * @return Message showing success or failure of the gifting action.
+     */
+    public String giftGhoul(String playerName, String ghoulName, String itemName) {
+
+        Player player = this.playerList.findPlayer(playerName);
+        boolean ghoulNotFound = true;
+        LinkedList<Item> playerIn = player.getCurrentInventory();
+        //check if inventory is empty
+        if (player.getCurrentInventory().isEmpty()){
+            return "Inventory is empty.";
+        }
+        //check if player exists
+        if (player != null){
+            Room room = map.findRoom(player.getCurrentRoom());
+            //find all the NPCs in the room that the player's in
+            ArrayList<String> npcsFound = new ArrayList<>();
+            npcsFound = room.getNamesOfNpcs(npcSet);
+            if (npcsFound != null){
+                //checking to see if the ghoulName matches any ghouls in the same room
+                for (int i = 0;(i < npcsFound.size() && ghoulNotFound); i++){
+                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
+                        i = 9999;
+                        ghoulNotFound = false;
+                    }
+                }
+                if (!ghoulNotFound){
+                    //check if the player has the object in their inventory
+                    for (int i = 0; i < playerIn.size(); i++){
+                        if (itemName.equalsIgnoreCase(playerIn.get(i).getItemName())){
+                            playerIn.remove(i);
+                            player.setCurrentInventory(playerIn);//updating the inventory
+                            return playerName + " gifted " + ghoulName + " a " + itemName;
+                        }
+                    }
+                    return "Player doesn't have a " + itemName + " in their inventory.";
+                }
+                else{
+                    return ghoulName + " is not in the same room as you.";
+                }
+            }
+        }
+        return null;
     }
 
     /**
@@ -293,11 +602,69 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             this.broadcast(player, "You see " + player.getName() + " looking through their pockets.");
-            return "You look through your pockets and see " + player.viewInventory();
+            return "You look through your pockets and see" + player.viewInventory();
         }
         else {
             return null;
         }
+    }
+
+    /**
+     * Returns a list of nearby players you can gift
+     * @param name Player Name
+     * @return String representation of nearby players.
+     */
+    public String giftable(String playerName) {
+        Player player = playerList.findPlayer(playerName);
+        if(player != null) {
+            // Find the room the player is in.
+            Room room = this.map.findRoom(player.getCurrentRoom());
+
+            // Return a string representation of players in teh same room
+            String gift_list = "\nGiftable players near you: " + room.getPlayers(this.playerList);
+            gift_list = gift_list.replace(playerName, "");
+            return gift_list;
+      }
+      // No such player exists
+      else {
+            return null;
+      }
+    }
+
+    public String money(String name) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            return player.viewMoney();
+        }
+        else {
+            return null;
+        }
+    }
+    @Override
+    public String gift(String yourname ,String name, double amount){
+        Player receiver = this.playerList.findPlayer(name);
+        Player you = this.playerList.findPlayer(yourname);
+        if(receiver != null){
+          if(you.getMoney().sum() < amount){
+           return "NOT ENOUGH MONEY!";
+          }
+            this.broadcast(you, you.getName() + " offers a gift to " + receiver.getName());
+           //Scanner read = new Scanner(System.in);
+
+            receiver.getReplyWriter().println("Accept gift? (y/n):");
+
+           /*String input = read.nextLine();
+
+           if(input.toLowerCase().equals("y")) {
+
+            receiver.acceptMoney(you.giveMoney(you,receiver,amount));
+
+           return "User accepted gift!";*/
+            return "";
+           //}
+      }else{
+            return "NO USER WITH THAT NAME";
+      }
     }
 
      /**
@@ -314,6 +681,67 @@ public class GameCore implements GameCoreInterface {
             return player;
         }
         return null;
+    }
+
+/**
+     * Sell an item to the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to sell
+     * @return A string indicating success or failure
+     */
+ public String sell(String playerName, String itemName) {
+  //format user input for item
+  itemName = itemName.toLowerCase();
+  itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
+  //check if player not in shop or does not have item
+  if(!shop.playerInShop(playerName)) {
+   return "You cannot sell if you are not in a shop!";
+  }
+  Player player = this.playerList.findPlayer(playerName);
+  if(player == null)
+   return null;
+  LinkedList<Item> inventory = player.getCurrentInventory();
+  Item object = player.removeObjectFomInventory(itemName);
+  if(object == null) {
+      return "You do not have " + itemName + " in your inventory!";
+  }
+  else {
+      //remove item from inventory, update player inventory, increase money
+      //inventory.remove(itemName);
+      player.setCurrentInventory(inventory);
+      shop.sellItem(object);
+      player.addMoney(object.getItemValue());
+      player.getReplyWriter().println(shop.displayShop());
+      return "You have sold " + itemName + " to the shop.";
+  }
+}
+  /**
+     * Logs a string into a file
+     * @param fileName name of the file to log in
+     * @param log      message to log
+     */
+    @Override
+    public void log(String fileName, String log) {
+        String PATH = "log";
+
+        try {
+            // Check if log directory exists
+            File directory = new File(PATH);
+            if (! directory.exists()) directory.mkdirs();
+
+            // Check for file
+            File file = new File(PATH + "/" + fileName);
+            if (! file.exists()) file.createNewFile();
+
+            // Write to file
+            FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
+            BufferedWriter bw = new BufferedWriter(fw);
+
+            bw.write(log);
+            bw.close();
+        } catch (IOException ex){
+            Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 
@@ -334,43 +762,30 @@ public class GameCore implements GameCoreInterface {
     Player play1 = this.playerList.findPlayer(challenger);
     Player play2 = this.playerList.findPlayer(player2);
 
-    if(play2 == null)//other player doesnt exist
-    {
-      play1.getReplyWriter().println("\nThat player doesn't exist.");
-      return;
-    }
-
-    if(challenger.equalsIgnoreCase(player2)) // Challenger is challenging himself. Stupid challenger...
+    if(challenger.equalsIgnoreCase(player2))
     {
       play1.getReplyWriter().println("\nYou can't challenge yourself.\n");
       return;
     }
 
-    for(Battle b : activeBattles)
+    if(play2 == null)//other player doesnt exist
     {
-      if(b.containsPlayer(challenger))// Challenger is already in an active battle
-      {
-        play1.getReplyWriter().println("\nYou can only be in one battle at a time. Finish the current one you are in before challenging someone else.");
-        return;
-      }
-      if(b.containsPlayer(player2))// Other Player is already in an active battle.
-      {
-        play1.getReplyWriter().println("\nYou cant challenge " + player2 + " right now, they're currently in a battle. ");
-        return;
-      }
+      play1.getReplyWriter().println("That player doesn't exist.");
     }
-
-    for(Battle b : pendingBattles)//Challenger already asked this person to battle and is waiting for a response still.
+    else
     {
-      if(b.hasPlayers(challenger,player2))
+      for(Battle b : pendingBattles)
       {
-        play1.getReplyWriter().println("\nYou already have a pending challenge request with "+ player2 +".");
-        return;
+        if(b.hasPlayers(challenger,player2))
+        {
+          play1.getReplyWriter().println("You already have a pending challenge request with "+ player2 +".");
+          return;
+        }
       }
+      play2.getReplyWriter().println(challenger + " has challenged you to a Rock Paper Scissors Battle. \nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
+      pendingBattles.add(new Battle(challenger, player2));
+      System.out.println("Player: " + challenger + " Challenged: " + player2);
     }
-    play2.getReplyWriter().println("\n" + challenger + " has challenged you to a Rock Paper Scissors Battle. \n\nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\n\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
-    pendingBattles.add(new Battle(challenger, player2));
-    System.out.println("Player: " + challenger + " Challenged: " + player2);
   }
 
   public void accept(String challenger, String player2)
@@ -383,14 +798,14 @@ public class GameCore implements GameCoreInterface {
     {
       if(b.containsPlayer(player2))
       {
-        play2.getReplyWriter().println("\nYou're already in a Rock Paper Scissors challenge with someone. \nMake a choice of 'rock', 'paper', or 'scissors' \nand wait for the challenge to end before trying to accept another.\n");
+        play2.getReplyWriter().println("You're already in a Rock Paper Scissors challenge with someone. \nMake a choice of 'rock', 'paper', or 'scissors' \nand wait for the challenge to end before trying to accept another.\n");
         return;
       }
     }
 
     if(play1 == null)//other player doesnt exist
     {
-      play2.getReplyWriter().println("\nYou can't accept a challenge from a player that doesn't exist.");
+      play2.getReplyWriter().println("You can't accept a challenge from a player that doesn't exist.");
     }
     else
     {
@@ -398,8 +813,8 @@ public class GameCore implements GameCoreInterface {
       {
         if(b.hasPlayers(challenger,player2) && b.getStatus().equalsIgnoreCase("pending"))
         {
-          play1.getReplyWriter().println("\n"+player2 + " has accepted your Rock Paper Scissors challenge. \nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
-          play2.getReplyWriter().println("\nYou have accepted " + challenger + "'s Rock Paper Scissors challenge." + "\nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
+          play1.getReplyWriter().println(player2 + " has accepted your Rock Paper Scissors challenge. \nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
+          play2.getReplyWriter().println("You have accepted " + challenger + "'s Rock Paper Scissors challenge." + "\nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
           Battle temp = b;
           temp.setStatus("active");
           activeBattles.add(temp);
@@ -407,7 +822,7 @@ public class GameCore implements GameCoreInterface {
           return;
         }
       }
-      play2.getReplyWriter().println("\nYou don't have any pending requests from that player.");
+      play2.getReplyWriter().println("You don't have any pending requests from that player.");
     }
     System.out.println("Player: " + player2 + " Accepted " + challenger + "'s' Challenge.");
   }
@@ -419,7 +834,7 @@ public class GameCore implements GameCoreInterface {
 
     if(play1 == null)//other player doesnt exist
     {
-      play2.getReplyWriter().println("\nYou can't refuse a challenge from a player that doesn't exist.");
+      play2.getReplyWriter().println("You can't refuse a challenge from a player that doesn't exist.");
     }
     else
     {
@@ -427,13 +842,13 @@ public class GameCore implements GameCoreInterface {
       {
         if(b.hasPlayers(challenger,player2) && b.getStatus().equalsIgnoreCase("pending"))
         {
-          play1.getReplyWriter().println("\n"+player2 + " has refused your Rock Paper Scissors Challenge. :(");
-          play2.getReplyWriter().println("\nYou have refused "+challenger+"'s Rock Paper Scissors Challenge.");
+          play1.getReplyWriter().println(player2 + " has refused your Rock Paper Scissors Challenge. :(");
+          play2.getReplyWriter().println("You have refused "+challenger+"'s Rock Paper Scissors Challenge.");
           pendingBattles.remove(b);
           return;
         }
       }
-      play2.getReplyWriter().println("\nYou don't have any pending requests from that player.");
+      play2.getReplyWriter().println("You don't have any pending requests from that player.");
     }
     System.out.println("Player: " + player2 + " Refused " + challenger + "'s' Challenge.");
   }
@@ -448,7 +863,7 @@ public class GameCore implements GameCoreInterface {
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
           b.setChoiceP1(1);
-          p.getReplyWriter().println("\nYou Chose Rock.\n");
+          p.getReplyWriter().println("You Chose Rock.\n");
           if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
@@ -458,7 +873,7 @@ public class GameCore implements GameCoreInterface {
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
           b.setChoiceP2(1);
-          p.getReplyWriter().println("\nYou Chose Rock.\n");
+          p.getReplyWriter().println("You Chose Rock.\n");
           if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
@@ -467,7 +882,7 @@ public class GameCore implements GameCoreInterface {
         }
       }
     }
-    p.getReplyWriter().println("\nYou aren't in any Rock Paper Scissors Battles currently.");
+    p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
   public void paper(String player)
@@ -480,7 +895,7 @@ public class GameCore implements GameCoreInterface {
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
           b.setChoiceP1(2);
-          p.getReplyWriter().println("\nYou Chose Paper.\n");
+          p.getReplyWriter().println("You Chose Paper.\n");
           if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
@@ -490,7 +905,7 @@ public class GameCore implements GameCoreInterface {
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
           b.setChoiceP2(2);
-          p.getReplyWriter().println("\nYou Chose Paper.\n");
+          p.getReplyWriter().println("You Chose Paper.\n");
           if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
@@ -499,7 +914,7 @@ public class GameCore implements GameCoreInterface {
         }
       }
     }
-    p.getReplyWriter().println("\nYou aren't in any Rock Paper Scissors Battles currently.");
+    p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
   public void scissors(String player)
@@ -512,7 +927,7 @@ public class GameCore implements GameCoreInterface {
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
           b.setChoiceP1(3);
-          p.getReplyWriter().println("\nYou Chose Scissors.\n");
+          p.getReplyWriter().println("You Chose Scissors.\n");
           if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
@@ -522,7 +937,7 @@ public class GameCore implements GameCoreInterface {
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
           b.setChoiceP2(3);
-          p.getReplyWriter().println("\nYou Chose Scissors.\n");
+          p.getReplyWriter().println("You Chose Scissors.\n");
           if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
@@ -531,7 +946,7 @@ public class GameCore implements GameCoreInterface {
         }
       }
     }
-    p.getReplyWriter().println("\nYou aren't in any Rock Paper Scissors Battles currently.");
+    p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
   public void doBattle(String challenger, String player2, int p1, int p2, Battle b)
@@ -545,36 +960,33 @@ public class GameCore implements GameCoreInterface {
       switch(p1)
       {
         case 1:
-          play1.getReplyWriter().println("\nYou both chose Rock. The match is a tie!\n");
-          play2.getReplyWriter().println("\nYou both chose Rock. The match is a tie!\n");
+          play1.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
+          play2.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
           message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
-          writeLog(challenger, player2, "Rock", "Rock", "a tie");
           return;
         case 2:
-          play1.getReplyWriter().println("\nYou both chose Paper. The match is a tie!\n");
-          play2.getReplyWriter().println("\nYou both chose Paper. The match is a tie!\n");
+          play1.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
+          play2.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
           message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
-          writeLog(challenger, player2, "Paper", "Paper", "a tie");
           return;
         case 3:
-          play1.getReplyWriter().println("\nYou both chose Scissors. The match is a tie!\n");
-          play2.getReplyWriter().println("\nYou both chose Scissors. The match is a tie!\n");
+          play1.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
+          play2.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
           message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
-          writeLog(challenger, player2, "Scissor", "Scissor", "a tie");
           return;
       }
     }
     else if(p1 == 1 && p2 == 2)
     {
       //rock paper
-      play1.getReplyWriter().println("\nYou chose Rock. " + player2 + " chose Paper. \nYou lose.\n");
-      play2.getReplyWriter().println("\nYou chose Paper. " + challenger + " chose Rock. \nYou win.\n");
+      play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Paper. \nYou lose.\n");
+      play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Rock. \nYou win.\n");
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
@@ -588,8 +1000,8 @@ public class GameCore implements GameCoreInterface {
     else if(p1 == 1 && p2 == 3)
     {
       //rock scissors
-      play1.getReplyWriter().println("\nYou chose Rock. " + player2 + " chose Scissors. \nYou win.\n");
-      play2.getReplyWriter().println("\nYou chose Scissors. " + challenger + " chose Rock. \nYou lose.\n");
+      play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Scissors. \nYou win.\n");
+      play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Rock. \nYou lose.\n");
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
@@ -603,8 +1015,8 @@ public class GameCore implements GameCoreInterface {
     else if(p1 == 2 && p2 == 1)
     {
       //paper rock
-      play1.getReplyWriter().println("\nYou chose Paper. " + player2 + " chose Rock. \nYou win.\n");
-      play2.getReplyWriter().println("\nYou chose Rock. " + challenger + " chose Paper. \nYou lose.\n");
+      play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Rock. \nYou win.\n");
+      play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Paper. \nYou lose.\n");
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
@@ -618,8 +1030,8 @@ public class GameCore implements GameCoreInterface {
     else if(p1 == 2 && p2 == 3)
     {
       //paper scissors
-      play1.getReplyWriter().println("\nYou chose Paper. " + player2 + " chose Scissors. \nYou lose.\n");
-      play2.getReplyWriter().println("\nYou chose Scissors. " + challenger + " chose Paper. \nYou win.\n");
+      play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Scissors. \nYou lose.\n");
+      play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Paper. \nYou win.\n");
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
@@ -633,8 +1045,8 @@ public class GameCore implements GameCoreInterface {
     else if(p1 == 3 && p2 == 1)
     {
       //scissors rock
-      play1.getReplyWriter().println("\nYou chose Scissors. " + player2 + " chose Rock. \nYou lose.\n");
-      play2.getReplyWriter().println("\nYou chose Rock. " + challenger + " chose Scissors. \nYou win.\n");
+      play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Rock. \nYou lose.\n");
+      play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Scissors. \nYou win.\n");
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
@@ -648,8 +1060,8 @@ public class GameCore implements GameCoreInterface {
     else if(p1 == 3 && p2 == 2)
     {
       //scissors paper
-      play1.getReplyWriter().println("\nYou chose Scissors. " + player2 + " chose Paper. \nYou win.\n");
-      play2.getReplyWriter().println("\nYou chose Paper. " + challenger + " chose Scissors. \nYou lose.\n");
+      play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Paper. \nYou win.\n");
+      play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Scissors. \nYou lose.\n");
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);;
       activeBattles.remove(b);
