@@ -113,6 +113,19 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
         return core.whisper(name1, name2, message);
     }
+
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    * @throws RemoteException
+    */
+    @Override
+    public String reply(String name, String message) throws RemoteException
+    {
+        return core.reply(name, message);
+    }
       
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
