@@ -20,6 +20,9 @@ public interface GameCoreInterface {
      */   
     public void broadcast(Room room, String message);
     
+
+    public String gift(String playerName, String name, double amount); 
+
     
     /**
      * Returns the player with the given name or null if no such player.
@@ -73,6 +76,13 @@ public interface GameCoreInterface {
      * @return Message showing success.
      */    
     public String inventory(String name);
+    
+    /**
+     * Returns a list of nearby players you can gift
+     * @param name Player Name
+     * @return String representation of nearby players.
+     */
+    public String giftable(String name);
     
     /**
      * Leaves the game.
