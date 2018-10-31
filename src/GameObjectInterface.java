@@ -184,12 +184,9 @@ public interface GameObjectInterface extends Remote {
      * @param  output  String containing the result of executing the command
      * @throws RemoteException
      */
-<<<<<<< HEAD
     public void leave(String name) throws RemoteException;
-=======
     public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
 
->>>>>>> gildirdev
 //Rock Paper Scissors Battle Code Here---------------------------------
     public void challenge(String challenger, String player2) throws RemoteException;
     public void accept(String challenger, String player2) throws RemoteException;
@@ -197,11 +194,7 @@ public interface GameObjectInterface extends Remote {
     public void rock(String player) throws RemoteException;
     public void paper(String player) throws RemoteException;
     public void scissors(String player) throws RemoteException;
-<<<<<<< HEAD
 	  public String tutorial(String name) throws RemoteException;
     public void checkBoard(String player) throws RemoteException;
-//Rock Paper Scissors Battle Code Here---------------------------------  
-=======
 //Rock Paper Scissors Battle Code Here---------------------------------
->>>>>>> gildirdev
 }
