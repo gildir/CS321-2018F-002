@@ -428,20 +428,19 @@ public class GameCore implements GameCoreInterface {
            return "NOT ENOUGH MONEY!";  
           }
             this.broadcast(you, you.getName() + " offers a gift to " + receiver.getName());
-           Scanner read = new Scanner(System.in);
+           //Scanner read = new Scanner(System.in);
            
             receiver.getReplyWriter().println("Accept gift? (y/n):");
             
-           String input = read.nextLine(); 
+           /*String input = read.nextLine(); 
              
            if(input.toLowerCase().equals("y")) {
          
             receiver.acceptMoney(you.giveMoney(you,receiver,amount));
             
-           return "User accepted gift!";
-           }
-           
-           return "User declined gift!";
+           return "User accepted gift!";*/
+            return "";
+           //}
       }else{
             return "NO USER WITH THAT NAME";  
       }   

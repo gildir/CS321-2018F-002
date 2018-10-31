@@ -138,16 +138,23 @@ public class CommandRunner {
   commandFunctions.put("MONEY",      (name, args) -> { return remoteGameInterface.money(name);  });
   commandFunctions.put("GIFTABLE",   (name, args) -> { return remoteGameInterface.giftable(name);  });
   commandFunctions.put("GIFT",       (name, args) -> { 
-   try { 
-    String amount = args.get(2);
+   try {//merged with new command list 
+       if(args.size() != 2){
+           System.out.println("Invalid name or value, please try again");
+           return null;
+       }
+       else{
+      String receiver = args.remove(0);
+      Double amount = Double.parseDouble(args.remove(0));
 
-    if(Double.parseDouble(amount) > 0){
-     remoteGameInterface.gift(name, args.get(1), Double.parseDouble(amount));
+    if(amount > 0){
+      remoteGameInterface.gift(name, receiver, amount);
      return "money given";
     }
     else {
      return "Amount of money gifted must be greater than 0";
     }
+       }
    } catch (NumberFormatException e){
     return "invalid amount of money specified";
    } 
