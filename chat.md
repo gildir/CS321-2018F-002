@@ -6,7 +6,6 @@ The game chat system allows players to communicate with one another in the world
 Also added is the ability to IGNORE all messages from a specific player, regardless of how the message was sent. Individual player ignore lists can be displayed to screen. If desired, the player that owns the ignore list can remove a specific player. 
 To assist players in location, or searching for the correct spelling for a player name, players have the ability to view all players in the game world with the aptly named LISTPLAYERS command. 
 
-## 400) Say
 ## 401) Whisper
 ### Usage
 The whisper command is used to send another player a private message. There is only one way to invoke a whisper:
@@ -89,7 +88,7 @@ This is an example of reply in action:
 
 ## 402) List Players in Game ![list](/images/database.svg)
 ### Description
-List active players' name in the world. A world consist of several rooms, and these rooms are separated from one another. You might list players' name to be able to communicate with them with whisper functionality. Listplayers is your personal contact list, so you want to keep it safe.
+You can list active players in the world. A world consists of several rooms, and these rooms are separated from one another. You might list players' name to be able to communicate with them with whisper functionality. ListPlayers has many functionalities. You might want to list players for shopping or challenging them into battles. It also gives you a good sense of your environment and online players in the game.  Listplayers is your personal contact list, so you want to keep it safe.
 ### Command
 ```
 listplayers 
@@ -167,7 +166,7 @@ Does not broadcast to ignoring players
 
 ## 407) List Ignore Users ![list](/images/database.svg)
 ### Description
-List all players who are ignored by you. This function allows you to list all the players that you muted. You might mute players due to misbehavior. You might to use this functionality to find out about those players in case you want to unmute them back or just for checking.  
+You want to check all the players you have ignored. Ignore -l List all players who are ignored by you. Basically, this function allows you to list all the players that you muted. You might mute players due to misbehavior. You might to use this functionality to find out about those players in case you want to unmute them back or just for checking. List ignore users is your personal blacklist so don’t share it with any one. 
 ### Command
 ```
 IGNORE -l 
@@ -185,9 +184,9 @@ class Player
 }
 ```
 ### Code Analysis
-In the class Player we keep track of ignored players in an arraylist called ignoreList. The showIgnoreList is a wrapper that prints out all ignored player in a string. 
-In the class GameCore we list ignored players by calling showIgnoreList, which granted the permission to access ignored players' names. 
-By issuing ignore -l you are able to use this functionality.  
+In the class Player we keep track of ignored players in an arraylist called ignoreList. We update it with add/remove functionality provided in the same context. The showIgnoreList is a wrapper that prints out all ignored player as a string. This public method can get used by GameCore to print the ignored list.  
+In the class GameCore we list ignored players by calling showIgnoreList, which granted the permission to access ignored players' names. Beware that the order of printing the players name is based on the order you have added them to your list.  
+By issuing ignore -l you are able to use this functionality.
 
 ## Unignore
 ### Description
