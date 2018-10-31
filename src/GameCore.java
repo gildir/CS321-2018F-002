@@ -73,12 +73,11 @@ public class GameCore implements GameCoreInterface {
                 Random rand = new Random();
                 Room room;
                 Item object;
-                Item[] objects = {new Item("Flower", 0.26, 1.5), new Item("Textbook", 4.8, 300), new Item("Phone", 0.03, 100), new Item("Newspaper", 0.06, 1)};
-
+                ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
                         Thread.sleep(rand.nextInt(60000));
-                        object = objects[rand.nextInt(objects.length)];
+                        object = objects.get(rand.nextInt(objects.size()));
                         room = map.randomRoom();
                         room.addObject(object);
                         
