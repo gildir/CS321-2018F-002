@@ -19,6 +19,8 @@ The player can interact with the ghoul with the "pokeGhoul" command. This allows
 
 The player can also give an item to the ghoul with the "giftGhoul" command. This causes the Ghoul's current anger with the player to decrease. The player must be in the same room with the ghoul and have at least one item in their inventory to perform this command.
 
+Here is an example of how a player can interact with a ghoul:
+![Ghoul Interaction Preview](GhoulInteractions.png)
 
 ## Spirits
 
