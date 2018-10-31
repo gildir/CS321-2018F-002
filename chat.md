@@ -87,7 +87,7 @@ This is an example of reply in action:
 
 ![Image of reply](/images/404_reply.png)
 
-## 402) List Players in Game
+## 402) List Players in Game ![list](/images/database.svg)
 ### Description
 List active players' name in the world. A world consist of several rooms, and these rooms are separated from one another. You might list players' name to be able to communicate with them with whisper functionality. Listplayers is your personal contact list, so you want to keep it safe.
 ### Command
@@ -165,7 +165,7 @@ Does not broadcast to ignoring players
 
 
 
-## 407) List Ignore Users
+## 407) List Ignore Users ![list](/images/database.svg)
 ### Description
 List all players who are ignored by you. This function allows you to list all the players that you muted. You might mute players due to misbehavior. You might to use this functionality to find out about those players in case you want to unmute them back or just for checking.  
 ### Command
