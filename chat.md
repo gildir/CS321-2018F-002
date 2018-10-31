@@ -184,7 +184,31 @@ class Player
 In the class Player we keep track of ignored players in an arraylist called ignoreList. The showIgnoreList is a wrapper that prints out all ignored player in a string. 
 In the class GameCore we list ignored players by calling showIgnoreList, which granted the permission to access ignored players' names. 
 By issuing ignore -l you are able to use this functionality.  
+
 ## Unignore
+### Description
+Unignore a player that is currently in your ignore list. When player is unignored you are able to see their chat logs and their whisper logs in-game. 
+### Command
+```
+IGNORE -r <player_name>
+```
+### Implementation
+The following methods were added in order to implement the unignore feature.
+```java
+class GameCore
+{
+	public String unIgnore(String name, String unIgnoreName)
+}
+class GameObject
+{
+
+	public String unIgnore(String name, String ignoreName) throws RemoteException{ return core.unIgnore(name,ignoreName);
+
+}
+```
+### Code Analysis
+The unignore feature essentially takes in two arguments, name of player as well as unignore name. First, our function checks whether the player is attempting to unignore himself in which case an exception occurs, and if not true, the function begins to verify if the ignored player even exists in the game. If the player that the current player wants to ignore exists and is in their ignored list, then the player becomes unignored and we remove them from the ignored list within the player class.
+
 
 ## Shout
 ### Usage
@@ -229,7 +253,7 @@ The broadcast function is where the ignore check occurs.
 * Shayan Amirhosseini
 * Thomas Klock
 * Amilcar Martinez
-* Julius A
+* Julius Ahenkora
 
 ## License
 [GNU GENERAL PUBLIC LICENSE](http://fsf.org/)
