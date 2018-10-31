@@ -184,7 +184,7 @@ public class CommandRunner {
         commandFunctions.put("ROCK",       (name, args) -> { remoteGameInterface.rock(name); return null; });
         commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
         commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
-        commandFunctions.put("LEADERBOARD",   (name, args) -> { remoteGameInterface.leaderboard(name); return null; });
+        commandFunctions.put("LEADERBOARD",   (name, args) -> { remoteGameInterface.checkBoard(name); return null; });
         commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
         commandFunctions.put("GIFT", (name, args) -> {
             if(args.isEmpty()) {
@@ -208,20 +208,20 @@ public class CommandRunner {
                 return remoteGameInterface.pokeGhoul(name, args.remove(0));
             }
         });
-        commandFunctions.put("ENTER", (name, args) -> { 
+        commandFunctions.put("ENTER", (name, args) -> {
             if(args.size() != 1){
                 return "Specify the room you want to enter";
             }
             else{
-                return remoteGameInterface.enter(name, args.get(0)); 
+                return remoteGameInterface.enter(name, args.get(0));
             }
         });
         commandFunctions.put("LEAVE", (name, args) -> { return remoteGameInterface.leaveRoom(name); });
         commandFunctions.put("SELL",       (name, args) -> { return remoteGameInterface.sell(name, args.get(0));  });
         commandFunctions.put("MONEY",      (name, args) -> { return remoteGameInterface.money(name);  });
         commandFunctions.put("GIFTABLE",   (name, args) -> { return remoteGameInterface.giftable(name);  });
-        commandFunctions.put("GIVE",       (name, args) -> { 
-            try {//merged with new command list 
+        commandFunctions.put("GIVE",       (name, args) -> {
+            try {//merged with new command list
                 if(args.size() != 2){
                     System.out.println("Invalid name or value, please try again");
                     return null;
@@ -229,7 +229,7 @@ public class CommandRunner {
                 else{
                     String receiver = args.remove(0);
                     Double amount = Double.parseDouble(args.remove(0));
-                    
+
                     if(amount > 0){
                         remoteGameInterface.gift(name, receiver, amount);
                         return "";
@@ -240,7 +240,7 @@ public class CommandRunner {
                 }
             } catch (NumberFormatException e){
                 return "invalid amount of money specified";
-            } 
+            }
         });
     }
 

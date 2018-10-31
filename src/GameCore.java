@@ -28,7 +28,7 @@ public class GameCore implements GameCoreInterface {
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
-
+    private Leaderboard leaderboard;
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -66,7 +66,7 @@ public class GameCore implements GameCoreInterface {
 
         activeBattles = new ArrayList<Battle>();
         pendingBattles = new ArrayList<Battle>();
-
+        this.leaderboard = new Leaderboard();
         Thread objectThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -181,7 +181,7 @@ public class GameCore implements GameCoreInterface {
             // New player, add them to the list and return true.
             newPlayer = new Player(name);
             this.playerList.addPlayer(newPlayer);
-
+            this.leaderboard.addScore(name);
             // New player starts in a room.  Send a message to everyone else in that room,
             //  that the player has arrived.
             this.broadcast(newPlayer, newPlayer.getName() + " has arrived.");
@@ -762,30 +762,43 @@ public class GameCore implements GameCoreInterface {
     Player play1 = this.playerList.findPlayer(challenger);
     Player play2 = this.playerList.findPlayer(player2);
 
-    if(challenger.equalsIgnoreCase(player2))
+    if(play2 == null)//other player doesnt exist
+    {
+      play1.getReplyWriter().println("\nThat player doesn't exist.");
+      return;
+    }
+
+    if(challenger.equalsIgnoreCase(player2)) // Challenger is challenging himself. Stupid challenger...
     {
       play1.getReplyWriter().println("\nYou can't challenge yourself.\n");
       return;
     }
 
-    if(play2 == null)//other player doesnt exist
+    for(Battle b : activeBattles)
     {
-      play1.getReplyWriter().println("That player doesn't exist.");
-    }
-    else
-    {
-      for(Battle b : pendingBattles)
+      if(b.containsPlayer(challenger))// Challenger is already in an active battle
       {
-        if(b.hasPlayers(challenger,player2))
-        {
-          play1.getReplyWriter().println("You already have a pending challenge request with "+ player2 +".");
-          return;
-        }
+        play1.getReplyWriter().println("\nYou can only be in one battle at a time. Finish the current one you are in before challenging someone else.");
+        return;
       }
-      play2.getReplyWriter().println(challenger + " has challenged you to a Rock Paper Scissors Battle. \nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
-      pendingBattles.add(new Battle(challenger, player2));
-      System.out.println("Player: " + challenger + " Challenged: " + player2);
+      if(b.containsPlayer(player2))// Other Player is already in an active battle.
+      {
+        play1.getReplyWriter().println("\nYou cant challenge " + player2 + " right now, they're currently in a battle. ");
+        return;
+      }
     }
+
+    for(Battle b : pendingBattles)//Challenger already asked this person to battle and is waiting for a response still.
+    {
+      if(b.hasPlayers(challenger,player2))
+      {
+        play1.getReplyWriter().println("\nYou already have a pending challenge request with "+ player2 +".");
+        return;
+      }
+    }
+    play2.getReplyWriter().println("\n" + challenger + " has challenged you to a Rock Paper Scissors Battle. \n\nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\n\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
+    pendingBattles.add(new Battle(challenger, player2));
+    System.out.println("Player: " + challenger + " Challenged: " + player2);
   }
 
   public void accept(String challenger, String player2)
@@ -1120,6 +1133,7 @@ public class GameCore implements GameCoreInterface {
                   "In order to refuse, you have to enter 'REFUSE playername' where playername is the name of the person that challenged you.\n" +
                   "For example, if you get challenged by Bob, you can accept by entering 'ACCEPT Bob' or refuse by entering 'REFUSE Bob'");
       }
-      return message;
+      player.getReplyWriter().println(message);
+      return "";
   }
 }
