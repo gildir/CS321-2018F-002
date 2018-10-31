@@ -49,7 +49,7 @@ The following image depicts the proper order items should be entered in the csv 
 
 ## User Commands
 ### Dropoff
-The dropoff command removes an item from the player inventory and places it in the room inventory. To use this command simply type `droppoff <item_name>`. Once the dropoff command is entered, the dropoff function will check that the user provided an item to drop and that the item exists in the player inventory. If these conditions are met, the item will be moved from the user inventory to the room inventory. If the user doesn't specify an item to dropoff or the item provided doesn't exist in the user's inventory, a message will be displayed to notify the user.
+The dropoff command removes an item from the player inventory and places it in the room inventory. To use this command simply type `dropoff <item_name>`. Once the dropoff command is entered, the dropoff function will check that the user provided an item to drop and that the item exists in the player inventory. If these conditions are met, the item will be moved from the user inventory to the room inventory. If the user doesn't specify an item to dropoff or the item provided doesn't exist in the user's inventory, a message will be displayed to notify the user.
 
 ### OfferItem
 The offerItem command gives the player the ability to offer an item to another player. To use this command simply type `offerItem <item_name> <player_name>`. The offerItem function will check that the user entered an item to offer, as well as a player to offer the item to. If these conditions are satisfied it will check that the item exists in the inventory, otherwise it will display an error message to notify the player. If the item doesn't exist in the inventory an error message will also be displayed.
