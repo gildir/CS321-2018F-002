@@ -202,7 +202,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.inventory(name);
     }    
     
-    /**
+     /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @throws RemoteException 
