@@ -355,6 +355,11 @@ public class GameCore implements GameCoreInterface {
               Item object;
               String AllObjects = room.getObjects();
               while((object = room.getLastObject()) != null){
+                if (player.getCurrentInventory().size() >= 10)
+                {
+                  room.addObject(object); //Adds the removed objecct back in
+                  return "Could not pickup every object, there was not enough room in your inventory";
+                }
                 player.addObjectToInventory(object);
                 obj_count++;
               }
@@ -365,6 +370,11 @@ public class GameCore implements GameCoreInterface {
             }
             else{
               
+              if (player.getCurrentInventory().size() >= 10)
+              {
+                  this.broadcast(player, player.getName() + " tried to pick something up, but was holding too many items.");
+                  return "You try to pick up the " + target + ", but can't because you're holding too many items.";
+              }
               Item object = room.removeObject(target);
               if(object != null) {
                   player.addObjectToInventory(object);
