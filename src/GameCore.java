@@ -35,10 +35,11 @@ public class GameCore implements GameCoreInterface {
      * 
      * This is the main core that both the RMI and non-RMI based servers will interface with.
      */
-    public GameCore() {
+     //now takes filename for Map
+    public GameCore(String filename) {
         
-        // Generate the game map.
-        map = new Map(this);
+        // Generate the game map. with the proper filename!
+        map = new Map(this, filename);
         playerList = new PlayerList();
 
         shop = new Shop();
@@ -76,7 +77,7 @@ public class GameCore implements GameCoreInterface {
 
                 while(true) {
                     try {
-                        Thread.sleep(rand.nextInt(20000));
+                        Thread.sleep(rand.nextInt(60000));
                         object = objects[rand.nextInt(objects.length)];
                         room = map.randomRoom();
                         room.addObject(object);
@@ -365,7 +366,7 @@ public class GameCore implements GameCoreInterface {
       int newID;
       //add more if statements for different shops
       if(location.equalsIgnoreCase("shop"))
-        newID = 10;
+        newID = 172;
       else
         return location + " is unknown.";
       //if player not near a shop, return.
@@ -392,7 +393,7 @@ public class GameCore implements GameCoreInterface {
       if(player == null) return null;
       int newID;
       //add more if statements for different shops
-      if(player.getCurrentRoom() == 10)
+      if(player.getCurrentRoom() == 172)
         newID = 1;
       else
         return "Can't leave, did you mean quit?";
