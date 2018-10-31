@@ -15,7 +15,6 @@ public class Player {
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
-    // add a money field to track player money
     private Money money;
 
     public Player(String name) {
@@ -23,7 +22,6 @@ public class Player {
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
-        // set a default amount of money for each player
         this.money = new Money(20);
     }
     
@@ -122,51 +120,46 @@ public class Player {
     public Direction getDirection() {
         return this.currentDirection;
     }
-    // get money 
     public Money getMoney() {
       return this.money;
     }
-    //add money
+    
     public void addMoney(double amount) {
-
-     int dollars = (int) amount;
-     Money amountAdded = new Money(dollars);
-     double coins = amount - dollars;
-     coins *= 100;
-     for(int i = 0; i < coins; i++){
-         amountAdded.coins.add(new Penny());
-     }
-     acceptMoney(amountAdded);
+        int dollars = (int) amount;
+        Money amountAdded = new Money(dollars);
+        double coins = amount - dollars;
+        coins *= 100;
+        for(int i = 0; i < coins; i++){
+            amountAdded.coins.add(new Penny());
+        }
+        acceptMoney(amountAdded);
     }
-    // return a string to print to the screen when player wants to view money
     public String viewMoney() {
-      return this.money.toString();
+        return this.money.toString();
     }
-    // allows a player to accept money from another player
     public void acceptMoney(Money moneyToAdd){
-      this.money.dollars.addAll(moneyToAdd.getDollars());
-      this.money.coins.addAll(moneyToAdd.getCoins());
+        this.money.dollars.addAll(moneyToAdd.getDollars());
+        this.money.coins.addAll(moneyToAdd.getCoins());
+    }
+    public void setDirection(Direction direction){
+        this.currentDirection = direction;
     }
     
- public Money giveMoney(Player giver,Player receiver,double value){
-     Money moneyToGive = new Money();
-      replyWriter.println("You are giving away "+value); 
-      
-      if(this.money.sum() < value){
-        replyWriter.println("Not enough money!");
-      return moneyToGive; 
-      }
-      
-      
+    public Money giveMoney(Player giver,Player receiver,double value){
+        Money moneyToGive = new Money();
+        replyWriter.println("You are giving away "+value); 
+        
+        if(this.money.sum() < value){
+            replyWriter.println("Not enough money!");
+            return moneyToGive; 
+        }        
         int i = 0; 
         while(i < value){
-          
-          receiver.money.dollars.add(this.money.dollars.remove(0)); 
-          i++;
+            receiver.money.dollars.add(this.money.dollars.remove(0)); 
+            i++;
         }
-         receiver.getReplyWriter().println("You received " +value + " dollars!"); 
-      
-      return moneyToGive;
+        receiver.getReplyWriter().println("You received " +value + " dollars!"); 
+        return moneyToGive;
     }
   
     public String viewInventory() {

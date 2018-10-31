@@ -4,6 +4,7 @@
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
 /**
  *
@@ -108,10 +109,10 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @throws RemoteException 
      */
     @Override
-    public String move(String name, int distance) throws RemoteException {
-        return core.move(name, distance);
+    public String move(String name, String direction) throws RemoteException {
+        return core.move(name, direction);
     }
-    
+ 
     /**
      * Attempts to enter <location> shop. Use if entering a room that is part of another
      * room, instead of using move to walk to a separate room
@@ -120,6 +121,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @return Message showing success
      * @throws RemoteException
      */
+    @Override
     public String enter(String name, String location) throws RemoteException{
      return core.enter(name, location);
     }
@@ -132,7 +134,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String leaveRoom(String name) {
      return core.leaveRoom(name);
     }
-    
+
     /**
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
@@ -145,9 +147,15 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.pickup(name, target);
     }    
     
+
     @Override
     public String gift(String yourname,String name, double amount) throws RemoteException {
      return core.gift(yourname, name,amount);   
+    }
+    
+    @Override
+    public String money(String name) throws RemoteException {
+        return core.money(name);
     }
     
     /**
@@ -159,12 +167,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     @Override
     public String inventory(String name) throws RemoteException {
         return core.inventory(name);
-    }   
-    
-    @Override
-    public String money(String name) throws RemoteException {
-        return core.money(name);
-    }  
+    }    
     
      /**
      * Returns a list of nearby players you can gift
@@ -199,4 +202,62 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
             player.getReplyWriter().close();
         }
     }    
+
+    /**
+     * Logs a player interaction with the world, ie the execution of a command.
+     *
+     * @param  name    Name of the player
+     * @param  command String containing the command called
+     * @param  args    Array containing the arguments as strings
+     * @param  output  String containing the result of executing the command
+     * @throws RemoteException
+     */
+    @Override
+    public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException {
+        StringBuilder sb = new StringBuilder();
+
+        // Add timestamp and name of the player to begining of string
+        sb.append("[" + new java.util.Date() + "] [" + name.toUpperCase() + "]\n");
+
+        // Append command and args. If no args append null
+        if (args != null)   sb.append("\t-> " + command + "(" + String.join(", ", args) + ")\n");
+        else                sb.append("\t-> " + command + "()\n");
+
+        // Append output. If no output append null
+        if (output != null) sb.append("\t<- \"" + output + "\"\n");
+        else                sb.append("\t<- \"null\"\n");
+
+        String file = name + ".log";
+        String log = sb.toString();
+        
+        core.log(file, log);
+    }
+
+//Rock Paper Scissors Battle Code here--------------------------------------
+public void challenge(String challenger, String player2) throws RemoteException
+{
+  core.challenge(challenger, player2);
+}
+public void accept(String challenger, String player2) throws RemoteException
+{
+ core.accept(challenger,player2);
+}
+
+public void refuse(String challenger, String player2) throws RemoteException
+{
+  core.refuse(challenger, player2);
+}
+public void rock(String player) throws RemoteException
+{
+  core.rock(player);
+}
+public void paper(String player) throws RemoteException
+{
+  core.paper(player);
+}
+public void scissors(String player) throws RemoteException
+{
+  core.scissors(player);
+}
+//Rock Paper Scissors Battle Code here--------------------------------------
 }
