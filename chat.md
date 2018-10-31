@@ -8,6 +8,34 @@ To assist players in location, or searching for the correct spelling for a playe
 
 ## 400) Say
 ## 401) Whisper
+### Usage
+The whisper command is used to send another player a private message. There is only one way to send a whisper:
+WHISPER playerName message
+
+For example. If p1 wants to whisper p2, p1 would use the WHISPER command as follows:
+WHISPER p2 What do you have in your inventory?
+
+On sucessfull command execution, p1 receives an onscreen message indicating the message was successfull sent.
+
+### Comand Implementation
+WHISPER reuses the following code in the GameCore class:
+
+```java
+public void broadcast(Player sendingPlayer, Player receivingPlayer, String message)
+```
+
+To following classes were edited to provide WHISPER functionality: GameCore.java, GameObject.java, GameObjectInterface.java. Of these, the bulk of the logic can be found at class GameCore.
+
+#### Class GameCore, File: GameCore.java
+The following function was added: 
+```java
+public String whisper(String name1, String name2, String message)
+```
+The function sends the private message to player name2, only after the following checks are made:
+1. That neither name1 or name2 are null values.
+2. That a player cannot whisper themselves.
+
+On sucessfull execution, the function returns a string confirming success.
 
 ## 404) Reply
 ### Usage
