@@ -187,7 +187,7 @@ In the class Player we keep track of ignored players in an arraylist called igno
 In the class GameCore we list ignored players by calling showIgnoreList, which granted the permission to access ignored players' names. Beware that the order of printing the players name is based on the order you have added them to your list.  
 By issuing ignore -l you are able to use this functionality.
 
-## Unignore
+## 408) Unignore
 ### Description
 Unignore a player that is currently in your ignore list. When player is unignored you are able to see their chat logs and their whisper logs in-game. 
 ### Command
