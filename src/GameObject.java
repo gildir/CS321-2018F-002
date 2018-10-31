@@ -1,111 +1,123 @@
 
 
-import java.rmi.Remote;
+
+import java.io.PrintWriter;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 
 /**
  *
  * @author Kevin
  */
-public interface GameObjectInterface extends Remote {
+public class GameObject extends UnicastRemoteObject implements GameObjectInterface {
+    private final GameCore core;
+    
+    /**
+     * Creates a new GameObject.  Namely, creates the map for the rooms in the game,
+     *  and establishes a new, empty, player list.
+     * @throws RemoteException 
+     */
+    public GameObject() throws RemoteException {
+        super();
+        
+        core = new GameCore();
+    }
 
     /**
-     * Sends a request to join the game.
-     * Returns with the status of the join.  On true, the server expects the client
-     *  will initiate a socket connection, to serve as an asynchronous, unsolicited
-     *  String transfer mechanism.
-     * @param name Player Name.
-     * @return true if name is available and join is successful, false otherwise.
-     * @throws RemoteException
+     * Links an asynchronous event message connection to a player.
+     * @param playerName Player to link the reply socket with.
+     * @param writer PrintWriter to use for asynchronous messages.
+     * @return true if player is found, false otherwise.
      */
-    public boolean joinGame(String name) throws RemoteException;
-
-    public String gift(String playerName, String name) throws RemoteException; 
-
+    public boolean setReplyWriter(String playerName, PrintWriter writer) {
+        Player player = core.findPlayer(playerName);
+        if(player != null && writer != null) {
+            player.setReplyWriter(writer);
+            return true;
+        }
+        return false;
+    }    
+  
+    
+    /**
+     * Allows a player to join the game.  If a player with the same name (case-insensitive)
+     *  is already in the game, then this returns false.  Otherwise, adds a new player of 
+     *  that name to the game.  The next step is non-coordinated, waiting for the player
+     *  to open a socket for message events not initiated by the player (ie. other player actions)
+     * @param name
+     * @return true is player is added, false if player name is already registered to someone else
+     * @throws RemoteException 
+     */
+    @Override
+    public boolean joinGame(String name) throws RemoteException {
+        // Request join to the core and return the results back to the remotely calling method.
+        return (core.joinGame(name) != null);
+    }
+        
     /**
      * Returns a look at the area of the specified player.
-     * @param name Player Name
+     * @param playerName Player Name
      * @return String representation of the current area the player is in.
-     * @throws RemoteException
+     * @throws RemoteException 
      */
-    public String look(String name) throws RemoteException;
-
+    @Override
+    public String look(String playerName) throws RemoteException {
+        return core.look(playerName);
+    }        
+     
     /**
      * Turns the player left.
      * @param name Player Name
      * @return String message of the player turning left.
-     * @throws RemoteException
+     * @throws RemoteException 
      */
-    public String left(String name) throws RemoteException;
-
-     /**
+    @Override
+    public String left(String name) throws RemoteException {
+        return core.left(name);
+    }
+       
+    /**
      * Turns the player right.
      * @param name Player Name
      * @return String message of the player turning right.
-     * @throws RemoteException
+     * @throws RemoteException 
      */
-    public String right(String name) throws RemoteException;
-
-    
+    @Override
+    public String right(String name) throws RemoteException {
+        return core.right(name);
+    }    
+       
     /**
-    * Whispers "message" to specified player.
-    * @param name1 Name of players sending message
-    * @param name2 Name of player receiving message
-    * @param message Message to whisper
-    * @return Message showing success.
-    */
-    public String whisper(String name1, String name2, String message) throws RemoteException;
-
-
-    /**
-    * Sends a whisper the last player that whispered.
-    * @param name Name of player replying to whisper
-    * @param message Message to be whispered
-    * @return Message showing success.
-    */
-    public String reply(String name, String message) throws RemoteException;
-    
+     * Says "message" to everyone in the current area.
+     * @param name Name of the player to speak
+     * @param message Message to speak
+     * @return Message showing success.
+     * @throws RemoteException 
+     */
     @Override
     public String say(String name, String message) throws RemoteException {
         return core.say(name, message);
     }
       
     /**
-     * Attempts to enter <location>. Use if entering a room that is part of another
-     * room, instead of using move to walk to a separate room
-     * @param name Name of the player to enter
-     * @param location The place to enter
-     * @return Message showing success
+     * Attempts to walk forward < distance > times.  If unable to make it all the way,
+     *  a message will be returned.  Will display LOOK on any partial success.
+     * @param name Name of the player to move
+     * @param distance Number of rooms to move forward through.
+     * @return Message showing success.
      * @throws RemoteException 
      */
-    public String enter(String name, String location) throws RemoteException;
-    
-    /**
-     * Makes player leave a room e.g shop
-     * @param name Player Name
-     * @return Message showing success
-     * @throws RemoteException 
-     */
-    public String leaveRoom(String name) throws RemoteException;
-    
     @Override
     public String move(String name, String direction) throws RemoteException {
         return core.move(name, direction);
     }
       
-
     /**
-     * Attempts to drop off an object < object >. Will return a message on any success or failure.
-     * @param name Name of the player to dropoff an object
-     * @param object The case-insensitive name of the object to drop off.
+     * Attempts to pick up an object < target >. Will return a message on any success or failure.
+     * @param name Name of the player to move
+     * @param target The case-insensitive name of the object to pickup.
      * @return Message showing success.
-     * @throws RemoteException
-     */
-    public String dropoff(String name, String object) throws RemoteException;
-
-     /**
      * @throws RemoteException 
      */    
     @Override
@@ -113,28 +125,20 @@ public interface GameObjectInterface extends Remote {
         return core.pickup(name, target);
     }    
     
-    
     /**
-     * Returns a list of nearby players you can gift.
-     * @param name Player Name
-     * @return String representation of nearby players.
-     * @throws RemoteException 
-     */
-    public String giftable(String name) throws RemoteException;
-
-    /**
-     * Returns a string representation of money you have
-     * @param name Name of the player to view their money
-     * @return Message containing player money
+     * Returns a string representation of all objects you are carrying.
+     * @param name Name of the player to move
+     * @return Message showing success.
      * @throws RemoteException 
      */    
-    public String money(String name) throws RemoteException;   
     @Override
     public String inventory(String name) throws RemoteException {
         return core.inventory(name);
     }    
     
-
+     /**
+     * Leaves the game.
+     * @param name Name of the player to leave
      * @throws RemoteException 
      */    
     @Override
@@ -175,7 +179,7 @@ public interface GameObjectInterface extends Remote {
         core.log(file, log);
     }
 
-//Rock Paper Scissors Battle Code here
+//Rock Paper Scissors Battle Code here--------------------------------------
 public void challenge(String challenger, String player2) throws RemoteException
 {
   core.challenge(challenger, player2);
@@ -201,5 +205,5 @@ public void scissors(String player) throws RemoteException
 {
   core.scissors(player);
 }
-//Rock Paper Scissors Battle Code here
+//Rock Paper Scissors Battle Code here--------------------------------------
 }
