@@ -11,6 +11,7 @@ import java.util.Random;
 public class Player {
     private LinkedList<Item> currentInventory;
     private String name;
+    private String lastWhisperName;
     private int currentRoom;
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
@@ -63,6 +64,14 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setLastWhisperName(String name) {
+        this.lastWhisperName = name;
+    }
+
+    public String getLastWhisperName() {
+        return this.lastWhisperName;
     }
 
     public LinkedList<Item> getCurrentInventory() {

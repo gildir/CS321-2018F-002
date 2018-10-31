@@ -279,11 +279,11 @@ public class GameCore implements GameCoreInterface {
         Player playerReceiving = this.playerList.findPlayer(name2);
 	
         if(playerSending != null && playerReceiving != null) {
-	
-	if(name1.equalsIgnoreCase(name2)){
-		return "Cannot whisper yourself";}
-	
+            if(name1.equalsIgnoreCase(name2)){
+                return "Cannot whisper yourself";
+            }
             this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+            playerReceiving.setLastWhisperName(name1);
             return "message sent to " + playerReceiving.getName();
         }
         else {
@@ -292,6 +292,22 @@ public class GameCore implements GameCoreInterface {
             }
             return null;
         }
+    }
+
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    */
+    public String reply(String name, String message) {
+        Player playerSending = this.playerList.findPlayer(name);
+        if(playerSending.getLastWhisperName() == null) {
+            return "You have not received a whisper to reply to.";
+        }
+        String name2 = playerSending.getLastWhisperName();
+        Player playerReceiving = this.playerList.findPlayer(name2);
+        return this.whisper(name, name2, message);
     }
 
     /**
