@@ -6,13 +6,10 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Scanner;
-import java.io.*;
-
-import java.util.Scanner;
+import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 
 public class CommandRunner {
@@ -34,7 +31,7 @@ public class CommandRunner {
      * Store command functions and preprocessing of arguments
      */
     private HashMap<String, CommandFunction<String, ArrayList<String>, String>> commandFunctions
-        = new HashMap<String, CommandFunction<String, ArrayList<String>, String>>();
+            = new HashMap<String, CommandFunction<String, ArrayList<String>, String>>();
 
     /**
      * For each command add it to the hashmap defining also a lambda expression
@@ -51,6 +48,7 @@ public class CommandRunner {
         commandFunctions.put("SAY",     (name, args) -> {
             // Create empty string
             String message = String.join(" ", args);
+            System.out.println("[" + message + "]");
 
             if (message.equals("")) {
                 return "[ERROR] Empty message";
@@ -58,18 +56,44 @@ public class CommandRunner {
                 return remoteGameInterface.say(name, message);
             }
         });
+        commandFunctions.put("WHISPER", (name, args) -> {
+            try {
+                String receiver = args.remove(0);
+                String message = String.join(" ", args);
+                if (receiver.equals("")) {
+                return "[ERROR] You need to specify another player to whisper.";
+                }
+                else if (message.equals("")) {
+                    return "[ERROR] You need to include a message to whisper.";
+                }
+                else {
+                    return remoteGameInterface.whisper(name, receiver, message);
+                    //return null;
+                }
+            }
+            catch(IndexOutOfBoundsException ex) {
+                return "[ERROR] No name specified.";
+            }
+        });
         commandFunctions.put("MOVE",     (name, args) -> {
-            String direction = args.get(0);
+            try {
+                String direction = args.get(0);
 
-            if (direction.equals("")) {
+                if (direction.equals("")) {
+                    return "[ERROR] No direction specified";
+                } else {
+                    return remoteGameInterface.move(name, direction);
+                }
+            } catch (IndexOutOfBoundsException ex) {
                 return "[ERROR] No direction specified";
-            } else {
-                return remoteGameInterface.move(name, direction);
             }
         });
         commandFunctions.put("PICKUP",    (name, args) -> {
             try {
-                String object = args.get(0);
+                String object = args.remove(0);
+                while (!args.isEmpty()) {
+                    object += " " + args.remove(0);
+                }
 
                 if (object.equals("")) {
                     return "[ERROR] No object specified";
@@ -80,88 +104,12 @@ public class CommandRunner {
                 return "[ERROR] No object specified";
             }
         });
-        commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
-        commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
-        commandFunctions.put("CHALLENGE", (name, args) -> {
+        commandFunctions.put("DROPOFF",   (name, args) -> {
             try {
-                String opponent = args.get(0);
-
-                if (opponent.equals("")) {
-                    return "[ERROR] You need to specify another player to challenge.";
-                } else {
-                    remoteGameInterface.challenge(name, opponent);
-                    return null;
+                String object = args.remove(0);
+                while (!args.isEmpty()) {
+                    object += " " + args.remove(0);
                 }
-            } catch (IndexOutOfBoundsException ex) {
-                return "[ERROR] You need to specify another player to challenge.";
-            }
-        });
-        commandFunctions.put("ACCEPT", (name, args) -> {
-            try {
-                String opponent = args.get(0);
-
-                if (opponent.equals("")) {
-                    return "[ERROR] You need to specify the player whose challenge you are accepting.";
-                } else {
-                    remoteGameInterface.accept(opponent, name);
-                    return null;
-                }
-            } catch (IndexOutOfBoundsException ex) {
-                return "[ERROR] You need to specify the player whose challenge you are accepting.";
-            }
-        });
-        commandFunctions.put("REFUSE", (name, args) -> {
-            try {
-                String opponent = args.get(0);
-
-                if (opponent.equals("")) {
-                    return "[ERROR] You need to specify the player whose challenge you are refusing.";
-                } else {
-                    remoteGameInterface.refuse(opponent, name);
-                    return null;
-                }
-            } catch (IndexOutOfBoundsException ex) {
-                return "[ERROR] You need to specify the player whose challenge you are refusing.";
-            }
-        });
-        commandFunctions.put("ROCK", (name, args) -> { remoteGameInterface.rock(name); return null; });
-        commandFunctions.put("PAPER", (name, args) -> { remoteGameInterface.paper(name); return null; });
-        commandFunctions.put("SCISSORS", (name, args) -> { remoteGameInterface.scissors(name); return null; });
-        commandFunctions.put("WHISPER", (name, args) -> {
-            try {
-                String receiver = args.remove(0);
-                String message = String.join(" ", args);
-
-                if (receiver.equals("")) {
-                    return "[ERROR] You need to specify another player to whisper.";
-                } else if (message.equals("")) {
-                    return "[ERROR] You need to include a message to whisper.";
-                } else {
-                    remoteGameInterface.whisper(name, receiver, message);
-                    return null;
-                }
-            } catch (IndexOutOfBoundsException ex) {
-                return "[ERROR] You need to specify another player to challenge.";
-            }
-        });
-        commandFunctions.put("REPLY", (name, args) -> {
-            try {
-                String message = String.join(" ", args);
-
-                if(message.equals("")) {
-                    return "[ERROR] You need to include a message to reply.";
-                }
-                else {
-                    return remoteGameInterface.reply(name, message);
-                }
-            }
-            catch(IndexOutOfBoundsException ex) {
-                return "[ERROR] You need to include a message to reply.";
-            }
-        });
-        commandFunctions.put("DROPOFF",    (name, args) -> {
-            try {
-                String object = args.get(0);
 
                 if (object.equals("")) {
                     return "[ERROR] No object specified";
@@ -172,8 +120,77 @@ public class CommandRunner {
                 return "[ERROR] No object specified";
             }
         });
-        commandFunctions.put("TUTORIAL",    (name, args) -> remoteGameInterface.tutorial(name));
-        commandFunctions.put("LEADERBOARD",    (name, args) -> remoteGameInterface.checkBoard(name));
+        commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
+        commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
+
+        // PvP Commands
+        commandFunctions.put("CHALLENGE",    (name, args) -> {
+            try {
+                String player = args.get(0);
+
+                if (player.equals("")) {
+                    return "[ERROR] No player specified";
+                } else {
+                    remoteGameInterface.challenge(name, player);
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No player specified";
+            }
+        });
+        commandFunctions.put("ACCEPT",    (name, args) -> {
+            try {
+                String player = args.get(0);
+
+                if (player.equals("")) {
+                    return "[ERROR] No player specified";
+                } else {
+                    remoteGameInterface.accept(player, name);
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No player specified";
+            }
+        });
+        commandFunctions.put("REFUSE",    (name, args) -> {
+            try {
+                String player = args.get(0);
+
+                if (player.equals("")) {
+                    return "[ERROR] No player specified";
+                } else {
+                    remoteGameInterface.refuse(player, name);
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No player specified";
+            }
+        });
+        commandFunctions.put("ROCK",       (name, args) -> { remoteGameInterface.rock(name); return null; });
+        commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
+        commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
+        commandFunctions.put("GIFT", (name, args) -> {
+            if(args.isEmpty()) {
+                return "You need to provide a ghoul name and an object.";
+            }
+            else if (args.size() == 2){
+                String ghoulName = args.remove(0);
+                String target = args.remove(0);
+
+                return remoteGameInterface.giftGhoul(name, ghoulName, target);
+            }
+            else{
+                return "Gift command only takes two arguments <ghoul_name> <item_name>.";
+            }
+        });
+        commandFunctions.put("POKE", (name, args) -> {
+            if(args.isEmpty()) {
+                return "You need to provide a ghoul name.";
+            }
+            else {
+                return remoteGameInterface.pokeGhoul(name, args.remove(0));
+            }
+        });
     }
 
     /**
@@ -256,22 +273,22 @@ public class CommandRunner {
         setupFunctions();
 
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
-		try (Scanner file_commands = new Scanner(new File(commandsFile));) {
-			HashMap<String, String[]> file_map = new HashMap<String, String[]>();
-			
-			while(file_commands.hasNextLine()){
-				String currentline = file_commands.nextLine();
-				String[] command_parts = currentline.split(",");
-				
-				String command_name = command_parts[0];
-				String[] command_description = new String[]{ command_parts[1], command_parts[2] };
-				
-				file_map.put(command_name, command_description);
-			}
-			createCommands(file_map);
-		} catch (IOException ex) {
+        try (Scanner file_commands = new Scanner(new File(commandsFile));) {
+            HashMap<String, String[]> file_map = new HashMap<String, String[]>();
+
+            while(file_commands.hasNextLine()){
+                String currentline = file_commands.nextLine();
+                String[] command_parts = currentline.split(",");
+
+                String command_name = command_parts[0];
+                String[] command_description = new String[]{ command_parts[1], command_parts[2] };
+
+                file_map.put(command_name, command_description);
+            }
+            createCommands(file_map);
+        } catch (IOException ex) {
             Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
-        }	
+        }
     }
 
     /**
@@ -280,92 +297,87 @@ public class CommandRunner {
     private void createCommands() {
         HashMap<String, String[]> descriptions = new HashMap<String, String[]>();
 
-        // Insert commands
+        // Default commands
         descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
-        // descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
-        // descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
-        descriptions.put("SAY",       new String[]{"WORDS",    "Says 'message' to any other players in the same area."});
-        descriptions.put("MOVE",      new String[]{"DIRECTION", "Tries to walk in <direction>."});
-        descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an object in the same area."});
+        descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
+        descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
+        descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
+        descriptions.put("WHISPER",       new String[]{"PLAYER MESSAGE", "Says <MESSAGE> to specified <PLAYER>."});
+        descriptions.put("MOVE",      new String[]{"DIRECTION","Tries to walk in a <DIRECTION>."});
+        descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
+        descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});
         descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
 
-        descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another player to a Rock Paper Scissors Battle"});
-        descriptions.put("ACCEPT",    new String[]{"PLAYER",   "Accepts a Rock Paper Scissors Battle Challenge from a specified player"});
-        descriptions.put("REFUSE",    new String[]{"PLAYER",   "Refuses a Rock Paper Scissors Battle Challenge from a specified player"});
+        // Ghoul commands
+        descriptions.put("POKE",      new String[]{"GHOUL",    "Pokes <GHOUL>"});
+        descriptions.put("GIFT",      new String[]{"GHOUL, ITEM", "Gives your <ITEM> to <GHOUL>"});
 
-        descriptions.put("ROCK",      new String[]{"",         "Play ROCK in your current Rock Paper Scissors Battle"});
-        descriptions.put("PAPER",     new String[]{"",         "Play PAPER in your current Rock Paper Scissors Battle"});
-        descriptions.put("SCISSORS",  new String[]{"",         "Play SCISSORS in your current Rock Paper Scissors Battle"});
-
-        descriptions.put("WHISPER",   new String[]{"PLAYER MESSAGE",   "Says <MESSAGE> to specified <PLAYER>"});
-        descriptions.put("REPLY",   new String[]{"MESSAGE",   "Says <MESSAGE> to last player that whispered you."});
-        descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Drop off <OBJECT> from player inventory"});
-
-        descriptions.put("LEADERBOARD",   new String[]{"",   "Check the Rock-Paper-Scissors Leaderboard"});
-        descriptions.put("TUTORIAL",   new String[]{"",   "Opens up a tutorial for Rock Paper Scissors Battles from the Professor"});
+        // PvP Commands
+        descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another <PLAYER> to a Rock Paper Scissors Battle."});
+        descriptions.put("ACCEPT",    new String[]{"PLAYER",   "Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
+        descriptions.put("REFUSE",    new String[]{"PLAYER",   "Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
+        descriptions.put("ROCK",      new String[]{"",         "Play <ROCK> in your current Rock Paper Scissors Battle."});
+        descriptions.put("PAPER",     new String[]{"",         "Play <PAPER> in your current Rock Paper Scissors Battle."});
+        descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
 
         // Create them
         createCommands(descriptions);
     }
-    /**
-     *Creates a HashMap with the aliases of the commands
-     */
-    private HashMap getAliasesFromFile(){
-        String filePath = "aliases.csv";
-        HashMap<String, String> map = new HashMap<String, String>();
-        try{
-        String line;
-        BufferedReader reader = new BufferedReader(new FileReader(filePath));
-        while ((line = reader.readLine()) != null)
-        {
-            String[] parts = line.split(",", 2);
-            if (parts.length >= 2)
-            {
-                String key = parts[0];
-                String value = parts[1];
-                map.put(key, value);
-                //System.out.println(parts[0] +"," + parts[1]);
-            } 
-        }
-    
-        // for (String key : map.keySet())
-        // {
-        //     System.out.println(key + "," + map.get(key));
-        // }
-        reader.close();
-    }
-    catch (Exception ex) {
-        ex.printStackTrace();
-     }
-        return map;
-    }
+
     /**
      * @param descriptions map with command names as keys and their descriptions as values
      */
     private void createCommands(HashMap<String, String[]> descriptions) {
-        
-            HashMap<String, String> aliasesMap = getAliasesFromFile();
-       
-            for (String key : descriptions.keySet()) {
-                String arguments = descriptions.get(key)[0];
-                String description = descriptions.get(key)[1];
-                CommandFunction<String, ArrayList<String>, String> function = commandFunctions.get(key);
+        HashMap<String, String> aliasesMap = getAliasesFromFile();
 
-                if (function != null) {
-                    Command new_command = new Command(key, arguments, description, function);
-                    commands.put(key, new_command );
-                    String alias = aliasesMap.get(key);
-                    if (alias != null){
-                        
-                            commands.put(alias.toUpperCase(), new_command);
-                        
-                    }
-               
+        for (String key : descriptions.keySet()) {
+            String arguments = descriptions.get(key)[0];
+            String description = descriptions.get(key)[1];
+            CommandFunction<String, ArrayList<String>, String> function = commandFunctions.get(key);
+
+            if (function != null) {
+                Command new_command = new Command(key, arguments, description, function);
+                commands.put(key, new_command );
+                String alias = aliasesMap.get(key);
+                if (alias != null){
+                    commands.put(alias.toUpperCase(), new_command);
                 }
-            }   
-        
+            }
+        }
+    }
+
+    private HashMap<String, String> getAliasesFromFile() {
+        String filePath = "aliases.csv";
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        try{
+            String line;
+            BufferedReader reader = new BufferedReader(new FileReader(filePath));
+            while ((line = reader.readLine()) != null)
+            {
+                String[] parts = line.split(",", 2);
+                if (parts.length >= 2)
+                {
+                    String key = parts[0];
+                    String value = parts[1];
+                    map.put(key, value);
+                    //System.out.println(parts[0] +"," + parts[1]);
+                }
+            }
+
+            // for (String key : map.keySet())
+            // {
+            //     System.out.println(key + "," + map.get(key));
+            // }
+            reader.close();
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return map;
     }
 
     /**
@@ -385,14 +397,16 @@ public class CommandRunner {
                 String result = cmd.run(playerName, args);
                 if (result != null)
                     System.out.println(result);
-		
-		remoteGameInterface.logInteraction(playerName, command, args, result);
+
+                remoteGameInterface.logInteraction(playerName, command, args, result);
             } catch (RemoteException ex) {
                 Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-	// prompt command not found
-	else{System.out.println("Command not found. Type HELP for command list.");} 
+        // prompt command not found
+        else{
+            System.out.println("Command not found. Type HELP for command list.");
+        }
     }
 
     /**
@@ -403,7 +417,7 @@ public class CommandRunner {
 
         for (String key : commands.keySet()) {
             Command command = commands.get(key);
-            String line = String.format("- %-30s%s\n", key.toUpperCase() + " " + command.getArguments(), command.getDescription());
+            String line = String.format("- %-30s%s\n", command.getId() + " " + command.getArguments(), command.getDescription());
             s += line;
         }
 
