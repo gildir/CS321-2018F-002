@@ -1,5 +1,6 @@
 LOOK,,Shows you the area around you
 SAY,MESSAGE,Says <message> to any other players in the same area.
+WHISPER,PLAYER MESSAGE,Says <MESSAGE> to specified <PLAYER>.
 MOVE,DIRECTION,Tries to walk in <direction>.
 PICKUP,OBJECT,Tries to pick up an object in the same area.
 DROPOFF,OBJECT,Tries to drop off an object in the same area.
