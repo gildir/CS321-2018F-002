@@ -31,7 +31,7 @@ public class CommandRunner {
      * Store command functions and preprocessing of arguments
      */
     private HashMap<String, CommandFunction<String, ArrayList<String>, String>> commandFunctions
-        = new HashMap<String, CommandFunction<String, ArrayList<String>, String>>();
+            = new HashMap<String, CommandFunction<String, ArrayList<String>, String>>();
 
     /**
      * For each command add it to the hashmap defining also a lambda expression
@@ -131,6 +131,28 @@ public class CommandRunner {
         commandFunctions.put("ROCK",       (name, args) -> { remoteGameInterface.rock(name); return null; });
         commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
         commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
+        commandFunctions.put("GIFT", (name, args) -> {
+            if(args.isEmpty()) {
+                return "You need to provide a ghoul name and an object.";
+            }
+            else if (args.size() == 2){
+                String ghoulName = args.remove(0);
+                String target = args.remove(0);
+
+                return remoteGameInterface.giftGhoul(name, ghoulName, target);
+            }
+            else{
+                return "Gift command only takes two arguments <ghoul_name> <item_name>.";
+            }
+        });
+        commandFunctions.put("POKE", (name, args) -> {
+            if(args.isEmpty()) {
+                return "You need to provide a ghoul name.";
+            }
+            else {
+                return remoteGameInterface.pokeGhoul(name, args.remove(0));
+            }
+        });
     }
 
     /**
@@ -215,20 +237,20 @@ public class CommandRunner {
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
         try (Scanner file_commands = new Scanner(new File(commandsFile));) {
             HashMap<String, String[]> file_map = new HashMap<String, String[]>();
-            
+
             while(file_commands.hasNextLine()){
                 String currentline = file_commands.nextLine();
                 String[] command_parts = currentline.split(",");
-                
+
                 String command_name = command_parts[0];
                 String[] command_description = new String[]{ command_parts[1], command_parts[2] };
-                
+
                 file_map.put(command_name, command_description);
             }
             createCommands(file_map);
         } catch (IOException ex) {
             Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
-        }   
+        }
     }
 
     /**
@@ -248,6 +270,10 @@ public class CommandRunner {
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
 
+        // Ghoul commands
+        descriptions.put("POKE",      new String[]{"GHOUL",    "Pokes <GHOUL>"});
+        descriptions.put("GIFT",      new String[]{"GHOUL, ITEM", "Gives your <ITEM> to <GHOUL>"});
+
         // PvP Commands
         descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another <PLAYER> to a Rock Paper Scissors Battle."});
         descriptions.put("ACCEPT",    new String[]{"PLAYER",   "Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
@@ -265,7 +291,7 @@ public class CommandRunner {
      */
     private void createCommands(HashMap<String, String[]> descriptions) {
         HashMap<String, String> aliasesMap = getAliasesFromFile();
-   
+
         for (String key : descriptions.keySet()) {
             String arguments = descriptions.get(key)[0];
             String description = descriptions.get(key)[1];
@@ -298,7 +324,7 @@ public class CommandRunner {
                     String value = parts[1];
                     map.put(key, value);
                     //System.out.println(parts[0] +"," + parts[1]);
-                } 
+                }
             }
 
             // for (String key : map.keySet())
@@ -340,7 +366,7 @@ public class CommandRunner {
         // prompt command not found
         else{
             System.out.println("Command not found. Type HELP for command list.");
-        } 
+        }
     }
 
     /**
