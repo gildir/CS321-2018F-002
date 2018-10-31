@@ -38,4 +38,15 @@ public class PlayerList implements Iterable<Player> {
             this.playerList.remove(player);
         }
     }
+
+    //author Shayan AH
+    public String listOfPlayers()
+    {
+        String res = "";
+        for(Player player : this.playerList)
+        {
+            res += player.getName() + " ";
+        }
+        return res;
+    }
 }

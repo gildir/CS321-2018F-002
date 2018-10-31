@@ -1,6 +1,11 @@
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Scanner; 
 import java.util.ArrayList;
 import java.util.*;
 import java.util.LinkedList;
@@ -8,6 +13,7 @@ import java.io.IOException;
 import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+
 
 /**
  *
@@ -18,6 +24,8 @@ public class GameCore implements GameCoreInterface {
     private final Set<NPC> npcSet;
     private final Map map;
 
+    private final Shop shop;
+    
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
 
@@ -33,6 +41,9 @@ public class GameCore implements GameCoreInterface {
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
         playerList = new PlayerList();
+
+        shop = new Shop();
+
         npcSet = new HashSet<>();
 
         // Initialize starting NPCs
@@ -55,6 +66,7 @@ public class GameCore implements GameCoreInterface {
         
         activeBattles = new ArrayList<Battle>();
         pendingBattles = new ArrayList<Battle>();
+
         Thread objectThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -202,6 +214,22 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }        
+
+    //author Shayan AH
+    public String listAllPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Players in the world: ";
+         if(player != null)
+        {
+            l += playerList.listOfPlayers();
+            return l;
+        }
+        else
+            {
+                return null;
+            }
+    }
    
     /**
      * Turns the player left.
@@ -277,13 +305,13 @@ public class GameCore implements GameCoreInterface {
     public String whisper(String name1, String name2, String message) {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
-	
+ 
         if(playerSending != null && playerReceiving != null) {
-	
-	if(name1.equalsIgnoreCase(name2)){
-		return "Cannot whisper yourself";}
-	
+            if(name1.equalsIgnoreCase(name2)){
+                return "Cannot whisper yourself";
+            }
             this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+            playerReceiving.setLastWhisperName(name1);
             return "message sent to " + playerReceiving.getName();
         }
         else {
@@ -295,11 +323,28 @@ public class GameCore implements GameCoreInterface {
     }
 
     /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    */
+    public String reply(String name, String message) {
+        Player playerSending = this.playerList.findPlayer(name);
+        if(playerSending.getLastWhisperName() == null) {
+            return "You have not received a whisper to reply to.";
+        }
+        String name2 = playerSending.getLastWhisperName();
+        Player playerReceiving = this.playerList.findPlayer(name2);
+        return this.whisper(name, name2, message);
+    }
+
+    /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
      * @param name Name of the player to move
      * @return Message showing success.
      */
+
     public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
         if(player == null) {
@@ -340,6 +385,60 @@ public class GameCore implements GameCoreInterface {
     }
 
     /**
+     * Attempts to enter <location> shop. Use if entering a room that is part of another
+     * room, instead of using move to walk to a separate room
+     * @param name Name of the player to enter
+     * @param location The place to enter
+     * @return Message showing success
+     */
+    public String enter(String name, String location) {
+      Player player = this.playerList.findPlayer(name);
+      if(player == null) return null;
+      int newID;
+      //add more if statements for different shops
+      if(location.equalsIgnoreCase("shop"))
+        newID = 172;
+      else
+        return location + " is unknown.";
+      //if player not near a shop, return.
+      if(player.getCurrentRoom() != 1)
+        return "Not near " + location;
+      Room room = this.map.findRoom(player.getCurrentRoom());
+      this.broadcast(player, player.getName() + " has walked off towards the shop");
+      player.getReplyWriter().println("You enter the shop");
+      player.setCurrentRoom(newID);
+      this.broadcast(player, player.getName() + " just walked into the shop.");
+      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
+      shop.addPlayer(name);
+      player.getReplyWriter().println(shop.displayShop());
+      return "You stop moving and begin to stand around again.";
+    }
+    
+    /**
+     * Makes player leave a room e.g shop
+     * @param name Player Name
+     * @return Message showing success
+     */
+    public String leaveRoom(String name) {
+      Player player = this.playerList.findPlayer(name);
+      if(player == null) return null;
+      int newID;
+      //add more if statements for different shops
+      if(player.getCurrentRoom() == 172)
+        newID = 1;
+      else
+        return "Can't leave, did you mean quit?";
+      Room room = this.map.findRoom(player.getCurrentRoom());
+      this.broadcast(player, player.getName() + " has left the shop");
+      player.getReplyWriter().println("You leave the room");
+      player.setCurrentRoom(newID);
+      this.broadcast(player, player.getName() + " just walked into the area.");
+      player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
+      shop.removePlayer(name);
+      return "You stop moving and begin to stand around again.";
+    }
+    
+    /**
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
      * @param target The case-insensitive name of the object to pickup.
@@ -355,6 +454,11 @@ public class GameCore implements GameCoreInterface {
               Item object;
               String AllObjects = room.getObjects();
               while((object = room.getLastObject()) != null){
+                if (player.getCurrentInventory().size() >= 10)
+                {
+                  room.addObject(object); //Adds the removed objecct back in
+                  return "Could not pickup every object, there was not enough room in your inventory";
+                }
                 player.addObjectToInventory(object);
                 obj_count++;
               }
@@ -365,6 +469,11 @@ public class GameCore implements GameCoreInterface {
             }
             else{
               
+              if (player.getCurrentInventory().size() >= 10)
+              {
+                  this.broadcast(player, player.getName() + " tried to pick something up, but was holding too many items.");
+                  return "You try to pick up the " + target + ", but can't because you're holding too many items.";
+              }
               Item object = room.removeObject(target);
               if(object != null) {
                   player.addObjectToInventory(object);
@@ -497,8 +606,66 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }
+    } 
+    
+    /**
+     * Returns a list of nearby players you can gift
+     * @param name Player Name
+     * @return String representation of nearby players.
+     */
+    public String giftable(String playerName) {
+        Player player = playerList.findPlayer(playerName);
+        if(player != null) {        
+            // Find the room the player is in.
+            Room room = this.map.findRoom(player.getCurrentRoom());
+        
+            // Return a string representation of players in teh same room
+            String gift_list = "\nGiftable players near you: " + room.getPlayers(this.playerList);
+            gift_list = gift_list.replace(playerName, "");
+            return gift_list;
+      }
+      // No such player exists
+      else {
+            return null;
+      }
+    }    
 
+    public String money(String name) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            return player.viewMoney();
+        }
+        else {
+            return null;
+        }
+    }    
+    @Override 
+    public String gift(String yourname ,String name, double amount){
+        Player receiver = this.playerList.findPlayer(name); 
+        Player you = this.playerList.findPlayer(yourname); 
+        if(receiver != null){
+          if(you.getMoney().sum() < amount){
+           return "NOT ENOUGH MONEY!";  
+          }
+            this.broadcast(you, you.getName() + " offers a gift to " + receiver.getName());
+           //Scanner read = new Scanner(System.in);
+           
+            receiver.getReplyWriter().println("Accept gift? (y/n):");
+            
+           /*String input = read.nextLine(); 
+             
+           if(input.toLowerCase().equals("y")) {
+         
+            receiver.acceptMoney(you.giveMoney(you,receiver,amount));
+            
+           return "User accepted gift!";*/
+            return "";
+           //}
+      }else{
+            return "NO USER WITH THAT NAME";  
+      }   
+    }
+ 
      /**
      * Leaves the game.
      * @param name Name of the player to leave
@@ -515,7 +682,39 @@ public class GameCore implements GameCoreInterface {
         return null;
     }       
 
-    /**
+/**
+     * Sell an item to the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to sell
+     * @return A string indicating success or failure
+     */
+ public String sell(String playerName, String itemName) {
+  //format user input for item
+  itemName = itemName.toLowerCase();
+  itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
+  //check if player not in shop or does not have item
+  if(!shop.playerInShop(playerName)) {
+   return "You cannot sell if you are not in a shop!";
+  }
+  Player player = this.playerList.findPlayer(playerName);
+  if(player == null)
+   return null;
+  LinkedList<Item> inventory = player.getCurrentInventory();
+  Item object = player.removeObjectFomInventory(itemName);
+  if(object == null) {
+      return "You do not have " + itemName + " in your inventory!";
+  }
+  else {
+      //remove item from inventory, update player inventory, increase money
+      //inventory.remove(itemName);
+      player.setCurrentInventory(inventory);
+      shop.sellItem(object);
+      player.addMoney(object.getItemValue());
+      player.getReplyWriter().println(shop.displayShop());
+      return "You have sold " + itemName + " to the shop.";
+  }
+}
+  /**
      * Logs a string into a file
      * @param fileName name of the file to log in
      * @param log      message to log
@@ -844,5 +1043,4 @@ public class GameCore implements GameCoreInterface {
     }
   }
 //Rock Paper Scissors Battle Methods -------------------------------------------
-
 }
