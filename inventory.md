@@ -46,3 +46,10 @@ New Items can be created or destroyed by editing a csv file. The order of the in
   
 The following image depicts the proper order items should be entered in the csv file, along with their proper attributes:
 ![CSV Example](InventoryCSVPic.png "Inventory CSV")
+
+## Authors
+__Items:__ Christopher French  
+__Player Inventory:__ Tiernan O'Rourke  
+__Trading:__ Rachel Cousins  
+__Item Creation:__ Bryan Ruano Sanchez  
+__User Commands:__ Danay Izquierdo Santos  
