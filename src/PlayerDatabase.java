@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 
 import java.lang.StringBuilder;
 
+import javax.annotation.processing.FilerException;
+
 /**
  * This class will handle all player database interactions
  
@@ -20,7 +22,8 @@ public class PlayerDatabase {
     * File name of player database 
     */
    public static final String DATABASE_FILE = "player_database.csv";
-	
+   public static final String LOG_FILE = "login_logout_log.txt";
+
    /**
     * Adds a player's username and password to the database
     * if the username does not already exist in the system
@@ -148,11 +151,38 @@ public class PlayerDatabase {
 				fos.write(lines.toString().getBytes());
 				return true;
 			
-			} catch (FileNotFoundException e) {
+			} catch (FilerException e) {
 				return false;
 			} catch (IOException e) {
 				return false;
 			}
 		}
     }
+
+    /**
+    * Writes to a log file everytime a player logs in/out
+    *
+    * @param name Player name
+    * @param isLoggingIn Whether the player is logging in or logging out
+    * @return true if log message is written successfully, false otherwise
+    */
+   public static boolean loginLog(String name, boolean isLoggingIn) {
+    String log = name;
+    
+    try(FileOutputStream fos = new FileOutputStream(LOG_FILE, true)) {
+       if(isLoggingIn)
+          log += " logged in.\n";
+       else
+          log += " logged out.\n"; 
+       
+       //write log message to log file
+       fos.write(log.getBytes());
+    }
+    catch(IOException e) {
+       e.printStackTrace();
+       return false;
+    }
+    
+    return true;
+ }
 }

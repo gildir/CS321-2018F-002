@@ -261,7 +261,7 @@ public class GameClient {
      * Method called when player is exiting that prompts if the user wants to delete 
      * his or her character then proceeds to remove the user name and password if prompted to
      */
-    private void deleteCharacter() {
+    public void deleteCharacter() {
     	InputStreamReader keyboardReader = new InputStreamReader(System.in);
     	BufferedReader keyboardInput = new BufferedReader(keyboardReader);
     	String keyboardStatement = "";
@@ -293,7 +293,15 @@ public class GameClient {
     		if(PlayerDatabase.removePlayer(playerName))
     			System.out.println(playerName + " has been removed.");
     		else System.out.println(playerName + " could not be removed.");
-		}
+        }
+        try{
+            remoteGameInterface.leave(playerName);
+            runListener = false;
+            System.exit(-1);
+        }catch(RemoteException re){
+            System.exit(-1);
+        }
+        
     }
 
 
@@ -317,8 +325,13 @@ public class GameClient {
         }
 
         String command = tokens.remove(0);
+        if(command.equalsIgnoreCase("Quit")){
+            deleteCharacter();
+        }
+        new Time();
         commandRunner.run(command, tokens, this.playerName);
     }
+
 
     public static void main(String[] args) {
         if(args.length < 1) {
