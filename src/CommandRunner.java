@@ -136,7 +136,7 @@ public class CommandRunner {
             }
         });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
-        commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
+        //commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
 
         // PvP Commands
         commandFunctions.put("CHALLENGE",    (name, args) -> {
