@@ -60,6 +60,25 @@ public class CommandRunner {
                 return remoteGameInterface.say(name, message);
             }
         });
+        commandFunctions.put("WHISPER", (name, args) -> {
+            try {
+                String receiver = args.remove(0);
+                String message = String.join(" ", args);
+                if (receiver.equals("")) {
+                return "[ERROR] You need to specify another player to whisper.";
+                }
+                else if (message.equals("")) {
+                    return "[ERROR] You need to include a message to whisper.";
+                }
+                else {
+                    return remoteGameInterface.whisper(name, receiver, message);
+                    //return null;
+                }
+            }
+            catch(IndexOutOfBoundsException ex) {
+                return "[ERROR] No name specified.";
+            }
+        });
         commandFunctions.put("MOVE",     (name, args) -> {
             try {
                 String direction = args.get(0);
@@ -75,12 +94,31 @@ public class CommandRunner {
         });
         commandFunctions.put("PICKUP",    (name, args) -> {
             try {
-                String object = args.get(0);
+                String object = args.remove(0);
+                while (!args.isEmpty()) {
+                    object += " " + args.remove(0);
+                }
 
                 if (object.equals("")) {
                     return "[ERROR] No object specified";
                 } else {
                     return remoteGameInterface.pickup(name, object);
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No object specified";
+            }
+        });
+        commandFunctions.put("DROPOFF",   (name, args) -> {
+            try {
+                String object = args.remove(0);
+                while (!args.isEmpty()) {
+                    object += " " + args.remove(0);
+                }
+
+                if (object.equals("")) {
+                    return "[ERROR] No object specified";
+                } else {
+                    return remoteGameInterface.dropoff(name, object);
                 }
             } catch (IndexOutOfBoundsException ex) {
                 return "[ERROR] No object specified";
@@ -268,8 +306,10 @@ public class CommandRunner {
         descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
         descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
         descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
+        descriptions.put("WHISPER",       new String[]{"PLAYER MESSAGE", "Says <MESSAGE> to specified <PLAYER>."});
         descriptions.put("MOVE",      new String[]{"DIRECTION","Tries to walk in a <DIRECTION>."});
         descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
+        descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});
         descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});

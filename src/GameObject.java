@@ -18,10 +18,11 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      *  and establishes a new, empty, player list.
      * @throws RemoteException 
      */
-    public GameObject() throws RemoteException {
+     //now takes a filename for the Map
+    public GameObject(String filename) throws RemoteException {
         super();
-        
-        core = new GameCore();
+        //filename for the Map
+        core = new GameCore(filename);
     }
 
     /**
@@ -99,6 +100,20 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String say(String name, String message) throws RemoteException {
         return core.say(name, message);
     }
+
+    /**
+    * Whispers "message" to specified player.
+    * @param name1 Name of player sending message
+    * @param name2 Name of player receiving message
+    * @param message Message to whisper
+    * @return Message showing success.
+    * @throws RemoteException
+    */
+    @Override
+    public String whisper(String name1, String name2, String message) throws RemoteException
+    {
+        return core.whisper(name1, name2, message);
+    }
       
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
@@ -123,6 +138,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     @Override
     public String pickup(String name, String target) throws RemoteException {
         return core.pickup(name, target);
+    }    
+    /**
+     * Attempts to drop off an object < target >. Will return a message on any success or failure.
+     * @param name Name of the player to move
+     * @param target The case-insensitive name of the object to dropoff.
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    @Override
+    public String dropoff(String name, String target) throws RemoteException {
+        return core.dropoff(name, target);
     }
 
     /**

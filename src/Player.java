@@ -76,6 +76,15 @@ public class Player {
     public void addObjectToInventory(Item object) {
         this.currentInventory.add(object);
     }
+    public Item removeObjectFomInventory(String object) {
+        for(Item obj : this.currentInventory) {
+            if(obj.getItemName().equalsIgnoreCase(object)) {
+                this.currentInventory.remove(obj);
+                return obj;
+              }
+            }
+        return null;
+    }
 
     /**
      * Allows an an object to be taken away from player's inventory.
@@ -130,8 +139,8 @@ public class Player {
 
     public String viewInventory() {
         String result = "";
-        if(this.currentInventory.isEmpty()) {
-            return "nothing.";
+        if(this.currentInventory.isEmpty() == true) {
+            return " nothing.";
         }
         else {
             for(Item obj : this.currentInventory) {
