@@ -27,10 +27,11 @@ public class GameCore implements GameCoreInterface {
      * 
      * This is the main core that both the RMI and non-RMI based servers will interface with.
      */
-    public GameCore() {
+     //now takes filename for Map
+    public GameCore(String filename) {
         
-        // Generate the game map.
-        map = new Map(this);
+        // Generate the game map. with the proper filename!
+        map = new Map(this, filename);
         playerList = new PlayerList();
         npcSet = new HashSet<>();
 

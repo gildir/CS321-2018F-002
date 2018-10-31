@@ -31,7 +31,8 @@ public class GameServer {
      * @param rmi
      * @throws RemoteException 
      */
-    public GameServer(String host) throws RemoteException {           
+     //GameServer now takes filename for Map
+    public GameServer(String host, String filename) throws RemoteException {           
 	   try {
 			// Step 1: Create the remote listener thread.  This thread is used
 			//          for asynchronous replies from the game for events the 
@@ -43,7 +44,7 @@ public class GameServer {
 			//  a) Create the security manager.
 			System.setSecurityManager(new SecurityManager());
 			//  b) Create the RMI remote object.
-			remoteObject = new GameObject();
+			remoteObject = new GameObject(filename);//We need to know which Map to load!
 			//  c) Bind the remote object to the rmi service (rmiregistry must be running)
 			Naming.rebind("rmi://"+host+"/GameService", remoteObject);
 			System.err.println("[RUN] Game Server is now running and accepting connections.");
@@ -55,14 +56,18 @@ public class GameServer {
 	}
     
     public static void main(String[] args) {
-		if(args.length < 1) {
-			System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameServer hostname");
+    		//added an argument for map filename
+		if(args.length < 2) {
+			//changede error message to reflect this
+			System.out.println("[SHUTDOWN] .. This program requires two arguments. Run as java -Djava.security.policy=game.policy GameServer hostname mapFileName");
+			//provided clarification
+			System.out.println("NOTE: If you are running this with the .bat or .sh file, you just need one argument (like rooms.csv) :D");
 			System.exit(-1);
 		}
 		
         try {
 			System.out.println("[STARTUP] Game GameServer Now Starting...");
-			new GameServer(args[0]);
+			new GameServer(args[0], args[1]);
         } catch (RemoteException ex) {
             Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, ex);
         }
