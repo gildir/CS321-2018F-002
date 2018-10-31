@@ -2,6 +2,7 @@ LOOK,,Shows you the area around you
 SAY,MESSAGE,Says <message> to any other players in the same area.
 MOVE,DIRECTION,Tries to walk in <direction>.
 PICKUP,OBJECT,Tries to pick up an object in the same area.
+DROPOFF,OBJECT,Tries to drop off an object in the same area.
 INVENTORY,,Shows you what objects you have collected.
 QUIT,,Quits the game.
 HELP,,Displays the list of available commands
