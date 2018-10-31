@@ -28,6 +28,9 @@ The player may capture the Spirits, using the “capture” command. The player 
 
 The Spirit checklist may be displayed with the command, “spirit log”. Any type already captured will end each line with a “-C”.
 
+Here is an example demo of how the Spirit might work:
+![Spirit Interaction Preview](Spirit_Demo.png)
+
 # Developers
 
 ## Ghouls
