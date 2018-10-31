@@ -105,7 +105,7 @@ class PlayerList
 ### Code Analysis 
 PlayerList class keep a linked list of players called palyerList. toString methods returns the one string separated by space of all players in the linked list. 
 GameCore class is responsible for underlying actions. ListAllPlayers is a method in this class that gets the player name, if the player name is valid then it returns a string of all players int the world using toString method of playerList.  
-## Ignore
+## 405) Ignore
 ### Usage
 There are two ways to ignore messages from a player:
 1. **IGNORE -A <player_name>**
@@ -210,7 +210,7 @@ class GameObject
 The unignore feature essentially takes in two arguments, name of player as well as unignore name. First, our function checks whether the player is attempting to unignore himself in which case an exception occurs, and if not true, the function begins to verify if the ignored player even exists in the game. If the player that the current player wants to ignore exists and is in their ignored list, then the player becomes unignored and we remove them from the ignored list within the player class.
 
 
-## Shout
+## 412) Shout
 ### Usage
 There is one way to invoke the shout command:
 1. **SHOUT \<message>**
