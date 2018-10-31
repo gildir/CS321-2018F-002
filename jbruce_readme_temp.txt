@@ -1,4 +1,4 @@
-FOR SERVER HOSTERS
+FOR ADMINS
 --------------------
 
 When starting a new server, make sure to signify the csv file containing the rooms for the world. For example, from a unix terminal, type:
