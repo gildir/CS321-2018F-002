@@ -124,6 +124,10 @@ public class Room {
             this.objects.add(obj);
         }
     }
+
+    public void addObjectFromPlayer(Item obj) {
+	this.objects.add(obj);
+    }
     
     public Item removeObject(String target) {
         for(Item obj : this.objects) {
