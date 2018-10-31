@@ -48,7 +48,7 @@ When a player recieves a whipser the name of the player who sent it is tracked w
 
 To provide reply functionality the following classes were edited: Player, GameCore, GameClient, GameObjectInterface, GameObject. The logic for reply can be found in GameCore and utilizes the logic of the whisper command.
 
-### Class Player, File: Player.java
+### Class: Player, File: Player.java
 The following variable was added to track the name of the last player who whispered you:
 ```
 private String lastWhisperName;
@@ -60,7 +60,7 @@ public void setLastWhisperName(String name)
 public String getLastWhisperName()
 ```
 
-### Clase GameCore, File: GameCore.java
+### Class: GameCore, File: GameCore.java
 The following changes were made to this class:
 1. Function added
 ```java
