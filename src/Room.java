@@ -39,6 +39,12 @@ public class Room {
         result += "You see paths in these directions: " + this.getExits() + "\n";
         result += "...................\n";
         result += "You are facing: " + player.getCurrentDirection() + "\n";
+        if(player.getCurrentRoom() == 1){
+            result += "You are near the shop, type ENTER SHOP to enter.\n";
+        }
+        if(player.getCurrentRoom() == 10){
+            result += "Type LEAVE SHOP to leave.\n";
+        }
         return result;
     }
     
