@@ -1,2 +1,3 @@
 start /b rmiregistry
-java -Djava.security.policy=game.policy GameServer localhost
+rem now takes an argument for the world file
+java -Djava.security.policy=game.policy GameServer localhost %1
