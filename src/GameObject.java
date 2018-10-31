@@ -191,6 +191,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String dropoff(String name, String target) throws RemoteException {
         return core.dropoff(name, target);
     }
+    /**
+     * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
+     * @param player The player offering the item
+     * @param nameOffered Name of the person being offered an item
+     * @param target The name of the item to offer
+     * @return A message showing success.
+     * @throws RemoteException
+     */
+    public String offerItem(String playerName, String nameOffered, String target) throws RemoteException {
+        return core.offerItem(playerName, nameOffered, target);
+    }
 
     /**
      * Player pokes a ghoul that is in the same room.

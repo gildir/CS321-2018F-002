@@ -73,12 +73,11 @@ public class GameCore implements GameCoreInterface {
                 Random rand = new Random();
                 Room room;
                 Item object;
-                Item[] objects = {new Item("Flower", 0.26, 1.5), new Item("Textbook", 4.8, 300), new Item("Phone", 0.03, 100), new Item("Newspaper", 0.06, 1)};
-
+                ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
                         Thread.sleep(rand.nextInt(60000));
-                        object = objects[rand.nextInt(objects.length)];
+                        object = objects.get(rand.nextInt(objects.size()));
                         room = map.randomRoom();
                         room.addObject(object);
 
@@ -510,6 +509,47 @@ public class GameCore implements GameCoreInterface {
             else {
                 this.broadcast(player, player.getName() + " tried to drop off something, but doesn't seem to find what they were looking for.");
                 return "You just tried to drop off a " + target + ", but you don't have one.";
+            }
+        }
+        else {
+            return null;
+        }
+    }
+    /**
+     * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
+     * @param player The player offering the item
+     * @param nameOffered Name of the person being offered an item
+     * @param target The name of the item to offer
+     * @return A message showing success.
+     *
+     */
+    public String offerItem(String playerName, String nameOffered, String target) {
+        Player player = this.playerList.findPlayer(playerName);
+        Player playerOffered = this.playerList.findPlayer(nameOffered);
+        boolean hasItem = false;
+        if(player != null){
+            LinkedList<Item> playerInventory = player.getCurrentInventory();
+            if(playerOffered != null) {
+                if (player == playerOffered)
+                {
+                    return "You can't offer yourself an item.";
+                }
+                for(Item obj : playerInventory){
+                    if(obj.getItemName().equalsIgnoreCase(target)){
+                        hasItem = true;
+                        break;
+                    }
+                } 
+                if(hasItem) {
+                    playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
+                    return "You just offered " + nameOffered + " a " + target + " from your inventory.";
+                }
+                else {
+                    return "You just tried to offer " + nameOffered + " a " + target + ", but you don't have one.";
+                }
+            }
+            else {
+                return "You just tried to offer " + nameOffered + " a " + target + ", but " + nameOffered + " is not here.";
             }
         }
         else {
