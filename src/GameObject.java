@@ -65,7 +65,13 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     @Override
     public String look(String playerName) throws RemoteException {
         return core.look(playerName);
-    }        
+    }       
+
+    //Author Shayan AH
+    public String listAllPlayers(String name)throws RemoteException
+    {
+        return core.listAllPlayers(name);
+    } 
      
     /**
      * Turns the player left.
@@ -113,6 +119,19 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String whisper(String name1, String name2, String message) throws RemoteException
     {
         return core.whisper(name1, name2, message);
+    }
+
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    * @throws RemoteException
+    */
+    @Override
+    public String reply(String name, String message) throws RemoteException
+    {
+        return core.reply(name, message);
     }
       
     /**

@@ -43,6 +43,7 @@ public class CommandRunner {
         // Help command
         commandFunctions.put("HELP",    (name, args) -> listCommands() );
         commandFunctions.put("LOOK",    (name, args) -> remoteGameInterface.look(name));
+        commandFunctions.put("LISTPLAYERS", (name, args) -> remoteGameInterface.listAllPlayers(name));
         commandFunctions.put("LEFT",    (name, args) -> remoteGameInterface.left(name));
         commandFunctions.put("RIGHT",   (name, args) -> remoteGameInterface.right(name));
         commandFunctions.put("SAY",     (name, args) -> {
@@ -73,6 +74,20 @@ public class CommandRunner {
             }
             catch(IndexOutOfBoundsException ex) {
                 return "[ERROR] No name specified.";
+            }
+        });
+        commandFunctions.put("REPLY", (name, args) -> {
+            try {
+                String message = String.join(" ", args);
+                if(message.equals("")) {
+                    return "[ERROR] You need to include a message to reply.";
+                }
+                else {
+                    return remoteGameInterface.reply(name, message);
+                }
+            }
+            catch(IndexOutOfBoundsException ex) {
+                return "[ERROR] You need to include a message to reply.";
             }
         });
         commandFunctions.put("MOVE",     (name, args) -> {
@@ -333,10 +348,12 @@ public class CommandRunner {
 
         // Default commands
         descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
+        descriptions.put("LISTPLAYERS",      new String[]{"", "Shows a list of all the players in the world."});
         descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
         descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
         descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
         descriptions.put("WHISPER",       new String[]{"PLAYER MESSAGE", "Says <MESSAGE> to specified <PLAYER>."});
+        descriptions.put("REPLY",      new String[]{"MESSAGE", "Says <MESSAGE> to last player who whispered you."});
         descriptions.put("MOVE",      new String[]{"DIRECTION","Tries to walk in a <DIRECTION>."});
         descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
         descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});

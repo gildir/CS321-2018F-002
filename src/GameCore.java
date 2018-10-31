@@ -215,6 +215,22 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }        
+
+    //author Shayan AH
+    public String listAllPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Players in the world: ";
+         if(player != null)
+        {
+            l += playerList.listOfPlayers();
+            return l;
+        }
+        else
+            {
+                return null;
+            }
+    }
    
     /**
      * Turns the player left.
@@ -292,11 +308,11 @@ public class GameCore implements GameCoreInterface {
         Player playerReceiving = this.playerList.findPlayer(name2);
  
         if(playerSending != null && playerReceiving != null) {
- 
- if(name1.equalsIgnoreCase(name2)){
-  return "Cannot whisper yourself";}
- 
+            if(name1.equalsIgnoreCase(name2)){
+                return "Cannot whisper yourself";
+            }
             this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+            playerReceiving.setLastWhisperName(name1);
             return "message sent to " + playerReceiving.getName();
         }
         else {
@@ -305,6 +321,22 @@ public class GameCore implements GameCoreInterface {
             }
             return null;
         }
+    }
+
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    */
+    public String reply(String name, String message) {
+        Player playerSending = this.playerList.findPlayer(name);
+        if(playerSending.getLastWhisperName() == null) {
+            return "You have not received a whisper to reply to.";
+        }
+        String name2 = playerSending.getLastWhisperName();
+        Player playerReceiving = this.playerList.findPlayer(name2);
+        return this.whisper(name, name2, message);
     }
 
     /**
@@ -423,6 +455,11 @@ public class GameCore implements GameCoreInterface {
               Item object;
               String AllObjects = room.getObjects();
               while((object = room.getLastObject()) != null){
+                if (player.getCurrentInventory().size() >= 10)
+                {
+                  room.addObject(object); //Adds the removed objecct back in
+                  return "Could not pickup every object, there was not enough room in your inventory";
+                }
                 player.addObjectToInventory(object);
                 obj_count++;
               }
@@ -433,6 +470,11 @@ public class GameCore implements GameCoreInterface {
             }
             else{
               
+              if (player.getCurrentInventory().size() >= 10)
+              {
+                  this.broadcast(player, player.getName() + " tried to pick something up, but was holding too many items.");
+                  return "You try to pick up the " + target + ", but can't because you're holding too many items.";
+              }
               Item object = room.removeObject(target);
               if(object != null) {
                   player.addObjectToInventory(object);
