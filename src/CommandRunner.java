@@ -474,6 +474,10 @@ public class CommandRunner {
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
 
+        //chat system
+        descriptions.put("SHOUT",   new String[]{"SHOUT MESSAGE", "Says <MESSAGE> to all players in the world."});
+        descriptions.put("IGNORE",   new String[]{"IGNORE", "IGNORE -l, -a, -r player - Use -a to add 'player' to ignore list, -r to remove, and -l (L) with no player name to show list."});
+
         // Create them
         createCommands(descriptions);
     }
