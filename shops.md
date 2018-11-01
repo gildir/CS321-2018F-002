@@ -20,15 +20,15 @@ Room room = this.map.findRoom(player.getCurrentRoom());
 We can now easily use the Room class’ getPlayers() method to return a string of player objects within the room. 
 
 
-## Gift Command - Adeel Mudassar
+## Give Command - Adeel Mudassar
 
 ### For Users:
 
-Gifting is a command that allows users to interact with one another. It allows a user to give money to another user. When the menu comes up the user (giver) can type in “gift” as a command follower by another user’s name (receiver) and an amount. This will then prompt the second user to accept or deny the trade. If they proceed to accept the gift, the money is then transferred from the first user’s account to the second users; and a message is displayed on both of their screens. If the user proceeds to decline the gift than the first user is given a message stating that their gift was denied. 
+Give is a command that allows users to interact with one another. It allows a user to give money to another user. When the menu comes up the user (giver) can type in “gift” as a command follower by another user’s name (receiver) and an amount. This will then prompt the second user to accept or deny the trade. If they proceed to accept the gift, the money is then transferred from the first user’s account to the second users; and a message is displayed on both of their screens. If the user proceeds to decline the gift than the first user is given a message stating that their gift was denied. 
 
 ### For Developers:
 
-When the gift command is called it uses the given parameters and calls the method in gamecore which prompts the receiver to accept or deny the gift. Each user is a player object and has an array of money linked to them. This array is changed by the giveMoney() method in the player class which is run by the gamecore class if the user accepts the gift. GiveMoney has three fields, the giver, receiver, and amount (these were passed on from the gameclient). It takes an amount and runs a while loop (same number as times as the amount) that takes each dollar and puts it in the receiver’s money array, it then prints a message for the receiver stating they have been given money. The giveMoney method then returns a money object that was created using the amount given. 
+When the give command is called it uses the given parameters and calls the method in gamecore which prompts the receiver to accept or deny the gift. Each user is a player object and has an array of money linked to them. This array is changed by the giveMoney() method in the player class which is run by the gamecore class if the user accepts the gift. GiveMoney has three fields, the giver, receiver, and amount (these were passed on from the gameclient). It takes an amount and runs a while loop (same number as times as the amount) that takes each dollar and puts it in the receiver’s money array, it then prints a message for the receiver stating they have been given money. The giveMoney method then returns a money object that was created using the amount given. 
 
 ![](adeel.png)
 
