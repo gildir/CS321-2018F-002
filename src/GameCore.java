@@ -165,14 +165,6 @@ public class GameCore implements GameCoreInterface {
     }
 
     /**
-    * Broadcasts a message to the specified player.
-    * @param sendingPlayer Player sending message
-    * @param receivingPlayer Player receiving message
-    * @param message Message to broadcast
-    */
-
-
-    /**
      * Returns the player with the given name or null if no such player.
      * @param name Name of the player to find.
      * @return Player found or null if none.
@@ -349,11 +341,12 @@ public class GameCore implements GameCoreInterface {
         if(playerSending != null && playerReceiving != null)
         {
             if(name1.equalsIgnoreCase(name2))
-                return "You cannot whisper yourself";
+                return "Cannot whisper yourself";
             else
             {
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
                     this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+                    playerReceiving.setLastWhisperName(name1);
                     return "message sent to " + playerReceiving.getName();
                 }
                 else {
@@ -364,7 +357,7 @@ public class GameCore implements GameCoreInterface {
         else
         {
             if(playerReceiving == null)
-                return "That player isn't online.";
+                return "Couldn't find player online.";
             return null;
         }
     }
@@ -833,7 +826,6 @@ public class GameCore implements GameCoreInterface {
 		return unIgnoreName + " removed from ignore list.";
     }
     /* STOP 408_ignore */
-    }
 
 /**
      * Sell an item to the shop the player is currently in
