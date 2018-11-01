@@ -106,5 +106,7 @@ public void doBattle(String challenger, String player2, int p1, int p2, Battle b
 public void rock(String player);
 public void paper(String player);
 public void scissors(String player);
+public void checkBoard(String player);
+public String tutorial(String name);
 //Rock Paper Scissors Battle Code here--------------------------------------
 }
