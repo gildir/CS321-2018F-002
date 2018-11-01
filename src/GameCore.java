@@ -502,7 +502,7 @@ public class GameCore implements GameCoreInterface {
             Item object = player.removeObjectFomInventory(target);
             Room room = map.findRoom(player.getCurrentRoom());
             if(object != null) {
-                room.addObject(object);
+                room.addObjectFromPlayer(object);
                 this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
                 return "You just dropped off a " + target + ".";
             }
