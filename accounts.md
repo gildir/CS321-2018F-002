@@ -72,7 +72,7 @@ and is still active on the server. The Time class has been implemented inside of
 GameClient.java.
 
 
-> ![alt text](./timeout.png)
+> ![timeOutFunction](./timeout.png)
 
 
 
@@ -99,4 +99,4 @@ a player is being added to/removed from the player list when they should not be
 added or removed.
 
 
-> ![alt text](./login_logout_log.PNG)
+> ![debugLog](./login_logout_log.PNG)
