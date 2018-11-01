@@ -7,7 +7,7 @@ The player database was created for the storage of all user account information.
 
 **NOTE:** PlayerDatabase.java file was created for the use of all user account information needs. The class contains addPlayer(String name, String password) to add a new player to the database, isPlayer(String name) to check if the user already exists, isPassword(String name, String password) to ensure the password is correct to that user, and removePlayer(String name) to remove that player from the database. This class also includes other methods that are required for other features (well documented inside the Java file).
 
-![alt text](https://github.com/htanvee/CS321-2018F-002/blob/Group1_Readme/userdatabase.png)
+> ![UserDatabase](./userdatabase.png)
 
 ## Account Creation
 Written by: Cody Kidwell
@@ -16,7 +16,7 @@ When a player first boots up the game they will be prompted to login or create a
 
 **NOTE:** GameClient.java file uses the createAccount() method to complete the account creation request. The player's username is verified using boolean isPlayer().
 
-![alt text](https://github.com/htanvee/CS321-2018F-002/blob/Group1_Readme/accountcreation.png)
+> ![AccountCreation](./accountcreation.png)
 
 ## Logging In/Out
 Written by: Haroon Tanveer
@@ -38,12 +38,12 @@ When the player enters the "QUIT" option to log out, they are given the option t
 
 Logging In:
 
-![alt text](https://github.com/htanvee/CS321-2018F-002/blob/Group1_Readme/login.png)
+> ![loginProcess](./login.png)
 
 
 Logging Out:
 
-![alt text](https://github.com/htanvee/CS321-2018F-002/blob/Group1_Readme/logout.png)
+> ![logoutProcess](./logout.png)
 
 
 
@@ -56,7 +56,7 @@ Written by: Brett Mullins
 
 If the user wants to remove his or her character permanently from the game, then the user should follow these steps to accomplish deletion. It is important for the user to realize this process is PERMANTENT and once an account is deleted it can NEVER be recovered. First, if the user is not already logged in, log into the game as a user normally would. The next step would be to enter the quit command into the user prompt. At that point, the user will be prompted if he or she wants to permanently delete their player and account. The user should then type "Y" (for yes). The user will then be prompted for his or her password. This is to prevent unwanted or accidental deletion of the character and account. After the password is entered correctly, the removal process will take place. If the password is entered incorrectly, the user is not deleted and is logged out normally.
 
-![alt text](https://github.com/htanvee/CS321-2018F-002/blob/Group1_Readme/removePlayer.png)
+> ![removePlayer](./removePlayer.png)
 
 
 
@@ -72,7 +72,7 @@ and is still active on the server. The Time class has been implemented inside of
 GameClient.java.
 
 
-![alt text](https://github.com/htanvee/CS321-2018F-002/blob/Group1_Readme/timeout.png)
+> ![alt text](./timeout.png)
 
 
 
@@ -99,4 +99,4 @@ a player is being added to/removed from the player list when they should not be
 added or removed.
 
 
-![alt text](https://github.com/htanvee/CS321-2018F-002/blob/Group1_Readme/login_logout_log.PNG)
+> ![alt text](./login_logout_log.PNG)
