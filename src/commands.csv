@@ -1,9 +1,12 @@
 LOOK,,Shows you the area around you
+LISTPLAYERS,,Shows a list of all the players in the world.
 SAY,MESSAGE,Says <message> to any other players in the same area.
 WHISPER,PLAYER MESSAGE,Says <MESSAGE> to specified <PLAYER>.
+REPLY,MESSAGE,Says <MESSAGE> to last player who whispered you.
 MOVE,DIRECTION,Tries to walk in <direction>.
 PICKUP,OBJECT,Tries to pick up an object in the same area.
 DROPOFF,OBJECT,Tries to drop off an object in the same area.
+OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.
 INVENTORY,,Shows you what objects you have collected.
 QUIT,,Quits the game.
 HELP,,Displays the list of available commands
@@ -13,5 +16,13 @@ REFUSE,PLAYER,Refuses a Rock Paper Scissors Battle Challenge from a specified <P
 ROCK,,Play <ROCK> in your current Rock Paper Scissors Battle.
 PAPER,,Play <PAPER> in your current Rock Paper Scissors Battle.
 SCISSORS,,Play <SCISSORS> in your current Rock Paper Scissors Battle.
-GIFT, GHOULNAME ITEM, Player gifts a ghoul an object; this action decreases the ghoul's aggression.
-POKE, GHOULNAME, Player pokes a ghoul that is in the same room.
+LEADERBOARD,,Display the current Rock Paper Scissors Leaderboard.
+TUTORIAL,,Display a tutorial for Rock Paper Scissors.
+ENTER,SHOP,Enters shop at clock tower
+LEAVE,SHOP,Leaves shop
+SELL,ITEM,Sell item in your inventory to the shop
+MONEY,,Line-by-line display of money
+GIFTABLE,,List players in the same room that you can give money to
+GIVE,,Give amount of money to a friend
+GIFT,GHOULNAME ITEM,Player gifts a ghoul an object; this action decreases the ghoul's aggression.
+POKE,GHOULNAME,Player pokes a ghoul that is in the same room.

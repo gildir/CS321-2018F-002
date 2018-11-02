@@ -14,7 +14,6 @@ public class Room {
     private final LinkedList<Exit> exits;
     private final GameCore gameCore;
     
-
     public Room(GameCore gameCore, int id, String title, String description, String location) {
         this.objects = new LinkedList<>();
         this.exits = new LinkedList<>();        
@@ -22,7 +21,7 @@ public class Room {
         this.id = id;
         this.title = title;
         this.description = description;
-		this.location = location;
+	this.location = location;
         this.gameCore = gameCore;
     }
     
@@ -39,6 +38,12 @@ public class Room {
         result += "You see paths in these directions: " + this.getExits() + "\n";
         result += "...................\n";
         result += "You are facing: " + player.getCurrentDirection() + "\n";
+        if(player.getCurrentRoom() == 1){
+            result += "You are near the shop, type ENTER SHOP to enter.\n";
+        }
+        if(player.getCurrentRoom() == 10){
+            result += "Type LEAVE SHOP to leave.\n";
+        }
         return result;
     }
     
@@ -123,6 +128,10 @@ public class Room {
         if(this.objects.size() < 5) {
             this.objects.add(obj);
         }
+    }
+
+    public void addObjectFromPlayer(Item obj) {
+	this.objects.add(obj);
     }
     
     public Item removeObject(String target) {

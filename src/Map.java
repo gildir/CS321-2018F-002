@@ -12,9 +12,8 @@ import java.util.Scanner;
 */
 public class Map
 {
-	
+    	private final GameCore gameCore;
 	private final LinkedList<Room> map;
-	private final GameCore gameCore;
 	//Constructor now takes a filename as an argument
 	public Map(GameCore gameCore, String filename)
 	{
@@ -28,7 +27,7 @@ public class Map
 			File mapFile = new File(filename);
 			Scanner csvFileScanner = new Scanner(mapFile);
 			
-			// while the scanner has a next line, there is another room to add
+
 			while (csvFileScanner.hasNextLine())
 			{
 				
@@ -108,24 +107,19 @@ public class Map
 		{
 			System.out.println("File not found.");
 		}
-		
-	}
-	
-	public Room findRoom(int roomId)
-	{
-		for(Room room : this.map)
-		{
-			if(room.getId() == roomId)
-			{
-				return room;
-			}
-		}
-		return null;
-	}
-	
-	public Room randomRoom()
-	{
-		Random rand = new Random();
-		return map.get(rand.nextInt(map.size()));
-	}
+            }
+    
+    public Room findRoom(int roomId) {
+        for(Room room : this.map) {
+            if(room.getId() == roomId) {
+                return room;
+            }
+        }
+        return null;
+    }
+    
+    public Room randomRoom() {
+        Random rand = new Random();
+        return map.get(rand.nextInt(map.size()));
+    }
 }

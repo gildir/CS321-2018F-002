@@ -43,6 +43,7 @@ public class CommandRunner {
         // Help command
         commandFunctions.put("HELP",    (name, args) -> listCommands() );
         commandFunctions.put("LOOK",    (name, args) -> remoteGameInterface.look(name));
+        commandFunctions.put("LISTPLAYERS", (name, args) -> remoteGameInterface.listAllPlayers(name));
         commandFunctions.put("LEFT",    (name, args) -> remoteGameInterface.left(name));
         commandFunctions.put("RIGHT",   (name, args) -> remoteGameInterface.right(name));
         commandFunctions.put("SAY",     (name, args) -> {
@@ -73,6 +74,20 @@ public class CommandRunner {
             }
             catch(IndexOutOfBoundsException ex) {
                 return "[ERROR] No name specified.";
+            }
+        });
+        commandFunctions.put("REPLY", (name, args) -> {
+            try {
+                String message = String.join(" ", args);
+                if(message.equals("")) {
+                    return "[ERROR] You need to include a message to reply.";
+                }
+                else {
+                    return remoteGameInterface.reply(name, message);
+                }
+            }
+            catch(IndexOutOfBoundsException ex) {
+                return "[ERROR] You need to include a message to reply.";
             }
         });
         commandFunctions.put("MOVE",     (name, args) -> {
@@ -120,8 +135,27 @@ public class CommandRunner {
                 return "[ERROR] No object specified";
             }
         });
+        commandFunctions.put("OFFERITEM",   (name, args) -> {
+            if(args.isEmpty()) {
+                return "You need to provide a player to offer an item.";
+            }
+            else {
+                String offeredPlayer = args.remove(0);
+                if(args.isEmpty()) {
+                    return "You need to provide an item to offer.";
+                }
+                else {
+                    String itemName = args.remove(0);
+                    while (!args.isEmpty())
+                    {
+                        itemName += " " + args.remove(0);
+                    }
+                    return remoteGameInterface.offerItem(name, offeredPlayer, itemName);
+                }
+            }
+        });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
-        commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
+        //commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
 
         // PvP Commands
         commandFunctions.put("CHALLENGE",    (name, args) -> {
@@ -169,6 +203,8 @@ public class CommandRunner {
         commandFunctions.put("ROCK",       (name, args) -> { remoteGameInterface.rock(name); return null; });
         commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
         commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
+        commandFunctions.put("LEADERBOARD",   (name, args) -> { remoteGameInterface.checkBoard(name); return null; });
+        commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
         commandFunctions.put("GIFT", (name, args) -> {
             if(args.isEmpty()) {
                 return "You need to provide a ghoul name and an object.";
@@ -190,6 +226,40 @@ public class CommandRunner {
             else {
                 return remoteGameInterface.pokeGhoul(name, args.remove(0));
             }
+        });
+        commandFunctions.put("ENTER", (name, args) -> { 
+            if(args.size() != 1){
+                return "Specify the room you want to enter";
+            }
+            else{
+                return remoteGameInterface.enter(name, args.get(0)); 
+            }
+        });
+        commandFunctions.put("LEAVE", (name, args) -> { return remoteGameInterface.leaveRoom(name); });
+        commandFunctions.put("SELL",       (name, args) -> { return remoteGameInterface.sell(name, args.get(0));  });
+        commandFunctions.put("MONEY",      (name, args) -> { return remoteGameInterface.money(name);  });
+        commandFunctions.put("GIFTABLE",   (name, args) -> { return remoteGameInterface.giftable(name);  });
+        commandFunctions.put("GIVE",       (name, args) -> { 
+            try {//merged with new command list 
+                if(args.size() != 2){
+                    System.out.println("Invalid name or value, please try again");
+                    return null;
+                }
+                else{
+                    String receiver = args.remove(0);
+                    Double amount = Double.parseDouble(args.remove(0));
+                    
+                    if(amount > 0){
+                        remoteGameInterface.gift(name, receiver, amount);
+                        return "";
+                    }
+                    else {
+                        return "Amount of money gifted must be greater than 0";
+                    }
+                }
+            } catch (NumberFormatException e){
+                return "invalid amount of money specified";
+            } 
         });
     }
 
@@ -299,10 +369,12 @@ public class CommandRunner {
 
         // Default commands
         descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
+        descriptions.put("LISTPLAYERS",      new String[]{"", "Shows a list of all the players in the world."});
         descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
         descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
         descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
         descriptions.put("WHISPER",       new String[]{"PLAYER MESSAGE", "Says <MESSAGE> to specified <PLAYER>."});
+        descriptions.put("REPLY",      new String[]{"MESSAGE", "Says <MESSAGE> to last player who whispered you."});
         descriptions.put("MOVE",      new String[]{"DIRECTION","Tries to walk in a <DIRECTION>."});
         descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
         descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});
@@ -321,6 +393,16 @@ public class CommandRunner {
         descriptions.put("ROCK",      new String[]{"",         "Play <ROCK> in your current Rock Paper Scissors Battle."});
         descriptions.put("PAPER",     new String[]{"",         "Play <PAPER> in your current Rock Paper Scissors Battle."});
         descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
+        descriptions.put("LEADERBOARD",  new String[]{"",      "Display the current Rock Paper Scissors Leaderboard."});
+        descriptions.put("TUTORIAL",  new String[]{"",         "Display a tutorial for Rock Paper Scissors."});
+
+        //Shops & Money
+        descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });
+        descriptions.put("LEAVE",     new String[]{"SHOP",     "Leaves shop" });
+        descriptions.put("SELL",      new String[]{"ITEM",     "Sell item in your inventory to the shop" });
+        descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
+        descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
+        descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
 
         // Create them
         createCommands(descriptions);
