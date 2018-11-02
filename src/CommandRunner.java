@@ -440,11 +440,9 @@ public class CommandRunner {
         // Default commands
         descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
         descriptions.put("LISTPLAYERS",new String[]{"", "Shows a list of all the players in the world."});
-        descriptions.put("IGNORE",     new String[]{"-L;-A;-R PLAYER", "Use -A to add players to ignore list; -R to remove from list; -L with no player name to show list."});
         descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
         descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
         descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
-        descriptions.put("SHOUT",      new String[]{"MESSAGE", "Says <MESSAGE> to all players in the game."});
         descriptions.put("WHISPER",   new String[]{"PLAYER MESSAGE", "Says <MESSAGE> to specified <PLAYER>."});
         descriptions.put("REPLY",     new String[]{"MESSAGE", "Says <MESSAGE> to last player who whispered you."});
         descriptions.put("MOVE",      new String[]{"DIRECTION","Tries to walk in a <DIRECTION>."});
@@ -477,8 +475,8 @@ public class CommandRunner {
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
 
         //chat system
-        descriptions.put("SHOUT",   new String[]{"SHOUT MESSAGE", "Says <MESSAGE> to all players in the world."});
-        descriptions.put("IGNORE",   new String[]{"IGNORE", "IGNORE -l, -a, -r player - Use -a to add 'player' to ignore list, -r to remove, and -l (L) with no player name to show list."});
+        descriptions.put("SHOUT",      new String[]{"MESSAGE", "Says <MESSAGE> to all players in the game."});
+        descriptions.put("IGNORE",     new String[]{"-L;-A;-R PLAYER", "Use -A to add players to ignore list; -R to remove from list; -L with no player name to show list."});
 
         // Create them
         createCommands(descriptions);
