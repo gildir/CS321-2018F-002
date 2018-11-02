@@ -16,12 +16,6 @@ public class Item{
   this.itemColor = getRandColor();
   this.itemSize = getRandSize();
  }
- Item(String itemName, double itemWeight, double itemValue, String itemColor, String itemSize){
-    this.itemName = itemName;
-    this.itemWeight = itemWeight;
-    this.itemValue = itemValue;
-    this.itemColor = itemColor;
- }
 
  // Getter functions
  public String getItemName(){
@@ -51,16 +45,14 @@ public class Item{
   return itemSize + itemColor + itemName + "(" + weightString + " lb, $" + valueString +")";
  }
  // Method spits out a random color
- private String getRandColor()
- {
+ private String getRandColor(){
     Random rand = new Random();
-    return Item.color[rand.nextInt(color.length)];
+    return Item.color[rand.nextInt(color.length)] + " ";
  }
  //Method spits out a random size
- private String getRandSize()
- {
+ private String getRandSize(){
      Random rand = new Random();
-     return Item.size[rand.nextInt(size.length)];
+     return Item.size[rand.nextInt(size.length)] + " ";
  }
 
 }
