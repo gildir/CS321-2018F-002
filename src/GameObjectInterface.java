@@ -20,7 +20,9 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public boolean joinGame(String name) throws RemoteException;
-    
+        
+    public String gift(String playerName, String name, double amount) throws RemoteException; 
+
     /**
      * Returns a look at the area of the specified player.
      * @param name Player Name
@@ -28,6 +30,9 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public String look(String name) throws RemoteException;
+
+    //author Shayan AH
+    public String listAllPlayers(String name) throws RemoteException;
     
     /**
      * Turns the player left.
@@ -63,6 +68,14 @@ public interface GameObjectInterface extends Remote {
     * @throws RemoteException
     */
     public String whisper(String name1, String name2, String message) throws RemoteException;
+
+    /**
+    * Sends a whisper the last player that whispered.
+    * @param name Name of player replying to whisper
+    * @param message Message to be whispered
+    * @return Message showing success.
+    */
+    public String reply(String name, String message) throws RemoteException;
     
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
@@ -89,6 +102,15 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public String dropoff(String name, String object) throws RemoteException;
+    /**
+     * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
+     * @param player The player offering the item
+     * @param nameOffered Name of the person being offered an item
+     * @param target The name of the item to offer
+     * @return A message showing success.
+     * @throws RemoteException
+     */
+    public String offerItem(String playerName, String nameOffered, String target) throws RemoteException;
     
      /**
      * Returns a string representation of all objects you are carrying.
@@ -115,7 +137,47 @@ public interface GameObjectInterface extends Remote {
      */
     public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException;
     
-     /**
+    /**
+     * Returns a list of nearby players you can gift.
+     * @param name Player Name
+     * @return String representation of nearby players.
+     * @throws RemoteException 
+     */
+    public String giftable(String name) throws RemoteException;
+
+    /**
+     * Returns a string representation of money you have
+     * @param name Name of the player to view their money
+     * @return Message containing player money
+     * @throws RemoteException 
+     */    
+    public String money(String name) throws RemoteException;   
+    
+    /**
+     * Sell an item to the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to sell
+     * @return A string indicating success or failure
+     * @throws RemoteException
+     */
+    public String sell(String playerName, String itemName) throws RemoteException;
+    
+    /**
+     * Leaves the shop.
+     * @param name Name of the player to leave
+     * @throws RemoteException 
+     */   
+    public String leaveRoom(String playerName) throws RemoteException; 
+    
+    /**
+     * Enters the shop.
+     * @param name Name of the player to enter, shop for location
+     * @throws RemoteException 
+     */   
+    public String enter(String playerName, String location) throws RemoteException;
+    
+    
+    /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @throws RemoteException 
@@ -140,5 +202,7 @@ public interface GameObjectInterface extends Remote {
     public void rock(String player) throws RemoteException;
     public void paper(String player) throws RemoteException;
     public void scissors(String player) throws RemoteException;
+	  public String tutorial(String name) throws RemoteException;
+    public void checkBoard(String player) throws RemoteException;
 //Rock Paper Scissors Battle Code Here---------------------------------
 }

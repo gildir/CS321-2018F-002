@@ -15,11 +15,11 @@ public class Map
     	private final GameCore gameCore;
 	private final LinkedList<Room> map;
 	//Constructor now takes a filename as an argument
-	public Map(String filename, GameCore gameCore)
+	public Map(GameCore gameCore, String filename)
 	{
 		
 		map = new LinkedList<>();
-		this.gameCore=gameCore;
+		this.gameCore = gameCore;
 		try
 		{
 			
@@ -107,7 +107,6 @@ public class Map
 		{
 			System.out.println("File not found.");
 		}
-		
             }
     
     public Room findRoom(int roomId) {
