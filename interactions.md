@@ -47,7 +47,7 @@ There is a `aliases.cvs` file available where you can specify a new name for an 
 Once you fill the gap you would be able to use both names for one command.
 The command configuration file has this appearance:
 
- ![GameMenu](./Aliases_example.JPG)
+ ![AliasesExample](./AliasesExample.PNG)
 
 The first column of the CVS file, where you have all the existing commands provided by the game, should not be modified. The next column is used to put the equivalent word you want to use as an alias so you can modify it. If you do not want to add an alias to some specific command you can just leave a blank space.
 
