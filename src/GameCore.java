@@ -347,7 +347,7 @@ public class GameCore implements GameCoreInterface {
             else
             {
 
-		if(playerSending.searchIgnoredByList(name2)){
+		if(playerSending.searchIgnoredBy(name2)){
 			return "Cannot whisper player, you can been ignored";
 		}
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
