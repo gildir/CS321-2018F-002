@@ -2,38 +2,40 @@
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
-/* START 405_ignore */
 import java.util.ArrayList;
-/* END 405_ignore */
+import java.util.Random;
 
 /**
  *
  * @author Kevin
  */
 public class Player {
-    private LinkedList<String> currentInventory;
+    private LinkedList<Item> currentInventory;
     private String name;
     private String lastWhisperName;
     private int currentRoom;
     private Direction currentDirection;
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
+    private Money money;
+
     /* START 405_ignore variables*/
     private ArrayList<String> ignoreList;
     private ArrayList<String> ignoredByList;
     /* END 405_ignore variables*/
-	
+
     public Player(String name) {
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
+        this.money = new Money(20);
 		/* START 405_ignore*/
         this.ignoreList = new ArrayList<String>();
         this.ignoredByList = new ArrayList<String>();
         /* END 405_ignore  */
     }
-    
+
     public void turnLeft() {
         switch(this.currentDirection.toString()) {
             case "North":
@@ -47,10 +49,10 @@ public class Player {
                 break;
             case "West":
                 this.currentDirection = Direction.SOUTH;
-                break;                
+                break;
         }
     }
-    
+
     public void turnRight() {
         switch(this.currentDirection.toString()) {
             case "North":
@@ -64,10 +66,10 @@ public class Player {
                 break;
             case "West":
                 this.currentDirection = Direction.NORTH;
-                break;                
+                break;
         }
     }
-    
+
     public String getName() {
         return name;
     }
@@ -84,61 +86,128 @@ public class Player {
         return this.lastWhisperName;
     }
 
-    public LinkedList<String> getCurrentInventory() {
+    public LinkedList<Item> getCurrentInventory() {
         return currentInventory;
     }
 
-    public void setCurrentInventory(LinkedList<String> currentInventory) {
+    public void setCurrentInventory(LinkedList<Item> currentInventory) {
         this.currentInventory = currentInventory;
     }
-    
-    public void addObjectToInventory(String object) {
+
+    public void addObjectToInventory(Item object) {
         this.currentInventory.add(object);
     }
-    
+
+    public Item removeObjectFomInventory(String object) {
+        for(Item obj : this.currentInventory) {
+            if(obj.getItemName().equalsIgnoreCase(object)) {
+                this.currentInventory.remove(obj);
+                return obj;
+              }
+            }
+        return null;
+    }
+
+    /**
+     * Allows an an object to be taken away from player's inventory.
+     * @return Message showing success.
+     */
+    public String removeRandomItem()  {
+        if (this.currentInventory.isEmpty()){
+            return "You have no items in your inventory.";
+        }
+        Random randInt = new Random();
+        int randItem = randInt.nextInt(this.currentInventory.size());
+        String targetItem = this.currentInventory.remove(randItem).getItemName();
+        setCurrentInventory(this.currentInventory);
+        return targetItem + " was removed from your inventory.";
+    }
+
     public void setReplyWriter(PrintWriter writer) {
         this.replyWriter = writer;
     }
-    
+
     public PrintWriter getReplyWriter() {
         return this.replyWriter;
     }
-    
+
     public void setOutputWriter(DataOutputStream writer) {
         this.outputWriter = writer;
     }
-    
+
     public DataOutputStream getOutputWriter() {
         return this.outputWriter;
     }
-    
+
     public int getCurrentRoom() {
         return this.currentRoom;
     }
-    
+
     public void setCurrentRoom(int room) {
         this.currentRoom = room;
     }
-    
+
     public String getCurrentDirection() {
         return this.currentDirection.name();
     }
-    
+
     public Direction getDirection() {
         return this.currentDirection;
     }
-    
+    public Money getMoney() {
+      return this.money;
+    }
+
+    public void addMoney(double amount) {
+        int dollars = (int) amount;
+        Money amountAdded = new Money(dollars);
+        double coins = amount - dollars;
+        coins *= 100;
+        for(int i = 0; i < coins; i++){
+            amountAdded.coins.add(new Penny());
+        }
+        acceptMoney(amountAdded);
+    }
+    public String viewMoney() {
+        return this.money.toString();
+    }
+    public void acceptMoney(Money moneyToAdd){
+        this.money.dollars.addAll(moneyToAdd.getDollars());
+        this.money.coins.addAll(moneyToAdd.getCoins());
+    }
+    public void setDirection(Direction direction){
+        this.currentDirection = direction;
+    }
+
+    public Money giveMoney(Player giver,Player receiver,double value){
+        Money moneyToGive = new Money();
+        replyWriter.println("You are giving away "+value);
+
+        if(this.money.sum() < value){
+            replyWriter.println("Not enough money!");
+            return moneyToGive;
+        }
+        int i = 0;
+        while(i < value){
+            receiver.money.dollars.add(this.money.dollars.remove(0));
+            i++;
+        }
+        receiver.getReplyWriter().println("You received " +value + " dollars!");
+        return moneyToGive;
+    }
+
     public String viewInventory() {
         String result = "";
         if(this.currentInventory.isEmpty() == true) {
-            return "nothing.";
+            return " nothing.";
         }
         else {
-            for(String obj : this.currentInventory) {
+            for(Item obj : this.currentInventory) {
                 result += " " + obj;
             }
             result += ".";
         }
+        result += ".";
         return result;
     }
 
@@ -146,12 +215,12 @@ public class Player {
     public String toString() {
         return "Player " + this.name + ": " + currentDirection.toString();
     }
-	
+
 	/* START 405_ignore */
     public void ignorePlayer(String name) {
 		ignoreList.add(name);
     }
-    
+
     public void addIgnoredBy( String name) {
 		ignoredByList.add(name);
     }
@@ -161,7 +230,7 @@ public class Player {
 		for( int x = 0; x < listSize; x++){
 			if( name.equalsIgnoreCase(ignoredByList.get(x)))
 				return true;
-		}	
+		}
 		return false;
     }
 
@@ -186,7 +255,7 @@ public class Player {
    public void unIgnorePlayer(String name) {
 		ignoreList.remove(name);
     }
-   
+
  public void removeIgnoredBy( String name) {
 		ignoredByList.remove(name);
     }

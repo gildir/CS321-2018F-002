@@ -2,6 +2,7 @@
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 /**
  *
@@ -19,7 +20,9 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public boolean joinGame(String name) throws RemoteException;
-    
+
+    public String gift(String playerName, String name, double amount) throws RemoteException;
+
     /**
      * Returns a look at the area of the specified player.
      * @param name Player Name
@@ -27,7 +30,10 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public String look(String name) throws RemoteException;
-    
+
+    //author Shayan AH
+    public String listAllPlayers(String name) throws RemoteException;
+
     /**
      * Turns the player left.
      * @param name Player Name
@@ -72,7 +78,6 @@ public interface GameObjectInterface extends Remote {
     */
     public String whisper(String name1, String name2, String message) throws RemoteException;
 
-
     /**
     * Sends a whisper the last player that whispered.
     * @param name Name of player replying to whisper
@@ -80,18 +85,15 @@ public interface GameObjectInterface extends Remote {
     * @return Message showing success.
     */
     public String reply(String name, String message) throws RemoteException;
-    
+
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
      * @param name Name of the player to move
-     * @param distance Number of rooms to move forward through.
      * @return Message showing success.
      * @throws RemoteException 
      */
-    //author Shayan AH
-    public String listAllPlayers(String name) throws RemoteException;
-    public String move(String name, int distance) throws RemoteException;
+    public String move(String name, String direction) throws RemoteException;
 
     /**
      * Attempts to pick up an object < object >. Will return a message on any success or failure.
@@ -101,42 +103,121 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public String pickup(String name, String object) throws RemoteException;
-    
+    /**
+     * Attempts to drop off an object < object >. Will return a message on any success or failure.
+     * @param name Name of the player to dropoff an object
+     * @param object The case-insensitive name of the object to drop off.
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    public String dropoff(String name, String object) throws RemoteException;
+    /**
+     * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
+     * @param player The player offering the item
+     * @param nameOffered Name of the person being offered an item
+     * @param target The name of the item to offer
+     * @return A message showing success.
+     * @throws RemoteException
+     */
+    public String offerItem(String playerName, String nameOffered, String target) throws RemoteException;
+
      /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to view their inventory
      * @return Message showing success.
-     * @throws RemoteException 
-     */    
-    public String inventory(String name) throws RemoteException;   
-    
-     /**
+     * @throws RemoteException
+     */
+    public String inventory(String name) throws RemoteException;
+
+    /**
+     * Player pokes a ghoul that is in the same room.
+     * @param ghoulName Name of the ghoul that is poked
+     * @param playerName Name of the player that pokes the ghoul.
+     * @return Message showing success or failure of the poking action.
+     */
+    public String pokeGhoul(String playerName, String ghoulName) throws RemoteException;
+
+    /**
+     * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
+     * @param playerName Name of the player that gifts the ghoul.
+     * @param target The case-insensitive name of the object that is gifted.
+     * @param ghoulName Name of the ghoul that receives the gift.
+     * @return Message showing success or failure of the gifting action.
+     */
+    public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException;
+
+    /**
+     * Returns a list of nearby players you can gift.
+     * @param name Player Name
+     * @return String representation of nearby players.
+     * @throws RemoteException
+     */
+    public String giftable(String name) throws RemoteException;
+
+    /**
+     * Returns a string representation of money you have
+     * @param name Name of the player to view their money
+     * @return Message containing player money
+     * @throws RemoteException
+     */
+    public String money(String name) throws RemoteException;
+
+    /**
+     * Sell an item to the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to sell
+     * @return A string indicating success or failure
+     * @throws RemoteException
+     */
+    public String sell(String playerName, String itemName) throws RemoteException;
+
+    /**
+     * Leaves the shop.
+     * @param name Name of the player to leave
+     * @throws RemoteException
+     */
+    public String leaveRoom(String playerName) throws RemoteException;
+
+    /**
+     * Enters the shop.
+     * @param name Name of the player to enter, shop for location
+     * @throws RemoteException
+     */
+    public String enter(String playerName, String location) throws RemoteException;
+
+
+    /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @throws RemoteException 
      */    
     public void leave(String name) throws RemoteException;
 
-	/* START 405_ignore */
-     /**
-     * update ignore and ignoredBy lists, depending on player
-     * @param name Name of the player performing ignore
-     * @param ignorePlayerName Name of the player being ignored
-     * @return Message with success/failure
+    /**
+     * Logs a player interaction with the world, ie the execution of a command.
+     *
+     * @param  name    Name of the player
+     * @param  command String containing the command called
+     * @param  args    Array containing the arguments as strings
+     * @param  output  String containing the result of executing the command
      * @throws RemoteException
-     */    
+     */
+    public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
+
+//Rock Paper Scissors Battle Code Here---------------------------------
+    public void challenge(String challenger, String player2) throws RemoteException;
+    public void accept(String challenger, String player2) throws RemoteException;
+    public void refuse(String challenger, String player2) throws RemoteException;
+    public void rock(String player) throws RemoteException;
+    public void paper(String player) throws RemoteException;
+    public void scissors(String player) throws RemoteException;
+	  public String tutorial(String name) throws RemoteException;
+    public void checkBoard(String player) throws RemoteException;
+//Rock Paper Scissors Battle Code Here---------------------------------
+    //405
     public String ignore(String name, String ignoreName) throws RemoteException;
-
+    //407
     public String listIgnoredPlayers(String playerName)throws RemoteException;
-
-	/* START 408_ignore */
-     /**
-     * update ignore and ignoredBy lists, depending on player
-     * @param name Name of the player performing unignored
-     * @param ignorePlayerName Name of the player being unignored
-     * @return Message with success/failure
-     * @throws RemoteException
-     */    
+    //408
     public String unIgnore(String name, String ignoreName) throws RemoteException;
-	/* START 408_ignore */
 }
