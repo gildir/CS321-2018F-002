@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 /**
  *
  * @author Kevin
@@ -104,8 +103,9 @@ public class GameClient {
         System.out.println("When you do, you will join the game at the George Mason Clock, in the main quad.");
         System.out.println("You will be able to see if any other players are in the same area as well as what");
         System.out.println("objects are on the ground and what direction you are facing.\n");
-        //new Time();
-        gameTimer();
+        
+        gameTimer(); //creates the main timer
+
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
