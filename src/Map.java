@@ -1,77 +1,113 @@
 
 import java.io.File;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.w3c.dom.Document;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import java.util.Scanner;
 
 /**
- *
- * @author Kevin
- */
-public class Map {   
-    private final LinkedList<Room> map;
-    private final GameCore gameCore;
-    
-    public Map(GameCore gameCore) {
-        map = new LinkedList<>();
-        this.gameCore = gameCore;
-        try {
-            File mapFile = new File("./rooms.xml");
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document document = dBuilder.parse(mapFile);
-            
-            document.getDocumentElement().normalize();
-            NodeList xmlRooms = document.getElementsByTagName("room");
-            NodeList xmlExits;
-            
-            String title, description;
-            String message;
-            int id, link;
-            Element roomElement;
-            Element exitElement;
-            Direction exitId;
-            
-            Room newRoom;
-            Exit newExit;
-            
-            for(int i = 0; i < xmlRooms.getLength(); i++) {
-                roomElement = (Element) xmlRooms.item(i);
-                
-                id = Integer.parseInt(roomElement.getAttribute("id"));
-                title = roomElement.getElementsByTagName("title").item(0).getTextContent();
-                description = roomElement.getElementsByTagName("description").item(0).getTextContent();
-                
-//                System.out.println("Adding Room " + id + " with Title " + title + ": " + description);
-                newRoom = new Room(gameCore, id, title, description);
-                
-                xmlExits = roomElement.getElementsByTagName("exit");
-                for(int j = 0; j < xmlExits.getLength(); j++) {
-                    exitElement = (Element) xmlExits.item(j);
-                    
-                    exitId = Direction.valueOf(exitElement.getAttribute("id"));
-                    link = Integer.parseInt(exitElement.getElementsByTagName("link").item(0).getTextContent());
-                    message = exitElement.getElementsByTagName("message").item(0).getTextContent();
-//                    System.out.println("... Adding Exit " + exitId + " to " + link + ": " + message);
-                    newRoom.addExit(exitId, link, message);
-                }                
-                
-                map.add(newRoom);
+*
+* @author Kevin
+*/
+public class Map
+{
+    	private final GameCore gameCore;
+	private final LinkedList<Room> map;
+	//Constructor now takes a filename as an argument
+	public Map(GameCore gameCore, String filename)
+	{
+		
+		map = new LinkedList<>();
+		this.gameCore = gameCore;
+		try
+		{
+			
+			// open a new scanner with the specified file as the input
+			File mapFile = new File(filename);
+			Scanner csvFileScanner = new Scanner(mapFile);
+			
+
+			while (csvFileScanner.hasNextLine())
+			{
+				
+				Room newRoom;
+				String title, description, message, location;
+				int id, link;
+				
+				csvFileScanner.useDelimiter("\\s*,\\s*");	// use comma in csv file as delimiter (and consume whitespace on either side)
+				id = csvFileScanner.nextInt();				// get the id of this room
+				location = csvFileScanner.next();
+				title = csvFileScanner.next();				// get the title of this room
+				csvFileScanner.useDelimiter("\n");			// don't use comma as delimiter, we want the remainder of the line for the description (which may include commas)
+				csvFileScanner.skip(", ");					// skip the characters ", " at the beginning of the next token
+				description = csvFileScanner.next();		// get the description of this room
+				newRoom = new Room(gameCore, id, title, description, location);
+				
+				/*
+				ADD THE EXITS TO THIS ROOM
+				(we always add exits in this direction: NORTH, EAST, WEST, SOUTH)
+				0 = North
+				1 = East
+				2 = West
+				3 = South
+				*/
+				for ( int i = 0 ; i < 4 ; i++ )
+				{
+					
+					csvFileScanner.nextLine();
+					csvFileScanner.useDelimiter("\\s*,\\s*");	// use comma in csv file as delimiter (and consume whitespace on either side)
+					link = csvFileScanner.nextInt();			// get the room this room is linked to
+					csvFileScanner.useDelimiter("\n");			// don't use comma as delimiter, we want the remainder of the line for the message (which may include commas)
+					csvFileScanner.skip(", ");					// skip the characters ", " at the beginning of the next token
+					message = csvFileScanner.next();			// get the "moving to next room" message for the connected room
+					
+					// add this exit to the room
+					switch (i)
+					{
+					case 0:
+						newRoom.addExit(Direction.NORTH, link, message);
+						break;
+					case 1:
+						newRoom.addExit(Direction.EAST, link, message);
+						break;
+					case 2:
+						newRoom.addExit(Direction.WEST, link, message);
+						break;
+					case 3:
+						newRoom.addExit(Direction.SOUTH, link, message);
+						break;
+					default:
+						System.out.println(String.format("Something broke...i = %d", i));
+						break;
+					}
+					
+				}
+				
+				// add the room to the map
+				map.add(newRoom);
+				
+				// if there's another room, advance the scanner to the first line of the next room
+				if (csvFileScanner.hasNextLine())
+				{
+					try{
+						csvFileScanner.nextLine();
+						// (there is an additional newline for human readability in the specified input file)
+						csvFileScanner.nextLine();
+					}catch(Exception e){}
+				}
+				
+			}
+			// close the scanner
+			csvFileScanner.close();
+			
+		}
+		
+		catch (FileNotFoundException e)
+		{
+			System.out.println("File not found.");
+		}
             }
-            
-        } catch (ParserConfigurationException | SAXException | IOException ex) {
-            Logger.getLogger(Map.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
     public Room findRoom(int roomId) {
         for(Room room : this.map) {
