@@ -103,12 +103,18 @@ public class GameClient {
             try{
                 do{ //do-while block ensure correct input is entered to direct user through login
                     acctConf = true;
-                    System.out.println("Enter 1 to login with a previously created account");
+                    System.out.println("Enter 1 to login with an existing account");
                     System.out.println("Enter 2 to create an account");
                     System.out.print("> ");
                     String acct = keyboardInput.readLine(); new Time();
 
-                    if(acct.equals("1")) login(); //User already has an account
+                    if(acct.equals("1")){
+                        if(PlayerDatabase.hasAccount()) login();
+                        else{
+                            System.out.println("No account currently exists, must create one first");
+                            acctConf = false;
+                        }
+                    }
                     else if(acct.equals("2")) createAccount();
                     else{
                         System.out.println("Please enter a correct input\n");
@@ -198,10 +204,20 @@ public class GameClient {
             }while(!nameSat); //will repeat until broken out
 
             //User creates a password that can be used to log in
-            System.out.println("Please enter a password.");
-            System.out.print("> ");
-            String password = keyboardInput.readLine(); new Time();
-            PlayerDatabase.addPlayer(this.playerName, password);
+            boolean isPassword = false;
+            while(!isPassword){
+                System.out.println("Please enter a password.");
+                System.out.print("> ");
+                String password = keyboardInput.readLine(); new Time();
+                if (password.length() == 0){
+                    System.out.println("Password must contain at least one character");
+                    isPassword = false;
+                }
+                else{
+                    isPassword = true;
+                    PlayerDatabase.addPlayer(this.playerName, password);
+                }
+            }
         }catch (IOException ex) {
             System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
             System.exit(-1);
@@ -225,11 +241,19 @@ public class GameClient {
                     else System.out.println("Username is incorrect... Please enter a new username");
                 }while(true); //exits the loop only through a break
 
-                boolean conf = false; newuser = false;
+                boolean conf = false; newuser = false; boolean isPassword = false;
                 while(!conf){ //While loop verifies user password
-                    System.out.println("Please enter your password");
-                    System.out.print("> ");
-                    this.playerPassword = keyboardInput.readLine(); new Time();
+                    isPassword = false;
+                    while(!isPassword){
+                        System.out.println("Please enter your password");
+                        System.out.print("> ");
+                        this.playerPassword = keyboardInput.readLine(); new Time();
+                        if (playerPassword.length() == 0){
+                            System.out.println("Password must contain at least one character");
+                            isPassword = false;
+                        }
+                        else isPassword = true;
+                    }
                     if(PlayerDatabase.isPassword(playerName, playerPassword) == true){
 
                         if(remoteGameInterface.joinGame(this.playerName) == false){
@@ -300,7 +324,7 @@ public class GameClient {
      */
     private void parseInput(String input) {
         boolean reply;
-
+        new Time();
         // First, tokenize the raw input.
         StringTokenizer commandTokens = new StringTokenizer(input);
         ArrayList<String> tokens = new ArrayList<>();

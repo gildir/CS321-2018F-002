@@ -24,6 +24,27 @@ public class PlayerDatabase {
    public static final String DATABASE_FILE = "player_database.csv";
    public static final String LOG_FILE = "login_logout_log.txt";
 
+   /*
+   *Determines if an account currently exists in the database
+   */
+    public static boolean hasAccount(){
+        try(FileInputStream fis = new FileInputStream(DATABASE_FILE);
+        InputStreamReader isr = new InputStreamReader(fis);
+        BufferedReader br = new BufferedReader(isr)) {
+         
+        //reads database line by line
+        String line;
+		if((line = br.readLine()) != null) {
+            //stores username and password from current line into an array
+            return true;        
+        }
+        else return false;
+	}
+      catch(IOException e) {
+      }
+      return false;
+    }
+
    /**
     * Adds a player's username and password to the database
     * if the username does not already exist in the system
