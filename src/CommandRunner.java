@@ -40,6 +40,7 @@ public class CommandRunner {
      * and call the command function in the RGI.
      */
     private void setupFunctions() {
+
         // Help command
         commandFunctions.put("HELP",    (name, args) -> listCommands() );
         commandFunctions.put("LOOK",    (name, args) -> remoteGameInterface.look(name));

@@ -14,7 +14,7 @@ import javax.annotation.processing.FilerException;
  * NOTE: All methods in this class are static, do not attempt to
  *       create an instance of this class
  *
- * Authors: Cody Kidwell and Joseph Saah
+ * Authors: Cody Kidwell, Joseph Saah, Brett Mullins, and Haroon Tanveer
  */
 public class PlayerDatabase {
 
