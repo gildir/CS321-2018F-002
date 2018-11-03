@@ -46,10 +46,9 @@ Below is a list of the currently available commands as well as their arguments a
 There is a `aliases.cvs` file available where you can specify a new name for an existing command so it is easier for you to remember all of them.
 Once you fill the gap you would be able to use both names for one command.
 The command configuration file has this appearance:
- ```java
-MOVE, GO
-LOOK,
-```
+
+ ![GameMenu](./Aliases_example.JPG)
+
 The first column of the CVS file, where you have all the existing commands provided by the game, should not be modified. The next column is used to put the equivalent word you want to use as an alias so you can modify it. If you do not want to add an alias to some specific command you can just leave a blank space.
 
 ## Notes for developers
