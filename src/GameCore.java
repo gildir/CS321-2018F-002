@@ -49,8 +49,11 @@ public class GameCore implements GameCoreInterface {
         npcSet = new HashSet<>();
 
         // Initialize starting NPCs
-        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
-                                    new Ghoul(this, "Ghoul2", 3, 25)));
+        // Initialize starting NPCs
+        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 14),
+                                    new Ghoul(this, "Ghoul2", 2, 14),
+                                    new Ghost(this, "Ghost1", 1, 14, new File ("GhostSayings.txt")),
+                                    new Ghost(this, "Ghost2", 2, 14, new File ("GhostSayings.txt"))));
 
         Thread npcThread = new Thread(new Runnable() {
             @Override
@@ -78,7 +81,7 @@ public class GameCore implements GameCoreInterface {
                 ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
-			Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
+   Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
                         object = objects.get(rand.nextInt(objects.size()));
                         room = map.randomRoom();
                         room.addObject(object);
@@ -1047,8 +1050,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play2.getName());
 
       return;
     }
@@ -1062,8 +1065,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName());
 
       return;
     }
@@ -1077,8 +1080,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName());
 
       return;
     }
@@ -1092,8 +1095,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play2.getName());
 
       return;
     }
@@ -1107,8 +1110,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play2.getName());
 
       return;
     }
@@ -1122,8 +1125,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName());
 
       return;
     }
@@ -1141,12 +1144,12 @@ public class GameCore implements GameCoreInterface {
     }
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
-	// Added by Brendan
+ // Added by Brendan
     public void checkBoard(String name) {
         Player player = this.playerList.findPlayer(name);
         if(player == null)
             return;
-		String board = this.leaderboard.getBoard();
+  String board = this.leaderboard.getBoard();
         player.getReplyWriter().println(board);
     }
 
