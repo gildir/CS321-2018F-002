@@ -205,5 +205,10 @@ public interface GameObjectInterface extends Remote {
     public String tutorial(String name) throws RemoteException;
     public void checkBoard(String player) throws RemoteException;
 //Rock Paper Scissors Battle Code Here---------------------------------
+	/**
+	 * gives an ASCII art map of the world surrounding a player
+	 * @param player the name of a player
+	 * @return the ASCII art map
+	 */
 	public String map(String player) throws RemoteException;
 }

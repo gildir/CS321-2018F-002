@@ -1179,32 +1179,43 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
+  //if an exit exists in a direction from a room, then its title is returned
   private String ExitString(Room r, Direction d)
   {
 	if(r.canExit(d))
 		return map.findRoom(r.getLink(d)).getTitle();
   	return "";
 }
+//returns a version of the string with n spaces to the left of it for formatting
 private String space(String s, int n)
 {
 	for(int i=n-s.length(); i>0; i--)
 		s=" "+s;
 	return s;
 }
+//given a player name, returns an ascii map of the world surrounding them
   public String map(String name)
   {
-  	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());
+  	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());//get the room the player is in
+	//get the title of all exits
 	String m="", n=ExitString(r, Direction.NORTH), w=ExitString(r, Direction.WEST), c=r.getTitle(), e=ExitString(r, Direction.EAST), s=ExitString(r, Direction.SOUTH), spaces="", dashes="";
+	//returns the longest name of all the exits
 	int l=Math.max(n.length(), Math.max(w.length(), Math.max(c.length(), Math.max(e.length(), s.length()))));
+
+	//formats the exit strings
 	n="|"+space(n, l)+"|";
 	w="|"+space(w, l)+"| ";
 	c="|"+space(c, l)+"| ";
 	e="|"+space(e, l)+"|";
 	s="|"+space(s, l)+"|";
+
+	//creates strings for spaces in dashes for exits that do not exist
 	spaces=space(spaces, l+2);
 	for(int i=l+2; i>0; i--)
 		dashes+="-";
 	dashes+=" ";
+
+	//build up the ascii map based on which exits exist
 	if(r.canExit(Direction.NORTH))
 		m=" "+spaces+dashes+"\n "+spaces+n+"\n "+spaces+dashes+"\n";
 	if(r.canExit(Direction.WEST))

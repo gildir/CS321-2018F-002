@@ -109,5 +109,10 @@ public void scissors(String player);
 public void checkBoard(String player);
 public String tutorial(String name);
 //Rock Paper Scissors Battle Code here--------------------------------------
-public String map(String player);
+	/**
+	 * gives an ASCII art map of the world surrounding a player
+	 * @param player the name of a player
+	 * @return the ASCII art map
+	 */
+	public String map(String player);
 }
