@@ -11,7 +11,7 @@ public interface GameCoreInterface {
      * @param player Player initiating the action.
      * @param message Message to broadcast.
      */   
-    public void broadcast(Player player, String message);    
+    public void broadcast(Player player, String message);
     
     /**
      * Broadcasts a message to all players in the specified room.
@@ -21,9 +21,9 @@ public interface GameCoreInterface {
     public void broadcast(Room room, String message);
     
 
-    public String gift(String playerName, String name, double amount); 
+    public String gift(String playerName, String name, double amount);
 
-    
+
     /**
      * Returns the player with the given name or null if no such player.
      * @param name Name of the player to find.
@@ -69,6 +69,15 @@ public interface GameCoreInterface {
      * @return Message showing success.
      */
     public String say(String name, String message);
+
+    /**
+    * Whispers "message" to specified player.
+    * @param name1 Name of player sending message
+    * @param name2 Name of player receiving message
+    * @param message Message to whisper
+    * @return Message Showing success.
+    */
+    public String whisper(String name1, String name2, String message);
     
     /**
      * Returns a string representation of all objects you are carrying.
@@ -83,13 +92,13 @@ public interface GameCoreInterface {
      * @return String representation of nearby players.
      */
     public String giftable(String name);
-    
+
     /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @return Player that was just removed.
      */    
-    public Player leave(String name);    
+    public Player leave(String name);
 
     /**
      * Logs a string into a file
@@ -97,7 +106,7 @@ public interface GameCoreInterface {
      * @param log      message to log
      */
     public void log(String fileName, String log);
-    
+
 //Rock Paper Scissors Battle Code here--------------------------------------
 public void challenge(String challenger, String player2);
 public void accept(String challenger, String player2);
@@ -109,10 +118,30 @@ public void scissors(String player);
 public void checkBoard(String player);
 public String tutorial(String name);
 //Rock Paper Scissors Battle Code here--------------------------------------
+AsciiMap
 	/**
 	 * gives an ASCII art map of the world surrounding a player
 	 * @param player the name of a player
 	 * @return the ASCII art map
 	 */
 	public String map(String player);
+
+    /* START 405_ignore */
+    /**
+     * Ignores player messages and whispers
+     * @param name Name of the player ignoring
+     * @param ignorePlayerName Name of player being ignored
+     * @return Message showing success.
+     */
+    public String ignore(String name, String ignorePlayerName);
+    /* END 405_ignore */
+
+    /**
+     * Ignores player messages and whispers
+     * @param name Name of the current player
+     * @param ignorePlayerName Name of player to unignore
+     * @return Message showing success.
+     */
+    public String unIgnore(String name, String ignorePlayerName);
+
 }
