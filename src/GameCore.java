@@ -1178,4 +1178,9 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
+  public String map()
+  {
+  	Room r=map.findRoom(playerList.iterator().next().getCurrentRoom());
+  	return r.toString();
+  }
 }

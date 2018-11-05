@@ -261,6 +261,7 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
+	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map();});
     }
 
     /**
@@ -403,6 +404,9 @@ public class CommandRunner {
         descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
+	
+	//World Command
+	descriptions.put("MAP", new String[]{"", "Displays an ascii art map of the world."});
 
         // Create them
         createCommands(descriptions);
