@@ -109,4 +109,5 @@ public void scissors(String player);
 public void checkBoard(String player);
 public String tutorial(String name);
 //Rock Paper Scissors Battle Code here--------------------------------------
+public String map(String player);
 }

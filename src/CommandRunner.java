@@ -261,7 +261,7 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
-	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map();});
+	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
     }
 
     /**

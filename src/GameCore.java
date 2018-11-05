@@ -1178,9 +1178,46 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
-  public String map()
+  private String ExitString(Room r, Direction d)
   {
-  	Room r=map.findRoom(playerList.iterator().next().getCurrentRoom());
-  	return r.toString();
+	if(r.canExit(d))
+		return map.findRoom(r.getLink(d)).getTitle();
+  	return "";
+}
+private String space(String s, int n)
+{
+	for(int i=n-s.length(); i>0; i--)
+		s=" "+s;
+	return s;
+}
+  public String map(String name)
+  {
+  	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());
+	String m="", n=ExitString(r, Direction.NORTH), w=ExitString(r, Direction.WEST), c=r.getTitle(), e=ExitString(r, Direction.EAST), s=ExitString(r, Direction.SOUTH), spaces="", dashes="";
+	int l=Math.max(n.length(), Math.max(w.length(), Math.max(c.length(), Math.max(e.length(), s.length()))));
+	n="|"+space(n, l)+"|";
+	w="|"+space(w, l)+"| ";
+	c="|"+space(c, l)+"| ";
+	e="|"+space(e, l)+"|";
+	s="|"+space(s, l)+"|";
+	spaces=space(spaces, l+2);
+	for(int i=l+2; i>0; i--)
+		dashes+="-";
+	dashes+=" ";
+	if(r.canExit(Direction.NORTH))
+		m=" "+spaces+dashes+"\n "+spaces+n+"\n "+spaces+dashes+"\n";
+	if(r.canExit(Direction.WEST))
+		if(r.canExit(Direction.EAST))
+			m+=dashes+dashes+dashes+"\n"+w+c+e+"\n"+dashes+dashes+dashes+"\n";
+		else
+			m+=dashes+dashes+"\n"+w+c+"\n"+dashes+dashes+"\n";
+	else
+		if(r.canExit(Direction.EAST))
+			m+=" "+spaces+dashes+dashes+"\n "+spaces+c+e+"\n "+spaces+dashes+dashes+"\n";
+		else
+			m+=" "+spaces+dashes+"\n "+spaces+c+"\n "+spaces+dashes+"\n";
+	if(r.canExit(Direction.SOUTH))
+		m+=" "+spaces+dashes+"\n "+spaces+s+"\n "+spaces+dashes+"\n";
+	return m;
   }
 }

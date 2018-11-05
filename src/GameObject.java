@@ -343,8 +343,8 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
 		core.checkBoard(player);
 	}
   //Rock Paper Scissors Battle Code here--------------------------------------
-  public String map() throws RemoteException
+  public String map(String name) throws RemoteException
   {
-  	return core.map();
+  	return core.map(name);
 }
 }
