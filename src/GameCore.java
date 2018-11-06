@@ -232,7 +232,7 @@ public class GameCore implements GameCoreInterface {
         }
     }        
 
-    //author Shayan AH
+    //402
     public String listAllPlayers(String name)
     {
         Player player = this.playerList.findPlayer(name);
@@ -387,6 +387,12 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
 
+    public String chat_log()
+    {
+        //print all chat logs (for admin)
+        System.err.println("hello dear Server");
+        return null;
+    }
     public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
         if(player == null) {

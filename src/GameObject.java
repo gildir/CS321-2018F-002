@@ -113,7 +113,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.shout(name, message);
     }
 
-    //Author Shayan AH
+    //302
     public String listAllPlayers(String name)throws RemoteException
     {
         return core.listAllPlayers(name);
@@ -145,7 +145,10 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
         return core.reply(name, message);
     }
-
+    public String chat_log()throws RemoteException
+    {
+        return core.chat_log();
+    }
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.

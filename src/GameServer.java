@@ -48,6 +48,11 @@ public class GameServer {
 			//  c) Bind the remote object to the rmi service (rmiregistry must be running)
 			Naming.rebind("rmi://"+host+"/GameService", remoteObject);
 			System.err.println("[RUN] Game Server is now running and accepting connections.");
+
+			//403
+			remoteObject.chat_log();
+
+
 		} catch(RemoteException re) {
 			Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, re);
 		} catch (MalformedURLException ex) {
