@@ -1287,6 +1287,7 @@ public class GameCore implements GameCoreInterface {
   private String SingleExit(Room r, String s)
   {
   	List<Direction> l=new ArrayList<Direction>();
+	//parse string for directions
 	for(int i=0; i<s.length(); i++)
 		if(s.charAt(i)=='n')
 			l.add(Direction.NORTH);
@@ -1296,25 +1297,37 @@ public class GameCore implements GameCoreInterface {
 			l.add(Direction.EAST);
 		else
 			l.add(Direction.SOUTH);
+	//for each direction found
 	for(Direction d: l)
 		if(r.canExit(d))
 			r=map.findRoom(r.getLink(d));
-		else
+		else//not a valid set of directions
 			return "";
 	return r.getTitle()+"("+s+")";
 }
 //returns all exit strings in a set of directions
-private String ExitString(Room r, String s)
+private String ExitString(Room r, int a, int b)
 {
-	String e=SingleExit(r, s), t;
+	String s="", e, t;
+	//convert coordinates to directions
+	for(; a<2; a++)
+		s+='n';
+	for(; a>2; a--)
+		s+='s';
+	for(; b<2; b++)
+		s+='w';
+	for(; b>2; b--)
+		s+='e';
+	e=SingleExit(r, s);
+	//check permutations of directions to find different possible locations
 	for(int i=0; i<s.length(); i++)
 		for(int j=i+1; j<s.length(); j++)
 		{
-			t=SingleExit(r, s.substring(0, i)+s.charAt(j)+s.substring(i+1, j)+s.charAt(i)+s.substring(j+1));
-			if(t.length()>0&&!e.contains(t.substring(0, t.indexOf("("))))
+			t=SingleExit(r, s.substring(0, i)+s.charAt(j)+s.substring(i+1, j)+s.charAt(i)+s.substring(j+1));//check a new permutation
+			if(t.length()>0&&!e.contains(t.substring(0, t.indexOf("("))))//if we found a new, valid location
 				e+=" or "+t;
 		}
-	if(e.startsWith(" or "))
+	if(e.startsWith(" or "))//if the first location wasn't valid
 		e=e.substring(4);
 	return e;
 }
@@ -1326,8 +1339,8 @@ private String[] RoomStrings(String s, int l)
 	r[1]=s;
 	for(int i=l-s.length(); i>0; i--)
 		r[1]=" "+r[1];
-	if(s.length()==0)
-		return new String[]{r[1], r[1], r[1]};
+	if(s.length()==0)//nothing here
+		return new String[]{r[1], r[1], r[1]};//return a bunch of spaces
 	for(int i=0; i<l; i++)
 		r[0]+="-";
 	r[1]="|"+r[1].substring(2)+"|";
@@ -1339,37 +1352,17 @@ public String map(String name)
 {
   	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());//get the room the player is in
 	//get the title of all exits
-	String[][] a=new String[5][5];
-	a[0][0]=ExitString(r, "nnww");
-	a[0][1]=ExitString(r, "nnw");
-	a[0][2]=ExitString(r, "nn");
-	a[0][3]=ExitString(r, "nne");
-	a[0][4]=ExitString(r, "nnee");
-	a[1][0]=ExitString(r, "nww");
-	a[1][1]=ExitString(r, "nw");
-	a[1][2]=ExitString(r, "n");
-	a[1][3]=ExitString(r, "ne");
-	a[1][4]=ExitString(r, "nee");
-	a[2][0]=ExitString(r, "ww");
-	a[2][1]=ExitString(r, "w");
+	String[][] a=new String[5][5];//initialize the rooms
+	for(int i=0; i<5; i++)
+		for(int j=0; j<5; j++)
+			a[i][j]=ExitString(r, i, j);
 	a[2][2]=r.getTitle();
-	a[2][3]=ExitString(r, "e");
-	a[2][4]=ExitString(r, "ee");
-	a[3][0]=ExitString(r, "sww");
-	a[3][1]=ExitString(r, "sw");
-	a[3][2]=ExitString(r, "s");
-	a[3][3]=ExitString(r, "se");
-	a[3][4]=ExitString(r, "see");
-	a[4][0]=ExitString(r, "ssww");
-	a[4][1]=ExitString(r, "ssw");
-	a[4][2]=ExitString(r, "ss");
-	a[4][3]=ExitString(r, "sse");
-	a[4][4]=ExitString(r, "ssee");
-	//returns the longest name of all the exits
+	//get the longest length in each column for spacing
 	int[] l=new int[5];
 	for(int i=0; i<5; i++)
 		for(int j=0; j<5; j++)
 			l[j]=Math.max(l[j], a[i][j].length());
+	//build the map String
 	String m="";
 	String[][] t=new String[5][3];
 	for(int i=0; i<5; i++)
