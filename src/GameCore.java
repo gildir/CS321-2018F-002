@@ -1180,56 +1180,105 @@ public class GameCore implements GameCoreInterface {
       return "";
   }
   //if an exit exists in a direction from a room, then its title is returned
-  private String ExitString(Room r, Direction d)
+  private String SingleExit(Room r, String s)
   {
-	if(r.canExit(d))
-		return map.findRoom(r.getLink(d)).getTitle();
-  	return "";
+  	List<Direction> l=new ArrayList<Direction>();
+	for(int i=0; i<s.length(); i++)
+		if(s.charAt(i)=='n')
+			l.add(Direction.NORTH);
+		else if(s.charAt(i)=='w')
+			l.add(Direction.WEST);
+		else if(s.charAt(i)=='e')
+			l.add(Direction.EAST);
+		else
+			l.add(Direction.SOUTH);
+	for(Direction d: l)
+		if(r.canExit(d))
+			r=map.findRoom(r.getLink(d));
+		else
+			return "";
+	return r.getTitle()+"("+s+")";
 }
-//returns a version of the string with n spaces to the left of it for formatting
-private String space(String s, int n)
+//returns all exit strings in a set of directions
+private String ExitString(Room r, String s)
 {
-	for(int i=n-s.length(); i>0; i--)
-		s=" "+s;
-	return s;
+	String e=SingleExit(r, s), t;
+	for(int i=0; i<s.length(); i++)
+		for(int j=i+1; j<s.length(); j++)
+		{
+			t=SingleExit(r, s.substring(0, i)+s.charAt(j)+s.substring(i+1, j)+s.charAt(i)+s.substring(j+1));
+			if(t.length()>0&&!e.contains(t.substring(0, t.indexOf("("))))
+				e+=" or "+t;
+		}
+	if(e.startsWith(" or "))
+		e=e.substring(4);
+	return e;
+}
+//returns a room String in a more ASCII-friendly format
+private String[] RoomStrings(String s, int l)
+{
+	String[] r=new String[3];
+	r[0]="";
+	r[1]=s;
+	for(int i=l-s.length(); i>0; i--)
+		r[1]=" "+r[1];
+	if(s.length()==0)
+		return new String[]{r[1], r[1], r[1]};
+	for(int i=0; i<l; i++)
+		r[0]+="-";
+	r[1]="|"+r[1].substring(2)+"|";
+	r[2]=r[0];
+	return r;
 }
 //given a player name, returns an ascii map of the world surrounding them
-  public String map(String name)
-  {
+public String map(String name)
+{
   	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());//get the room the player is in
 	//get the title of all exits
-	String m="", n=ExitString(r, Direction.NORTH), w=ExitString(r, Direction.WEST), c=r.getTitle(), e=ExitString(r, Direction.EAST), s=ExitString(r, Direction.SOUTH), spaces="", dashes="";
+	String[][] a=new String[5][5];
+	a[0][0]=ExitString(r, "nnww");
+	a[0][1]=ExitString(r, "nnw");
+	a[0][2]=ExitString(r, "nn");
+	a[0][3]=ExitString(r, "nne");
+	a[0][4]=ExitString(r, "nnee");
+	a[1][0]=ExitString(r, "nww");
+	a[1][1]=ExitString(r, "nw");
+	a[1][2]=ExitString(r, "n");
+	a[1][3]=ExitString(r, "ne");
+	a[1][4]=ExitString(r, "nee");
+	a[2][0]=ExitString(r, "ww");
+	a[2][1]=ExitString(r, "w");
+	a[2][2]=r.getTitle();
+	a[2][3]=ExitString(r, "e");
+	a[2][4]=ExitString(r, "ee");
+	a[3][0]=ExitString(r, "sww");
+	a[3][1]=ExitString(r, "sw");
+	a[3][2]=ExitString(r, "s");
+	a[3][3]=ExitString(r, "se");
+	a[3][4]=ExitString(r, "see");
+	a[4][0]=ExitString(r, "ssww");
+	a[4][1]=ExitString(r, "ssw");
+	a[4][2]=ExitString(r, "ss");
+	a[4][3]=ExitString(r, "sse");
+	a[4][4]=ExitString(r, "ssee");
 	//returns the longest name of all the exits
-	int l=Math.max(n.length(), Math.max(w.length(), Math.max(c.length(), Math.max(e.length(), s.length()))));
-
-	//formats the exit strings
-	n="|"+space(n, l)+"|";
-	w="|"+space(w, l)+"| ";
-	c="|"+space(c, l)+"| ";
-	e="|"+space(e, l)+"|";
-	s="|"+space(s, l)+"|";
-
-	//creates strings for spaces in dashes for exits that do not exist
-	spaces=space(spaces, l+2);
-	for(int i=l+2; i>0; i--)
-		dashes+="-";
-	dashes+=" ";
-
-	//build up the ascii map based on which exits exist
-	if(r.canExit(Direction.NORTH))
-		m=" "+spaces+dashes+"\n "+spaces+n+"\n "+spaces+dashes+"\n";
-	if(r.canExit(Direction.WEST))
-		if(r.canExit(Direction.EAST))
-			m+=dashes+dashes+dashes+"\n"+w+c+e+"\n"+dashes+dashes+dashes+"\n";
-		else
-			m+=dashes+dashes+"\n"+w+c+"\n"+dashes+dashes+"\n";
-	else
-		if(r.canExit(Direction.EAST))
-			m+=" "+spaces+dashes+dashes+"\n "+spaces+c+e+"\n "+spaces+dashes+dashes+"\n";
-		else
-			m+=" "+spaces+dashes+"\n "+spaces+c+"\n "+spaces+dashes+"\n";
-	if(r.canExit(Direction.SOUTH))
-		m+=" "+spaces+dashes+"\n "+spaces+s+"\n "+spaces+dashes+"\n";
+	int[] l=new int[5];
+	for(int i=0; i<5; i++)
+		for(int j=0; j<5; j++)
+			l[j]=Math.max(l[j], a[i][j].length());
+	String m="";
+	String[][] t=new String[5][3];
+	for(int i=0; i<5; i++)
+	{
+		for(int j=0; j<5; j++)
+			t[j]=RoomStrings(a[i][j], l[j]+2);
+		for(int j=0; j<3; j++)
+		{
+			for(int k=0; k<5; k++)
+				m+=t[k][j]+" ";
+			m+="\n";
+		}
+	}
 	return m;
-  }
+}
 }
