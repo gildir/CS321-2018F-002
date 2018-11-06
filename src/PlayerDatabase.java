@@ -23,6 +23,10 @@ public class PlayerDatabase {
     */
    public static final String DATABASE_FILE = "player_database.csv";
    public static final String LOG_FILE = "login_logout_log.txt";
+   
+   public static final String SECURITY_QUESTION_1 = "What is your mother's maiden name?";
+   public static final String SECURITY_QUESTION_2 = "What was the name of your first pet?";
+   public static final String SECURITY_QUESTION_3 = "What is the name of the elementary school you attended?";
 
    /*
    *Determines if an account currently exists in the database
@@ -51,16 +55,23 @@ public class PlayerDatabase {
     *
     * @param name Player's username
     * @param password Player's password
+    * @param ans1 Player's answer to SECURITY_QUESTION_1
+    * @param ans2 Player's answer to SECURITY_QUESTION_2
+    * @param ans3 Player's answer to SECURTIY_QUESTION_3
     * @return true if player is added to database, false otherwise 
     */
-	public static boolean addPlayer(String name, String password){
+	public static boolean addPlayer(String name, String password, String ans1, String ans2, String ans3){
    
       //build comma-seperated inputs for database with user's name and password
       try(FileOutputStream fos = new FileOutputStream(DATABASE_FILE, true)) {
+         
+         //add given values to database
          StringBuilder sb = new StringBuilder(name);
          
-         sb.append(",");
-         sb.append(password);
+         sb.append(","); sb.append(password);
+         sb.append(","); sb.append(ans1);
+         sb.append(","); sb.append(ans2);
+         sb.append(","); sb.append(ans3);
          sb.append("\n");
          
          //write inputs to database

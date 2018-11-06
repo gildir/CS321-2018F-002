@@ -184,6 +184,8 @@ public class GameClient {
      * that will be stored in the database
      */
     private void createAccount(){
+        String password = "", ans1, ans2, ans3;
+        
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         boolean nameSat = false; boolean nameConf = false;
@@ -230,16 +232,33 @@ public class GameClient {
             while(!isPassword){
                 System.out.println("Please enter a password.");
                 System.out.print("> ");
-                String password = keyboardInput.readLine(); update();
+                password = keyboardInput.readLine(); update();
                 if (password.length() == 0){
                     System.out.println("Password must contain at least one character");
                     isPassword = false;
                 }
                 else{
                     isPassword = true;
-                    PlayerDatabase.addPlayer(this.playerName, password);
+                    //PlayerDatabase.addPlayer(this.playerName, password);
                 }
             }
+            
+            //Present user with 3 security questions
+            System.out.println("Please answer the following security questions to reset your password if needed.");
+            System.out.println(PlayerDatabase.SECURITY_QUESTION_1);
+            System.out.print("> ");
+            ans1 = keyboardInput.readLine(); update();
+            
+            System.out.println(PlayerDatabase.SECURITY_QUESTION_2);
+            System.out.print("> ");
+            ans2 = keyboardInput.readLine(); update();
+            
+            System.out.println(PlayerDatabase.SECURITY_QUESTION_3);
+            System.out.print("> ");
+            ans3 = keyboardInput.readLine(); update();
+            
+            //Write player information to the player database
+            PlayerDatabase.addPlayer(this.playerName, password, ans1, ans2, ans3);
         }catch (IOException ex) {
             System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
             System.exit(-1);
