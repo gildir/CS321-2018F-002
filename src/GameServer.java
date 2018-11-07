@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,8 +51,6 @@ public class GameServer {
 			Naming.rebind("rmi://"+host+"/GameService", remoteObject);
 			System.err.println("[RUN] Game Server is now running and accepting connections.");
 
-			//403
-			remoteObject.chat_log();
 
 
 		} catch(RemoteException re) {
@@ -143,4 +143,5 @@ public class GameServer {
             }
         }
     }
+
 }

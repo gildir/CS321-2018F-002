@@ -145,10 +145,6 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
         return core.reply(name, message);
     }
-    public String chat_log()throws RemoteException
-    {
-        return core.chat_log();
-    }
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
