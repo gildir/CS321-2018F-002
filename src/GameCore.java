@@ -399,24 +399,22 @@ public class GameCore implements GameCoreInterface {
     public void add_chat_log(String line)
     {
 
-        try(FileOutputStream os =  new FileOutputStream(
-                new File("chat_log.txt"),true))
+        try( FileOutputStream os =  new FileOutputStream(
+                new File("chat_log.txt"),true ) )
         {
 
             OutputStreamWriter streamWriter = new OutputStreamWriter(os,StandardCharsets.UTF_8);
             System.err.println(streamWriter.getEncoding());
             PrintWriter writer = new PrintWriter(streamWriter);
             //print all chat logs (for admin)
-            System.err.println("yuhoo1");
             writer.println(line);
 
             writer.close();
             os.close();
-            System.err.println("yuhoo");
         }
         catch(Exception e)
         {
-            System.err.println("IOE");
+            System.err.println("Something went wrong when recording");
         }
 
     }
@@ -431,18 +429,16 @@ public class GameCore implements GameCoreInterface {
            System.err.println(streamWriter.getEncoding());
            PrintWriter writer = new PrintWriter(streamWriter);
            //print all chat logs (for admin)
-           System.err.println("yuhoo1");
            for(String line: lines)
            {
                writer.println(line);
            }
            writer.close();
            os.close();
-           System.err.println("yuhoo");
        }
        catch(Exception e)
        {
-           System.err.println("IOE");
+           System.err.println("Something went wrong when recording");
        }
 
     }
