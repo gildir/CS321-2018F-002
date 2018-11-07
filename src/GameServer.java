@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,6 +50,9 @@ public class GameServer {
 			//  c) Bind the remote object to the rmi service (rmiregistry must be running)
 			Naming.rebind("rmi://"+host+"/GameService", remoteObject);
 			System.err.println("[RUN] Game Server is now running and accepting connections.");
+
+
+
 		} catch(RemoteException re) {
 			Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, re);
 		} catch (MalformedURLException ex) {
@@ -138,4 +143,5 @@ public class GameServer {
             }
         }
     }
+
 }

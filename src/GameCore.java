@@ -1,6 +1,8 @@
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
@@ -9,10 +11,6 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.*;
 import java.util.LinkedList;
-import java.io.IOException;
-import java.io.File;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
 
 /**
@@ -232,7 +230,7 @@ public class GameCore implements GameCoreInterface {
         }
     }        
 
-    //author Shayan AH
+    //402
     public String listAllPlayers(String name)
     {
         Player player = this.playerList.findPlayer(name);
@@ -303,7 +301,11 @@ public class GameCore implements GameCoreInterface {
     @Override
     public String say(String name, String message) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null) {
+        if(player != null)
+        {
+            String log = player.getName() + " says, \"" +
+                    message + "\" in the room " + player.getCurrentRoom();
+            add_chat_log(log);
             this.broadcast(player, player.getName() + " says, \"" + message + "\"");
             return "You say, \"" + message + "\"";
         }
@@ -320,7 +322,10 @@ public class GameCore implements GameCoreInterface {
     */
     public String shout(String name, String message) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null) {
+        if(player != null)
+        {
+            String log = player.getName() + " shouts, \"" + message + "\"";
+            add_chat_log(log);
             this.broadcastShout(player, player.getName() + " shouts, \"" + message + "\"");
             return "You shout, \"" + message + "\"";
         }
@@ -346,7 +351,11 @@ public class GameCore implements GameCoreInterface {
                 return "Cannot whisper yourself";
             else
             {
-                if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
+                if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
+                {
+                    String log = playerSending.getName() + " whispers, \"" + message + "\" to "
+                            + playerReceiving.getName();
+                    add_chat_log(log);
                     this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
                     playerReceiving.setLastWhisperName(name1);
                     return "Message sent to " + playerReceiving.getName();
@@ -387,6 +396,52 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
 
+    public void add_chat_log(String line)
+    {
+
+        try( FileOutputStream os =  new FileOutputStream(
+                new File("chat_log.txt"),true ) )
+        {
+
+            OutputStreamWriter streamWriter = new OutputStreamWriter(os,StandardCharsets.UTF_8);
+            System.err.println(streamWriter.getEncoding());
+            PrintWriter writer = new PrintWriter(streamWriter);
+            //print all chat logs (for admin)
+            writer.println(line);
+
+            writer.close();
+            os.close();
+        }
+        catch(Exception e)
+        {
+            System.err.println("Something went wrong when recording");
+        }
+
+    }
+    public void add_chat_log(List<String> lines)
+    {
+
+       try(FileOutputStream os =  new FileOutputStream(
+               new File("chat_log.txt"),true))
+       {
+
+           OutputStreamWriter streamWriter = new OutputStreamWriter(os,StandardCharsets.UTF_8);
+           System.err.println(streamWriter.getEncoding());
+           PrintWriter writer = new PrintWriter(streamWriter);
+           //print all chat logs (for admin)
+           for(String line: lines)
+           {
+               writer.println(line);
+           }
+           writer.close();
+           os.close();
+       }
+       catch(Exception e)
+       {
+           System.err.println("Something went wrong when recording");
+       }
+
+    }
     public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
         if(player == null) {
