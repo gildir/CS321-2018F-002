@@ -170,6 +170,14 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public String sell(String playerName, String itemName) throws RemoteException;
+    
+    /**
+     * Buy an item from the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to buy
+     * @return A string indicating success or failure
+     */
+    public String buy(String playerName, String itemName) throws RemoteException;
 
     /**
      * Leaves the shop.
@@ -211,7 +219,7 @@ public interface GameObjectInterface extends Remote {
     public void rock(String player) throws RemoteException;
     public void paper(String player) throws RemoteException;
     public void scissors(String player) throws RemoteException;
-	  public String tutorial(String name) throws RemoteException;
+   public String tutorial(String name) throws RemoteException;
     public void checkBoard(String player) throws RemoteException;
 //Rock Paper Scissors Battle Code Here---------------------------------
     //405

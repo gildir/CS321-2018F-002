@@ -23,6 +23,7 @@ TUTORIAL,,Display a tutorial for Rock Paper Scissors.
 ENTER,SHOP,Enters shop at clock tower
 LEAVE,SHOP,Leaves shop
 SELL,ITEM,Sell item in your inventory to the shop
+BUY,ITEM,Buy an item from the shop
 MONEY,,Line-by-line display of money
 GIFTABLE,,List players in the same room that you can give money to
 GIVE,,Give amount of money to a friend

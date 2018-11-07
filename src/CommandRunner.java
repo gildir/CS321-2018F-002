@@ -306,7 +306,22 @@ public class CommandRunner {
             }
         });
         commandFunctions.put("LEAVE", (name, args) -> { return remoteGameInterface.leaveRoom(name); });
-        commandFunctions.put("SELL",       (name, args) -> { return remoteGameInterface.sell(name, args.get(0));  });
+        commandFunctions.put("SELL",       (name, args) -> { 
+            if(args.size() < 1)
+                return "Specify an item to sell.";
+            String item = args.remove(0);
+            while(args.size() != 0){
+                item += " " + args.remove(0);
+            }
+            return remoteGameInterface.sell(name, item);  });
+        commandFunctions.put("BUY",        (name, args) -> { 
+            if(args.size() < 1)
+                return "Specify an item to buy.";
+            String item = args.remove(0);
+            while(args.size() != 0){
+                item += " " + args.remove(0);
+            }
+            return remoteGameInterface.buy(name, item);  });
         commandFunctions.put("MONEY",      (name, args) -> { return remoteGameInterface.money(name);  });
         commandFunctions.put("GIFTABLE",   (name, args) -> { return remoteGameInterface.giftable(name);  });
         commandFunctions.put("GIVE",       (name, args) -> { 
@@ -470,6 +485,7 @@ public class CommandRunner {
         descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });
         descriptions.put("LEAVE",     new String[]{"SHOP",     "Leaves shop" });
         descriptions.put("SELL",      new String[]{"ITEM",     "Sell item in your inventory to the shop" });
+        descriptions.put("BUY",      new String[]{"ITEM",      "Buy an item from the shop" });
         descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
