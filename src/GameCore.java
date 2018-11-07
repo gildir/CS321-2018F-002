@@ -404,7 +404,6 @@ public class GameCore implements GameCoreInterface {
         {
 
             OutputStreamWriter streamWriter = new OutputStreamWriter(os,StandardCharsets.UTF_8);
-            System.err.println(streamWriter.getEncoding());
             PrintWriter writer = new PrintWriter(streamWriter);
             //print all chat logs (for admin)
             writer.println(line);
@@ -426,7 +425,7 @@ public class GameCore implements GameCoreInterface {
        {
 
            OutputStreamWriter streamWriter = new OutputStreamWriter(os,StandardCharsets.UTF_8);
-           System.err.println(streamWriter.getEncoding());
+
            PrintWriter writer = new PrintWriter(streamWriter);
            //print all chat logs (for admin)
            for(String line: lines)
