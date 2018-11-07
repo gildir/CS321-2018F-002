@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 
 /**
  *
@@ -68,7 +68,7 @@ public interface GameCoreInterface {
      * @param message Message to speak
      * @return Message showing success.
      */
-    public String say(String name, String message);
+    public String say(String name, String message, ArrayList<String> censorList);
 
     /**
     * Whispers "message" to specified player.
@@ -77,7 +77,7 @@ public interface GameCoreInterface {
     * @param message Message to whisper
     * @return Message Showing success.
     */
-    public String whisper(String name1, String name2, String message);
+    public String whisper(String name1, String name2, String message, ArrayList<String> censorList);
     
     /**
      * Returns a string representation of all objects you are carrying.
