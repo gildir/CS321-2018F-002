@@ -366,7 +366,7 @@ public class GameCore implements GameCoreInterface {
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
-                            + playerReceiving.getName() + " at " + date.toString();
+                            + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
                     message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
                     this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
