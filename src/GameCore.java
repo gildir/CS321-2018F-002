@@ -28,6 +28,7 @@ public class GameCore implements GameCoreInterface {
     private final int minimumSpawnTime=100, maximumSpawnTime=600;
 
     private final Shop shop;
+    Date date;
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
@@ -43,6 +44,7 @@ public class GameCore implements GameCoreInterface {
         
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
+	date = new Date();
         playerList = new PlayerList();
 
         shop = new Shop();
@@ -311,7 +313,7 @@ public class GameCore implements GameCoreInterface {
             add_chat_log(log);
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
             this.broadcast(player, player.getName() + " says, \"" + message + "\"");
-            return "You say, \"" + message + "\"";
+            return "You say, \"" + message + "\"" + " " + date.toString();
         }
         else {
             return null;
@@ -332,7 +334,7 @@ public class GameCore implements GameCoreInterface {
             add_chat_log(log);
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
             this.broadcastShout(player, player.getName() + " shouts, \"" + message + "\"");
-            return "You shout, \"" + message + "\"";
+            return "You shout, \"" + message + "\"" + " " + date.toString();
         }
         else {
             return null;
@@ -353,23 +355,23 @@ public class GameCore implements GameCoreInterface {
         if(playerSending != null && playerReceiving != null)
         {
             if(name1.equalsIgnoreCase(name2))
-                return "Cannot whisper yourself";
+                return "Cannot whisper yourself" + " " + date.toString();
             else
             {
 
 	if(playerSending.searchIgnoredBy(name2){
-		return "Cannot whisper player that has ignored you";
+		return "Cannot whisper player that has ignored you" + " " + date.toString();
 	}
 
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
-                            + playerReceiving.getName();
+                            + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
                     message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
                     this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
                     playerReceiving.setLastWhisperName(name1);
-                    return "Message sent to " + playerReceiving.getName();
+                    return "Message sent to " + playerReceiving.getName() + " " + date.toString();
                 }
                 else {
                     return "";
