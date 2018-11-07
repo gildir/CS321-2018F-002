@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 import java.lang.StringBuilder;
@@ -194,6 +195,91 @@ public class PlayerDatabase {
 			}
 		}
     }
+	
+	public static boolean checkSecurityQestions(String name) {
+		try(FileInputStream fis = new FileInputStream(DATABASE_FILE);
+		    InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr)) {
+			
+			InputStreamReader keyboardReader = new InputStreamReader(System.in);
+	        BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+			String[] info;
+			String line;
+			boolean check = false; //check default is false assuming that the answers are wrong
+			
+			//find the user
+			do {
+				line = br.readLine();
+				info = line.split(",");
+			} while(info[0] != name);
+			
+			//prompt for all three security question answers
+			System.out.println(SECURITY_QUESTION_1); String ans1 = keyboardInput.readLine();
+			System.out.println(SECURITY_QUESTION_2); String ans2 = keyboardInput.readLine();
+			System.out.println(SECURITY_QUESTION_3); String ans3 = keyboardInput.readLine();
+			
+			//check their answers versus the ones in the csv file
+			if(ans1.equals(info[2])) {
+				if(ans2.equals(info[3])) {
+					if(ans3.equals(info[4])) {
+						check = true;
+					}
+				}
+			}
+			
+			return check;
+			
+		} catch (FileNotFoundException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	public static boolean changePassword (String name) {
+				String line;
+				String newLine = "";
+				StringBuilder lines = new StringBuilder();
+				InputStreamReader keyboardReader = new InputStreamReader(System.in);
+		        BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+				try (FileInputStream fis = new FileInputStream(DATABASE_FILE);
+						InputStreamReader isr = new InputStreamReader(fis);
+						BufferedReader br = new BufferedReader(isr)) {
+					
+					String newPassword = keyboardInput.readLine();
+					
+					// reads database line by line adding lines in to a collective string of all the lines
+					while ((line = br.readLine()) != null) {
+						
+						String[] info = line.split(",");
+
+						// if username does not match to the one read it will rewrite it to the file
+						// else rewrite the line with the new password instead
+						if (!info[0].equals(name)) lines.append(line + "\n");
+						else {
+							for (int i = 0; i < info.length; i++) {
+								if(i != 1) newLine = newLine + info[i] + ",";
+								else newLine = newLine + newPassword + ",";
+							}
+							lines.append(newLine + "\n");
+						}
+					
+					}
+				} catch (IOException e) {
+					return false;
+				}
+				try (FileOutputStream fos = new FileOutputStream(DATABASE_FILE)){
+					
+					//overwrite the old file
+					fos.write(lines.toString().getBytes());
+					return true;
+				
+				} catch (FilerException e) {
+					return false;
+				} catch (IOException e) {
+					return false;
+				}
+	}
 
     /**
     * Writes to a log file everytime a player logs in/out
