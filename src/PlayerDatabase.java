@@ -60,7 +60,8 @@ public class PlayerDatabase {
     * @param ans3 Player's answer to SECURTIY_QUESTION_3
     * @return true if player is added to database, false otherwise 
     */
-	public static boolean addPlayer(String name, String password, String ans1, String ans2, String ans3){
+	public static boolean addPlayer(String name, String password, String question1, String ans1,
+                                   String question2, String ans2, String question3, String ans3){
    
       //build comma-seperated inputs for database with user's name and password
       try(FileOutputStream fos = new FileOutputStream(DATABASE_FILE, true)) {
@@ -69,8 +70,11 @@ public class PlayerDatabase {
          StringBuilder sb = new StringBuilder(name);
          
          sb.append(","); sb.append(password);
+         sb.append(","); sb.append(question1);
          sb.append(","); sb.append(ans1);
+         sb.append(","); sb.append(question2);
          sb.append(","); sb.append(ans2);
+         sb.append(","); sb.append(question3);
          sb.append(","); sb.append(ans3);
          sb.append("\n");
          

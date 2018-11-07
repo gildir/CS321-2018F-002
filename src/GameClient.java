@@ -184,7 +184,7 @@ public class GameClient {
      * that will be stored in the database
      */
     private void createAccount(){
-        String password = "", ans1, ans2, ans3;
+        String password = "", question1, ans1, question2, ans2, question3, ans3;
         
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
@@ -243,22 +243,30 @@ public class GameClient {
                 }
             }
             
-            //Present user with 3 security questions
-            System.out.println("Please answer the following security questions to reset your password if needed.");
-            System.out.println(PlayerDatabase.SECURITY_QUESTION_1);
+            //User enters and answers recovery questions
+            System.out.println("Please enter a recovery question.");
+            System.out.print("> ");
+            question1 = keyboardInput.readLine(); update();
+            System.out.println("Now enter an answer to that question.");
             System.out.print("> ");
             ans1 = keyboardInput.readLine(); update();
             
-            System.out.println(PlayerDatabase.SECURITY_QUESTION_2);
+            System.out.println("Please enter another recovery question.");
+            System.out.print("> ");
+            question2 = keyboardInput.readLine(); update();
+            System.out.println("Please answer your question.");
             System.out.print("> ");
             ans2 = keyboardInput.readLine(); update();
             
-            System.out.println(PlayerDatabase.SECURITY_QUESTION_3);
+            System.out.println("Please enter one last recovery question.");
+            System.out.print("> ");
+            question3 = keyboardInput.readLine(); update();
+            System.out.println("Please answer your question.");
             System.out.print("> ");
             ans3 = keyboardInput.readLine(); update();
             
             //Write player information to the player database
-            PlayerDatabase.addPlayer(this.playerName, password, ans1, ans2, ans3);
+            PlayerDatabase.addPlayer(this.playerName, password, question1, ans1, question2, ans2, question3, ans3);
         }catch (IOException ex) {
             System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
             System.exit(-1);
