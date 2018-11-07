@@ -277,6 +277,7 @@ public class GameClient {
      * Method helps the user login with their username and password
      */
     private void login(){
+    	int passwordsEnteredCount = 0;
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         try{
@@ -312,7 +313,21 @@ public class GameClient {
                         else System.out.println("Login Successful");
                         conf = true;
                     }
-                    else System.out.println("Password does not match");
+                    else {
+                    	System.out.println("Password does not match");
+                    	passwordsEnteredCount++;
+                    	if (passwordsEnteredCount > 3) {
+                    		if(PlayerDatabase.checkSecurityQestions(playerName)) {
+                    			update();
+                    			if(PlayerDatabase.changePassword(playerName)) {
+                    				update();
+                    				System.out.println("Password has been updated.");
+                    			}
+                    			else System.out.println("Password update failed.");
+                    		}
+                    		else System.out.println("Security question(s) answered incorectly.");
+                    	}
+                    }
                 }
             }while(newuser == true);
         }catch (IOException ex) {

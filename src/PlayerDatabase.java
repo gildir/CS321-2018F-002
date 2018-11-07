@@ -24,10 +24,6 @@ public class PlayerDatabase {
     */
    public static final String DATABASE_FILE = "player_database.csv";
    public static final String LOG_FILE = "login_logout_log.txt";
-   
-   public static final String SECURITY_QUESTION_1 = "What is your mother's maiden name?";
-   public static final String SECURITY_QUESTION_2 = "What was the name of your first pet?";
-   public static final String SECURITY_QUESTION_3 = "What is the name of the elementary school you attended?";
 
    /*
    *Determines if an account currently exists in the database
@@ -56,9 +52,12 @@ public class PlayerDatabase {
     *
     * @param name Player's username
     * @param password Player's password
-    * @param ans1 Player's answer to SECURITY_QUESTION_1
-    * @param ans2 Player's answer to SECURITY_QUESTION_2
-    * @param ans3 Player's answer to SECURTIY_QUESTION_3
+    * @param question1 Player's first security question
+    * @param ans1 Player's answer to their first provided question
+    * @param question2 Player's second security question
+    * @param ans2 Player's answer to their second provided question
+    * @param question3 Player's third security question
+    * @param ans3 Player's answer to their third provided question
     * @return true if player is added to database, false otherwise 
     */
 	public static boolean addPlayer(String name, String password, String question1, String ans1,
@@ -196,6 +195,11 @@ public class PlayerDatabase {
 		}
     }
 	
+	/**
+	 * Checks the security questions for a given player using in method keyboard inputs
+	 * @param name Player's name
+	 * @return
+	 */
 	public static boolean checkSecurityQestions(String name) {
 		try(FileInputStream fis = new FileInputStream(DATABASE_FILE);
 		    InputStreamReader isr = new InputStreamReader(fis);
@@ -203,25 +207,32 @@ public class PlayerDatabase {
 			
 			InputStreamReader keyboardReader = new InputStreamReader(System.in);
 	        BufferedReader keyboardInput = new BufferedReader(keyboardReader);
-			String[] info;
+			String[] info = null;
 			String line;
 			boolean check = false; //check default is false assuming that the answers are wrong
 			
 			//find the user
-			do {
+			/*do {
 				line = br.readLine();
 				info = line.split(",");
 			} while(info[0] != name);
+			*/
+			
+			while((line = br.readLine()) != null) {
+				info = line.split(",");
+				if (!info[0].equals(name)) continue;
+				else break;
+			}
 			
 			//prompt for all three security question answers
-			System.out.println(SECURITY_QUESTION_1); String ans1 = keyboardInput.readLine();
-			System.out.println(SECURITY_QUESTION_2); String ans2 = keyboardInput.readLine();
-			System.out.println(SECURITY_QUESTION_3); String ans3 = keyboardInput.readLine();
+			System.out.println(info[2]); String ans1 = keyboardInput.readLine();
+			System.out.println(info[4]); String ans2 = keyboardInput.readLine();
+			System.out.println(info[6]); String ans3 = keyboardInput.readLine();
 			
 			//check their answers versus the ones in the csv file
-			if(ans1.equals(info[2])) {
-				if(ans2.equals(info[3])) {
-					if(ans3.equals(info[4])) {
+			if(ans1.equals(info[3])) {
+				if(ans2.equals(info[5])) {
+					if(ans3.equals(info[7])) {
 						check = true;
 					}
 				}
@@ -236,6 +247,11 @@ public class PlayerDatabase {
 		}
 	}
 	
+	/**
+	 * Changes the password for a given Player using an in method keyboard entry
+	 * @param name Player's name
+	 * @return
+	 */
 	public static boolean changePassword (String name) {
 				String line;
 				String newLine = "";
@@ -246,6 +262,7 @@ public class PlayerDatabase {
 						InputStreamReader isr = new InputStreamReader(fis);
 						BufferedReader br = new BufferedReader(isr)) {
 					
+					System.out.print("Please enter your new password: ");
 					String newPassword = keyboardInput.readLine();
 					
 					// reads database line by line adding lines in to a collective string of all the lines

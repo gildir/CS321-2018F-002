@@ -1,3 +1,9 @@
 Brett logged in.
 Brett logged in.
 Brett logged out.
+Joe logged in.
+Joe logged out.
+Joe logged in.
+Joe logged out.
+Joe logged in.
+Joe logged out.
