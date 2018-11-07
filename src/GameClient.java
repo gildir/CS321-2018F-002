@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -116,6 +117,17 @@ public class GameClient {
             System.setSecurityManager(new SecurityManager());
             String strName = "rmi://"+host+"/GameService";
             remoteGameInterface = (GameObjectInterface) Naming.lookup(strName);
+
+            //Sets the prefix for player chat
+            try {
+                BufferedReader chatConfig = new BufferedReader(new FileReader("chatConfig.txt"));
+                String line = chatConfig.readLine();
+                chatConfig.close();
+                remoteGameInterface.setChatPrefix(line);
+            }
+            catch(IOException e) {
+                System.err.println("Error with chat config.");
+            }
 
             // Start by remotely executing the joinGame method.
             //   Lets the player choose a name and checks it with the server.  If the name is

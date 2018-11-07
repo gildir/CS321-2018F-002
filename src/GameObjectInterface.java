@@ -23,6 +23,16 @@ public interface GameObjectInterface extends Remote {
 
     public String gift(String playerName, String name, double amount) throws RemoteException;
 
+    public void setChatPrefix(String prefix) throws RemoteException;
+
+    /**
+    * Changes the chat prefix to the new prefix specified by the player.
+    * @param prefix New chat prefix to be set.
+    * @return Returns message saying whether the prefix was successfully changed or not.
+    * @throws RemoteException
+    */
+    public String changeChatPrefix(String prefix) throws RemoteException;
+
     /**
      * Returns a look at the area of the specified player.
      * @param name Player Name
