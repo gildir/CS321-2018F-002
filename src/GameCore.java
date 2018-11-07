@@ -1,6 +1,7 @@
 import java.io.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
@@ -429,7 +430,7 @@ public class GameCore implements GameCoreInterface {
                new File("chat_log.txt"),true))
        {
 
-           OutputStreamWriter streamWriter = new OutputStreamWriter(os,StandardCharsets.UTF_8);
+           OutputStreamWriter streamWriter = new OutputStreamWriter(os, StandardCharsets.UTF_8);
            PrintWriter writer = new PrintWriter(streamWriter);
            //print all chat logs (for admin)
            for(String line: lines)
