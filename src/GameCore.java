@@ -347,7 +347,6 @@ public class GameCore implements GameCoreInterface {
             else
             {
 
-	}
 
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
                     this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
