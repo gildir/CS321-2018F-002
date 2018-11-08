@@ -363,6 +363,7 @@ public class GameCore implements GameCoreInterface {
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
             this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"");
             return chatPrefix + "You shout, \"" + message + "\"" + " " + date.toString();
+        }
         else {
             return null;
         }
@@ -399,9 +400,6 @@ public class GameCore implements GameCoreInterface {
                     this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
                     playerReceiving.setLastWhisperName(name1);
                     return "Message sent to " + playerReceiving.getName() + " at " + date.toString();
-                }
-                else {
-                    return "";
                 }
             }
         }
