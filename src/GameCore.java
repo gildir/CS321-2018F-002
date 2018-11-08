@@ -409,6 +409,7 @@ public class GameCore implements GameCoreInterface {
                 return "Couldn't find player online.";
             return null;
         }
+        return null;
     }
 
     /**
