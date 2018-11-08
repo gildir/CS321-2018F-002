@@ -342,6 +342,7 @@ public class GameCore implements GameCoreInterface {
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
             this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"");
             return chatPrefix + "You say, \"" + message + "\"" + " " + date.toString();
+        }
         else {
             return null;
         }
