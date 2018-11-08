@@ -40,7 +40,7 @@ public class PlayerDatabase {
         //ensures all characters in the strings are alpha characters
         if(!username.matches("[a-zA-Z]+"))
         {
-            System.out.println("Username can only contain characters");
+            System.out.println("Username can only contain alphabetical characters");
             return false;
         }
         return true;
