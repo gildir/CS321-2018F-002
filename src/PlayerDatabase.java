@@ -30,11 +30,14 @@ public class PlayerDatabase {
      * @return true if the username fits all requirements
      */
     public static boolean isUname(String username){
-
+       
+        //checking to make sure that username has at least one character and less than 15
         if(username.length() > 15 || username.length() < 1){
             System.out.println("Username must be between 1 and 15 characters");
             return false;
         }
+
+        //ensures all characters in the strings are alpha characters
         if(!username.matches("[a-zA-Z]+"))
         {
             System.out.println("Username can only contain characters");
