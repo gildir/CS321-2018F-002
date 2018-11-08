@@ -27,6 +27,9 @@ public class GameCore implements GameCoreInterface {
     //Specifies a minimum and maximum amount of time until next item spawn
     private final int minimumSpawnTime=100, maximumSpawnTime=600;
 
+    //Prefix that will help distinguish player chat from anything else
+    private String chatPrefix;
+
     private final Shop shop;
     Date date;
 
@@ -112,6 +115,31 @@ public class GameCore implements GameCoreInterface {
 
     public Set<NPC> getNpcSet() {
         return npcSet;
+    }
+
+    public void setChatPrefix(String prefix) {
+      this.chatPrefix = prefix;
+    }
+
+    /**
+    * Changes the chat prefix to the new prefix specified by the player.
+    * @param prefix New chat prefix to be set.
+    * @return Returns message saying whether the prefix was successfully changed or not.
+    */
+    public String changeChatPrefix(String prefix) {
+      if(prefix.length() != 3) {
+        return "Prefix can only be 3 characters.";
+      }
+      try {
+        FileWriter chatConfig = new FileWriter("chatConfig.txt");
+        chatConfig.write(prefix);
+        chatConfig.close();
+        this.setChatPrefix(prefix);
+      }
+      catch(IOException e) {
+        System.err.println("Couldn't save new chat prefix.");
+      }
+      return "Prefix set successfully.";
     }
 
     /**
@@ -312,9 +340,8 @@ public class GameCore implements GameCoreInterface {
                     message + "\" in the room " + player.getCurrentRoom();
             add_chat_log(log);
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
-            this.broadcast(player, player.getName() + " says, \"" + message + "\"");
-            return "You say, \"" + message + "\"" + " " + date.toString();
-        }
+            this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"");
+            return chatPrefix + "You say, \"" + message + "\"" + " " + date.toString();
         else {
             return null;
         }
@@ -333,9 +360,8 @@ public class GameCore implements GameCoreInterface {
             String log = player.getName() + " shouts, \"" + message + "\"";
             add_chat_log(log);
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
-            this.broadcastShout(player, player.getName() + " shouts, \"" + message + "\"");
-            return "You shout, \"" + message + "\"" + " " + date.toString();
-        }
+            this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"");
+            return chatPrefix + "You shout, \"" + message + "\"" + " " + date.toString();
         else {
             return null;
         }
@@ -369,7 +395,7 @@ public class GameCore implements GameCoreInterface {
                             + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
                     message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
-                    this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+                    this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
                     playerReceiving.setLastWhisperName(name1);
                     return "Message sent to " + playerReceiving.getName() + " at " + date.toString();
                 }
