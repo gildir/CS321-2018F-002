@@ -24,6 +24,25 @@ public class PlayerDatabase {
    public static final String DATABASE_FILE = "player_database.csv";
    public static final String LOG_FILE = "login_logout_log.txt";
 
+    /**
+     * Determines if the username is less than 15 characters 
+     * and does not include numbers or symbols
+     * @return true if the username fits all requirements
+     */
+    public static boolean isUname(String username){
+
+        if(username.length() > 15 || username.length() < 1){
+            System.out.println("Username must be between 1 and 15 characters");
+            return false;
+        }
+        if(!username.matches("[a-zA-Z]+"))
+        {
+            System.out.println("Username can only contain characters");
+            return false;
+        }
+        return true;
+    }
+
    /*
    *Determines if an account currently exists in the database
    */

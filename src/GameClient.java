@@ -103,7 +103,7 @@ public class GameClient {
         System.out.println("When you do, you will join the game at the George Mason Clock, in the main quad.");
         System.out.println("You will be able to see if any other players are in the same area as well as what");
         System.out.println("objects are on the ground and what direction you are facing.\n");
-        
+
         gameTimer(); //creates the main timer
 
         // Set up for keyboard input for local commands.
@@ -193,6 +193,9 @@ public class GameClient {
                     System.out.println("Please enter a username");
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine(); update();
+                    if(!PlayerDatabase.isUname(playerName)){
+                        nameSat = false; continue;
+                    }
                     if(PlayerDatabase.isPlayer(playerName))
                     {
                         System.out.println("Username already exits... Please enter a new username\n");
