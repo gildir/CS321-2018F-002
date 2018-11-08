@@ -1,0 +1,36 @@
+------------------------------------------
+THIS IS NOT A VALID ROOM FILE
+------------------------------------------
+This file shows the generic format for writing a universe of rooms in csv
+
+The general idea is that each room is comprised of 5 lines.
+The first line contains, in this order, room ID number, classifier, room title, room description.
+The following 4 lines are the 4 directional exits. Each exit direction contains the room ID number of the room the exit leads to
+followed by a message to display when entering that room.
+
+The room ID number 0 should be reserved for an impassible route. This is not hardcoded that way, but is the most logical way to do it.
+In actuality, you can use any room ID number for a room that doesn't exist.
+
+It's also worth noting that the room descriptions and exit messages can contain commas, but any other field can not.
+
+Additional rooms in the universe are separated by 1 empty newline.
+The file should end at the end of the last room, with no additional newlines.
+Good form would be to use incrementing room numbers.
+
+room id#, room classifier(inside/outside/whatever), room title, room description(room description can contain commas, but not classifier or title)
+id# of room to exit NORTH to, message to display when exiting in that direction(message can contain commas
+id# of room to exit EAST to, message to display when exiting in that direction
+id# of room to exit WEST to, message to display when exiting in that direction
+id# of room to exit SOUTH to, message to display when exiting in that direction
+
+room id#, room classifier(inside/outside/whatever), room title, room description(room description can contain commas, but not classifier or title)
+id# of room to exit NORTH to, message to display when exiting in that direction(message can contain commas
+id# of room to exit EAST to, message to display when exiting in that direction
+id# of room to exit WEST to, message to display when exiting in that direction
+id# of room to exit SOUTH to, message to display when exiting in that direction
+
+room id#, room classifier(inside/outside/whatever), room title, room description(room description can contain commas, but not classifier or title)
+id# of room to exit NORTH to, message to display when exiting in that direction(message can contain commas
+id# of room to exit EAST to, message to display when exiting in that direction
+id# of room to exit WEST to, message to display when exiting in that direction
+id# of room to exit SOUTH to, message to display when exiting in that direction
