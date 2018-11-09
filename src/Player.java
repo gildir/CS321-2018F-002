@@ -159,7 +159,7 @@ public class Player {
   }
   
   public void addMoney(double value) {
-    System.out.printf("%f", value);
+   // System.out.printf("%f", value);
     Money added = new Money();
     int fives = (int)(value / 5);
     int ones = (int)(value % 5);
@@ -213,16 +213,11 @@ public class Player {
       }
       
       if(unitsRemoved[index] > 0){
-
-        //System.out.println("");
         valueCopy -= unitVals[index] * unitsRemoved[index];
       }
       index++;
     }
-    for(int i = 0; i < 5; i++){
-      System.out.printf("%d\n", unitsRemoved[i]);
-    }
-    System.out.printf("%f\n", valueCopy);
+   
     if(valueCopy == 0.0){
       this.money.numFives -= unitsRemoved[0];
       this.money.numOnes -= unitsRemoved[1];
@@ -233,58 +228,17 @@ public class Player {
     }
     // player must overcompensate and then get change
     else if(valueCopy > 0){
-      System.out.printf("%f", valueCopy);
-      // round the original value to the nearest dime first 
-      // remove up to 10 pennies
       double currentSum = value - valueCopy;
-      int extraDimes = 1;
-      while(unitsRemoved[3] + extraDimes <= numUnits[3]){
-        // keep adding dimes until the value has been met
-        if(currentSum + (0.10*extraDimes) >= value){
-          for(int i = 0; i < 10; i++){
-            //subtract away quarters and pennies 
-            if(unitsRemoved[4] > 0){
-              unitsRemoved[4]--;
-            }
-          }
-          unitsRemoved[3] += extraDimes;
-          // value has been met so change player money and return
-          this.money.numFives -= unitsRemoved[0];
-          this.money.numOnes -= unitsRemoved[1];
-          this.money.numQuarters -= unitsRemoved[2];
-          this.money.numDimes -= unitsRemoved[3];
-          this.money.numPennies -= unitsRemoved[4];
-          currentSum += (0.10*extraDimes);
-          // get change
-          addMoney(currentSum - value);
-          return;
-        }
-        extraDimes++;
-      }
       // round to the nearest dollar, if there are enough dollars
       double rounded = Math.ceil(value);
       int extraOnes = 1;
       double valRemoved = 0;
       while(unitsRemoved[1] + extraOnes <= numUnits[1]){
-        // keep adding ones until the value has been met
+        // add ones until the value has been met
         if(currentSum + extraOnes >= value){
-          while(valRemoved < 1){
-            if(unitsRemoved[2] > 0){
-              unitsRemoved[2]--;
-              valRemoved += 0.25;
-            }
-            else if(unitsRemoved[3] > 0){
-              unitsRemoved[3]--;
-              valRemoved += 0.10;
-            }
-            else if(unitsRemoved[4] > 0){
-              unitsRemoved[4]--;
-              valRemoved += 0.01;
-            }
-            if(unitsRemoved[2] == 0 && unitsRemoved[3] == 0 && unitsRemoved[4] == 0){
-              break;
-            }
-          }
+          unitsRemoved[2] = 0;
+          unitsRemoved[3] = 0;
+          unitsRemoved[4] = 0;
           unitsRemoved[1] += extraOnes;
           // value has been met so change player money and return
           this.money.numFives -= unitsRemoved[0];
