@@ -185,6 +185,14 @@ public class Player {
         this.money.numDimes += moneyToAdd.numDimes;
         this.money.numPennies += moneyToAdd.numPennies;
     }
+    
+    public void removeMoney(Money moneyRemove){
+      this.money.numFives -= moneyRemove.numFives;
+      this.money.numOnes -= moneyRemove.numOnes;
+      this.money.numQuarters -= moneyRemove.numQuarters;
+      this.money.numDimes -= moneyRemove.numDimes;
+      this.money.numPennies -= moneyRemove.numPennies;
+    }
    
     public String viewMoney() {
         return this.money.toString();
