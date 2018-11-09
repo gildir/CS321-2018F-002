@@ -552,7 +552,7 @@ public class CommandRunner {
 	String cmdToRun = command;
 	ArrayList<String> argsToRun = args;
 	
-	if (cmdToRun.equalsIgnoreUppercase("REDO")){
+	if (cmdToRun.equalsIgnoreCase("REDO")){
 	    if (lastCommand.equals("")){
                     System.out.println("No previous command");
                     return;
