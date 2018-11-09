@@ -11,6 +11,7 @@ import java.util.Random;
  * @author Kevin
  */
 public class Player {
+    private GameCore gameCore;
     private LinkedList<Item> currentInventory;
     private String name;
     private String lastWhisperName;
@@ -20,7 +21,8 @@ public class Player {
     private DataOutputStream outputWriter = null;
     private Money money;
 
-    public Player(String name) {
+    public Player(GameCore gameCore, String name) {
+        this.gameCore = gameCore;
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
         this.name = name;

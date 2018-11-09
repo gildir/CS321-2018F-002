@@ -180,7 +180,7 @@ public class GameCore implements GameCoreInterface {
         Player newPlayer;
         if(this.playerList.findPlayer(name) == null) {
             // New player, add them to the list and return true.
-            newPlayer = new Player(name);
+            newPlayer = new Player(this, name);
             this.playerList.addPlayer(newPlayer);
             this.leaderboard.addScore(name);
             // New player starts in a room.  Send a message to everyone else in that room,
@@ -519,7 +519,7 @@ public class GameCore implements GameCoreInterface {
     }
     /**
      * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
-     * @param player The player offering the item
+     * @param playerName The player offering the item
      * @param nameOffered Name of the person being offered an item
      * @param target The name of the item to offer
      * @return A message showing success.
@@ -653,7 +653,7 @@ public class GameCore implements GameCoreInterface {
     
     /**
      * Returns a list of nearby players you can gift
-     * @param name Player Name
+     * @param playerName Player Name
      * @return String representation of nearby players.
      */
     public String giftable(String playerName) {
