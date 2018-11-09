@@ -544,8 +544,8 @@ public class GameCore implements GameCoreInterface {
                 } 
                 if(hasItem) {
                     player.setInTradeWithName(nameOffered);
-		    player.setInTradeWithItem(target);
-		    playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
+		            player.setInTradeWithItem(target);
+		            playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
                     return "You just offered " + nameOffered + " a " + target + " from your inventory.";
                 }
                 else {
