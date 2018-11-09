@@ -18,6 +18,7 @@ public class GameCore implements GameCoreInterface {
     private final Set<NPC> npcSet;
     private final Map map;
 
+
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
 
@@ -28,7 +29,9 @@ public class GameCore implements GameCoreInterface {
      * This is the main core that both the RMI and non-RMI based servers will interface with.
      */
     public GameCore() {
-        
+
+        final GameCore gameCore2 = this;
+
         // Generate the game map.
         map = new Map(this);
         playerList = new PlayerList();
@@ -37,6 +40,16 @@ public class GameCore implements GameCoreInterface {
         // Initialize starting NPCs
         npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
                                     new Ghoul(this, "Ghoul2", 3, 25)));
+
+
+
+        //ghouls that appear during nighttime
+        Set<NPC> moreMonsters = new HashSet<>();
+        moreMonsters.addAll(Arrays.asList(new Ghoul(gameCore2, "Ghoul3", 1, 30),
+                new Ghoul(gameCore2, "Ghoul4", 3, 35)));
+
+
+
 
         Thread npcThread = new Thread(new Runnable() {
             @Override
@@ -78,6 +91,74 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
+
+        Thread dayNightCycleThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                //toggles day/night cycle
+                boolean dayCycle = true;
+                //npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
+                        //new Ghoul(this, "Ghoul2", 3, 25)));
+
+
+
+
+                while(true) {
+
+                    try {
+                        Thread.sleep((10000));//cycle changes every 5 seconds
+
+                        /*Ghoul ghoul3 = new Ghoul(gameCore2, "Ghoul3", 1, 30);
+                        Ghoul ghoul4 = new Ghoul(gameCore2, "Ghoul4", 3, 35);
+*/
+                        //moreMonsters.addAll(Arrays.asList((ghoul3, ghoul4));
+
+                        while (playerList.iterator().hasNext()){
+                            Player p = playerList.iterator().next();
+                            Room r = map.findRoom(p.getCurrentRoom());
+                            dayCycle = !dayCycle;
+                            int counter = 1;
+                            //broadcasts the cycle of the day
+                            if (dayCycle){
+                                //check if there are extra monsters
+                                if (npcSet.size() != 2){
+                                    npcSet.removeAll(moreMonsters);
+                                    //npcSet.remove(ghoul3);
+                                    //ghoul3 = null;
+                                    //npcSet.remove(ghoul4);
+                                    //ghoul4 = null;
+                                }
+                                //gameCore.broadcast(gameCore.getMap().findRoom(currentRoom), message);
+                                GameCore.this.broadcast(p,"It's daytime");
+                                GameCore.this.broadcast(r,"It's daytime NPCs = " + npcSet.size());
+                                //playerList.iterator().remove();
+                                break;
+                            }
+                            else{
+                                //more monsters appear during nighttime
+                                //npcSet.add(ghoul3);
+                                //npcSet.add(ghoul4);
+                                if (counter == 1){
+                                    npcSet.addAll(moreMonsters);
+                                    counter ++;
+                                }
+                                GameCore.this.broadcast(p,"It's nighttime, be wary of more monsters.");
+                                GameCore.this.broadcast(r,"It's nighttime, be wary of more monsters. NPCs = " + npcSet.size());
+                                //playerList.iterator().remove();
+                                break;
+                            }
+                        }
+
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        dayNightCycleThread.setDaemon(true);
+        dayNightCycleThread.start();
 
     }
 
