@@ -46,7 +46,7 @@ public class Money{
         this.numDimes + " dimes\n" + 
         this.numPennies + " pennies\n";
     double sum = sum();
-    s += "Total:+ " + String.format("%1$,.2f", sum) + "\n";
+    s += "Total: " + String.format("%1$,.2f", sum) + "\n";
     return s;
   }  
  }
