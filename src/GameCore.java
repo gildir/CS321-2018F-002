@@ -507,12 +507,9 @@ public class GameCore implements GameCoreInterface {
 			for(Item obj : playerInventory){
 				if(obj.getItemName().equalsIgnoreCase(target)){
                     return obj.getItemDescrip();
-				}
-				
-				else{
-					return "Hey uh...you can't ask me to describe something you don't own y'know?";
 				}	
-			}
+            }
+            return "Hey uh...you can't ask me to describe something you don't own y'know?";
 		}
 		
 		return null;
