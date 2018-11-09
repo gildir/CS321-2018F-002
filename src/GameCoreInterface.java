@@ -11,7 +11,7 @@ public interface GameCoreInterface {
      * @param player Player initiating the action.
      * @param message Message to broadcast.
      */   
-    public void broadcast(Player player, String message);    
+    public void broadcast(Player player, String message);
     
     /**
      * Broadcasts a message to all players in the specified room.
@@ -20,7 +20,10 @@ public interface GameCoreInterface {
      */   
     public void broadcast(Room room, String message);
     
-    
+
+    public String gift(String playerName, String name, double amount);
+
+
     /**
      * Returns the player with the given name or null if no such player.
      * @param name Name of the player to find.
@@ -66,6 +69,15 @@ public interface GameCoreInterface {
      * @return Message showing success.
      */
     public String say(String name, String message);
+
+    /**
+    * Whispers "message" to specified player.
+    * @param name1 Name of player sending message
+    * @param name2 Name of player receiving message
+    * @param message Message to whisper
+    * @return Message Showing success.
+    */
+    public String whisper(String name1, String name2, String message);
     
     /**
      * Returns a string representation of all objects you are carrying.
@@ -75,9 +87,54 @@ public interface GameCoreInterface {
     public String inventory(String name);
     
     /**
+     * Returns a list of nearby players you can gift
+     * @param name Player Name
+     * @return String representation of nearby players.
+     */
+    public String giftable(String name);
+
+    /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @return Player that was just removed.
      */    
-    public Player leave(String name);    
+    public Player leave(String name);
+
+    /**
+     * Logs a string into a file
+     * @param fileName name of the file to log in
+     * @param log      message to log
+     */
+    public void log(String fileName, String log);
+
+//Rock Paper Scissors Battle Code here--------------------------------------
+public void challenge(String challenger, String player2);
+public void accept(String challenger, String player2);
+public void refuse(String challenger, String player2);
+public void doBattle(String challenger, String player2, int p1, int p2, Battle b);
+public void rock(String player);
+public void paper(String player);
+public void scissors(String player);
+public void checkBoard(String player);
+public String tutorial(String name);
+//Rock Paper Scissors Battle Code here--------------------------------------
+
+    /* START 405_ignore */
+    /**
+     * Ignores player messages and whispers
+     * @param name Name of the player ignoring
+     * @param ignorePlayerName Name of player being ignored
+     * @return Message showing success.
+     */
+    public String ignore(String name, String ignorePlayerName);
+    /* END 405_ignore */
+
+    /**
+     * Ignores player messages and whispers
+     * @param name Name of the current player
+     * @param ignorePlayerName Name of player to unignore
+     * @return Message showing success.
+     */
+    public String unIgnore(String name, String ignorePlayerName);
+
 }
