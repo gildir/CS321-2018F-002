@@ -13,6 +13,7 @@ public class Room {
     private final LinkedList<Item> objects;
     private final LinkedList<Exit> exits;
     private final GameCore gameCore;
+    private final int NONEXISTANT_EXIT_ID = 0;
     
     public Room(GameCore gameCore, int id, String title, String description, String location) {
         this.objects = new LinkedList<>();
@@ -58,7 +59,7 @@ public class Room {
     public String getExits() {
         String result = "";
         for(Exit exit : this.exits) {
-            if(exit.getRoom() != 0) {
+            if(exit.getRoom() != NONEXISTANT_EXIT_ID) {
                 result += exit.getDirection().name() + " ";
             }
         }
@@ -72,7 +73,7 @@ public class Room {
     public boolean canExit(Direction direction) {
         for(Exit exit : this.exits) {
             if(exit.getDirection() == direction) {
-                return exit.getRoom() != 0;
+                return exit.getRoom() != NONEXISTANT_EXIT_ID;
             }
         }
         return false;
@@ -93,12 +94,12 @@ public class Room {
                 return exit.getRoom();
             }
         }
-        return 0; 
+        return NONEXISTANT_EXIT_ID;
     }
     
     public Exit randomValidExit(){
         List<Exit> validExits = new LinkedList<>(exits);
-        validExits.removeIf(exit -> exit.getRoom() == 0);
+        validExits.removeIf(exit -> exit.getRoom() == NONEXISTANT_EXIT_ID);
         int index = new Random().nextInt(validExits.size());
       return validExits.get(index);
     }
