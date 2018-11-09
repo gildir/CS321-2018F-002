@@ -1,10 +1,12 @@
 public class PlayerScore {
 	private String name;
 	private int wins;
+	private int losses;
 
 	public PlayerScore(String name) {
 		this.name = name;
 		this.wins = 0;
+		this.losses = 0;
 	}
 
 	public String getName() {
@@ -15,7 +17,21 @@ public class PlayerScore {
 		return this.wins;
 	}
 
-	public void increment() {
+	public int getLosses() {
+		return this.losses;
+	}
+
+	public int getScore() {
+		if(this.losses == 0)
+			return this.wins;
+		return (this.wins / this.losses);
+	}
+
+	public void incrementWins() {
 		this.wins++;
+	}
+	
+	public void incrementLosses() {
+		this.losses++;
 	}
 }
