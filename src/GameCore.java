@@ -576,6 +576,10 @@ public class GameCore implements GameCoreInterface {
                 {
                     return "You can't offer yourself an item.";
                 }
+                if(playerOffered.getInTradeWithName() != null)
+                {
+                    return "This player is already in a trade.";
+                }
                 for(Item obj : playerInventory){
                     if(obj.getItemName().equalsIgnoreCase(target)){
                         hasItem = true;

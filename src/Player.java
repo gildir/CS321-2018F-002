@@ -18,8 +18,8 @@ public class Player {
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
     private Money money;
-    private String inTradeWithName;
-    private String inTradeWithItem;
+    private String inTradeWithName = null;
+    private String inTradeWithItem = null;
 
     /* START 405_ignore variables*/
     private ArrayList<String> ignoreList;
