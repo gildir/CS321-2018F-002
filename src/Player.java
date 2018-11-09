@@ -29,36 +29,40 @@ public class Player {
     }
 
     public void turnLeft() {
-        switch(this.currentDirection.toString()) {
-            case "North":
-                this.currentDirection = Direction.WEST;
-                break;
-            case "South":
-                this.currentDirection = Direction.EAST;
-                break;
-            case "East":
-                this.currentDirection = Direction.NORTH;
-                break;
-            case "West":
-                this.currentDirection = Direction.SOUTH;
-                break;
+        synchronized (this) {
+            switch (this.currentDirection.toString()) {
+                case "North":
+                    this.currentDirection = Direction.WEST;
+                    break;
+                case "South":
+                    this.currentDirection = Direction.EAST;
+                    break;
+                case "East":
+                    this.currentDirection = Direction.NORTH;
+                    break;
+                case "West":
+                    this.currentDirection = Direction.SOUTH;
+                    break;
+            }
         }
     }
 
     public void turnRight() {
-        switch(this.currentDirection.toString()) {
-            case "North":
-                this.currentDirection = Direction.EAST;
-                break;
-            case "South":
-                this.currentDirection = Direction.WEST;
-                break;
-            case "East":
-                this.currentDirection = Direction.SOUTH;
-                break;
-            case "West":
-                this.currentDirection = Direction.NORTH;
-                break;
+        synchronized (this) {
+            switch (this.currentDirection.toString()) {
+                case "North":
+                    this.currentDirection = Direction.EAST;
+                    break;
+                case "South":
+                    this.currentDirection = Direction.WEST;
+                    break;
+                case "East":
+                    this.currentDirection = Direction.SOUTH;
+                    break;
+                case "West":
+                    this.currentDirection = Direction.NORTH;
+                    break;
+            }
         }
     }
 
@@ -67,11 +71,15 @@ public class Player {
     }
 
     public void setName(String name) {
-        this.name = name;
+        synchronized (this) {
+            this.name = name;
+        }
     }
 
     public void setLastWhisperName(String name) {
-        this.lastWhisperName = name;
+        synchronized (this) {
+            this.lastWhisperName = name;
+        }
     }
 
     public String getLastWhisperName() {
@@ -83,40 +91,50 @@ public class Player {
     }
 
     public void setCurrentInventory(LinkedList<Item> currentInventory) {
-        this.currentInventory = currentInventory;
+        synchronized (this) {
+            this.currentInventory = currentInventory;
+        }
     }
 
     public void addObjectToInventory(Item object) {
-        this.currentInventory.add(object);
+        synchronized (this) {
+            this.currentInventory.add(object);
+        }
     }
 
     public Item removeObjectFomInventory(String object) {
-        for(Item obj : this.currentInventory) {
-            if(obj.getItemName().equalsIgnoreCase(object)) {
-                this.currentInventory.remove(obj);
-                return obj;
-              }
+        synchronized (this) {
+            for (Item obj : this.currentInventory) {
+                if (obj.getItemName().equalsIgnoreCase(object)) {
+                    this.currentInventory.remove(obj);
+                    return obj;
+                }
             }
-        return null;
+            return null;
+        }
     }
 
     /**
      * Allows an an object to be taken away from player's inventory.
      * @return Message showing success.
      */
-    public String removeRandomItem()  {
-        if (this.currentInventory.isEmpty()){
-            return "You have no items in your inventory.";
+    public String removeRandomItem() {
+        synchronized (this) {
+            if (this.currentInventory.isEmpty()) {
+                return "You have no items in your inventory.";
+            }
+            Random randInt = new Random();
+            int randItem = randInt.nextInt(this.currentInventory.size());
+            String targetItem = this.currentInventory.remove(randItem).getItemName();
+            setCurrentInventory(this.currentInventory);
+            return targetItem + " was removed from your inventory.";
         }
-        Random randInt = new Random();
-        int randItem = randInt.nextInt(this.currentInventory.size());
-        String targetItem = this.currentInventory.remove(randItem).getItemName();
-        setCurrentInventory(this.currentInventory);
-        return targetItem + " was removed from your inventory.";
     }
 
     public void setReplyWriter(PrintWriter writer) {
-        this.replyWriter = writer;
+        synchronized (this) {
+            this.replyWriter = writer;
+        }
     }
 
     public PrintWriter getReplyWriter() {
@@ -124,7 +142,9 @@ public class Player {
     }
 
     public void setOutputWriter(DataOutputStream writer) {
-        this.outputWriter = writer;
+        synchronized (this) {
+            this.outputWriter = writer;
+        }
     }
 
     public DataOutputStream getOutputWriter() {
@@ -136,7 +156,9 @@ public class Player {
     }
 
     public void setCurrentRoom(int room) {
-        this.currentRoom = room;
+        synchronized (this) {
+            this.currentRoom = room;
+        }
     }
 
     public String getCurrentDirection() {
@@ -151,60 +173,71 @@ public class Player {
     }
     
     public void addMoney(double amount) {
-        int dollars = (int) amount;
-        Money amountAdded = new Money(dollars);
-        double coins = amount - dollars;
-        coins *= 100;
-        for(int i = 0; i < coins; i++){
-            amountAdded.coins.add(new Penny());
+        synchronized (this) {
+            int dollars = (int) amount;
+            Money amountAdded = new Money(dollars);
+            double coins = amount - dollars;
+            coins *= 100;
+            for (int i = 0; i < coins; i++) {
+                amountAdded.coins.add(new Penny());
+            }
+            acceptMoney(amountAdded);
         }
-        acceptMoney(amountAdded);
     }
     public String viewMoney() {
         return this.money.toString();
     }
     public void acceptMoney(Money moneyToAdd){
-        this.money.dollars.addAll(moneyToAdd.getDollars());
-        this.money.coins.addAll(moneyToAdd.getCoins());
+        synchronized (this) {
+            this.money.dollars.addAll(moneyToAdd.getDollars());
+            this.money.coins.addAll(moneyToAdd.getCoins());
+        }
     }
     public void setDirection(Direction direction){
-        this.currentDirection = direction;
+        synchronized (this) {
+            this.currentDirection = direction;
+        }
     }
     
     public Money giveMoney(Player giver,Player receiver,double value){
-        Money moneyToGive = new Money();
-        replyWriter.println("You are giving away "+value); 
-        
-        if(this.money.sum() < value){
-            replyWriter.println("Not enough money!");
-            return moneyToGive; 
-        }        
-        int i = 0; 
-        while(i < value){
-            receiver.money.dollars.add(this.money.dollars.remove(0)); 
-            i++;
+        synchronized (this) {
+            Money moneyToGive = new Money();
+            replyWriter.println("You are giving away " + value);
+
+            if (this.money.sum() < value) {
+                replyWriter.println("Not enough money!");
+                return moneyToGive;
+            }
+            int i = 0;
+            while (i < value) {
+                receiver.money.dollars.add(this.money.dollars.remove(0));
+                i++;
+            }
+            receiver.getReplyWriter().println("You received " + value + " dollars!");
+            return moneyToGive;
         }
-        receiver.getReplyWriter().println("You received " +value + " dollars!"); 
-        return moneyToGive;
     }
   
     public String viewInventory() {
-        String result = "";
-        if(this.currentInventory.isEmpty() == true) {
-            return " nothing.";
-        }
-        else {
-            for(Item obj : this.currentInventory) {
-                result += " " + obj;
+        synchronized (this) {
+            String result = "";
+            if (this.currentInventory.isEmpty() == true) {
+                return " nothing.";
+            } else {
+                for (Item obj : this.currentInventory) {
+                    result += " " + obj;
+                }
+                result += ".";
             }
             result += ".";
+            return result;
         }
-        result += ".";
-        return result;
     }
 
     @Override
     public String toString() {
-        return "Player " + this.name + ": " + currentDirection.toString();
+        synchronized (this) {
+            return "Player " + this.name + ": " + currentDirection.toString();
+        }
     }
 }
