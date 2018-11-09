@@ -41,12 +41,12 @@ public class Ghoul extends NPC {
 
     }
 
-    // Calls the NPC broading method which calls GameCore
+    // Calls the NPC broadcast method which calls GameCore
     private void replyAnger(){
         super.broadcast("Grrrr, do not poke me! *the ghouls anger level rises*");
     }
 
-    // When called resets the ghouls anger back to the inital state
+    // When called resets the ghouls anger back to the initial state
     private void resetAnger(){
         anger = 0;
     }
@@ -55,10 +55,26 @@ public class Ghoul extends NPC {
     // threshold, reset the anger and call gameCore.dragPlayer()
     // Used in gameCore.pokeGhoul()
     public void poke(){
-        increaseAnger();
-        if (anger >= MAXANGER){
-            resetAnger();
-            // then a call to dragPlayer will happen
+        synchronized (this) {
+            increaseAnger();
+            if (anger >= MAXANGER) {
+                resetAnger();
+                // then a call to dragPlayer will happen
+            }
+        }
+    }
+
+    private void dragPlayer(Player player) {
+        synchronized (player) {
+            player.broadcast(getName() + " grabs you by the legs and drags you to the Clock");
+            player.broadcastToOthersInRoom(getName() + " grabs " + player.getName() +
+                                           " by the legs and hobbles off, dragging " + player.getName() +
+                                           ", who is shrieking like a schoolgirl.");
+            player.setCurrentRoom(1);
+            this.setCurrentRoom(1);
+            player.broadcastToOthersInRoom(getName() + " hobbles into the area dragging " + player.getName() +
+                                           " behind them, and tosses " + player.getName() +
+                                           " at the base of the clock post.");
         }
     }
     
