@@ -17,12 +17,11 @@ public class Room {
     
     public Room(GameCore gameCore, int id, String title, String description, String location) {
         this.objects = new LinkedList<>();
-        this.exits = new LinkedList<>();        
-        
+        this.exits = new LinkedList<>();
         this.id = id;
         this.title = title;
         this.description = description;
-	this.location = location;
+	    this.location = location;
         this.gameCore = gameCore;
     }
     
