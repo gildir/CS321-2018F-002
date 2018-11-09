@@ -177,6 +177,15 @@ public class Player {
         
         addMoney(added);
     }
+    
+    public void addMoney(Money moneyToAdd){
+        this.money.numFives += moneyToAdd.numFives;
+        this.money.numOnes += moneyToAdd.numOnes;
+        this.money.numQuarters += moneyToAdd.numQuarters;
+        this.money.numDimes += moneyToAdd.numDimes;
+        this.money.numPennies += moneyToAdd.numPennies;
+    }
+   
     public String viewMoney() {
         return this.money.toString();
     }
