@@ -137,4 +137,29 @@ public String tutorial(String name);
      */
     public String unIgnore(String name, String ignorePlayerName);
 
+    // Whiteboards
+    /**
+     * Returns a string displaying the Whiteboard of the room the player is in.
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String displayWhiteboard(String playerName) throws RemoteException;
+    
+    /**
+     * [clearWhiteboard description]
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String clearWhiteboard(String playerName) throws RemoteException;
+    
+    /**
+     * [writeWhiteboard description]
+     * @param  playerName
+     * @param  message
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String writeWhiteboard(String playerName, String message) throws RemoteException;
 }

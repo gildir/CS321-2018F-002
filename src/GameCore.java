@@ -1282,4 +1282,53 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
+
+  // Whiteboards
+  /**
+   * 
+   * @param  playerName
+   * @return the room object where the player is
+   * @throws RemoteException
+   */
+  public Room getPlayerRoom(String playerName) throws RemoteException {
+    Player player = findPlayer(playerName);
+    if (player == null) return null;
+
+    Int roomId = player.getCurrentRoom();
+    if (roomId == null) return null;
+
+    Room room = map.findRoom(roomId);
+    return room;
+  }
+
+  /**
+   * Returns a string displaying the Whiteboard of the room the player is in.
+   * @param  playerName
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String displayWhiteboard(String playerName) throws RemoteException {
+    Room room = getPlayerRoom(playerName);
+  }
+  
+  /**
+   * [clearWhiteboard description]
+   * @param  playerName
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String clearWhiteboard(String playerName) throws RemoteException {
+    Room room = getPlayerRoom(playerName);
+  }
+  
+  /**
+   * [writeWhiteboard description]
+   * @param  playerName
+   * @param  message
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String writeWhiteboard(String playerName, String message) throws RemoteException {
+    Room room = getPlayerRoom(playerName);
+  }
 }
