@@ -10,4 +10,4 @@ Welcome to CS321's semester long project! Links to individual team documentation
 5. [Shops and Money](shops.md)
 6. [Ghosts and Ghouls](monsters.md)
 7. [PvP Rock Paper Scissors Battles](pvp.md)
-8. [World Creation](#world.md)
+8. [World Creation](world.md)
