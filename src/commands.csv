@@ -10,6 +10,7 @@ PICKUP,OBJECT,Tries to pick up an object in the same area.
 DROPOFF,OBJECT,Tries to drop off an object in the same area.
 OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.
 INVENTORY,,Shows you what objects you have collected.
+REDO,,Performs the last command you entered.
 QUIT,,Quits the game.
 HELP,,Displays the list of available commands
 CHALLENGE,PLAYER,Challenges another <PLAYER> to a Rock Paper Scissors Battle.
