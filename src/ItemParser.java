@@ -27,7 +27,8 @@ public class ItemParser
 			double weight = Double.parseDouble(weightString);
 			String priceString = csvInputStream.next();
 			double price = Double.parseDouble(priceString);
-			Item tempItem = new Item(name, weight, price);
+			String descrip = csvInputStream.next();
+			Item tempItem = new Item(name, descrip, weight, price);
 			itemList.add(tempItem);
 		   }
 		}
