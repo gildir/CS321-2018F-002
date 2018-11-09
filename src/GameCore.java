@@ -1046,8 +1046,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.loser(play1.getName());
-	  this.leaderboard.winner(play2.getName());
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1062,8 +1062,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.winner(play1.getName());
-	  this.leaderboard.loser(play2.getName());
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1078,8 +1078,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.winner(play1.getName());
-	  this.leaderboard.loser(play2.getName());
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1094,8 +1094,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.loser(play1.getName());
-	  this.leaderboard.winner(play2.getName());
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1110,8 +1110,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.loser(play1.getName());
-	  this.leaderboard.winner(play2.getName());
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1126,8 +1126,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.winner(play1.getName());
-	  this.leaderboard.loser(play2.getName());
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }

@@ -2,66 +2,47 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Leaderboard {
-	private ArrayList<PlayerScore> leaderboard;
+	private ArrayList<PlayerScore> board;
 
 	public Leaderboard() {
-		this.leaderboard = new ArrayList<PlayerScore>();
+		this.board = new ArrayList<PlayerScore>();
 	}
 
 	public void addScore(String name) {
-		this.leaderboard.add(new PlayerScore(name));
+		this.board.add(new PlayerScore(name));
 	}
 
-	public void winner(String name) {
-		PlayerScore score = null;
-		for(int i = 0; i < this.leaderboard.size(); i++) {
-			score = this.leaderboard.get(i);
+	public void incrementScore(String name, boolean winner) {
+		for(PlayerScore score : this.board) {
 			if(score.getName() == name) {
-				score.incrementWins();
-				for(int j = i-1; j >= 0; j--) {
-					if(this.leaderboard.get(j).getScore() >= score.getScore()) {
-						this.leaderboard.remove(score);
-						this.leaderboard.add(j+1, score);
+				score.increment(winner);
+				this.board.remove(score);
+				for(PlayerScore other : this.board) {
+					if(other.getScore() < score.getScore()) {
+						this.board.add(this.board.indexOf(other), score);
 						return;
 					}
 				}
+				this.board.add(score);
 				return;
 			}
 		}
 	}
-
-	public void loser(String name) {
-		PlayerScore score = null;
-		for(int i = 0; i < this.leaderboard.size(); i++) {
-			score = this.leaderboard.get(i);
-			if(score.getName() == name) {
-				score.incrementLosses();
-				for(int j = i+1; j <= this.leaderboard.size(); j++) {
-					if(this.leaderboard.get(j).getScore() <= score.getScore()) {
-						this.leaderboard.remove(score);
-						this.leaderboard.add(j-1, score);
-						return;
-					}
-				}
-				return;
-			}
-		}
-	}
-
+	
 	public String getBoard() {
-		String board = "Rock-Paper-Scissors Global Leaderboard:\n\n";
+		String head = "Rock-Paper-Scissors Global Leaderboard:\n\n";
 		PlayerScore score = null;
 		String rank = null;
 		String title = null;
 		String wlr = null;
-		for(int i = 0; i < this.leaderboard.size(); i++) {
-			score = this.leaderboard.get(i);
+		for(int i = 0; i < this.board.size(); i++) {
+			score = this.board.get(i);
 			rank = String.format("%-4d", (i+1));
-			title = String.format("%-32", this.getTitle(score, i));
+			title = String.format("%-32s", this.getTitle(score, i));
 			wlr = String.format("%-4d", score.getScore());
-			board += ("Rank: " + rank + "Title: " + title + " | Score: " + wlr + " | Name: " + score.getName() + "\n");
+			head += ("Rank: " + rank + " | Score: " + wlr + "Title: " + title + " | Name: " + score.getName() + "\n");
 		}
-		return board;
+		return head;
 	}
 	
 	public String getTitle(PlayerScore score, int rank) {

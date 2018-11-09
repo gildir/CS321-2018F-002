@@ -27,11 +27,11 @@ public class PlayerScore {
 		return (this.wins / this.losses);
 	}
 
-	public void incrementWins() {
-		this.wins++;
+	public void increment(boolean winner) {
+		if(winner)
+			this.wins++;
+		else
+			this.losses++;
 	}
 	
-	public void incrementLosses() {
-		this.losses++;
-	}
 }

@@ -6,3 +6,9 @@ Ryan Challenged ivan picking Paper against Scissors resulting in ivan winning
 
 ivan Challenged ryan picking Paper against Scissors resulting in ryan winning
 
+raymond Challenged brendan picking Scissors against Rock resulting in brendan winning
+
+raymond Challenged brendan picking Scissors against Rock resulting in brendan winning
+
+b Challenged r picking Paper against Rock resulting in b winning
+
