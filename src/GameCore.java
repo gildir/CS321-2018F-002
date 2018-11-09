@@ -503,20 +503,20 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             LinkedList<Item> playerInventory = player.getCurrentInventory();
-            
+			
 			for(Item obj : playerInventory){
-                    if(obj.getItemName().equalsIgnoreCase(target)){
-                        hasItem = true;
-                        break;
-                    }
-                } 
-                if(hasItem) {
+				if(obj.getItemName().equalsIgnoreCase(target)){
                     return obj.getItemDescrip();
-                }
-        else {
-            return "Hey uh...you can't ask me to describe something you don't own y'know?";
-        }
-    }   
+				}
+				
+				else{
+					return "Hey uh...you can't ask me to describe something you don't own y'know?";
+				}	
+			}
+		}
+		
+		return null;
+	}		
 	
     /**
      * Attempts to drop off an object < target >. Will return a message on any success or failure.
