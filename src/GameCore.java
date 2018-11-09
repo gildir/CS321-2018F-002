@@ -873,6 +873,7 @@ public class GameCore implements GameCoreInterface {
      Player player = this.playerList.findPlayer(playerName);
      if(player == null)
          return null;
+     //buyItem() will handle removing money since we do not have an Item obj
      Boolean did_buy = shop.buyItem(player, itemName);
      player.getReplyWriter().println(shop.displayShop());
      if(did_buy == false){
