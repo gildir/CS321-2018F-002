@@ -30,7 +30,7 @@ public class Player {
         this.name = name;
         this.currentInventory = new LinkedList<>();
         this.money = new Money(20);
-		/* START 405_ignore*/
+  /* START 405_ignore*/
         this.ignoreList = new ArrayList<String>();
         this.ignoredByList = new ArrayList<String>();
         /* END 405_ignore  */
@@ -158,23 +158,29 @@ public class Player {
       return this.money;
     }
 
-    public void addMoney(double amount) {
-        int dollars = (int) amount;
-        Money amountAdded = new Money(dollars);
-        double coins = amount - dollars;
+    public void addMoney(double value) {
+        Money added = new Money();
+        int fives = (int)(value / 5);
+        int ones = (int)(value % 5);
+        double coins = value - ((int)value);
         coins *= 100;
-        for(int i = 0; i < coins; i++){
-            amountAdded.coins.add(new Penny());
-        }
-        acceptMoney(amountAdded);
+        coins = (int) coins;
+        int quarters = (int)(coins / 25);
+        int dimes = (int)((coins - (quarters * 25)) / 10);
+        int pennies = (int)(coins - (25 * quarters) - (10 * dimes));
+        
+        added.numFives = fives;
+        added.numOnes = ones;
+        added.numQuarters = quarters;
+        added.numDimes = dimes;
+        added.numOnes = ones;
+        
+        addMoney(added);
     }
     public String viewMoney() {
         return this.money.toString();
     }
-    public void acceptMoney(Money moneyToAdd){
-        this.money.dollars.addAll(moneyToAdd.getDollars());
-        this.money.coins.addAll(moneyToAdd.getCoins());
-    }
+ 
     public void setDirection(Direction direction){
         this.currentDirection = direction;
     }
@@ -216,31 +222,31 @@ public class Player {
         return "Player " + this.name + ": " + currentDirection.toString();
     }
 
-	/* START 405_ignore */
+ /* START 405_ignore */
     public void ignorePlayer(String name) {
-		ignoreList.add(name);
+  ignoreList.add(name);
     }
 
     public void addIgnoredBy( String name) {
-		ignoredByList.add(name);
+  ignoredByList.add(name);
     }
 
     public boolean searchIgnoredBy(String name) {
-    	int listSize = ignoredByList.size();
-		for( int x = 0; x < listSize; x++){
-			if( name.equalsIgnoreCase(ignoredByList.get(x)))
-				return true;
-		}
-		return false;
+     int listSize = ignoredByList.size();
+  for( int x = 0; x < listSize; x++){
+   if( name.equalsIgnoreCase(ignoredByList.get(x)))
+    return true;
+  }
+  return false;
     }
 
     public boolean searchIgnoreList(String name) {
-    	int listSize = ignoreList.size();
-		for( int x = 0; x < listSize; x++){
-			if( name.equalsIgnoreCase(ignoreList.get(x)))
-				return true;
-		}
-		return false;
+     int listSize = ignoreList.size();
+  for( int x = 0; x < listSize; x++){
+   if( name.equalsIgnoreCase(ignoreList.get(x)))
+    return true;
+  }
+  return false;
     }
     /* END 405_ignore */
     //407
@@ -253,10 +259,10 @@ public class Player {
     }
 
    public void unIgnorePlayer(String name) {
-		ignoreList.remove(name);
+  ignoreList.remove(name);
     }
 
  public void removeIgnoredBy( String name) {
-		ignoredByList.remove(name);
+  ignoredByList.remove(name);
     }
 }
