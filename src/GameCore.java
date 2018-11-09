@@ -25,7 +25,9 @@ public class GameCore implements GameCoreInterface {
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
     private final int minimumSpawnTime=100, maximumSpawnTime=600;
-
+    
+    private final GiftsTracker giftsTracker;
+    
     private final Shop shop;
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
@@ -45,6 +47,8 @@ public class GameCore implements GameCoreInterface {
         playerList = new PlayerList();
 
         shop = new Shop();
+        
+        giftsTracker = new GiftsTracker();
 
         npcSet = new HashSet<>();
 
@@ -724,29 +728,42 @@ public class GameCore implements GameCoreInterface {
     }    
     @Override
     public String gift(String yourname ,String name, double amount){
-        Player receiver = this.playerList.findPlayer(name);
-        Player you = this.playerList.findPlayer(yourname);
-        if(receiver != null){
-          if(you.getMoney().sum() < amount){
-           return "NOT ENOUGH MONEY!";
-          }
-            this.broadcast(you, you.getName() + " offers a gift to " + receiver.getName());
-           //Scanner read = new Scanner(System.in);
-
-            receiver.getReplyWriter().println("Accept gift? (y/n):");
-
-           /*String input = read.nextLine();
-
-           if(input.toLowerCase().equals("y")) {
-
-            receiver.acceptMoney(you.giveMoney(you,receiver,amount));
-
-           return "User accepted gift!";*/
-            return "";
-           //}
-      }else{
-            return "NO USER WITH THAT NAME";
-      }
+    	Player tradee = this.playerList.findPlayer(name); 
+        Player trader = this.playerList.findPlayer(yourname);
+        if(trader == null || tradee == null)
+        	return "" + tradee + " does not exist!";
+        if(amount <= 0)
+        	return "Must gift an amount greater than 0!";
+        if(trader.getMoney().sum() < amount)
+        	return "You don't have that much money, silly!";
+        boolean result = this.giftsTracker.trackGift(trader, tradee, amount);
+        if(result == false)
+        	return "" + tradee + " already has an open trade!";
+        tradee.getReplyWriter().println("" + trader + " wants to gift you $" + amount + "!\nEnter RECEIVE GIFT to accept.");
+        return "You try to gift " + tradee + " $" + amount; 
+    }
+    
+    public String acceptGift(String name) {
+    	Player tradee = this.playerList.findPlayer(name);
+    	if(tradee == null)
+    		return null;
+    	if(!(this.giftsTracker.hasOpenRequest(tradee))) {
+    		return "Nobody has gifted you anything! Maybe wait till Christmas!";
+    	}
+    	GiftsTracker.GiftRequest request = this.giftsTracker.getRequest(tradee);
+    	if(request == null)
+    		return null;
+    	Player trader = request.getTrader();
+    	if(trader == null)
+    		return null;
+    	double giftAmount = request.getAmount();
+    	if(trader.getMoney().sum() < giftAmount) {
+    		this.giftsTracker.close(request);
+    		return "" + trader + " ran out of money!";
+    	}
+    	trader.giveMoney(trader, tradee, giftAmount);
+    	trader.getReplyWriter().println(tradee + " has accepted your gift!");
+    	return "You have receieved the gift!";
     }
 
      /**

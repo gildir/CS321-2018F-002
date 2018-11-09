@@ -331,6 +331,7 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
+        commandFunctions.put("RECEIVE",   (name, args) -> { return remoteGameInterface.giftable(name);  });
     }
 
     /**
@@ -473,6 +474,7 @@ public class CommandRunner {
         descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
+        descriptions.put("RECEIVE", new String[]{"", "Receive a gift if someone has tried to gift you" });
 
         //chat system
         descriptions.put("SHOUT",      new String[]{"MESSAGE", "Says <MESSAGE> to all players in the game."});
