@@ -154,6 +154,15 @@ public class CommandRunner {
                 }
             }
         });
+        commandFunctions.put("OFFERRESPONSE",   (name, args) -> {
+            if(args.isEmpty()) {
+                return "You need to either accept or refuse the offer.";
+            }
+            else {
+                String decision = args.remove(0);
+                return remoteGameInterface.offerResponse(name, decision);
+            }
+        });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
         //commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
 
