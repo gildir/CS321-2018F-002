@@ -49,7 +49,7 @@ public class CommandRunner {
         commandFunctions.put("SAY",     (name, args) -> {
             // Create empty string
             String message = String.join(" ", args);
-            System.out.println("[" + message + "]");
+            //System.out.println("[" + message + "]");
 
             if (message.equals("")) {
                 return "[ERROR] Empty message";
@@ -90,6 +90,76 @@ public class CommandRunner {
                 return "[ERROR] You need to include a message to reply.";
             }
         });
+        commandFunctions.put("SHOUT",(name,args)->
+        {
+           try
+           {
+               String res = "Invalid Format";
+               if(args.isEmpty())
+               {
+                   res = "You need to write a message to shout.";
+               }
+               else
+               {
+                   String message = String.join(" ", args);
+                   res = remoteGameInterface.shout(name, message);
+
+               }
+               return res;
+           }
+           catch(Exception e){return "Invalid Format";}
+        });
+        commandFunctions.put("IGNORE",(name,args)->
+                {
+                    try
+                    {
+                        String res = "Invalid format";
+                        if (args.isEmpty())
+                        {
+                            return "Please input a valid ignore command.";
+                        }
+                        else
+                        {
+                            String choice = args.remove(0);
+
+                            switch (choice.toUpperCase())
+                            {
+                                case "-L":
+                                    if (!args.isEmpty())
+                                    {
+                                        res = "[Invalid format] listing does not require arguments.";
+                                    }
+                                    else
+                                    {
+                                        res = remoteGameInterface.listIgnoredPlayers(name);
+                                    }
+                                    break;
+                                case "-A":
+                                    if (args.isEmpty())
+                                    {
+                                        res = "You need to specify a player to ignore.";
+                                    }
+                                    else
+                                    {
+                                        res = remoteGameInterface.ignore(name, args.remove(0));
+                                    }
+                                    break;
+                                case "-R":
+                                    if (args.isEmpty())
+                                    {
+                                        res = "You need to specify a player to unignore.";
+                                    }
+                                    else
+                                    {
+                                        res = remoteGameInterface.unIgnore(name, args.remove(0));
+                                    }
+                            }
+                        }
+                        return res;
+                    }
+                    catch(Exception e){return "Invalid format";}
+                }
+        );
         commandFunctions.put("MOVE",     (name, args) -> {
             try {
                 String direction = args.get(0);
@@ -378,12 +448,12 @@ public class CommandRunner {
 
         // Default commands
         descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
-        descriptions.put("LISTPLAYERS",      new String[]{"", "Shows a list of all the players in the world."});
+        descriptions.put("LISTPLAYERS",new String[]{"", "Shows a list of all the players in the world."});
         descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
         descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
         descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
-        descriptions.put("WHISPER",       new String[]{"PLAYER MESSAGE", "Says <MESSAGE> to specified <PLAYER>."});
-        descriptions.put("REPLY",      new String[]{"MESSAGE", "Says <MESSAGE> to last player who whispered you."});
+        descriptions.put("WHISPER",   new String[]{"PLAYER MESSAGE", "Says <MESSAGE> to specified <PLAYER>."});
+        descriptions.put("REPLY",     new String[]{"MESSAGE", "Says <MESSAGE> to last player who whispered you."});
         descriptions.put("MOVE",      new String[]{"DIRECTION","Tries to walk in a <DIRECTION>."});
         descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
         descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});
@@ -412,6 +482,10 @@ public class CommandRunner {
         descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
+
+        //chat system
+        descriptions.put("SHOUT",      new String[]{"MESSAGE", "Says <MESSAGE> to all players in the game."});
+        descriptions.put("IGNORE",     new String[]{"-L;-A;-R PLAYER", "Use -A to add players to ignore list; -R to remove from list; -L with no player name to show list."});
 
         // Create them
         createCommands(descriptions);
