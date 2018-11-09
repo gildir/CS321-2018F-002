@@ -39,34 +39,55 @@ public class GameClient {
     protected String playerName;
     protected String playerPassword;
 
+    //Member related to timer
+    public static Timer timer;
+
     /**
-     * Time Class keeps track of the time and ensures the user has not exceeded the 5 minute limit of inactivity
-     * 
-     * Use new Time() to reset timer after each input
+     * Creates the initial timer
+     * Only should be called once when the game is beginning
      */
-    private class Time{
-        Timer timer;  
-
-        public Time(){
-            timer = new Timer();
-            timer.schedule(new timeoutTask(), 300000);
-        }
-
-        class timeoutTask extends TimerTask{
+    public void gameTimer(){
+        TimerTask timerTask = new TimerTask(){
             public void run(){
                 try{
                     remoteGameInterface.leave(playerName);
                     runListener = false;
-                    System.out.println("User has been inactive for 5 minutes.. logging off");  
+                    System.out.println("User has been inactive for 5 minutes.. logging off");
                     timer.cancel();
                     System.exit(-1);
-                    
-                } 
+                }
                 catch (RemoteException ex) {
-                	Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-        }
+        };
+        timer = new Timer();
+        timer.schedule(timerTask, 300000);
+    }
+
+    /**
+     * Updates and resets the timer
+     * Should be called after every input using update();
+     */
+    public void update(){
+        TimerTask timerTask = new TimerTask(){
+            public void run(){
+                try{
+                    remoteGameInterface.leave(playerName);
+                    runListener = false;
+                    System.out.println("User has been inactive for 5 minutes.. logging off");
+                    timer.cancel();
+                    System.exit(-1);
+                }
+                catch (RemoteException ex) {
+                    Logger.getLogger(GameClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        };
+        timer.cancel();
+        timer.purge();
+        timer = new Timer();
+        timer.schedule(timerTask, 300000); //resets timer to 5 minutes
     }
 
     /**
@@ -82,7 +103,8 @@ public class GameClient {
         System.out.println("When you do, you will join the game at the George Mason Clock, in the main quad.");
         System.out.println("You will be able to see if any other players are in the same area as well as what");
         System.out.println("objects are on the ground and what direction you are facing.\n");
-        new Time();
+        
+        gameTimer(); //creates the main timer
 
         // Set up for keyboard input for local commands.
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
@@ -95,20 +117,26 @@ public class GameClient {
             String strName = "rmi://"+host+"/GameService";
             remoteGameInterface = (GameObjectInterface) Naming.lookup(strName);
 
-            // Start by remotely executing the joinGame method.  
+            // Start by remotely executing the joinGame method.
             //   Lets the player choose a name and checks it with the server.  If the name is
             //    already taken or the user doesn't like their input, they can choose again.
-           
+
             boolean acctConf;
             try{
                 do{ //do-while block ensure correct input is entered to direct user through login
                     acctConf = true;
-                    System.out.println("Enter 1 to login with a previously created account");
+                    System.out.println("Enter 1 to login with an existing account");
                     System.out.println("Enter 2 to create an account");
                     System.out.print("> ");
-                    String acct = keyboardInput.readLine(); new Time();
-                    
-                    if(acct.equals("1")) login(); //User already has an account
+                    String acct = keyboardInput.readLine(); update();
+
+                    if(acct.equals("1")){
+                        if(PlayerDatabase.hasAccount()) login();
+                        else{
+                            System.out.println("No account currently exists, must create one first");
+                            acctConf = false;
+                        }
+                    }
                     else if(acct.equals("2")) createAccount();
                     else{
                         System.out.println("Please enter a correct input\n");
@@ -118,7 +146,7 @@ public class GameClient {
             }catch (IOException ex) {
                 System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
                 System.exit(-1);
-            }   
+            }
 
             // Player has joined, now start up the remote socket.
             this.runListener = true;
@@ -160,55 +188,65 @@ public class GameClient {
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         boolean nameSat = false; boolean nameConf = false;
         try{
-        do{//do-while block will re-prompt user to enter a username if needed
-            do{//do-while block ensure username entered is unique
-                System.out.println("Please enter a username");
-                System.out.print("> ");
-                this.playerName = keyboardInput.readLine(); new Time();
-                if(PlayerDatabase.isPlayer(playerName))
-                {
-                    System.out.println("Username already exits... Please enter a new username\n");
-                    nameSat = false;
-                }
-                else nameSat = true;
-            }while(!nameSat);
-            nameConf = false;
-            while(!nameConf){ //while loop will repeat if user does not enter a proper entry to confirm name
-                new Time(); 
-                System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this username?");
-                System.out.print("(Y/N) > ");
-                String entry = keyboardInput.readLine(); new Time();
-                if(entry.equalsIgnoreCase("Y")) {
-                // Attempt to join the server
-                    if(remoteGameInterface.joinGame(this.playerName) == false) {
-                        System.out.println("I'm sorry, " + this.playerName + ", but someone else is already logged in with your name. Please pick another.");
-                        nameSat = false; nameConf = true;
+            do{//do-while block will re-prompt user to enter a username if needed
+                do{//do-while block ensure username entered is unique
+                    System.out.println("Please enter a username");
+                    System.out.print("> ");
+                    this.playerName = keyboardInput.readLine(); update();
+                    if(PlayerDatabase.isPlayer(playerName))
+                    {
+                        System.out.println("Username already exits... Please enter a new username\n");
+                        nameSat = false;
+                    }
+                    else nameSat = true;
+                }while(!nameSat);
+                nameConf = false;
+                while(!nameConf){ //while loop will repeat if user does not enter a proper entry to confirm name
+                    update();
+                    System.out.println("Welcome, " + this.playerName + ". Are you sure you want to use this username?");
+                    System.out.print("(Y/N) > ");
+                    String entry = keyboardInput.readLine(); update();
+                    if(entry.equalsIgnoreCase("Y")) {
+                        // Attempt to join the server
+                        if(remoteGameInterface.joinGame(this.playerName) == false) {
+                            System.out.println("I'm sorry, " + this.playerName + ", but someone else is already logged in with your name. Please pick another.");
+                            nameSat = false; nameConf = true;
+                        }
+                        else{
+                            nameConf = true; nameSat = true;
+                        }
+                    }
+                    else if (entry.equalsIgnoreCase("N")){
+                        nameConf = true; nameSat = false;
                     }
                     else{
-                        nameConf = true; nameSat = true;
+                        nameConf = false; //Will reprompt confirmation
                     }
                 }
-                else if (entry.equalsIgnoreCase("N")){
-                    nameConf = true; nameSat = false;
-                }
-                else{
-                    nameConf = false; //Will reprompt confirmation
-                }
-            }
             }while(!nameSat); //will repeat until broken out
 
-            //User creates a password that can be used to log in 
-            System.out.println("Please enter a password.");
-            System.out.print("> ");
-            String password = keyboardInput.readLine(); new Time();
-            PlayerDatabase.addPlayer(this.playerName, password);
+            //User creates a password that can be used to log in
+            boolean isPassword = false;
+            while(!isPassword){
+                System.out.println("Please enter a password.");
+                System.out.print("> ");
+                String password = keyboardInput.readLine(); update();
+                if (password.length() == 0){
+                    System.out.println("Password must contain at least one character");
+                    isPassword = false;
+                }
+                else{
+                    isPassword = true;
+                    PlayerDatabase.addPlayer(this.playerName, password);
+                }
+            }
         }catch (IOException ex) {
             System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
             System.exit(-1);
         }
     }
-           
-   /**
+
+    /**
      * Method helps the user login with their username and password
      */
     private void login(){
@@ -216,74 +254,82 @@ public class GameClient {
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         try{
             boolean newuser = false;
-        do{ 
-            do{//loop repeats if an active username is entered
-                System.out.println("Please enter your username");
-                System.out.print("> ");
-                this.playerName = keyboardInput.readLine(); new Time();
-                if(PlayerDatabase.isPlayer(playerName)) break;
-                else System.out.println("Username is incorrect... Please enter a new username");
-            }while(true); //exits the loop only through a break
-           
-            boolean conf = false; newuser = false;
-            while(!conf){ //While loop verifies user password
-                System.out.println("Please enter your password");
-                System.out.print("> ");
-                this.playerPassword = keyboardInput.readLine(); new Time();
-                if(PlayerDatabase.isPassword(playerName, playerPassword) == true){
-                    
-                    if(remoteGameInterface.joinGame(this.playerName) == false){
-                        System.out.println("User is already online...login with different account");
-                        newuser = true;
+            do{
+                do{//loop repeats if an active username is entered
+                    System.out.println("Please enter your username");
+                    System.out.print("> ");
+                    this.playerName = keyboardInput.readLine(); update();
+                    if(PlayerDatabase.isPlayer(playerName)) break;
+                    else System.out.println("Username is incorrect... Please enter a new username");
+                }while(true); //exits the loop only through a break
+
+                boolean conf = false; newuser = false; boolean isPassword = false;
+                while(!conf){ //While loop verifies user password
+                    isPassword = false;
+                    while(!isPassword){
+                        System.out.println("Please enter your password");
+                        System.out.print("> ");
+                        this.playerPassword = keyboardInput.readLine(); update();
+                        if (playerPassword.length() == 0){
+                            System.out.println("Password must contain at least one character");
+                            isPassword = false;
+                        }
+                        else isPassword = true;
                     }
-                    else System.out.println("Login Successful");
-                    conf = true;
+                    if(PlayerDatabase.isPassword(playerName, playerPassword) == true){
+
+                        if(remoteGameInterface.joinGame(this.playerName) == false){
+                            System.out.println("User is already online...login with different account");
+                            newuser = true;
+                        }
+                        else System.out.println("Login Successful");
+                        conf = true;
+                    }
+                    else System.out.println("Password does not match");
                 }
-                else System.out.println("Password does not match");
-            }
-        }while(newuser == true);
+            }while(newuser == true);
         }catch (IOException ex) {
             System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
             System.exit(-1);
-        }    
+        }
     }
 
     /**
-     * Method called when player is exiting that prompts if the user wants to delete 
+     * Method called when player is exiting that prompts if the user wants to delete
      * his or her character then proceeds to remove the user name and password if prompted to
      */
     private void deleteCharacter() {
-    	InputStreamReader keyboardReader = new InputStreamReader(System.in);
-    	BufferedReader keyboardInput = new BufferedReader(keyboardReader);
-    	String keyboardStatement = "";
-    	boolean removeApproval = false;
-    	
-    	try {
-			do {
-				if (keyboardStatement.equalsIgnoreCase("Y")) {
-					System.out.print("Enter password: ");
+        InputStreamReader keyboardReader = new InputStreamReader(System.in);
+        BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+        String keyboardStatement = "";
+        boolean removeApproval = false;
+
+        try {
+            do {
+                if (keyboardStatement.equalsIgnoreCase("Y")) {
+                    System.out.print("Enter password: ");
                     keyboardStatement = keyboardInput.readLine();
-                    new Time();
+                    update();
                     if(PlayerDatabase.isPassword(playerName, keyboardStatement)){
                         removeApproval = true;
                         break;
                     }
-					else System.out.println("Password incorrect.");
-				} else if (keyboardStatement.equalsIgnoreCase("N")) {
-					break;
-                } 
+                    else System.out.println("Password incorrect.");
+                } else if (keyboardStatement.equalsIgnoreCase("N")) {
+                    break;
+                }
                 System.out.print("Would you like to permanently delete your player and account? (Y/N)");
                 keyboardStatement = keyboardInput.readLine();
-                new Time();
-			} while (true);
-		}  catch (IOException ex) {
-			System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
+                update();
+            } while (true);
+        }  catch (IOException ex) {
+            System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
             System.exit(-1);
-		}
-		if(removeApproval) {
-    		if(PlayerDatabase.removePlayer(playerName))
-    			System.out.println(playerName + " has been removed.");
-    		else System.out.println(playerName + " could not be removed.");
+        }
+        if(removeApproval) {
+            if(PlayerDatabase.removePlayer(playerName))
+                System.out.println(playerName + " has been removed.");
+            else System.out.println(playerName + " could not be removed.");
         }
         try{
             remoteGameInterface.leave(playerName);
@@ -291,7 +337,7 @@ public class GameClient {
             System.exit(-1);
         }catch(RemoteException re){
             System.exit(-1);
-        } 
+        }
     }
 
     /**
@@ -300,7 +346,7 @@ public class GameClient {
      */
     private void parseInput(String input) {
         boolean reply;
-
+        update();
         // First, tokenize the raw input.
         StringTokenizer commandTokens = new StringTokenizer(input);
         ArrayList<String> tokens = new ArrayList<>();
@@ -317,9 +363,9 @@ public class GameClient {
         if(command.equalsIgnoreCase("Quit")){
             deleteCharacter();
         }
-        new Time();
+        update();
         commandRunner.run(command, tokens, this.playerName);
-        new Time();
+        update();
     }
 
     public static void main(String[] args) {
@@ -333,7 +379,7 @@ public class GameClient {
     }
 
     /**
-     * Inner class to handle remote message input to this program.  
+     * Inner class to handle remote message input to this program.
      *  - Runs as a separate thread.  Interrupt it to kill it.
      *  - Spawns multiple threads, one for each remote connection.
      */
@@ -351,7 +397,7 @@ public class GameClient {
             // Attempt communcations with the server.
             try (Socket remoteMessageSocket = new Socket(host, 13500)) {
 
-                // Get stream reader and writer. 
+                // Get stream reader and writer.
                 //  Writer is only used once, to register this socket with a player.
                 //  Otherwise, this is read only to receive non-locally generated event notifications.
                 BufferedReader remoteReader = new BufferedReader(new InputStreamReader(remoteMessageSocket.getInputStream()));
@@ -384,4 +430,3 @@ public class GameClient {
         }
     }
 }
-
