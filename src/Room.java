@@ -198,13 +198,11 @@ public class Room {
 
     public String getGhoulsString() {
         Set<Ghoul> ghouls = getGhouls();
-        String ghoulsString;
         if (ghouls.isEmpty())
-            ghoulsString = "None";
+            return "None";
         else {
             List<String> ghoulNames = ghouls.stream().map(Ghoul::toString).collect(Collectors.toList());
-            ghoulsString = String.join(" ", ghoulNames);
+            return String.join(" ", ghoulNames);
         }
-        return ghoulsString;
     }
 }
