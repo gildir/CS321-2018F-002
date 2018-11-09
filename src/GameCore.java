@@ -115,7 +115,8 @@ public class GameCore implements GameCoreInterface {
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.
      * @param message Message to broadcast.
-     */   
+     */
+    @Deprecated // Use Player.broadcastToAllInRoom(message) instead
     @Override
     public void broadcast(Player player, String message) {
         for(Player otherPlayer : this.playerList) {
@@ -129,7 +130,8 @@ public class GameCore implements GameCoreInterface {
      * Broadcasts a message to all players in the specified room.
      * @param room Room to broadcast the message to.
      * @param message Message to broadcast.
-     */   
+     */
+    @Deprecated // Use Room.broadcast(message) instead
     @Override
     public void broadcast(Room room, String message) {
         for(Player player : this.playerList) {

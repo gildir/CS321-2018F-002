@@ -24,6 +24,17 @@ public class Room {
 	    this.location = location;
         this.gameCore = gameCore;
     }
+
+    /**
+     * Output a message to all players in this room.
+     * @param message to send
+     */
+    public void broadcast(String message) {
+        for (Player player : gameCore.getPlayerList()) {
+            if (player.getCurrentRoom() == id)
+                player.broadcast(message);
+        }
+    }
     
     public String toString(PlayerList playerList, Player player) {
         String result = ".-------------------------\n";

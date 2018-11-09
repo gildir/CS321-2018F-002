@@ -30,6 +30,35 @@ public class Player {
         this.money = new Money(20);
     }
 
+    /**
+     * Output a message to this player
+     * @param message to send
+     */
+    public void broadcast(String message) {
+        replyWriter.println(message);
+    }
+
+    /**
+     * Output a message to all players in the same room as this player,
+     * including outputting a message to this player.
+     * @param message to send
+     */
+    public void broadcastToAllInRoom(String message) {
+        gameCore.getMap().findRoom(currentRoom).broadcast(message);
+    }
+
+    /**
+     * Output a message to all other players in the same room as this player,
+     * not including outputting a message to this player.
+     * @param message to send
+     */
+    public void broadcastToOthersInRoom(String message) {
+        for (Player player : gameCore.getPlayerList()) {
+            if (player.currentRoom == this.currentRoom && player != this)
+                broadcast(message);
+        }
+    }
+
     public void turnLeft() {
         synchronized (this) {
             switch (this.currentDirection.toString()) {

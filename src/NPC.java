@@ -60,7 +60,7 @@ abstract class NPC {
    * @param message to output.
    */
   public void broadcast(String message) {
-    gameCore.broadcast(gameCore.getMap().findRoom(currentRoom), message);
+    gameCore.getMap().findRoom(currentRoom).broadcast(message);
   }
 
   protected void moveRandomly() {
