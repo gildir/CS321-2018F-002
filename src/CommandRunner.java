@@ -331,6 +331,19 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
+        commandFunctions.put("WHITEBOARD",   (name, args) -> {
+            if (args.isEmpty()) {
+                return remoteGameInterface.displayWhiteboard(name);
+            } else if (args.size() == 1 && args.get(0).equalsIgnoreCase("CLEAR")) {
+                return remoteGameInterface.clearWhiteboard(name);
+            } else if (args.size() >= 1 && args.get(0).equalsIgnoreCase("WRITE")) {
+                if (args.size() > 1) {
+                    return remoteGameInterface.writeWhiteboard(name, args.get(1));
+                } else {
+                    return "[ERROR] You need to specify a MESSAGE to WRITE."
+                }
+            }
+        });
     }
 
     /**

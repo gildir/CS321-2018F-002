@@ -220,4 +220,17 @@ public interface GameObjectInterface extends Remote {
     public String listIgnoredPlayers(String playerName)throws RemoteException;
     //408
     public String unIgnore(String name, String ignoreName) throws RemoteException;
+
+    // Whiteboards
+    /**
+     * Returns a string displaying the Whiteboard of the room the player is in.
+     * @param  playerName      [description]
+     * @return                 [description]
+     * @throws RemoteException [description]
+     */
+    public String displayWhiteboard(String playerName) throws RemoteException;
+    
+    public String clearWhiteboard(String playerName) throws RemoteException;
+    
+    public String writeWhiteboard(String playerName) throws RemoteException;
 }
