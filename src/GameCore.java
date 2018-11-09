@@ -763,7 +763,27 @@ public class GameCore implements GameCoreInterface {
     	}
     	trader.giveMoney(trader, tradee, giftAmount);
     	trader.getReplyWriter().println(tradee + " has accepted your gift!");
+    	this.giftsTracker.close(request);
     	return "You have receieved the gift!";
+    }
+    
+    public String declineGift(String name) {
+    	Player player = playerList.findPlayer(name);
+    	if(player == null)
+    		return null;
+    	if(!(giftsTracker.hasOpenRequest(player))) 
+    		return "Nobody has gifted you anything! Maybe wait till Christmas!";
+    	GiftsTracker.GiftRequest request = this.giftsTracker.getRequest(player);
+    	if(request == null)
+    		return null;
+    	Player trader = request.getTrader();
+    	if(trader == null) {
+    		giftsTracker.close(request);
+    		return "You declined the gift.";
+    	}
+    	trader.getReplyWriter().println(player + " has declined your gift.");
+    	giftsTracker.close(request);
+    	return "You declined the gift.";
     }
 
      /**

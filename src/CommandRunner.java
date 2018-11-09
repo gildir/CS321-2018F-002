@@ -331,7 +331,9 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
-        commandFunctions.put("RECEIVE",   (name, args) -> { return remoteGameInterface.giftable(name);  });
+        commandFunctions.put("RECEIVE",   (name, args) -> { return remoteGameInterface.acceptGift(name);  });
+        
+        commandFunctions.put("DECLINE",   (name, args) -> { return remoteGameInterface.declineGift(name);  });
     }
 
     /**
