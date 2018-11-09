@@ -9,7 +9,7 @@ The purpose of Ghosts is to add flavor text, text that's unrelated to the rules 
 The user cannot interact with the Ghosts. The Ghosts are simply decorations in the game to make the game more interesting for the user.
 
 Here is a preview of what a ghost might say:
-![Ghost Sayings Preview](GhostSayings.png)
+![Ghost Sayings Preview](../images/GhostSayings.png)
 
 ## Ghouls
 
@@ -24,7 +24,7 @@ The player can interact with the ghoul with the "pokeGhoul" command. This allows
 The player can also give an item to the ghoul with the "giftGhoul" command. This causes the Ghoul's current anger with the player to decrease. The player must be in the same room with the ghoul and have at least one item in their inventory to perform this command.
 
 Here is an example of how a player can interact with a ghoul:
-![Ghoul Interaction Preview](GhoulInteractions.png)
+![Ghoul Interaction Preview](../images/GhoulInteractions.png)
 
 ## Spirits
 
@@ -37,7 +37,7 @@ The player may capture the Spirits, using the “capture” command. The player 
 The Spirit checklist may be displayed with the command, “spirit log”. Any type already captured will end each line with a “-C”.
 
 Here is an example of how the Spirit might work:
-![Spirit Interaction Preview](Spirit_Demo.png)
+![Spirit Interaction Preview](../images/Spirit_Demo.png)
 
 # Developers
 
@@ -49,7 +49,7 @@ Ghouls are phantom like beings that roam around in the game. The ghouls class in
 
 Ghouls have an aggression system set in the ghoul object. The ghouls anger level can increase, maximum anger level is five and decrease, minimum anger level is zero, based on a player’s actions towards the ghoul. If a player pokes a ghoul then the ghoul’s anger level increments and if a player gifts a ghoul an object from their inventory then the ghoul’s anger level decrements. Keep in mind, a player must be in the same room as the ghoul to poke and gift the ghoul, the player also must have at least one object to gift the ghoul or else the player does not have anything to gift. There are already methods set in place for the ghoul’s class’s aggression system.
 
-![Aggression System Flowchart](AggroFlowchart.png)
+![Aggression System Flowchart](../images/AggroFlowchart.png)
 
 ## NPC System
 
@@ -66,7 +66,7 @@ The default doAi() implementation is simply to call the given moveRandomly() met
 Due to the existence of multiple threads (npcThread as well as the players' calls to gameCore) changing objects in the game, proper synchronization is necessary to prevent race conditions and bugs from appearing. How we deal with this is by using Java's built in synchronization blocks that will lock an object or class when necessary.
 
 Here is a simple set of guidelines to determine if you should lock on an object before messing with it:
-![Synchronization Guidelines Flowchart](synchronization_flowchart.png)
+![Synchronization Guidelines Flowchart](../images/synchronization_flowchart.png)
 
 Objects that can be modified by the npcThread:
  * Player objects

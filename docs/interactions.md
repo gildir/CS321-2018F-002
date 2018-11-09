@@ -12,13 +12,13 @@ The player has the ability to interact with the game through the use of the user
 
 After the player logs-in to the game, a menu with a list of commands will appear on screen.
 
-> ![GameMenu](./GameMenuShot.png)
+> ![GameMenu](../images/GameMenuShot.png)
 
 Each option on the list states the command and a description of what the command performs when the necessary arguments are typed in.
 
 An example of menu-player interaction is when the user types in PICKUP ALL. Typing the command allows the player to pick up all of the items in the current room.
 
-> ![PickupExample](./PickupExample.png)
+> ![PickupExample](../images/PickupExample.png)
 
 If the player has difficulty in putting in the commands, the player is prompted by the game to type in HELP to allow for the game command menu to be seen again.
 
@@ -47,14 +47,14 @@ There is a `aliases.cvs` file available where you can specify a new name for an 
 Once you fill the gap you would be able to use both names for one command.
 The command configuration file has this appearance:
 
- ![AliasesExample](./AliasesExample.PNG)
+ ![AliasesExample](../images/AliasesExample.PNG)
 
 The first column of the CVS file, where you have all the existing commands provided by the game, should not be modified. The next column is used to put the equivalent word you want to use as an alias so you can modify it. If you do not want to add an alias to some specific command you can just leave a blank space.
 
 ## Notes for developers
 
 ### Client-Server command execution (Kevin)
-> ![Client-Server Interaction Diagram](./server-client-interaction-diagram.png)
+> ![Client-Server Interaction Diagram](../images/server-client-interaction-diagram.png)
 
 The game works by making use of Java's RMI. Specifically, there's an RMI server running alongside the `GameServer`. Said server is bound to a `GameObject`, which acts as a middleman between *Server* and *Client*.
 
@@ -70,7 +70,7 @@ There are two `broadcast` commands: One takes a player as one of the arguments, 
 
 The `log` command is designed to help keep track of all interactions between players and the server being printing the result of every command to a log file specific to each player. This will help with catching errors and debugging. A sample from a logfile can be seen in the picture below.
 
-> ![Log Interactions File](./log-interactions-file.png)
+> ![Log Interactions File](../images/log-interactions-file.png)
 
 The `doBattle` command contains the majority of the code for executing the Rock Paper Scissors battles between players. 
 

@@ -19,12 +19,12 @@ For the technical aspect, an item is a simple class aptly named Item, with corre
 To go along with this are getter methods to obtain values from elsewhere, but no setters since these values will not change initially.
 For reference, below is an image of the class diagram for the Item class:
 
-![Item Class Diagram](Item_Class_UML_Diagram-1.png "Item Class Diagram")
+![Item Class Diagram](../images/Item_Class_UML_Diagram-1.png "Item Class Diagram")
 
 ## Player Inventory
 The player’s inventory is currently a list of item objects that the player has acquired through various means. This inventory is limited to only ten items. If a player attempts to pickup any additional items, they will be greeted with a message informing them that they have too many items and are unable to pick up any more. Items can be moved into and out of a player’s inventory by picking them up off the ground, dropping them onto the ground, or through trade.
 
-![Inventory](InventoryLinkedList.png "Inventory Linked List")
+![Inventory](../images/InventoryLinkedList.png "Inventory Linked List")
 From a technical perspective, this list of items is implemented using Java’s linked list class. List operations are done using the methods given by this class. However, anyone wishing to manipulate the player's inventory should use the methods given by the Player class.
 
 To add an object to a player's inventory, one must create an item object and pass it to the player's addItemToInventory(Item) method. To remove an object from a player's inventory, one must pass a string containing the item's name to the player's removeObjectFromInventory(String) method. The method will search the list for the first instance of an item with the given name and remove it.
@@ -39,13 +39,13 @@ In order to offer an item to another player, the user command is OFFERITEM. The 
 Within the offerItem method, multiple checks occur on the input. The player offering the item is checked, making sure the request came from a valid source. A similar check is performed on the target player. There is a check on the item in question, confirming that it is in the player’s inventory. A string is always returned to give feedback. This lets the players know why any failed trade did not go through, as well as informs them of a valid offer. In the case that the offer is successful, a message is sent directly to the target player.
 
 Here is an example of a successful offer:
-![Offer Item](OfferItem.png "Offer Item")
+![Offer Item](../images/OfferItem.png "Offer Item")
 
 ## Item Creation
 New Items can be created or destroyed by editing a csv file. The order of the input for every item is the csv file should be in the following order: item's name, followed by the item's weight, followed by the item's value. The ItemParser class is used to interpret the csv file input, and only contains a static method called parse. The parse method accepts a string in its parameter. This string should contain the file path of the csv file. The method then reads in the csv file and extracts each item's information. The parse method creates a new item object for each item in the csv file and stores it in an ArrayList. Once each item is created and stored, the parse method returns the ArrayList of the new items created.
   
 The following image depicts the proper order items should be entered in the csv file, along with their proper attributes:
-![CSV Example](InventoryCSVPic.png "Inventory CSV")
+![CSV Example](../images/InventoryCSVPic.png "Inventory CSV")
 
 ## User Commands
 ### Dropoff
@@ -58,7 +58,7 @@ Below is an example output of the dropoff function. If an item is not provided a
 
 The offerItem function works in a similar way but a player name is also required.
 
-![dropoff](dropoff.png "Dropoff Example")
+![dropoff](../images/dropoff.png "Dropoff Example")
 
 Both of these functions are called in GameClient.java and implemented in GameCore.java.
 The functions signatures are defined in the GameObjectInterface.java. The dropoff takes two strings as parameters: player name and item name. The offerItem function takes three parameters: the name of the player offering the item, the item name, and the name of the target player. 

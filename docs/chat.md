@@ -6,7 +6,7 @@ The game chat system allows players to communicate with one another in the world
 Also added is the ability to IGNORE all messages from a specific player, regardless of how the message was sent. Individual player ignore lists can be displayed to screen. If desired, the player that owns the ignore list can remove a specific player. 
 To assist players in location, or searching for the correct spelling for a player name, players have the ability to view all players in the game world with the aptly named LISTPLAYERS command. 
 
-## 401) Whisper ![chat](/images/comment-discussion.svg)
+## 401) Whisper ![chat](../images/comment-discussion.svg)
 ### Usage
 The whisper command is used to send another player a private message. There is only one way to invoke a whisper:
 1. **WHISPER playerName message**
@@ -37,7 +37,7 @@ The function sends the private message to player name2, only after the following
 
 On sucessfull execution, the function returns a string confirming success.
 
-## 402) List Players in Game ![list](/images/database.svg)
+## 402) List Players in Game ![list](../images/database.svg)
 ### Description
 You can list active players in the world. A world consists of several rooms, and these rooms are separated from one another. You might list players' name to be able to communicate with them with whisper functionality. ListPlayers has many functionalities. You might want to list players for shopping or challenging them into battles. It also gives you a good sense of your environment and online players in the game.  Listplayers is your personal contact list, so you want to keep it safe.
 ### Command
@@ -97,8 +97,8 @@ The above modification is right before the return in the whisper command. When a
 
 This is an example of reply in action:
 
-![Image of reply](/images/404_reply.png)
-## 405) Ignore ![mute](/images/mute.svg)
+![Image of reply](../images/404_reply.png)
+## 405) Ignore ![mute](../images/mute.svg)
 ### Usage
 There are two ways to ignore messages from a player:
 1. **IGNORE -A <player_name>**
@@ -154,7 +154,7 @@ Does not broadcast to ignoring players
 
 
 
-## 407) List Ignore Users ![list](/images/database.svg)
+## 407) List Ignore Users ![list](../images/database.svg)
 ### Description
 You want to check all the players you have ignored. Ignore -l List all players who are ignored by you. Basically, this function allows you to list all the players that you muted. You might mute players due to misbehavior. You might to use this functionality to find out about those players in case you want to unmute them back or just for checking. List ignore users is your personal blacklist so don’t share it with any one. 
 ### Command
@@ -178,7 +178,7 @@ In the class Player we keep track of ignored players in an arraylist called igno
 In the class GameCore we list ignored players by calling showIgnoreList, which granted the permission to access ignored players' names. Beware that the order of printing the players name is based on the order you have added them to your list.  
 By issuing ignore -l you are able to use this functionality.
 
-## 408) Unignore ![unmute](/images/unmute.svg)
+## 408) Unignore ![unmute](../images/unmute.svg)
 ### Description
 Unignore a player that is currently in your ignore list. When player is unignored you are able to see their chat logs and their whisper logs in-game. 
 ### Command
@@ -203,7 +203,7 @@ class GameObject
 The unignore feature essentially takes in two arguments, name of player as well as unignore name. First, our function checks whether the player is attempting to unignore himself in which case an exception occurs, and if not true, the function begins to verify if the ignored player even exists in the game. If the player that the current player wants to ignore exists and is in their ignored list, then the player becomes unignored and we remove them from the ignored list within the player class.
 
 
-## 412) Shout ![shout](/images/megaphone.svg)
+## 412) Shout ![shout](../images/megaphone.svg)
 ### Usage
 There is one way to invoke the shout command:
 1. **SHOUT \<message>**
