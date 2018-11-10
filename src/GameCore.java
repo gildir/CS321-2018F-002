@@ -99,25 +99,16 @@ public class GameCore implements GameCoreInterface {
             public void run() {
                 //toggles day/night cycle
                 boolean dayCycle = true;
-                //npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
-                        //new Ghoul(this, "Ghoul2", 3, 25)));
-
-
-
 
                 while(true) {
 
                     try {
-                        Thread.sleep((10000));//cycle changes every 5 seconds
+                        Thread.sleep((4000));//cycle changes every 5 seconds
 
-                        /*Ghoul ghoul3 = new Ghoul(gameCore2, "Ghoul3", 1, 30);
-                        Ghoul ghoul4 = new Ghoul(gameCore2, "Ghoul4", 3, 35);
-*/
-                        //moreMonsters.addAll(Arrays.asList((ghoul3, ghoul4));
 
                         while (playerList.iterator().hasNext()){
-                            Player p = playerList.iterator().next();
-                            Room r = map.findRoom(p.getCurrentRoom());
+                            Player player = playerList.iterator().next();
+                            Room room = map.findRoom(player.getCurrentRoom());
                             dayCycle = !dayCycle;
                             int counter = 1;
                             //broadcasts the cycle of the day
@@ -125,27 +116,20 @@ public class GameCore implements GameCoreInterface {
                                 //check if there are extra monsters
                                 if (npcSet.size() != 2){
                                     npcSet.removeAll(moreMonsters);
-                                    //npcSet.remove(ghoul3);
-                                    //ghoul3 = null;
-                                    //npcSet.remove(ghoul4);
-                                    //ghoul4 = null;
                                 }
                                 //gameCore.broadcast(gameCore.getMap().findRoom(currentRoom), message);
-                                GameCore.this.broadcast(p,"It's daytime");
-                                GameCore.this.broadcast(r,"It's daytime NPCs = " + npcSet.size());
-                                //playerList.iterator().remove();
+                                GameCore.this.broadcast(player,"It's daytime");
+                                GameCore.this.broadcast(room,"It's daytime NPCs = " + npcSet.size());
                                 break;
                             }
                             else{
                                 //more monsters appear during nighttime
-                                //npcSet.add(ghoul3);
-                                //npcSet.add(ghoul4);
                                 if (counter == 1){
                                     npcSet.addAll(moreMonsters);
                                     counter ++;
                                 }
-                                GameCore.this.broadcast(p,"It's nighttime, be wary of more monsters.");
-                                GameCore.this.broadcast(r,"It's nighttime, be wary of more monsters. NPCs = " + npcSet.size());
+                                GameCore.this.broadcast(player,"It's nighttime, be wary of more monsters.");
+                                GameCore.this.broadcast(room,"It's nighttime, be wary of more monsters. NPCs = " + npcSet.size());
                                 //playerList.iterator().remove();
                                 break;
                             }
