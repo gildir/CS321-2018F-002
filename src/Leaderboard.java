@@ -50,7 +50,7 @@ public class Leaderboard {
     public String getTopTen() {
         String topTen = "\nRock-Paper-Scissors Global Top Ten RPS Ranking:\n\n";
         
-        //sort leaderboard by number of wins
+        //sort leaderboard by number of wins in descending order
         Collections.sort(leaderboard, new Comparator<PlayerScore>(){
             public int compare(PlayerScore s1, PlayerScore s2) {
                 Integer a = new Integer(s1.getWins());
