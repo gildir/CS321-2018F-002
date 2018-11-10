@@ -11,13 +11,13 @@ import java.util.ArrayList;
 public interface GameObjectInterface extends Remote {
 
     /**
-     * Sends a request to join the game.  
+     * Sends a request to join the game.
      * Returns with the status of the join.  On true, the server expects the client
      *  will initiate a socket connection, to serve as an asynchronous, unsolicited
      *  String transfer mechanism.
-     * @param name Player Name. 
+     * @param name Player Name.
      * @return true if name is available and join is successful, false otherwise.
-     * @throws RemoteException 
+     * @throws RemoteException
      */
     public boolean joinGame(String name) throws RemoteException;
 
@@ -27,7 +27,7 @@ public interface GameObjectInterface extends Remote {
      * Returns a look at the area of the specified player.
      * @param name Player Name
      * @return String representation of the current area the player is in.
-     * @throws RemoteException 
+     * @throws RemoteException
      */
     public String look(String name) throws RemoteException;
 
@@ -38,24 +38,24 @@ public interface GameObjectInterface extends Remote {
      * Turns the player left.
      * @param name Player Name
      * @return String message of the player turning left.
-     * @throws RemoteException 
+     * @throws RemoteException
      */
     public String left(String name) throws RemoteException;
-    
+
      /**
      * Turns the player right.
      * @param name Player Name
      * @return String message of the player turning right.
-     * @throws RemoteException 
+     * @throws RemoteException
      */
     public String right(String name) throws RemoteException;
-   
+
     /**
      * Says "message" to everyone in the current area.
      * @param name Name of the player to speak
      * @param message Message to speak
      * @return Message showing success.
-     * @throws RemoteException 
+     * @throws RemoteException
      */
     public String say(String name, String message) throws RemoteException;
 
@@ -91,7 +91,7 @@ public interface GameObjectInterface extends Remote {
      *  a message will be returned.  Will display LOOK on any partial success.
      * @param name Name of the player to move
      * @return Message showing success.
-     * @throws RemoteException 
+     * @throws RemoteException
      */
     public String move(String name, String direction) throws RemoteException;
 
@@ -100,8 +100,8 @@ public interface GameObjectInterface extends Remote {
      * @param name Name of the player to pickup an object
      * @param object The case-insensitive name of the object to pickup.
      * @return Message showing success.
-     * @throws RemoteException 
-     */    
+     * @throws RemoteException
+     */
     public String pickup(String name, String object) throws RemoteException;
     /**
      * Attempts to drop off an object < object >. Will return a message on any success or failure.
@@ -111,6 +111,14 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public String dropoff(String name, String object) throws RemoteException;
+    /**
+     * Sorts inventory by specified attribute
+     * @param name Name of the player who's inventory is going to be sorted
+     * @param attribute The attribute by which to sort the inventory
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    public String sortInventory(String name, String attribute) throws RemoteException;
     /**
      * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
      * @param player The player offering the item
@@ -189,8 +197,8 @@ public interface GameObjectInterface extends Remote {
     /**
      * Leaves the game.
      * @param name Name of the player to leave
-     * @throws RemoteException 
-     */    
+     * @throws RemoteException
+     */
     public void leave(String name) throws RemoteException;
 
     /**
