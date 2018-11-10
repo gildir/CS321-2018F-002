@@ -13,6 +13,7 @@ HELP,,Displays the list of available commands
 CHALLENGE,PLAYER,Challenges another <PLAYER> to a Rock Paper Scissors Battle.
 ACCEPT,PLAYER,Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.
 REFUSE,PLAYER,Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.
+TOPTEN,, Display Top Ten Players from Rock Paper Scissors Leaderboard.
 ROCK,,Play <ROCK> in your current Rock Paper Scissors Battle.
 PAPER,,Play <PAPER> in your current Rock Paper Scissors Battle.
 SCISSORS,,Play <SCISSORS> in your current Rock Paper Scissors Battle.
