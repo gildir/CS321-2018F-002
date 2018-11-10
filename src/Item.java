@@ -1,5 +1,5 @@
 import java.util.*;
-public class Item{
+public class Item implements Cloneable {
  private String itemName;
  private double itemWeight;
  private double itemValue;
@@ -42,17 +42,31 @@ public class Item{
  public String toString(){
   String weightString = String.format("%.2f", itemWeight);
   String valueString = String.format("%.2f", itemValue);
-  return itemSize + itemColor + itemName + "(" + weightString + " lb, $" + valueString +")";
+  return "[" + itemSize + itemColor + "] " + itemName + "(" + weightString + " lb, $" + valueString +")";
  }
  // Method spits out a random color
  private String getRandColor(){
     Random rand = new Random();
-    return Item.color[rand.nextInt(color.length)] + " ";
+    return Item.color[rand.nextInt(color.length)];
  }
  //Method spits out a random size
  private String getRandSize(){
      Random rand = new Random();
      return Item.size[rand.nextInt(size.length)] + " ";
+ }
+
+ public Object clone() {
+     try {
+        Item item = (Item)(super.clone());
+        item.itemColor = getRandColor();
+        item.itemSize = getRandSize();
+        return item;
+     } catch(CloneNotSupportedException e)
+     {
+         System.out.println("Unable to clone item");
+     }
+     //If the clone is not supported, return the original object
+     return this;
  }
 
 }
