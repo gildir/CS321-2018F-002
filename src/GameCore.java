@@ -566,7 +566,6 @@ public class GameCore implements GameCoreInterface {
     public String sortInventory(String name, String attribute) {
         Player player = this.playerList.findPlayer(name);
             if( (!player.getCurrentInventory().isEmpty()) && (!attribute.isEmpty()) && ((attribute.equalsIgnoreCase("name") || attribute.equalsIgnoreCase("weight") || attribute.equalsIgnoreCase("value")))) {
-                System.out.println("if in sortInventory");
                 player.sortInventoryItems(attribute);
             }
             else {
