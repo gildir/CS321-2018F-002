@@ -124,14 +124,10 @@ public class Player {
               if(attribute.equalsIgnoreCase("weight")) {
                    item1 = (int)(i1.getItemWeight() * 10000);
                    item2 = (int)(i2.getItemWeight() * 10000);
-                  // item1 = (int) Math.round(i1.getItemWeight());
-                  // item2 = (int) Math.round(i2.getItemWeight());
               }
               if(attribute.equalsIgnoreCase("value")) {
                   item1 = (int)(i1.getItemValue() * 10000);
                   item2 = (int)(i2.getItemValue() * 10000);
-                  // item1 = (int) Math.round(i1.getItemValue());
-                  // item2 = (int) Math.round(i2.getItemValue());
               }
               return Integer.compare(item1, item2);
             }
