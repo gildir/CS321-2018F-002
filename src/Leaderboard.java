@@ -34,12 +34,24 @@ public class Leaderboard {
 		PlayerScore score = null;
 		String rank = null;
 		String wins = null;
+		String longestWinStreak = null;
 		for(int i = 0; i < this.leaderboard.size(); i++) {
 			score = this.leaderboard.get(i);
 			rank = String.format("%-4d", (i+1));
 			wins = String.format("%-4d", score.getWins());
-			board += ("Rank: " + rank + " | Score: " + wins + " | Name: " + score.getName() + "\n");
+			longestWinStreak = String.format("%-4d", score.getWinStreak());
+			board += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Score: " + wins + " | Name: " + score.getName() + "\n");
 		}
 		return board;
+	}
+	public PlayerScore getScore(String name) {
+		PlayerScore score = null;
+		for (int i = 0; i < this.leaderboard.size(); i++) {
+			score = this.leaderboard.get(i);
+			if (score.getName() == name) {
+				break;
+			}
+		}
+		return score;
 	}
 }

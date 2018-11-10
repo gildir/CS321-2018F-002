@@ -1047,6 +1047,7 @@ public class GameCore implements GameCoreInterface {
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play2.getName());
+	  this.leaderboard.getScore(play1.getName()).resetWinStreak();
 
       return;
     }
@@ -1062,7 +1063,7 @@ public class GameCore implements GameCoreInterface {
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName());
-
+	  this.leaderboard.getScore(play2.getName()).resetWinStreak();
       return;
     }
     else if(p1 == 2 && p2 == 1)
@@ -1077,7 +1078,7 @@ public class GameCore implements GameCoreInterface {
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName());
-
+	  this.leaderboard.getScore(play2.getName()).resetWinStreak();
       return;
     }
     else if(p1 == 2 && p2 == 3)
@@ -1092,7 +1093,7 @@ public class GameCore implements GameCoreInterface {
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play2.getName());
-
+	  this.leaderboard.getScore(play1.getName()).resetWinStreak();
       return;
     }
     else if(p1 == 3 && p2 == 1)
@@ -1107,7 +1108,7 @@ public class GameCore implements GameCoreInterface {
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play2.getName());
-
+	  this.leaderboard.getScore(play1.getName()).resetWinStreak();
       return;
     }
     else if(p1 == 3 && p2 == 2)
@@ -1122,7 +1123,7 @@ public class GameCore implements GameCoreInterface {
 
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName());
-
+	  this.leaderboard.getScore(play2.getName()).resetWinStreak();
       return;
     }
   }
