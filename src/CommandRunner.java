@@ -13,12 +13,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 public class CommandRunner {
-
+    
     /**
      * Game interface
      */
     protected GameObjectInterface remoteGameInterface;
-
+    
     /**
      * Wrap a lambda expression and allow it to throw a RemoteException
      */
@@ -26,13 +26,13 @@ public class CommandRunner {
     private interface CommandFunction<U, V, W> {
         public W apply(U u, V v) throws RemoteException;
     }
-
+    
     /**
      * Store command functions and preprocessing of arguments
      */
     private HashMap<String, CommandFunction<String, ArrayList<String>, String>> commandFunctions
-            = new HashMap<String, CommandFunction<String, ArrayList<String>, String>>();
-
+        = new HashMap<String, CommandFunction<String, ArrayList<String>, String>>();
+    
     /**
      * For each command add it to the hashmap defining also a lambda expression
      * receiving the name of the player and the arguments parsed from the input.
@@ -50,7 +50,7 @@ public class CommandRunner {
             // Create empty string
             String message = String.join(" ", args);
             System.out.println("[" + message + "]");
-
+            
             if (message.equals("")) {
                 return "[ERROR] Empty message";
             } else {
@@ -62,7 +62,7 @@ public class CommandRunner {
                 String receiver = args.remove(0);
                 String message = String.join(" ", args);
                 if (receiver.equals("")) {
-                return "[ERROR] You need to specify another player to whisper.";
+                    return "[ERROR] You need to specify another player to whisper.";
                 }
                 else if (message.equals("")) {
                     return "[ERROR] You need to include a message to whisper.";
@@ -93,7 +93,7 @@ public class CommandRunner {
         commandFunctions.put("MOVE",     (name, args) -> {
             try {
                 String direction = args.get(0);
-
+                
                 if (direction.equals("")) {
                     return "[ERROR] No direction specified";
                 } else {
@@ -109,7 +109,7 @@ public class CommandRunner {
                 while (!args.isEmpty()) {
                     object += " " + args.remove(0);
                 }
-
+                
                 if (object.equals("")) {
                     return "[ERROR] No object specified";
                 } else {
@@ -125,7 +125,7 @@ public class CommandRunner {
                 while (!args.isEmpty()) {
                     object += " " + args.remove(0);
                 }
-
+                
                 if (object.equals("")) {
                     return "[ERROR] No object specified";
                 } else {
@@ -156,12 +156,12 @@ public class CommandRunner {
         });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
         //commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
-
+        
         // PvP Commands
         commandFunctions.put("CHALLENGE",    (name, args) -> {
             try {
                 String player = args.get(0);
-
+                
                 if (player.equals("")) {
                     return "[ERROR] No player specified";
                 } else {
@@ -175,7 +175,7 @@ public class CommandRunner {
         commandFunctions.put("ACCEPT",    (name, args) -> {
             try {
                 String player = args.get(0);
-
+                
                 if (player.equals("")) {
                     return "[ERROR] No player specified";
                 } else {
@@ -189,7 +189,7 @@ public class CommandRunner {
         commandFunctions.put("REFUSE",    (name, args) -> {
             try {
                 String player = args.get(0);
-
+                
                 if (player.equals("")) {
                     return "[ERROR] No player specified";
                 } else {
@@ -205,6 +205,7 @@ public class CommandRunner {
         commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
         commandFunctions.put("LEADERBOARD",   (name, args) -> { remoteGameInterface.checkBoard(name); return null; });
         commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
+        commandFunctions.put("TOPTEN",   (name, args) -> { remoteGameInterface.topTen(name); return null; });
         commandFunctions.put("GIFT", (name, args) -> {
             if(args.isEmpty()) {
                 return "You need to provide a ghoul name and an object.";
@@ -212,7 +213,7 @@ public class CommandRunner {
             else if (args.size() == 2){
                 String ghoulName = args.remove(0);
                 String target = args.remove(0);
-
+                
                 return remoteGameInterface.giftGhoul(name, ghoulName, target);
             }
             else{
@@ -262,7 +263,7 @@ public class CommandRunner {
             } 
         });
     }
-
+    
     /**
      * Helper class to store a commands ID (command caller), its definition and
      * the function to be called with the command
@@ -272,7 +273,7 @@ public class CommandRunner {
         private String arguments;
         private String description;
         private CommandFunction<String, ArrayList<String>, String> function;
-
+        
         /**
          * @param id name of the command
          * @param arguments arguments of the command
@@ -286,7 +287,7 @@ public class CommandRunner {
             this.description = description;
             this.function = function;
         }
-
+        
         /**
          * @param name name of the command
          * @param args list of text arguments form input
@@ -295,21 +296,21 @@ public class CommandRunner {
         public String run(String name, ArrayList<String> args) throws RemoteException {
             return function.apply(name, args);
         }
-
+        
         /**
          * @return the id of this command
          */
         public String getId() {
             return id;
         }
-
+        
         /**
          * @return the arguments of this command
          */
         public String getArguments() {
             return arguments;
         }
-
+        
         /**
          * @return the description of this command
          */
@@ -317,12 +318,12 @@ public class CommandRunner {
             return description;
         }
     }
-
+    
     /**
      * Store commands in memory
      */
     private HashMap<String, Command> commands = new HashMap<String, Command>();
-
+    
     /**
      * @param rgi remote game interface
      * @return new CommandRunner
@@ -332,7 +333,7 @@ public class CommandRunner {
         setupFunctions();
         createCommands();
     }
-
+    
     /**
      * @param rgi remote game interface
      * @param commandsFile path to file with command descriptions
@@ -341,18 +342,18 @@ public class CommandRunner {
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
         this.remoteGameInterface = rgi;
         setupFunctions();
-
+        
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
         try (Scanner file_commands = new Scanner(new File(commandsFile));) {
             HashMap<String, String[]> file_map = new HashMap<String, String[]>();
-
+            
             while(file_commands.hasNextLine()){
                 String currentline = file_commands.nextLine();
                 String[] command_parts = currentline.split(",");
-
+                
                 String command_name = command_parts[0];
                 String[] command_description = new String[]{ command_parts[1], command_parts[2] };
-
+                
                 file_map.put(command_name, command_description);
             }
             createCommands(file_map);
@@ -360,13 +361,13 @@ public class CommandRunner {
             Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     /**
      * Create sample descriptions for commands. Then use them to create the commands
      */
     private void createCommands() {
         HashMap<String, String[]> descriptions = new HashMap<String, String[]>();
-
+        
         // Default commands
         descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
         descriptions.put("LISTPLAYERS",      new String[]{"", "Shows a list of all the players in the world."});
@@ -381,11 +382,11 @@ public class CommandRunner {
         descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
-
+        
         // Ghoul commands
         descriptions.put("POKE",      new String[]{"GHOUL",    "Pokes <GHOUL>"});
         descriptions.put("GIFT",      new String[]{"GHOUL, ITEM", "Gives your <ITEM> to <GHOUL>"});
-
+        
         // PvP Commands
         descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another <PLAYER> to a Rock Paper Scissors Battle."});
         descriptions.put("ACCEPT",    new String[]{"PLAYER",   "Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
@@ -395,7 +396,8 @@ public class CommandRunner {
         descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
         descriptions.put("LEADERBOARD",  new String[]{"",      "Display the current Rock Paper Scissors Leaderboard."});
         descriptions.put("TUTORIAL",  new String[]{"",         "Display a tutorial for Rock Paper Scissors."});
-
+        descriptions.put("TOPTEN",    new String[]{"",         "Display Top Ten Players from Rock Paper Scissors Leaderboard."});
+        
         //Shops & Money
         descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });
         descriptions.put("LEAVE",     new String[]{"SHOP",     "Leaves shop" });
@@ -403,22 +405,22 @@ public class CommandRunner {
         descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
-
+        
         // Create them
         createCommands(descriptions);
     }
-
+    
     /**
      * @param descriptions map with command names as keys and their descriptions as values
      */
     private void createCommands(HashMap<String, String[]> descriptions) {
         HashMap<String, String> aliasesMap = getAliasesFromFile();
-
+        
         for (String key : descriptions.keySet()) {
             String arguments = descriptions.get(key)[0];
             String description = descriptions.get(key)[1];
             CommandFunction<String, ArrayList<String>, String> function = commandFunctions.get(key);
-
+            
             if (function != null) {
                 Command new_command = new Command(key, arguments, description, function);
                 commands.put(key, new_command );
@@ -429,11 +431,11 @@ public class CommandRunner {
             }
         }
     }
-
+    
     private HashMap<String, String> getAliasesFromFile() {
         String filePath = "aliases.csv";
         HashMap<String, String> map = new HashMap<String, String>();
-
+        
         try{
             String line;
             BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -448,7 +450,7 @@ public class CommandRunner {
                     //System.out.println(parts[0] +"," + parts[1]);
                 }
             }
-
+            
             // for (String key : map.keySet())
             // {
             //     System.out.println(key + "," + map.get(key));
@@ -458,10 +460,10 @@ public class CommandRunner {
         catch (Exception ex) {
             ex.printStackTrace();
         }
-
+        
         return map;
     }
-
+    
     /**
      * @param command name of the command to be run
      * @param args list of arguments from input
@@ -470,16 +472,16 @@ public class CommandRunner {
      */
     public void run(String command, ArrayList<String> args, String playerName) {
         // System.out.println(playerName + ": " + command + '(' + args + ')');
-
+        
         Command cmd = commands.get(command.toUpperCase());
-
+        
         if (cmd != null) {
-
+            
             try {
                 String result = cmd.run(playerName, args);
                 if (result != null)
                     System.out.println(result);
-
+                
                 remoteGameInterface.logInteraction(playerName, command, args, result);
             } catch (RemoteException ex) {
                 Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
@@ -490,19 +492,19 @@ public class CommandRunner {
             System.out.println("Command not found. Type HELP for command list.");
         }
     }
-
+    
     /**
      * @return string with commands name, accepted arguments and descriptions
      */
     public String listCommands() {
         String s = "The game allows you to use the following commands:\n";
-
+        
         for (String key : commands.keySet()) {
             Command command = commands.get(key);
             String line = String.format("- %-30s%s\n", command.getId() + " " + command.getArguments(), command.getDescription());
             s += line;
         }
-
+        
         return s;
     }
 }

@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @author Kevin
  */
 public interface GameObjectInterface extends Remote {
-
+    
     /**
      * Sends a request to join the game.  
      * Returns with the status of the join.  On true, the server expects the client
@@ -20,9 +20,9 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public boolean joinGame(String name) throws RemoteException;
-        
+    
     public String gift(String playerName, String name, double amount) throws RemoteException; 
-
+    
     /**
      * Returns a look at the area of the specified player.
      * @param name Player Name
@@ -30,7 +30,7 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public String look(String name) throws RemoteException;
-
+    
     //author Shayan AH
     public String listAllPlayers(String name) throws RemoteException;
     
@@ -42,14 +42,14 @@ public interface GameObjectInterface extends Remote {
      */
     public String left(String name) throws RemoteException;
     
-     /**
+    /**
      * Turns the player right.
      * @param name Player Name
      * @return String message of the player turning right.
      * @throws RemoteException 
      */
     public String right(String name) throws RemoteException;
-   
+    
     /**
      * Says "message" to everyone in the current area.
      * @param name Name of the player to speak
@@ -58,23 +58,23 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public String say(String name, String message) throws RemoteException;
-
+    
     /**
-    * Whispers "message" to specified player.
-    * @param name1 Name of players sending message
-    * @param name2 Name of player receiving message
-    * @param message Message to whisper
-    * @return Message showing success.
-    * @throws RemoteException
-    */
+     * Whispers "message" to specified player.
+     * @param name1 Name of players sending message
+     * @param name2 Name of player receiving message
+     * @param message Message to whisper
+     * @return Message showing success.
+     * @throws RemoteException
+     */
     public String whisper(String name1, String name2, String message) throws RemoteException;
-
+    
     /**
-    * Sends a whisper the last player that whispered.
-    * @param name Name of player replying to whisper
-    * @param message Message to be whispered
-    * @return Message showing success.
-    */
+     * Sends a whisper the last player that whispered.
+     * @param name Name of player replying to whisper
+     * @param message Message to be whispered
+     * @return Message showing success.
+     */
     public String reply(String name, String message) throws RemoteException;
     
     /**
@@ -85,7 +85,7 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public String move(String name, String direction) throws RemoteException;
-
+    
     /**
      * Attempts to pick up an object < object >. Will return a message on any success or failure.
      * @param name Name of the player to pickup an object
@@ -112,14 +112,14 @@ public interface GameObjectInterface extends Remote {
      */
     public String offerItem(String playerName, String nameOffered, String target) throws RemoteException;
     
-     /**
+    /**
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to view their inventory
      * @return Message showing success.
      * @throws RemoteException
      */
     public String inventory(String name) throws RemoteException; 
-
+    
     /**
      * Player pokes a ghoul that is in the same room.
      * @param ghoulName Name of the ghoul that is poked
@@ -127,7 +127,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success or failure of the poking action.
      */
     public String pokeGhoul(String playerName, String ghoulName) throws RemoteException;
-
+    
     /**
      * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
      * @param playerName Name of the player that gifts the ghoul.
@@ -144,7 +144,7 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */
     public String giftable(String name) throws RemoteException;
-
+    
     /**
      * Returns a string representation of money you have
      * @param name Name of the player to view their money
@@ -183,7 +183,7 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public void leave(String name) throws RemoteException;       
-
+    
     /**
      * Logs a player interaction with the world, ie the execution of a command.
      *
@@ -194,7 +194,7 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
-
+    
 //Rock Paper Scissors Battle Code Here---------------------------------
     public void challenge(String challenger, String player2) throws RemoteException;
     public void accept(String challenger, String player2) throws RemoteException;
@@ -202,7 +202,8 @@ public interface GameObjectInterface extends Remote {
     public void rock(String player) throws RemoteException;
     public void paper(String player) throws RemoteException;
     public void scissors(String player) throws RemoteException;
-	  public String tutorial(String name) throws RemoteException;
+    public String tutorial(String name) throws RemoteException;
     public void checkBoard(String player) throws RemoteException;
+    public void topTen(String name) throws RemoteException;
 //Rock Paper Scissors Battle Code Here---------------------------------
 }

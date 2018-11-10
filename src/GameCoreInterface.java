@@ -20,9 +20,9 @@ public interface GameCoreInterface {
      */   
     public void broadcast(Room room, String message);
     
-
+    
     public String gift(String playerName, String name, double amount); 
-
+    
     
     /**
      * Returns the player with the given name or null if no such player.
@@ -90,7 +90,7 @@ public interface GameCoreInterface {
      * @return Player that was just removed.
      */    
     public Player leave(String name);    
-
+    
     /**
      * Logs a string into a file
      * @param fileName name of the file to log in
@@ -99,14 +99,15 @@ public interface GameCoreInterface {
     public void log(String fileName, String log);
     
 //Rock Paper Scissors Battle Code here--------------------------------------
-public void challenge(String challenger, String player2);
-public void accept(String challenger, String player2);
-public void refuse(String challenger, String player2);
-public void doBattle(String challenger, String player2, int p1, int p2, Battle b);
-public void rock(String player);
-public void paper(String player);
-public void scissors(String player);
-public void checkBoard(String player);
-public String tutorial(String name);
+    public void challenge(String challenger, String player2);
+    public void accept(String challenger, String player2);
+    public void refuse(String challenger, String player2);
+    public void doBattle(String challenger, String player2, int p1, int p2, Battle b);
+    public void rock(String player);
+    public void paper(String player);
+    public void scissors(String player);
+    public void checkBoard(String player);
+    public String tutorial(String name);
+    public void topTen(String name);
 //Rock Paper Scissors Battle Code here--------------------------------------
 }

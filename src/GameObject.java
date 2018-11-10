@@ -18,13 +18,13 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      *  and establishes a new, empty, player list.
      * @throws RemoteException 
      */
-     //now takes a filename for the Map
+    //now takes a filename for the Map
     public GameObject(String filename) throws RemoteException {
         super();
         //filename for the Map
         core = new GameCore(filename);
     }
-
+    
     /**
      * Links an asynchronous event message connection to a player.
      * @param playerName Player to link the reply socket with.
@@ -39,7 +39,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         }
         return false;
     }    
-  
+    
     
     /**
      * Allows a player to join the game.  If a player with the same name (case-insensitive)
@@ -55,7 +55,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         // Request join to the core and return the results back to the remotely calling method.
         return (core.joinGame(name) != null);
     }
-        
+    
     /**
      * Returns a look at the area of the specified player.
      * @param playerName Player Name
@@ -66,13 +66,13 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String look(String playerName) throws RemoteException {
         return core.look(playerName);
     }       
-
+    
     //Author Shayan AH
     public String listAllPlayers(String name)throws RemoteException
     {
         return core.listAllPlayers(name);
     } 
-     
+    
     /**
      * Turns the player left.
      * @param name Player Name
@@ -83,7 +83,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String left(String name) throws RemoteException {
         return core.left(name);
     }
-       
+    
     /**
      * Turns the player right.
      * @param name Player Name
@@ -94,7 +94,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String right(String name) throws RemoteException {
         return core.right(name);
     }    
-       
+    
     /**
      * Says "message" to everyone in the current area.
      * @param name Name of the player to speak
@@ -106,34 +106,34 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String say(String name, String message) throws RemoteException {
         return core.say(name, message);
     }
-
+    
     /**
-    * Whispers "message" to specified player.
-    * @param name1 Name of player sending message
-    * @param name2 Name of player receiving message
-    * @param message Message to whisper
-    * @return Message showing success.
-    * @throws RemoteException
-    */
+     * Whispers "message" to specified player.
+     * @param name1 Name of player sending message
+     * @param name2 Name of player receiving message
+     * @param message Message to whisper
+     * @return Message showing success.
+     * @throws RemoteException
+     */
     @Override
     public String whisper(String name1, String name2, String message) throws RemoteException
     {
         return core.whisper(name1, name2, message);
     }
-
+    
     /**
-    * Sends a whisper the last player that whispered.
-    * @param name Name of player replying to whisper
-    * @param message Message to be whispered
-    * @return Message showing success.
-    * @throws RemoteException
-    */
+     * Sends a whisper the last player that whispered.
+     * @param name Name of player replying to whisper
+     * @param message Message to be whispered
+     * @return Message showing success.
+     * @throws RemoteException
+     */
     @Override
     public String reply(String name, String message) throws RemoteException
     {
         return core.reply(name, message);
     }
-      
+    
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
@@ -146,7 +146,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String move(String name, String direction) throws RemoteException {
         return core.move(name, direction);
     }
- 
+    
     /**
      * Attempts to enter <location> shop. Use if entering a room that is part of another
      * room, instead of using move to walk to a separate room
@@ -157,7 +157,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      */
     @Override
     public String enter(String name, String location) throws RemoteException{
-     return core.enter(name, location);
+        return core.enter(name, location);
     }
     
     /**
@@ -166,9 +166,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @return Message showing success
      */
     public String leaveRoom(String name) {
-     return core.leaveRoom(name);
+        return core.leaveRoom(name);
     }
-
+    
     /**
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
@@ -202,7 +202,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String offerItem(String playerName, String nameOffered, String target) throws RemoteException {
         return core.offerItem(playerName, nameOffered, target);
     }
-
+    
     /**
      * Player pokes a ghoul that is in the same room.
      * @param ghoulName Name of the ghoul that is poked
@@ -212,7 +212,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String pokeGhoul(String playerName, String ghoulName) throws RemoteException {
         return core.pokeGhoul(playerName, ghoulName);
     }
-
+    
     /**
      * Player gifts a ghoul that is in the same room an object. This action decreases the ghoul's aggression.
      * @param playerName Name of the player that gifts the ghoul.
@@ -224,10 +224,10 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.giftGhoul(playerName, ghoulName, target);
     }
     
-
+    
     @Override
     public String gift(String yourname,String name, double amount) throws RemoteException {
-     return core.gift(yourname, name,amount);   
+        return core.gift(yourname, name,amount);   
     }
     
     @Override
@@ -246,7 +246,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.inventory(name);
     }    
     
-     /**
+    /**
      * Returns a list of nearby players you can gift
      * @param name Player Name
      * @return String representation of nearby players.
@@ -264,10 +264,10 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @return A string indicating success or failure
      */
     public String sell(String playerName, String itemName) throws RemoteException{
-     return core.sell(playerName, itemName);
+        return core.sell(playerName, itemName);
     }
     
-     /**
+    /**
      * Leaves the game.
      * @param name Name of the player to leave
      * @throws RemoteException 
@@ -279,7 +279,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
             player.getReplyWriter().close();
         }
     }    
-
+    
     /**
      * Logs a player interaction with the world, ie the execution of a command.
      *
@@ -292,55 +292,58 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     @Override
     public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException {
         StringBuilder sb = new StringBuilder();
-
+        
         // Add timestamp and name of the player to begining of string
         sb.append("[" + new java.util.Date() + "] [" + name.toUpperCase() + "]\n");
-
+        
         // Append command and args. If no args append null
         if (args != null)   sb.append("\t-> " + command + "(" + String.join(", ", args) + ")\n");
         else                sb.append("\t-> " + command + "()\n");
-
+        
         // Append output. If no output append null
         if (output != null) sb.append("\t<- \"" + output + "\"\n");
         else                sb.append("\t<- \"null\"\n");
-
+        
         String file = name + ".log";
         String log = sb.toString();
         
         core.log(file, log);
     }
-	//Rock Paper Scissors Battle Code here--------------------------------------
-	public void challenge(String challenger, String player2) throws RemoteException
-	{
-		core.challenge(challenger, player2);
-	}
-
-	public void accept(String challenger, String player2) throws RemoteException
-	{
-		core.accept(challenger,player2);
-	}
-	public void refuse(String challenger, String player2) throws RemoteException
-	{
-		core.refuse(challenger, player2);
-	}
-	public void rock(String player) throws RemoteException
-	{
-		core.rock(player);
-	}
-	public void paper(String player) throws RemoteException
-	{
-		core.paper(player);
-	}
-	public void scissors(String player) throws RemoteException
-	{
-		core.scissors(player);
-	}
-  public String tutorial(String name) throws RemoteException
-  {
-      return core.tutorial(name);
-  }
-	public void checkBoard(String player) throws RemoteException {
-		core.checkBoard(player);
-	}
-  //Rock Paper Scissors Battle Code here--------------------------------------
+    //Rock Paper Scissors Battle Code here--------------------------------------
+    public void challenge(String challenger, String player2) throws RemoteException
+    {
+        core.challenge(challenger, player2);
+    }
+    
+    public void accept(String challenger, String player2) throws RemoteException
+    {
+        core.accept(challenger,player2);
+    }
+    public void refuse(String challenger, String player2) throws RemoteException
+    {
+        core.refuse(challenger, player2);
+    }
+    public void rock(String player) throws RemoteException
+    {
+        core.rock(player);
+    }
+    public void paper(String player) throws RemoteException
+    {
+        core.paper(player);
+    }
+    public void scissors(String player) throws RemoteException
+    {
+        core.scissors(player);
+    }
+    public String tutorial(String name) throws RemoteException
+    {
+        return core.tutorial(name);
+    }
+    public void checkBoard(String player) throws RemoteException {
+        core.checkBoard(player);
+    }
+    public void topTen(String name) throws RemoteException {
+        core.topTen(name);
+    }
+    //Rock Paper Scissors Battle Code here--------------------------------------
 }
