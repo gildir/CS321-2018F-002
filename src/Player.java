@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Random;
 
-
 /**
  *
  * @author Kevin
@@ -21,6 +20,11 @@ public class Player {
     private DataOutputStream outputWriter = null;
     private Money money;
 
+    /* START 405_ignore variables*/
+    private ArrayList<String> ignoreList;
+    private ArrayList<String> ignoredByList;
+    /* END 405_ignore variables*/
+
     public Player(GameCore gameCore, String name) {
         this.gameCore = gameCore;
         this.currentRoom = 1;
@@ -28,6 +32,10 @@ public class Player {
         this.name = name;
         this.currentInventory = new LinkedList<>();
         this.money = new Money(20);
+		/* START 405_ignore*/
+        this.ignoreList = new ArrayList<String>();
+        this.ignoredByList = new ArrayList<String>();
+        /* END 405_ignore  */
     }
 
     /**
@@ -202,7 +210,7 @@ public class Player {
     public Money getMoney() {
       return this.money;
     }
-    
+
     public void addMoney(double amount) {
         synchronized (this) {
             int dollars = (int) amount;
@@ -229,7 +237,7 @@ public class Player {
             this.currentDirection = direction;
         }
     }
-    
+
     public Money giveMoney(Player giver,Player receiver,double value){
         synchronized (this) {
             Money moneyToGive = new Money();
@@ -248,7 +256,7 @@ public class Player {
             return moneyToGive;
         }
     }
-  
+
     public String viewInventory() {
         synchronized (this) {
             String result = "";
@@ -270,5 +278,49 @@ public class Player {
         synchronized (this) {
             return "Player " + this.name + ": " + currentDirection.toString();
         }
+    }
+
+	/* START 405_ignore */
+    public void ignorePlayer(String name) {
+		ignoreList.add(name);
+    }
+
+    public void addIgnoredBy( String name) {
+		ignoredByList.add(name);
+    }
+
+    public boolean searchIgnoredBy(String name) {
+    	int listSize = ignoredByList.size();
+		for( int x = 0; x < listSize; x++){
+			if( name.equalsIgnoreCase(ignoredByList.get(x)))
+				return true;
+		}
+		return false;
+    }
+
+    public boolean searchIgnoreList(String name) {
+    	int listSize = ignoreList.size();
+		for( int x = 0; x < listSize; x++){
+			if( name.equalsIgnoreCase(ignoreList.get(x)))
+				return true;
+		}
+		return false;
+    }
+    /* END 405_ignore */
+    //407
+    public String showIgnoreList()
+    {
+        String res = "";
+        for(int i = 0; i < ignoreList.size(); i++)
+            res += ignoreList.get(i) + " ";
+        return res;
+    }
+
+   public void unIgnorePlayer(String name) {
+		ignoreList.remove(name);
+    }
+
+ public void removeIgnoredBy( String name) {
+		ignoredByList.remove(name);
     }
 }

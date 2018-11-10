@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Scanner; 
+import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.*;
 import java.util.LinkedList;
@@ -27,7 +27,7 @@ public class GameCore implements GameCoreInterface {
     private final int minimumSpawnTime=100, maximumSpawnTime=600;
 
     private final Shop shop;
-    
+
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
     private Leaderboard leaderboard;
@@ -65,7 +65,7 @@ public class GameCore implements GameCoreInterface {
         });
         npcThread.setDaemon(true);
         npcThread.start();
-        
+
         activeBattles = new ArrayList<Battle>();
         pendingBattles = new ArrayList<Battle>();
         this.leaderboard = new Leaderboard();
@@ -98,7 +98,7 @@ public class GameCore implements GameCoreInterface {
 
     /**
      * Basic getter methods for GameCore.
-     */ 
+     */
     public PlayerList getPlayerList(){
       return this.playerList;
     }
@@ -120,12 +120,39 @@ public class GameCore implements GameCoreInterface {
     @Override
     public void broadcast(Player player, String message) {
         for(Player otherPlayer : this.playerList) {
-            if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()) {
+            if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()
+			    && !player.searchIgnoredBy( otherPlayer.getName() )) {	// 405_ignore, don't broadcast to players ignoring you
                 otherPlayer.getReplyWriter().println(message);
             }
         }
     }
-  
+
+    /**
+    * Broadcasts a message to all players in the world.
+    * @param player Player shouting the message
+    * @param message Message to broadcast
+    */
+    public void broadcastShout(Player player, String message) {
+        for(Player otherPlayer : this.playerList) {
+            if(otherPlayer != player && !player.searchIgnoredBy( otherPlayer.getName())) {
+                otherPlayer.getReplyWriter().println(message);
+            }
+        }
+    }
+
+    /**
+    * Broadcasts a message to the specified player.
+    * @param sendingPlayer Player sending message
+    * @param receivingPlayer Player receiving message
+    * @param message Message to broadcast
+    */
+    public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
+        if(sendingPlayer != receivingPlayer
+			&& !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
+            receivingPlayer.getReplyWriter().println(message);
+        }
+    }
+
     /**
      * Broadcasts a message to all players in the specified room.
      * @param room Room to broadcast the message to.
@@ -141,18 +168,6 @@ public class GameCore implements GameCoreInterface {
         }
     }
 
-    /**
-    * Broadcasts a message to the specified player.
-    * @param sendingPlayer Player sending message
-    * @param receivingPlayer Player receiving message
-    * @param message Message to broadcast
-    */
-    public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
-        if(sendingPlayer != receivingPlayer) { //405_ignore, don't broadcast to players ignoring you
-            receivingPlayer.getReplyWriter().println(message);
-        }
-    }
-    
     /**
      * Returns the player with the given name or null if no such player.
      * @param name Name of the player to find.
@@ -234,7 +249,7 @@ public class GameCore implements GameCoreInterface {
                 return null;
             }
     }
-   
+
     /**
      * Turns the player left.
      * @param name Player Name
@@ -297,8 +312,26 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }  
-    
+    }
+
+    /**
+    * Shouts "message" to everyone in the world.
+    * @param name Name of the player shouting
+    * @param message Message that will be shouted
+    * @return Message showing success.
+    */
+    public String shout(String name, String message) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            this.broadcastShout(player, player.getName() + " shouts, \"" + message + "\"");
+            return "You shout, \"" + message + "\"";
+        }
+        else {
+            return null;
+        }
+    }
+
+
     /**
     * Whispers "message" to a specified player.
     * @param name1 Name of player sending whisper
@@ -309,19 +342,26 @@ public class GameCore implements GameCoreInterface {
     public String whisper(String name1, String name2, String message) {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
- 
-        if(playerSending != null && playerReceiving != null) {
-            if(name1.equalsIgnoreCase(name2)){
+        if(playerSending != null && playerReceiving != null)
+        {
+            if(name1.equalsIgnoreCase(name2))
                 return "Cannot whisper yourself";
+            else
+            {
+                if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
+                    this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+                    playerReceiving.setLastWhisperName(name1);
+                    return "message sent to " + playerReceiving.getName();
+                }
+                else {
+                    return "";
+                }
             }
-            this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
-            playerReceiving.setLastWhisperName(name1);
-            return "message sent to " + playerReceiving.getName();
         }
-        else {
-            if(playerReceiving == null) {
+        else
+        {
+            if(playerReceiving == null)
                 return "Couldn't find player online.";
-            }
             return null;
         }
     }
@@ -354,7 +394,7 @@ public class GameCore implements GameCoreInterface {
         if(player == null) {
             return null;
         }
-        
+
         Room room;
         room = map.findRoom(player.getCurrentRoom());
 
@@ -417,7 +457,7 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(shop.displayShop());
       return "You stop moving and begin to stand around again.";
     }
-    
+
     /**
      * Makes player leave a room e.g shop
      * @param name Player Name
@@ -453,7 +493,7 @@ public class GameCore implements GameCoreInterface {
         if(player != null) {
             Room room = map.findRoom(player.getCurrentRoom());
             if(target.equals("all")){
-                
+
               int obj_count = 0;
               Item object;
               String AllObjects = room.getObjects();
@@ -472,7 +512,7 @@ public class GameCore implements GameCoreInterface {
                 return "No objects in this room";
             }
             else{
-              
+
               if (player.getCurrentInventory().size() >= 10)
               {
                   this.broadcast(player, player.getName() + " tried to pick something up, but was holding too many items.");
@@ -493,7 +533,7 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }       
+    }
     /**
      * Attempts to drop off an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
@@ -543,7 +583,7 @@ public class GameCore implements GameCoreInterface {
                         hasItem = true;
                         break;
                     }
-                } 
+                }
                 if(hasItem) {
                     playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
                     return "You just offered " + nameOffered + " a " + target + " from your inventory.";
@@ -634,7 +674,7 @@ public class GameCore implements GameCoreInterface {
             }
         }
         return null;
-    }  
+    }
 
     /**
      * Returns a string representation of all objects you are carrying.
@@ -651,8 +691,8 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    } 
-    
+    }
+
     /**
      * Returns a list of nearby players you can gift
      * @param playerName Player Name
@@ -660,10 +700,10 @@ public class GameCore implements GameCoreInterface {
      */
     public String giftable(String playerName) {
         Player player = playerList.findPlayer(playerName);
-        if(player != null) {        
+        if(player != null) {
             // Find the room the player is in.
             Room room = this.map.findRoom(player.getCurrentRoom());
-        
+
             // Return a string representation of players in teh same room
             String gift_list = "\nGiftable players near you: " + room.getPlayers(this.playerList);
             gift_list = gift_list.replace(playerName, "");
@@ -673,7 +713,7 @@ public class GameCore implements GameCoreInterface {
       else {
             return null;
       }
-    }    
+    }
 
     public String money(String name) {
         Player player = this.playerList.findPlayer(name);
@@ -684,33 +724,33 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }    
-    @Override 
+    @Override
     public String gift(String yourname ,String name, double amount){
-        Player receiver = this.playerList.findPlayer(name); 
-        Player you = this.playerList.findPlayer(yourname); 
+        Player receiver = this.playerList.findPlayer(name);
+        Player you = this.playerList.findPlayer(yourname);
         if(receiver != null){
           if(you.getMoney().sum() < amount){
-           return "NOT ENOUGH MONEY!";  
+           return "NOT ENOUGH MONEY!";
           }
             this.broadcast(you, you.getName() + " offers a gift to " + receiver.getName());
            //Scanner read = new Scanner(System.in);
-           
+
             receiver.getReplyWriter().println("Accept gift? (y/n):");
-            
-           /*String input = read.nextLine(); 
-             
+
+           /*String input = read.nextLine();
+
            if(input.toLowerCase().equals("y")) {
-         
+
             receiver.acceptMoney(you.giveMoney(you,receiver,amount));
-            
+
            return "User accepted gift!";*/
             return "";
            //}
       }else{
-            return "NO USER WITH THAT NAME";  
-      }   
+            return "NO USER WITH THAT NAME";
+      }
     }
- 
+
      /**
      * Leaves the game.
      * @param name Name of the player to leave
@@ -725,7 +765,71 @@ public class GameCore implements GameCoreInterface {
             return player;
         }
         return null;
-    }       
+    }
+
+    //405
+    public String ignore(String name, String ignoreName) {
+		if( name.equalsIgnoreCase(ignoreName) )
+			return "You can't ignore yourself.";
+
+		//verify player being ignored exists
+		Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
+		if( ignoredPlayer == null )
+			return "Player " + ignoreName + " is not in the game.";
+
+		Player thisPlayer = this.playerList.findPlayer(name);
+		//verify player is not already in ignore list
+		if( thisPlayer.searchIgnoreList(ignoreName) )
+			return "Player " + ignoreName + " is in ignored list.";
+
+		//add ignoreName to ignore list
+		thisPlayer.ignorePlayer(ignoreName);
+
+		//add ignoring player to ignored players ignoredBy list
+		ignoredPlayer.addIgnoredBy(name);
+		return ignoreName + " added to ignore list.";
+    }
+
+    //407
+    public String listIgnoredPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Ignored Players: ";
+
+        if(player != null)
+        {
+            l += player.showIgnoreList();
+            return l;
+        }
+        else
+        {
+            return null;
+        }
+    }
+    //408
+    public String unIgnore(String name, String unIgnoreName) {
+		if( name.equalsIgnoreCase(unIgnoreName) )
+			return "You can't unignore yourself since you can't ignore yourself...";
+
+		//verify player being unignored exists
+		Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
+		if( unIgnoredPlayer == null )
+			return "Player " + unIgnoreName + " is not in the game.";
+
+		Player thisPlayer = this.playerList.findPlayer(name);
+
+		//verify player is in Ignore list
+		if( !thisPlayer.searchIgnoreList(unIgnoreName) )
+			return "Player " + unIgnoreName + " is not in ignored list.";
+
+		//remove ignoreName in ignore list
+		thisPlayer.unIgnorePlayer(unIgnoreName);
+
+		//add ignoring player to ignored players ignoredBy list
+		unIgnoredPlayer.removeIgnoredBy(name);
+		return unIgnoreName + " removed from ignore list.";
+    }
+    /* STOP 408_ignore */
 
 /**
      * Sell an item to the shop the player is currently in
@@ -776,7 +880,7 @@ public class GameCore implements GameCoreInterface {
             // Check for file
             File file = new File(PATH + "/" + fileName);
             if (! file.exists()) file.createNewFile();
-            
+
             // Write to file
             FileWriter fw = new FileWriter(file.getAbsoluteFile(), true);
             BufferedWriter bw = new BufferedWriter(fw);
