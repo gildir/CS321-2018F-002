@@ -1310,13 +1310,13 @@ private String ExitString(Room r, int a, int b)
 {
 	String s="", e, t;
 	//convert coordinates to directions
-	for(; a<2; a++)
+	for(; a<1; a++)
 		s+='n';
-	for(; a>2; a--)
+	for(; a>1; a--)
 		s+='s';
-	for(; b<2; b++)
+	for(; b<1; b++)
 		s+='w';
-	for(; b>2; b--)
+	for(; b>1; b--)
 		s+='e';
 	e=SingleExit(r, s);
 	//check permutations of directions to find different possible locations
@@ -1352,26 +1352,26 @@ public String map(String name)
 {
   	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());//get the room the player is in
 	//get the title of all exits
-	String[][] a=new String[5][5];//initialize the rooms
-	for(int i=0; i<5; i++)
-		for(int j=0; j<5; j++)
+	String[][] a=new String[3][3];//initialize the rooms
+	for(int i=0; i<3; i++)
+		for(int j=0; j<3; j++)
 			a[i][j]=ExitString(r, i, j);
-	a[2][2]=r.getTitle();
+	a[1][1]=r.getTitle();
 	//get the longest length in each column for spacing
-	int[] l=new int[5];
-	for(int i=0; i<5; i++)
-		for(int j=0; j<5; j++)
+	int[] l=new int[3];
+	for(int i=0; i<3; i++)
+		for(int j=0; j<3; j++)
 			l[j]=Math.max(l[j], a[i][j].length());
 	//build the map String
 	String m="";
-	String[][] t=new String[5][3];
-	for(int i=0; i<5; i++)
+	String[][] t=new String[3][3];
+	for(int i=0; i<3; i++)
 	{
-		for(int j=0; j<5; j++)
+		for(int j=0; j<3; j++)
 			t[j]=RoomStrings(a[i][j], l[j]+2);
 		for(int j=0; j<3; j++)
 		{
-			for(int k=0; k<5; k++)
+			for(int k=0; k<3; k++)
 				m+=t[k][j]+" ";
 			m+="\n";
 		}
