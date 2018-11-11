@@ -21,7 +21,7 @@ public class Room {
         this.id = id;
         this.title = title;
         this.description = description;
-	this.location = location;
+ this.location = location;
         this.gameCore = gameCore;
     }
     
@@ -31,7 +31,7 @@ public class Room {
         result += "-------------------------\n";
         result += this.getDescription() + "\n";
         result += "...................\n";
-	result += "This room is " + this.getLocation() + "\n";
+ result += "This room is " + this.getLocation() + "\n";
         result += "Objects in the area: " + this.getObjects() + "\n";
         result += "Players in the area: " + this.getPlayers(playerList) + "\n";
         result += "Ghouls in the area: " + this.getGhoulsString() + "\n";
@@ -112,7 +112,7 @@ public class Room {
     }
 
     public String getLocation() {
-	return this.location;
+ return this.location;
     }
     
     public String getObjects() {
@@ -131,7 +131,7 @@ public class Room {
     }
 
     public void addObjectFromPlayer(Item obj) {
-	this.objects.add(obj);
+ this.objects.add(obj);
     }
     
     public Item removeObject(String target) {
@@ -165,6 +165,39 @@ public class Room {
         else {
             return localPlayers;
         }
+    }
+    
+    public Player getRandomPlayer(){
+        
+        int i = 0;
+        int j = 0
+        int min = 0;
+        
+        for (Player player : player){
+            if (player.getCurrentRoom() == this.id){
+                i++;
+            }
+        }
+        
+        if (i != 0) {
+           Random r = new Random();
+           i = r.nextInt((i - min) + 1) + min;
+        }
+        else{
+            // If no players are in room
+        }
+        
+        for (Player player : player){
+            if (player.getCurrentRoom() == this.id){
+                if (j == i){
+                    return player;
+                }
+                else{
+                    j++;
+                }
+            }
+        }
+        
     }
 
     public ArrayList<String> getNamesOfNpcs(Set<NPC> npcSet){
