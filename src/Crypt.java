@@ -15,7 +15,7 @@ public class Crypt{
     	
     	//scramble based off username
     	char[] keyC = key.toCharArray();
-    	int boost = (keyC[0] - 0)%25;
+    	int boost = (keyC[0] - 0)%4;
     	//edit first and last value of password
     	bin[0] = bin[0] + boost;
     	
@@ -35,7 +35,7 @@ public class Crypt{
     	
     	//unscramble
     	char[] keyC = key.toCharArray();
-    	int boost = (keyC[0] - 0)%25;
+    	int boost = (keyC[0] - 0)%4;
     	//edit first and last value of password
     	bin[0] = bin[0] - boost;
     	
