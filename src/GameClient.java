@@ -244,14 +244,16 @@ public class GameClient {
             }
             
             //User enters and answers recovery questions
-            System.out.println("Please enter a recovery question.");
+            System.out.println("Setting up 3 recovery questions for your account");
+            System.out.println("Note: Answers are Case Sensitive");
+            System.out.println("Please enter the first recovery question.");
             System.out.print("> ");
             question1 = keyboardInput.readLine(); update();
             System.out.println("Now enter an answer to that question.");
             System.out.print("> ");
             ans1 = keyboardInput.readLine(); update();
             
-            System.out.println("Please enter another recovery question.");
+            System.out.println("Please enter the second recovery question.");
             System.out.print("> ");
             question2 = keyboardInput.readLine(); update();
             System.out.println("Please answer your question.");
@@ -317,6 +319,8 @@ public class GameClient {
                     	System.out.println("Password does not match");
                     	passwordsEnteredCount++;
                     	if (passwordsEnteredCount > 3) {
+                            System.out.println("Please use your security questions to reset password");
+                            System.out.println("NOTE: Answers are Case-Sensitive");
                     		if(PlayerDatabase.checkSecurityQestions(playerName)) {
                     			update();
                     			if(PlayerDatabase.changePassword(playerName)) {
