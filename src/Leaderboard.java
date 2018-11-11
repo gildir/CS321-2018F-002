@@ -49,7 +49,7 @@ public class Leaderboard {
 			//currentWinStreak = String.format("%-2d", playerScore.getCurrentWinStreak());
 			longestLossStreak = String.format("%-2d", playerScore.getLongestLossStreak());
 			//currentLossStreak = String.format("%-2d", playerScore.getCurrentLossStreak());
-			head += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Longest Loss Streak: " + longestLossStreak + " | Score: " + score + "Title: " + title + " | Name: " + playerScore.getName() + "\n");
+			head += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Longest Loss Streak: " + longestLossStreak + " | Score: " + score + " | Title: " + title + " | Name: " + playerScore.getName() + "\n");
 			//head += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Current Win Streak: " + currentWinStreak + " | Longest Loss Streak: " + longestLossStreak + " | Current Loss Streak: " + currentLossStreak + " | Score: " + score + "Title: " + title + " | Name: " + playerScore.getName() + "\n");
 		}
 		return head;
