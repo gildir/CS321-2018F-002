@@ -180,7 +180,10 @@ public class GameCore implements GameCoreInterface {
             // New player, add them to the list and return true.
             newPlayer = new Player(name);
             this.playerList.addPlayer(newPlayer);
-            this.leaderboard.addScore(name);
+            if(!this.leaderboard.checkForPlayer(name))
+            {
+              this.leaderboard.addScore(name);
+            }
             // New player starts in a room.  Send a message to everyone else in that room,
             //  that the player has arrived.
             this.broadcast(newPlayer, newPlayer.getName() + " has arrived.");

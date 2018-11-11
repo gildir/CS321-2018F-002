@@ -133,7 +133,7 @@ public class GameClient {
             // Collect input for the game.
             while(runGame) {
                 try {
-                    keyboardStatement = keyboardInput.readLine();
+                    keyboardStatement = keyboardInput.readLine(); new Time();
                     parseInput(keyboardStatement);
                 } catch (IOException ex) {
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
@@ -229,7 +229,7 @@ public class GameClient {
             while(!conf){ //While loop verifies user password
                 System.out.println("Please enter your password");
                 System.out.print("> ");
-                this.playerPassword = keyboardInput.readLine(); new Time();
+                this.playerPassword = keyboardInput.readLine();
                 if(PlayerDatabase.isPassword(playerName, playerPassword) == true){
                     
                     if(remoteGameInterface.joinGame(this.playerName) == false){
