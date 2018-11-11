@@ -731,16 +731,16 @@ public class GameCore implements GameCoreInterface {
     	Player tradee = this.playerList.findPlayer(name); 
         Player trader = this.playerList.findPlayer(yourname);
         if(trader == null || tradee == null)
-        	return "" + tradee + " does not exist!";
+        	return "" + name + " does not exist!";
         if(amount <= 0)
         	return "Must gift an amount greater than 0!";
         if(trader.getMoney().sum() < amount)
         	return "You don't have that much money, silly!";
         boolean result = this.giftsTracker.trackGift(trader, tradee, amount);
         if(result == false)
-        	return "" + tradee + " already has an open trade!";
-        tradee.getReplyWriter().println("" + trader + " wants to gift you $" + amount + "!\nEnter RECEIVE GIFT to accept.");
-        return "You try to gift " + tradee + " $" + amount; 
+        	return "" + tradee.getName() + " already has an open trade!";
+        tradee.getReplyWriter().println("" + trader.getName() + " wants to gift you $" + amount + "!\nEnter RECEIVE GIFT to accept.");
+        return "You try to gift " + tradee.getName() + " $" + amount; 
     }
     
     public String acceptGift(String name) {
@@ -759,10 +759,10 @@ public class GameCore implements GameCoreInterface {
     	double giftAmount = request.getAmount();
     	if(trader.getMoney().sum() < giftAmount) {
     		this.giftsTracker.close(request);
-    		return "" + trader + " ran out of money!";
+    		return "" + trader.getName() + " ran out of money!";
     	}
     	trader.giveMoney(trader, tradee, giftAmount);
-    	trader.getReplyWriter().println(tradee + " has accepted your gift!");
+    	trader.getReplyWriter().println(tradee.getName() + " has accepted your gift!");
     	this.giftsTracker.close(request);
     	return "You have receieved the gift!";
     }
@@ -781,7 +781,7 @@ public class GameCore implements GameCoreInterface {
     		giftsTracker.close(request);
     		return "You declined the gift.";
     	}
-    	trader.getReplyWriter().println(player + " has declined your gift.");
+    	trader.getReplyWriter().println(player.getName() + " has declined your gift.");
     	giftsTracker.close(request);
     	return "You declined the gift.";
     }

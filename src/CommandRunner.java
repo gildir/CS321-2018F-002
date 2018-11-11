@@ -320,8 +320,7 @@ public class CommandRunner {
                     Double amount = Double.parseDouble(args.remove(0));
                     
                     if(amount > 0){
-                        remoteGameInterface.gift(name, receiver, amount);
-                        return "";
+                        return remoteGameInterface.gift(name, receiver, amount);
                     }
                     else {
                         return "Amount of money gifted must be greater than 0";
