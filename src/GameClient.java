@@ -161,7 +161,7 @@ public class GameClient {
             // Collect input for the game.
             while(runGame) {
                 try {
-                    keyboardStatement = keyboardInput.readLine(); new Time();
+                    keyboardStatement = keyboardInput.readLine();
                     parseInput(keyboardStatement);
                 } catch (IOException ex) {
                     System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
