@@ -21,7 +21,7 @@ public class Room {
         this.id = id;
         this.title = title;
         this.description = description;
-	this.location = location;
+ this.location = location;
         this.gameCore = gameCore;
     }
     
@@ -31,10 +31,10 @@ public class Room {
         result += "-------------------------\n";
         result += this.getDescription() + "\n";
         result += "...................\n";
-	result += "This room is " + this.getLocation() + "\n";
+ result += "This room is " + this.getLocation() + "\n";
         result += "Objects in the area: " + this.getObjects() + "\n";
         result += "Players in the area: " + this.getPlayers(playerList) + "\n";
-        result += "Ghouls in the area: " + this.getGhoulsString() + "\n";
+        result += "Monsters in the area: " + this.getNPCsString() + "\n";
         result += "You see paths in these directions: " + this.getExits() + "\n";
         result += "...................\n";
         result += "You are facing: " + player.getCurrentDirection() + "\n";
@@ -112,7 +112,7 @@ public class Room {
     }
 
     public String getLocation() {
-	return this.location;
+ return this.location;
     }
     
     public String getObjects() {
@@ -131,7 +131,7 @@ public class Room {
     }
 
     public void addObjectFromPlayer(Item obj) {
-	this.objects.add(obj);
+ this.objects.add(obj);
     }
     
     public Item removeObject(String target) {
@@ -186,25 +186,25 @@ public class Room {
      * @return a set of all the Ghouls in this room.
      * If there are no ghouls in this room, returns an empty set of Ghouls.
      */
-    public Set<Ghoul> getGhouls() {
-        Set<Ghoul> ghouls = new HashSet<>();
+    public Set<NPC> getNPCs() {
+        Set<NPC> npcs = new HashSet<>();
         for (NPC npc : gameCore.getNpcSet()) {
-            if (npc instanceof Ghoul && npc.getCurrentRoom() == id) {
-                ghouls.add((Ghoul) npc);
+            if (npc.getCurrentRoom() == id) {
+                npcs.add(npc);
             }
         }
-        return ghouls;
+        return npcs;
     }
 
-    public String getGhoulsString() {
-        Set<Ghoul> ghouls = getGhouls();
-        String ghoulsString;
-        if (ghouls.isEmpty())
-            ghoulsString = "None";
+    public String getNPCsString() {
+        Set<NPC> npcs = getNPCs();
+        String npcsString;
+        if (npcs.isEmpty())
+            npcsString = "None";
         else {
-            List<String> ghoulNames = ghouls.stream().map(Ghoul::toString).collect(Collectors.toList());
-            ghoulsString = String.join(" ", ghoulNames);
+            List<String> npcNames = npcs.stream().map(NPC::toString).collect(Collectors.toList());
+            npcsString = String.join(" ", npcNames);
         }
-        return ghoulsString;
+        return npcsString;
     }
 }
