@@ -12,16 +12,16 @@ import java.time.Instant;
 abstract class NPC {
 
   private String name;
-  private int currentRoom;
-  private int pastRoom;
+  private int currentRoomId;
+  private int pastRoomId;
   private long lastAiTime;
   private long aiPeriodSeconds;
   protected final GameCore gameCore;
 
-  public NPC(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds) {
+  public NPC(GameCore gameCore, String name, int roomId, long aiPeriodSeconds) {
     this.name = name;
-    this.currentRoom = currentRoom;
-    this.pastRoom = 0;
+    this.currentRoomId = roomId;
+    this.pastRoomId = 0;
     resetLastAiTime();
     this.aiPeriodSeconds = aiPeriodSeconds;
     this.gameCore = gameCore;
@@ -39,22 +39,26 @@ abstract class NPC {
     return this.name;
   }
   
-  public int getCurrentRoom(){
-    return this.currentRoom;
+  public int getCurrentRoomId(){
+    return this.currentRoomId;
+  }
+
+  public Room getCurrentRoom() {
+      return gameCore.getMap().findRoom(currentRoomId);
   }
 
   /**
    * @return the last room this NPC was in.
    * If this is the first room the NPC has been in, returns 0.
    */
-  public int getPastRoom(){
-    return this.pastRoom;
+  public int getPastRoomId(){
+    return this.pastRoomId;
   }
   
-  protected void setCurrentRoom(int newRoom){
+  protected void setCurrentRoomId(int newRoomId){
     synchronized (this) {
-      pastRoom = currentRoom;
-      currentRoom = newRoom;
+      pastRoomId = currentRoomId;
+      currentRoomId = newRoomId;
     }
   }
 
@@ -71,20 +75,12 @@ abstract class NPC {
     return this.getName();
   }
 
-  /**
-   * Output a message to all players in the same room as this NPC.
-   * @param message to output.
-   */
-  public void broadcast(String message) {
-    gameCore.getMap().findRoom(currentRoom).broadcast(message);
-  }
-
   protected void moveRandomly() {
     synchronized (this) {
-      Exit exit = gameCore.getMap().findRoom(currentRoom).randomValidExit();
-      broadcast(name + " walked off to the " + exit.getDirection());
-      setCurrentRoom(exit.getRoom());
-      broadcast(name + " walked into the area");
+      Exit exit = getCurrentRoom().getRandomValidExit();
+      getCurrentRoom().broadcast(name + " walked off to the " + exit.getDirection());
+      setCurrentRoomId(exit.getRoom());
+      getCurrentRoom().broadcast(name + " walked into the area");
     }
   }
   

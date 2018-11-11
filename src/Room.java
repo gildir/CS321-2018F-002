@@ -107,7 +107,7 @@ public class Room {
         return NONEXISTANT_EXIT_ID;
     }
     
-    public Exit randomValidExit(){
+    public Exit getRandomValidExit(){
         List<Exit> validExits = new LinkedList<>(exits);
         validExits.removeIf(exit -> exit.getRoom() == NONEXISTANT_EXIT_ID);
         int index = new Random().nextInt(validExits.size());
@@ -183,7 +183,7 @@ public class Room {
         ArrayList<String> npcsFound = new ArrayList<>();
 
         for (NPC npc : npcSet) {
-            if (npc.getCurrentRoom() == this.id) {
+            if (npc.getCurrentRoomId() == this.id) {
                 npcsFound.add(npc.getName());
             }
         }
@@ -200,7 +200,7 @@ public class Room {
     public Set<Ghoul> getGhouls() {
         Set<Ghoul> ghouls = new HashSet<>();
         for (NPC npc : gameCore.getNpcSet()) {
-            if (npc instanceof Ghoul && npc.getCurrentRoom() == id) {
+            if (npc instanceof Ghoul && npc.getCurrentRoomId() == id) {
                 ghouls.add((Ghoul) npc);
             }
         }

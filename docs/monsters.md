@@ -86,9 +86,9 @@ Example synchronization block use:
 
       // This is included in the synchronized block because once exit is initialized,
       // it must remain accurate for the duration of the moveRandomly steps.
-      Exit exit = gameCore.getMap().findRoom(currentRoom).randomValidExit(); 
+      Exit exit = getCurrentRoom().randomValidExit();
 
-      broadcast(name + " walked off to the " + exit.getDirection());
+      getCurrentRoom().broadcast(name + " walked off to the " + exit.getDirection());
 
       // setCurrentRoom is an instance method that modifies the current room state of this NPC object.
       // This must obviously be in the synchronized block. However, one important note is that 
@@ -100,7 +100,7 @@ Example synchronization block use:
       // and let the thread proceed because it already has the lock.
       setCurrentRoom(exit.getRoom());
 
-      broadcast(name + " walked into the area");
+      getCurrentRoom().broadcast(name + " walked into the area");
     }
   }
 ```
