@@ -12,8 +12,11 @@ import java.util.Scanner;
 */
 public class Map
 {
-    	private final GameCore gameCore;
+	public static final int SPAWN_ROOM_ID = 1;
+
+	private final GameCore gameCore;
 	private final LinkedList<Room> map;
+
 	//Constructor now takes a filename as an argument
 	public Map(GameCore gameCore, String filename)
 	{
@@ -122,4 +125,5 @@ public class Map
         Random rand = new Random();
         return map.get(rand.nextInt(map.size()));
     }
+
 }

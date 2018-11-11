@@ -27,7 +27,7 @@ public class Player {
 
     public Player(GameCore gameCore, String name) {
         this.gameCore = gameCore;
-        this.currentRoom = 1;
+        this.currentRoom = Map.SPAWN_ROOM_ID;
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
