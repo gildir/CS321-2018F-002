@@ -383,7 +383,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @throws RemoteException
      */
     public String displayWhiteboard(String playerName) throws RemoteException {
-        return core.displayWhiteboard(name);
+        return core.displayWhiteboard(playerName);
     }
     
     /**
@@ -393,7 +393,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @throws RemoteException
      */
     public String clearWhiteboard(String playerName) throws RemoteException {
-        return core.clearWhiteboard(name);
+        return core.clearWhiteboard(playerName);
     }
     
     /**
@@ -404,6 +404,6 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @throws RemoteException
      */
     public String writeWhiteboard(String playerName, String message) throws RemoteException {
-        return core.writeWhiteboard(name, args.get(1));
+        return core.writeWhiteboard(playerName, message);
     }
 }

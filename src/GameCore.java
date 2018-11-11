@@ -1290,12 +1290,12 @@ public class GameCore implements GameCoreInterface {
    * @return the room object where the player is
    * @throws RemoteException
    */
-  public Room getPlayerRoom(String playerName) throws RemoteException {
+  public Room getPlayerRoom(String playerName) {
     Player player = findPlayer(playerName);
     if (player == null) return null;
 
-    Int roomId = player.getCurrentRoom();
-    if (roomId == null) return null;
+    int roomId = player.getCurrentRoom();
+    // if (roomId == null) return null;
 
     Room room = map.findRoom(roomId);
     return room;
@@ -1307,8 +1307,15 @@ public class GameCore implements GameCoreInterface {
    * @return message to be displayed to player
    * @throws RemoteException
    */
-  public String displayWhiteboard(String playerName) throws RemoteException {
+  public String displayWhiteboard(String playerName) {
     Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.display();
   }
   
   /**
@@ -1317,8 +1324,15 @@ public class GameCore implements GameCoreInterface {
    * @return message to be displayed to player
    * @throws RemoteException
    */
-  public String clearWhiteboard(String playerName) throws RemoteException {
+  public String clearWhiteboard(String playerName) {
     Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.erase();
   }
   
   /**
@@ -1328,7 +1342,14 @@ public class GameCore implements GameCoreInterface {
    * @return message to be displayed to player
    * @throws RemoteException
    */
-  public String writeWhiteboard(String playerName, String message) throws RemoteException {
+  public String writeWhiteboard(String playerName, String message) {
     Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.write(message);
   }
 }

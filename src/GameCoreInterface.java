@@ -144,7 +144,7 @@ public String tutorial(String name);
      * @return message to be displayed to player
      * @throws RemoteException
      */
-    public String displayWhiteboard(String playerName) throws RemoteException;
+    public String displayWhiteboard(String playerName);
     
     /**
      * [clearWhiteboard description]
@@ -152,7 +152,7 @@ public String tutorial(String name);
      * @return message to be displayed to player
      * @throws RemoteException
      */
-    public String clearWhiteboard(String playerName) throws RemoteException;
+    public String clearWhiteboard(String playerName);
     
     /**
      * [writeWhiteboard description]
@@ -161,5 +161,5 @@ public String tutorial(String name);
      * @return message to be displayed to player
      * @throws RemoteException
      */
-    public String writeWhiteboard(String playerName, String message) throws RemoteException;
+    public String writeWhiteboard(String playerName, String message);
 }
