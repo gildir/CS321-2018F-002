@@ -545,12 +545,12 @@ public class GameCore implements GameCoreInterface {
             Room room = map.findRoom(player.getCurrentRoom());
             if(object != null) {      
               
-              
+              String newName = object.getItemName(); 
               double newValue = 0.0;               //creates a new variable double
               newValue = object.getItemValue()*.8;         //turns the value of the item to 80% of the old value
               double w = object.getItemWeight(); 
               
-              Item newItem = new Item(target, w, newValue); 
+              Item newItem = new Item(newName, w, newValue); 
                 
               player.removeObjectFomInventory(target); 
               room.addObject(newItem);
