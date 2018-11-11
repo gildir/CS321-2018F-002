@@ -1009,6 +1009,7 @@ public class GameCore implements GameCoreInterface {
     String message = "";
     if(p1 == p2)
     {
+
       //tie
       switch(p1)
       {
@@ -1046,8 +1047,13 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 
 	  // Added by Brendan
+<<<<<<< HEAD
 	  this.leaderboard.incrementScore(play1.getName(), false);
 	  this.leaderboard.incrementScore(play2.getName(), true);
+=======
+	  this.leaderboard.incrementScore(play2.getName()).resetLossStreak();
+	  this.leaderboard.getScore(play1.getName()).resetWinStreak();
+>>>>>>> origin/816_RPS_Losing_Streak
 
       return;
     }
@@ -1062,9 +1068,14 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
 	  // Added by Brendan
+<<<<<<< HEAD
 	  this.leaderboard.incrementScore(play1.getName(), true);
 	  this.leaderboard.incrementScore(play2.getName(), false);
 
+=======
+	  this.leaderboard.incrementScore(play1.getName()).resetLossStreak();
+	  this.leaderboard.getScore(play2.getName()).resetWinStreak();
+>>>>>>> origin/816_RPS_Losing_Streak
       return;
     }
     else if(p1 == 2 && p2 == 1)
@@ -1078,9 +1089,14 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
 	  // Added by Brendan
+<<<<<<< HEAD
 	  this.leaderboard.incrementScore(play1.getName(), true);
 	  this.leaderboard.incrementScore(play2.getName(), false);
 
+=======
+	  this.leaderboard.incrementScore(play1.getName()).resetLossStreak();
+	  this.leaderboard.getScore(play2.getName()).resetWinStreak();
+>>>>>>> origin/816_RPS_Losing_Streak
       return;
     }
     else if(p1 == 2 && p2 == 3)
@@ -1094,9 +1110,14 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
 	  // Added by Brendan
+<<<<<<< HEAD
 	  this.leaderboard.incrementScore(play1.getName(), false);
 	  this.leaderboard.incrementScore(play2.getName(), true);
 
+=======
+	  this.leaderboard.incrementScore(play2.getName()).resetLossStreak();
+	  this.leaderboard.getScore(play1.getName()).resetWinStreak();
+>>>>>>> origin/816_RPS_Losing_Streak
       return;
     }
     else if(p1 == 3 && p2 == 1)
@@ -1110,9 +1131,14 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
 	  // Added by Brendan
+<<<<<<< HEAD
 	  this.leaderboard.incrementScore(play1.getName(), false);
 	  this.leaderboard.incrementScore(play2.getName(), true);
 
+=======
+	  this.leaderboard.incrementScore(play2.getName()).resetLossStreak();
+	  this.leaderboard.getScore(play1.getName()).resetWinStreak();
+>>>>>>> origin/816_RPS_Losing_Streak
       return;
     }
     else if(p1 == 3 && p2 == 2)
@@ -1126,9 +1152,14 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
 	  // Added by Brendan
+<<<<<<< HEAD
 	  this.leaderboard.incrementScore(play1.getName(), true);
 	  this.leaderboard.incrementScore(play2.getName(), false);
 
+=======
+	  this.leaderboard.incrementScore(play1.getName()).resetLossStreak();
+	  this.leaderboard.getScore(play2.getName()).resetWinStreak();
+>>>>>>> origin/816_RPS_Losing_Streak
       return;
     }
   }

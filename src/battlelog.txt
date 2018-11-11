@@ -6,9 +6,41 @@ Ryan Challenged ivan picking Paper against Scissors resulting in ivan winning
 
 ivan Challenged ryan picking Paper against Scissors resulting in ryan winning
 
+<<<<<<< HEAD
 raymond Challenged brendan picking Scissors against Rock resulting in brendan winning
 
 raymond Challenged brendan picking Scissors against Rock resulting in brendan winning
 
 b Challenged r picking Paper against Rock resulting in b winning
+=======
+jerry Challenged JD picking Scissors against Rock resulting in JD winning
+
+jerry Challenged jd picking Scissors against Rock resulting in jd winning
+
+jerry Challenged jd picking Scissors against Rock resulting in jd winning
+
+jerry Challenged JD picking Scissors against Paper resulting in jerry winning
+
+jerry Challenged JD picking Scissors against Rock resulting in JD winning
+
+jerry Challenged JD picking Scissors against Rock resulting in JD winning
+
+JD Challenged jerry picking Scissors against Rock resulting in jerry winning
+
+JD Challenged ab picking Scissors against Rock resulting in ab winning
+
+JD Challenged ab picking Scissors against Rock resulting in ab winning
+
+JD Challenged ab picking Paper against Rock resulting in JD winning
+
+JD Challenged ab picking Rock against Paper resulting in ab winning
+
+a Challenged b picking Scissors against Rock resulting in b winning
+
+a Challenged b picking Scissors against Rock resulting in b winning
+
+b Challenged a picking Scissors against Rock resulting in a winning
+
+a Challenged b picking Scissors against Rock resulting in b winning
+>>>>>>> origin/816_RPS_Losing_Streak
 
