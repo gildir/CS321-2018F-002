@@ -1,3 +1,13 @@
+/**
+ * This class will handle the password encryption and decryption using
+ *	the player's username as the key
+ *
+ * NOTE: All methods in this class are static, do not attempt to
+ *       create an instance of this class
+ *
+ * Authors: Cody Kidwell, Joseph Saah, Brett Mullins, and Haroon Tanveer
+ */
+
 public class Crypt{
 	
     public static String encrypt(String password, String key){
