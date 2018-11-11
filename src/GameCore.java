@@ -543,11 +543,19 @@ public class GameCore implements GameCoreInterface {
         if(player != null) {
             Item object = player.removeObjectFomInventory(target);
             Room room = map.findRoom(player.getCurrentRoom());
-            if(object != null) {             
+            if(object != null) {      
+              
+              
               double newValue = 0.0;               //creates a new variable double
               newValue = object.getItemValue()*.8;         //turns the value of the item to 80% of the old value
-              object.setItemValue(newValue); //sets the value of the item to the new value 
-              room.addObjectFromPlayer(object);
+              double w = object.getItemWeight(); 
+              
+              Item newItem = new Item(target, w, newValue); 
+                
+              player.removeObjectFomInventory(target); 
+              room.addObject(newItem);
+              
+              
   
                 this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
                 return "You just dropped off a " + target + ".";
