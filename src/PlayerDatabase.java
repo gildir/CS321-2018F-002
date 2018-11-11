@@ -60,7 +60,7 @@ public class PlayerDatabase {
          StringBuilder sb = new StringBuilder(name);
          
          sb.append(",");
-         String en = Crypt.encrypt(password, name + "     Add Player");
+         String en = Crypt.encrypt(password, name);
          sb.append(en);
          sb.append("\n");
          
