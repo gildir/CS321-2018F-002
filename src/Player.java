@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Random;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 
 /**
@@ -19,6 +21,8 @@ public class Player {
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
     private Money money;
+	// the player's list of all his/her Quests
+	private ArrayList<Quest> questBook = new ArrayList<Quest>();
 
     public Player(String name) {
         this.currentRoom = 1;
@@ -26,6 +30,16 @@ public class Player {
         this.name = name;
         this.currentInventory = new LinkedList<>();
         this.money = new Money(20);
+		try
+		{
+			// add a tutorial Quest to the player
+			questBook.add(new Quest(this, new File("go_to_dk_hall.quest")));
+			questBook.get(0).printQuest();
+		}
+		catch (FileNotFoundException fnfe)
+		{
+			System.out.println("Couldn't add quest: file containing quest information not found");
+		}
     }
 
     public void turnLeft() {
@@ -137,7 +151,19 @@ public class Player {
 
     public void setCurrentRoom(int room) {
         this.currentRoom = room;
+		updateAllQuests();
     }
+
+	// updates all objectives in the player's questBook
+	// for all Quests in the Player's questBook
+	// if the Quest hasn't been completed, update that quest
+	private void updateAllQuests() {
+		for (Quest q : questBook) {
+			if ( !(q.getQuestComplete()) ) {
+				q.updateQuest();
+			}
+		}
+	}
 
     public String getCurrentDirection() {
         return this.currentDirection.name();
