@@ -110,16 +110,12 @@ public class Room {
     public Exit getRandomValidExit() {
         List<Exit> validExits = new LinkedList<>(exits);
         validExits.removeIf(exit -> exit.getRoom() == NONEXISTANT_EXIT_ID);
-        int index;
-        try {
-            index = new Random().nextInt(validExits.size());
-        } catch (IllegalArgumentException e) {
-            System.err.println("Problem with exits in " + getId() + ": " + getTitle());
-            System.err.println("Exits: ");
-            validExits.forEach(exit -> System.out.println(gameCore.getMap().findRoom(exit.getRoom()).getTitle()));
-            throw e;
+        if (validExits.size() == 0) {
+            System.err.println("Room " + getId() + ": " + getTitle() + " does not have any valid exits." );
+            return null;
         }
-      return validExits.get(index);
+        int randomIndex = new Random().nextInt(validExits.size());
+        return validExits.get(randomIndex);
     }
     
     public String getDescription() {
@@ -186,38 +182,19 @@ public class Room {
         }
     }
     
-    public Player getRandomPlayer(PlayerList players){
-        
-        int playersInRoom = 0;
-        int i = 0;
-        int j = 1;
-        int min = 1;
-        
-        // Checking how many players are in the room
-        for (Player player : players){
-            if (player.getCurrentRoom() == this.id){
-                playersInRoom++;
-            }
+    public Player getRandomPlayer(){
+        List<Player> playersInRoom = new ArrayList<>();
+        for (Player player : gameCore.getPlayerList()) {
+            if (player.getCurrentRoom() == this.getId())
+                playersInRoom.add(player);
         }
-        
-        // If no players are in room
-        if (i != 0){
-            Random r = new Random();
-            i = r.nextInt(playersInRoom);
-        }
-        
-        for (Player player : players){
-            if (player.getCurrentRoom() == this.id){
-                if (j == i){
-                    return player;
-                }
-                else{
-                    j++;
-                }
-            }
-        }
-        // If no players are in the room
-        return null;
+
+        if (playersInRoom.size() == 0)
+            return null;
+
+        Random r = new Random();
+        int randomPlayerIndex = r.nextInt(playersInRoom.size());
+        return playersInRoom.get(randomPlayerIndex);
     }
 
     public ArrayList<String> getNamesOfNpcs(Set<NPC> npcSet){

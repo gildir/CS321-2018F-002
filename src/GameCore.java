@@ -49,9 +49,9 @@ public class GameCore implements GameCoreInterface {
         npcSet = new HashSet<>();
 
         // Initialize starting NPCs
-        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 15),
-                                    new Ghoul(this, "Ghoul2", 2, 16),
-                                    new Ghoul(this, "Ghoul3", 3, 17),
+        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 22),
+                                    new Ghoul(this, "Ghoul2", 2, 9001),
+                                    new Ghoul(this, "Ghoul3", 3, 24),
                                     new Ghoul(this, "Ghoul4", 4, 18),
                                     new Ghoul(this, "Ghoul5", 5, 19),
                                     new Ghoul(this, "Ghoul6", 6, 20),
@@ -611,43 +611,24 @@ public class GameCore implements GameCoreInterface {
      * Player pokes a ghoul that is in the same room.
      * @param playerName Name of the player that pokes the ghoul.
      * @param ghoulName Name of the ghoul that is poked
-     * @return Message showing success or failure of poke action.
+     * @return an empty string, not used for anything.
      */
     public String pokeGhoul(String playerName, String ghoulName) {
-        Player player = this.playerList.findPlayer(playerName);
-        ArrayList<String> npcsFound = new ArrayList<>();
-        //check if player exists
-        if (player != null){
-            Room room = map.findRoom(player.getCurrentRoom());
-            //find all the NPCs in the room that the player's in
-            npcsFound = room.getNamesOfNpcs(npcSet);
-            if (npcsFound != null){
-                //checking to see if the ghoulName matches any ghouls in the same room
-                for (int i = 0; i < npcsFound.size(); i++){
-                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
-                        
-                        // ----------------
-                        // POKING THE GHOUL
-                        Set<Ghoul> ghoulSet = room.getGhouls();
-                        
-                        for (Ghoul ghoul: ghoulSet){
-                            // If current npc is the one found above, poke, then return
-                            if (ghoul.getName().equalsIgnoreCase(ghoulName)){
-                                ghoul.poke();
-                                return playerName + " POKED " + npcsFound.get(i) + "\n";
-                            }
-                        }
-                        // ----------------
-                        
-                        // KEEPING OLD RETURN FOR THE MOMENT
-                        //return playerName + " POKED " + npcsFound.get(i) + "\n" + player.removeRandomItem();
-                        
-                    }
+        Player player = playerList.findPlayer(playerName);
+        Room room = player.getCurrentRoomObject();
+
+        for (Ghoul ghoul: room.getGhouls()){
+            if (ghoul.getName().equalsIgnoreCase(ghoulName)){
+                synchronized (ghoul) {
+                    player.broadcast("You poked " + ghoul.getName() + ".");
+                    player.broadcastToOthersInRoom(player.getName() + " poked " + ghoul.getName() + ".");
+                    ghoul.poke();
                 }
-                
+                return "";
             }
         }
-        return null;
+        player.broadcast("Can't find a ghoul named " + ghoulName + " to poke.");
+        return "";
     }
 
     /**

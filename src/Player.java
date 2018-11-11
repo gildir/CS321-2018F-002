@@ -43,7 +43,10 @@ public class Player {
      * @param message to send
      */
     public void broadcast(String message) {
-        replyWriter.println(message);
+        if (replyWriter == null)
+            System.err.println("Trying to broadcast to a player that doesn't have a ReplyWriter yet.");
+        else
+            replyWriter.println(message);
     }
 
     /**
@@ -63,7 +66,7 @@ public class Player {
     public void broadcastToOthersInRoom(String message) {
         for (Player player : gameCore.getPlayerList()) {
             if (player.currentRoom == this.currentRoom && player != this)
-                broadcast(message);
+                player.broadcast(message);
         }
     }
 
@@ -192,6 +195,10 @@ public class Player {
 
     public int getCurrentRoom() {
         return this.currentRoom;
+    }
+
+    public Room getCurrentRoomObject() {
+        return gameCore.getMap().findRoom(currentRoom);
     }
 
     public void setCurrentRoom(int room) {

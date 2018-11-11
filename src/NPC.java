@@ -78,8 +78,14 @@ abstract class NPC {
   protected void moveRandomly() {
     synchronized (this) {
       Exit exit = getCurrentRoom().getRandomValidExit();
-      getCurrentRoom().broadcast(name + " walked off to the " + exit.getDirection());
-      setCurrentRoomId(exit.getRoom());
+      if (exit == null) {
+        System.err.println("Resetting " + getName() + " to its previous room");
+        getCurrentRoom().broadcast(name + " teleported away using hax");
+        setCurrentRoomId(getPastRoomId());
+      } else {
+        getCurrentRoom().broadcast(name + " walked off to the " + exit.getDirection());
+        setCurrentRoomId(exit.getRoom());
+      }
       getCurrentRoom().broadcast(name + " walked into the area");
     }
   }

@@ -11,7 +11,7 @@ public class Ghoul extends NPC {
     // anger level
     private int anger = 0;
     // total anger level
-    public static final int MAXANGER = 100;
+    public static final int MAXANGER = 18;
 
     // Calling NPC's constructor
     Ghoul(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds){
@@ -31,36 +31,19 @@ public class Ghoul extends NPC {
         }
         
     }
-
-    // Randomly increases the Ghouls anger between 1 through 5
-    private void increaseAnger(){
-
-        if (anger < MAXANGER){
-            anger += getRandomNumberInRange(1,5);
-        }
-
-    }
-
-    // Calls the NPC broadcast method which calls GameCore
-    private void replyAnger(){
-        getCurrentRoom().broadcast("Grrrr, do not poke me! *the ghouls anger level rises*");
-    }
-
-    // When called resets the ghouls anger back to the initial state
-    private void resetAnger(){
-        anger = 0;
-    }
     
     // If poked, increase anger, and if that anger goes over the
     // threshold, reset the anger and call gameCore.dragPlayer()
     // Used in gameCore.pokeGhoul()
     public void poke(){
         synchronized (this) {
-            increaseAnger();
+            getCurrentRoom().broadcast("\"Grrrr, do not poke me!\", said " + getName() + ". *the ghouls anger level rises*");
+            anger += getRandomNumberInRange(1,5);
             if (anger >= MAXANGER) {
-                resetAnger();
-                // Player player = getCurrentRoom().getRandomPlayer();
-                // dragPlayer(player);
+                getCurrentRoom().broadcast("\"BLLLAAAARGH I've had it!\", said " + getName() + ".");
+                Player player = getCurrentRoom().getRandomPlayer();
+                dragPlayer(player);
+                anger = 0;
             }
         }
     }
