@@ -16,15 +16,23 @@ abstract class NPC {
   private int pastRoom;
   private long lastAiTime;
   private long aiPeriodSeconds;
-  protected GameCore gameCore;
+  protected final GameCore gameCore;
 
   public NPC(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds) {
     this.name = name;
     this.currentRoom = currentRoom;
-    this.pastRoom = -1;
-    this.lastAiTime = Instant.now().getEpochSecond();
+    this.pastRoom = 0;
+    resetLastAiTime();
     this.aiPeriodSeconds = aiPeriodSeconds;
     this.gameCore = gameCore;
+  }
+
+  protected long getCurrentTime() {
+      return Instant.now().getEpochSecond();
+  }
+
+  protected void resetLastAiTime() {
+      lastAiTime = getCurrentTime();
   }
 
   public String getName(){
@@ -37,7 +45,7 @@ abstract class NPC {
 
   /**
    * @return the last room this NPC was in.
-   * If this is the first room the NPC has been in, returns -1.
+   * If this is the first room the NPC has been in, returns 0.
    */
   public int getPastRoom(){
     return this.pastRoom;
@@ -48,6 +56,14 @@ abstract class NPC {
       pastRoom = currentRoom;
       currentRoom = newRoom;
     }
+  }
+
+  protected long getLastAiTime() {
+      return lastAiTime;
+  }
+
+  protected long getAiPeriodSeconds() {
+      return aiPeriodSeconds;
   }
   
   @Override
@@ -73,13 +89,15 @@ abstract class NPC {
   }
   
   public boolean tryAi() {
-    final long secondsSinceLastAi = Instant.now().getEpochSecond() - lastAiTime;
-    if (secondsSinceLastAi > aiPeriodSeconds) {
-      doAi();
-      lastAiTime = Instant.now().getEpochSecond();
-      return true;
-    } else
-      return false;
+    synchronized (this) {
+        final long secondsSinceLastAi = getCurrentTime() - getLastAiTime();
+        if (secondsSinceLastAi > getAiPeriodSeconds()) {
+            doAi();
+            resetLastAiTime();
+            return true;
+        } else
+            return false;
+    }
   }
   
   protected void doAi() {
