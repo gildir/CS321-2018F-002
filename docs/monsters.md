@@ -86,7 +86,7 @@ Example synchronization block use:
 
       // This is included in the synchronized block because once exit is initialized,
       // it must remain accurate for the duration of the moveRandomly steps.
-      Exit exit = getCurrentRoom().randomValidExit();
+      Exit exit = getCurrentRoom().getRandomValidExit();
 
       getCurrentRoom().broadcast(name + " walked off to the " + exit.getDirection());
 
