@@ -728,7 +728,7 @@ public class GameCore implements GameCoreInterface {
     }    
     @Override
     public String gift(String yourname ,String name, double amount){
-    	if(yourname.equals(name))
+    	if(yourname.toLowerCase().equals(name.toLowerCase()))
     		return "Can't trade yourself, silly! Get some friends!";
     	Player tradee = this.playerList.findPlayer(name); 
         Player trader = this.playerList.findPlayer(yourname);
