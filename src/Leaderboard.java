@@ -2,44 +2,84 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Leaderboard {
-	private ArrayList<PlayerScore> leaderboard;
+	private ArrayList<PlayerScore> board;
 
 	public Leaderboard() {
-		this.leaderboard = new ArrayList<PlayerScore>();
+		this.board = new ArrayList<PlayerScore>();
 	}
 
 	public void addScore(String name) {
-		this.leaderboard.add(new PlayerScore(name));
+		this.board.add(new PlayerScore(name));
 	}
 
-	public void incrementScore(String name) {
-		PlayerScore score = null;
-		for(int i = 0; i < this.leaderboard.size(); i++) {
-			score = this.leaderboard.get(i);
-			if(score.getName() == name) {
-				score.increment();
-				for(int j = i-1; j >= 0; j--) {
-					if(this.leaderboard.get(j).getWins() < score.getWins())
-						Collections.swap(this.leaderboard, i, j);
-					else
-						return;
-				}
-				return;
+	public boolean checkForPlayer(String name)
+	{
+		for(PlayerScore p : board)
+		{
+			if(p.getName().equals(name))
+			{
+				return true;
 			}
 		}
+		return false;
 	}
 
-	public String getBoard() {
-		String board = "Rock-Paper-Scissors Global Leaderboard:\n\n";
-		PlayerScore score = null;
-		String rank = null;
-		String wins = null;
-		for(int i = 0; i < this.leaderboard.size(); i++) {
-			score = this.leaderboard.get(i);
-			rank = String.format("%-4d", (i+1));
-			wins = String.format("%-4d", score.getWins());
-			board += ("Rank: " + rank + " | Score: " + wins + " | Name: " + score.getName() + "\n");
+	public PlayerScore incrementScore(String name, boolean winner) {
+		for(PlayerScore score : this.board) {
+			if(score.getName().equals(name)) {
+				score.increment(winner);
+				this.board.remove(score);
+				for(PlayerScore other : this.board) {
+					if(other.getScore() < score.getScore()) {
+						this.board.add(this.board.indexOf(other), score);
+						return score;
+					}
+				}
+				this.board.add(score);
+				return score;
+			}
 		}
-		return board;
+		return null;
+	}
+	
+	public String getBoard() {
+		String head = "Rock-Paper-Scissors Global Leaderboard:\n\n";
+		PlayerScore playerScore = null;
+		String rank = null;
+		String title = null;
+		String score = null;
+		String longestWinStreak = null;
+		//String currentWinStreak = null;
+		String longestLossStreak = null;
+		//String currentLossStreak = null;
+		for(int i = 0; i < this.board.size(); i++) {
+			playerScore = this.board.get(i);
+			rank = String.format("%-4d", (i+1));
+			title = String.format("%-32s", this.getTitle(playerScore, i));
+			score = String.format("%-4d", playerScore.getScore());
+			longestWinStreak = String.format("%-2d", playerScore.getLongestWinStreak());
+			//currentWinStreak = String.format("%-2d", playerScore.getCurrentWinStreak());
+			longestLossStreak = String.format("%-2d", playerScore.getLongestLossStreak());
+			//currentLossStreak = String.format("%-2d", playerScore.getCurrentLossStreak());
+			head+="\n";
+			head += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Longest Loss Streak: " + longestLossStreak + " | Score: " + score + " | Title: " + title + " | Name: " + playerScore.getName() + "\n");
+			//head += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Current Win Streak: " + currentWinStreak + " | Longest Loss Streak: " + longestLossStreak + " | Current Loss Streak: " + currentLossStreak + " | Score: " + score + "Title: " + title + " | Name: " + playerScore.getName() + "\n");
+		}
+		return head;
+	}
+	
+	public PlayerScore getPlayerScore(String name) {
+		for (PlayerScore score : this.board) {
+			if (score.getName() == name)
+				return score;
+		}
+		return null;
+	}
+	
+	public String getTitle(PlayerScore score, int rank) {
+		String[] titles = new String[] {"Smitty Werbenjagermanjensen", ("(Select * From Winners Where name = " + score.getName() + ") -> 0 rows returned") , "Deleted Prod", "At Least You Tried.", "About to be Garbage Collected.", "noob"};
+		if(rank >= titles.length)
+			return "noob";
+		return titles[rank];
 	}
 }
