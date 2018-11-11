@@ -1,27 +1,20 @@
 public class PlayerScore {
 	private String name;
 	private int wins;
-<<<<<<< HEAD
 	private int losses;
-=======
-	private int longestWinStreak; //keeps track of longest win streak, updated if a longer one occurs
+	private int longestWinStreak;
 	private int currentWinStreak;
-	private int longestLossStreak;
-	private int currentLossStreak;
-
->>>>>>> origin/816_RPS_Losing_Streak
+	private int longestLoseStreak;
+	private int currentLoseStreak;
 
 	public PlayerScore(String name) {
 		this.name = name;
 		this.wins = 0;
-<<<<<<< HEAD
 		this.losses = 0;
-=======
 		this.longestWinStreak = 0;
 		this.currentWinStreak = 0;
-		this.longestLossStreak = 0;
-		this.currentLossStreak = 0;
->>>>>>> origin/816_RPS_Losing_Streak
+		this.longestLoseStreak = 0;
+		this.currentLoseStreak = 0;
 	}
 
 	public String getName() {
@@ -32,36 +25,30 @@ public class PlayerScore {
 		return this.wins;
 	}
 
-<<<<<<< HEAD
 	public int getLosses() {
 		return this.losses;
-=======
-	public void increment() {
-		this.wins++;
-		this.currentWinStreak++;
-		if (currentWinStreak > longestWinStreak)
-		{
-			longestWinStreak = currentWinStreak;
-		}
-		this.currentLossStreak = 0;
 	}
 
-	public void lossesIncrement() {
-		this.currentLossStreak++;
-		if(currentLossStreak > longestLossStreak)
-		{
-			longestLossStreak = currentLossStreak;
+	public void increment(boolean winner) {
+		if(winner) {
+			this.wins++;
+			this.currentWinStreak++;
+			if(this.currentWinStreak > this.longestWinStreak)
+				this.longestWinStreak = this.currentWinStreak;
+			this.currentLoseStreak = 0;
 		}
-		this.currentWinStreak = 0;
+		else {
+			this.losses++;
+			this.currentLoseStreak++;
+			if(this.currentLoseStreak > this.longestLoseStreak)
+				this.longestLoseStreak = this.currentLoseStreak;
+			this.currentWinStreak = 0;
+		}
 	}
+
 	public int getLongestWinStreak()
 	{
 		return this.longestWinStreak;
-	}
-
-	public void setLongestWinStreak(int s)
-	{
-		this.longestWinStreak = s;
 	}
 
 	public int getCurrentWinStreak()
@@ -69,41 +56,14 @@ public class PlayerScore {
 		return this.currentWinStreak;
 	}
 
-	public void setCurrentWinStreak(int s)
-	{
-		this.currentWinStreak = s;
-	}
-	//public void setLongestWingStreak(){if (currentWinStreak > longestWinStreak) longestWinStreak = currentWinStreak;}
-
-	public void resetWinStreak()
-	{
-		this.currentWinStreak = 0;
-	}
-
-	public void resetLossStreak()
-	{
-		this.currentLossStreak = 0;
-	}
-
 	public int getLongestLossStreak()
 	{
-		return this.longestLossStreak;
-	}
-
-	public void setLongestLossStreak(int s)
-	{
-		this.longestLossStreak = s;
+		return this.longestLoseStreak;
 	}
 
 	public int getCurrentLossStreak()
 	{
-		return this.currentLossStreak;
-	}
-
-	public void setCurrentLossStreak(int s)
-	{
-		this.currentLossStreak = s;
->>>>>>> origin/816_RPS_Losing_Streak
+		return this.currentLoseStreak;
 	}
 
 	public int getScore() {
@@ -111,12 +71,4 @@ public class PlayerScore {
 			return this.wins;
 		return (this.wins / this.losses);
 	}
-
-	public void increment(boolean winner) {
-		if(winner)
-			this.wins++;
-		else
-			this.losses++;
-	}
-	
 }

@@ -12,8 +12,7 @@ public class Leaderboard {
 		this.board.add(new PlayerScore(name));
 	}
 
-<<<<<<< HEAD
-	public void incrementScore(String name, boolean winner) {
+	public PlayerScore incrementScore(String name, boolean winner) {
 		for(PlayerScore score : this.board) {
 			if(score.getName() == name) {
 				score.increment(winner);
@@ -21,46 +20,47 @@ public class Leaderboard {
 				for(PlayerScore other : this.board) {
 					if(other.getScore() < score.getScore()) {
 						this.board.add(this.board.indexOf(other), score);
-						return;
+						return score;
 					}
 				}
 				this.board.add(score);
-				return;
-=======
-	public PlayerScore incrementScore(String name) { //public void incrementScore(String name)
-		PlayerScore score = null;
-		for(int i = 0; i < this.leaderboard.size(); i++) {
-			score = this.leaderboard.get(i);
-			if(score.getName() == name) {
-				score.increment();
-				for(int j = i-1; j >= 0; j--) {
-					if(this.leaderboard.get(j).getWins() < score.getWins())
-						Collections.swap(this.leaderboard, i, j);
-					else
-						break; //return;
-				}
-				break; //return;
->>>>>>> origin/816_RPS_Losing_Streak
+				return score;
 			}
 		}
-		return score; //didn't exist
+		return null;
 	}
 	
 	public String getBoard() {
 		String head = "Rock-Paper-Scissors Global Leaderboard:\n\n";
-		PlayerScore score = null;
+		PlayerScore playerScore = null;
 		String rank = null;
-<<<<<<< HEAD
 		String title = null;
-		String wlr = null;
+		String score = null;
+		String longestWinStreak = null;
+		//String currentWinStreak = null;
+		String longestLossStreak = null;
+		//String currentLossStreak = null;
 		for(int i = 0; i < this.board.size(); i++) {
-			score = this.board.get(i);
+			playerScore = this.board.get(i);
 			rank = String.format("%-4d", (i+1));
-			title = String.format("%-32s", this.getTitle(score, i));
-			wlr = String.format("%-4d", score.getScore());
-			head += ("Rank: " + rank + " | Score: " + wlr + "Title: " + title + " | Name: " + score.getName() + "\n");
+			title = String.format("%-32s", this.getTitle(playerScore, i));
+			score = String.format("%-4d", playerScore.getScore());
+			longestWinStreak = String.format("%-2d", playerScore.getLongestWinStreak());
+			//currentWinStreak = String.format("%-2d", playerScore.getCurrentWinStreak());
+			longestLossStreak = String.format("%-2d", playerScore.getLongestLossStreak());
+			//currentLossStreak = String.format("%-2d", playerScore.getCurrentLossStreak());
+			head += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Longest Loss Streak: " + longestLossStreak + " | Score: " + score + "Title: " + title + " | Name: " + playerScore.getName() + "\n");
+			//head += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Current Win Streak: " + currentWinStreak + " | Longest Loss Streak: " + longestLossStreak + " | Current Loss Streak: " + currentLossStreak + " | Score: " + score + "Title: " + title + " | Name: " + playerScore.getName() + "\n");
 		}
 		return head;
+	}
+	
+	public PlayerScore getPlayerScore(String name) {
+		for (PlayerScore score : this.board) {
+			if (score.getName() == name)
+				return score;
+		}
+		return null;
 	}
 	
 	public String getTitle(PlayerScore score, int rank) {
@@ -205,35 +205,8 @@ public class Leaderboard {
 				return "Overwatch";
 			else
 				return "Shrek";
-=======
-		String wins = null;
-		String longestWinStreak = null;
-		String currentWinStreak = null;
-		String longestLossStreak = null;
-		String currentLossStreak = null;
-		for(int i = 0; i < this.leaderboard.size(); i++) {
-			score = this.leaderboard.get(i);
-			rank = String.format("%-4d", (i+1));
-			wins = String.format("%-4d", score.getWins());
-			longestWinStreak = String.format("%-2d", score.getLongestWinStreak());
-			currentWinStreak = String.format("%-2d", score.getCurrentWinStreak());
-			longestLossStreak = String.format("%-2d", score.getLongestLossStreak());
-			currentLossStreak = String.format("%-2d", score.getCurrentLossStreak());
-			board += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Current Win Streak: " + currentWinStreak + " | Longest Loss Streak: " + longestLossStreak + " | Current Loss Streak: " + currentLossStreak + " | Score: " + wins + " | Name: " + score.getName() + "\n");
->>>>>>> origin/816_RPS_Losing_Streak
 		}
 		else
 			return "Noob";
-	}
-	public PlayerScore getScore(String name) {
-		PlayerScore score = null;
-		for (int i = 0; i < this.leaderboard.size(); i++) {
-			score = this.leaderboard.get(i);
-			if (score.getName() == name) {
-				score.lossesIncrement();
-				break;
-			}
-		}
-		return score;
 	}
 }
