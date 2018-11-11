@@ -167,7 +167,7 @@ public class Room {
         }
     }
     
-    public Player getRandomPlayer(){
+    public Player getRandomPlayer(PlayerList players){
         
         int playersInRoom = 0;
         int i = 0;
@@ -175,22 +175,19 @@ public class Room {
         int min = 1;
         
         // Checking how many players are in the room
-        for (Player player : player){
+        for (Player player : players){
             if (player.getCurrentRoom() == this.id){
                 playersInRoom++;
             }
         }
         
         // If no players are in room
-        if (i == 0){
-            return null;
-        }
-        else {
-           Random r = new Random();
-           i = r.nextInt(playersInRoom);
+        if (i != 0){
+            Random r = new Random();
+            i = r.nextInt(playersInRoom);
         }
         
-        for (Player player : player){
+        for (Player player : players){
             if (player.getCurrentRoom() == this.id){
                 if (j == i){
                     return player;
@@ -200,7 +197,8 @@ public class Room {
                 }
             }
         }
-        
+        // If no players are in the room
+        return null;
     }
 
     public ArrayList<String> getNamesOfNpcs(Set<NPC> npcSet){

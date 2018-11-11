@@ -620,10 +620,12 @@ public class GameCore implements GameCoreInterface {
                         
                         // ----------------
                         // POKING THE GHOUL
-                        for (NPC npc: npcSet){
+                        Set<Ghoul> ghoulSet = room.getGhouls();
+                        
+                        for (Ghoul ghoul: ghoulSet){
                             // If current npc is the one found above, poke, then return
-                            if (npc.getName().equalsIgnoreCase(ghoulName)){
-                                npc.poke();
+                            if (ghoul.getName().equalsIgnoreCase(ghoulName)){
+                                ghoul.poke();
                                 return playerName + " POKED " + npcsFound.get(i) + "\n";
                             }
                         }
@@ -677,10 +679,12 @@ public class GameCore implements GameCoreInterface {
                             
                             // ----------------
                             // GIFTING TO GHOUL
-                            for (NPC npc: npcSet){
-                                // If current npc is the one found above, poke, then return
-                                if (npc.getName().equalsIgnoreCase(ghoulName)){
-                                    npc.give();
+                            Set<Ghoul> ghoulSet = room.getGhouls();
+                        
+                            for (Ghoul ghoul: ghoulSet){
+                                // If current ghoul is the one found above, poke, then return
+                                if (ghoul.getName().equalsIgnoreCase(ghoulName)){
+                                    ghoul.give();
                                     break;
                                 }
                             }
