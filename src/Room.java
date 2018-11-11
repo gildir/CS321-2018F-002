@@ -169,22 +169,25 @@ public class Room {
     
     public Player getRandomPlayer(){
         
+        int playersInRoom = 0;
         int i = 0;
-        int j = 0
-        int min = 0;
+        int j = 1;
+        int min = 1;
         
+        // Checking how many players are in the room
         for (Player player : player){
             if (player.getCurrentRoom() == this.id){
-                i++;
+                playersInRoom++;
             }
         }
         
-        if (i != 0) {
-           Random r = new Random();
-           i = r.nextInt((i - min) + 1) + min;
+        // If no players are in room
+        if (i == 0){
+            return null;
         }
-        else{
-            // If no players are in room
+        else {
+           Random r = new Random();
+           i = r.nextInt(playersInRoom);
         }
         
         for (Player player : player){
