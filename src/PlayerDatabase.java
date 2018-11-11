@@ -58,10 +58,10 @@ public class PlayerDatabase {
       //build comma-seperated inputs for database with user's name and password
       try(FileOutputStream fos = new FileOutputStream(DATABASE_FILE, true)) {
          StringBuilder sb = new StringBuilder(name);
-         
-         sb.append(",");
          String en = Crypt.encrypt(password, name);
-         sb.append(en);
+         
+         sb.append(","); sb.append(en);
+	      
          sb.append("\n");
          
          //write inputs to database
