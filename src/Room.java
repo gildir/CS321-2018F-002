@@ -42,7 +42,7 @@ public class Room {
         result += "-------------------------\n";
         result += this.getDescription() + "\n";
         result += "...................\n";
-	result += "This room is " + this.getLocation() + "\n";
+ result += "This room is " + this.getLocation() + "\n";
         result += "Objects in the area: " + this.getObjects() + "\n";
         result += "Players in the area: " + this.getPlayers(playerList) + "\n";
         result += "Ghouls in the area: " + this.getGhoulsString() + "\n";
@@ -131,7 +131,7 @@ public class Room {
     }
 
     public String getLocation() {
-	return this.location;
+ return this.location;
     }
     
     public String getObjects() {
@@ -150,7 +150,7 @@ public class Room {
     }
 
     public void addObjectFromPlayer(Item obj) {
-	this.objects.add(obj);
+ this.objects.add(obj);
     }
     
     public Item removeObject(String target) {
@@ -184,6 +184,40 @@ public class Room {
         else {
             return localPlayers;
         }
+    }
+    
+    public Player getRandomPlayer(PlayerList players){
+        
+        int playersInRoom = 0;
+        int i = 0;
+        int j = 1;
+        int min = 1;
+        
+        // Checking how many players are in the room
+        for (Player player : players){
+            if (player.getCurrentRoom() == this.id){
+                playersInRoom++;
+            }
+        }
+        
+        // If no players are in room
+        if (i != 0){
+            Random r = new Random();
+            i = r.nextInt(playersInRoom);
+        }
+        
+        for (Player player : players){
+            if (player.getCurrentRoom() == this.id){
+                if (j == i){
+                    return player;
+                }
+                else{
+                    j++;
+                }
+            }
+        }
+        // If no players are in the room
+        return null;
     }
 
     public ArrayList<String> getNamesOfNpcs(Set<NPC> npcSet){

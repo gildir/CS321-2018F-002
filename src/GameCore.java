@@ -84,7 +84,7 @@ public class GameCore implements GameCoreInterface {
                 ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
-			Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
+   Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
                         object = objects.get(rand.nextInt(objects.size()));
                         room = map.randomRoom();
                         room.addObject(object);
@@ -127,7 +127,7 @@ public class GameCore implements GameCoreInterface {
     public void broadcast(Player player, String message) {
         for(Player otherPlayer : this.playerList) {
             if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()
-			    && !player.searchIgnoredBy( otherPlayer.getName() )) {	// 405_ignore, don't broadcast to players ignoring you
+       && !player.searchIgnoredBy( otherPlayer.getName() )) { // 405_ignore, don't broadcast to players ignoring you
                 otherPlayer.getReplyWriter().println(message);
             }
         }
@@ -154,7 +154,7 @@ public class GameCore implements GameCoreInterface {
     */
     public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
         if(sendingPlayer != receivingPlayer
-			&& !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
+   && !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
             receivingPlayer.getReplyWriter().println(message);
         }
     }
@@ -625,9 +625,26 @@ public class GameCore implements GameCoreInterface {
                 //checking to see if the ghoulName matches any ghouls in the same room
                 for (int i = 0; i < npcsFound.size(); i++){
                     if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
-                        return playerName + " POKED " + npcsFound.get(i) + "\n" + player.removeRandomItem();
+                        
+                        // ----------------
+                        // POKING THE GHOUL
+                        Set<Ghoul> ghoulSet = room.getGhouls();
+                        
+                        for (Ghoul ghoul: ghoulSet){
+                            // If current npc is the one found above, poke, then return
+                            if (ghoul.getName().equalsIgnoreCase(ghoulName)){
+                                ghoul.poke();
+                                return playerName + " POKED " + npcsFound.get(i) + "\n";
+                            }
+                        }
+                        // ----------------
+                        
+                        // KEEPING OLD RETURN FOR THE MOMENT
+                        //return playerName + " POKED " + npcsFound.get(i) + "\n" + player.removeRandomItem();
+                        
                     }
                 }
+                
             }
         }
         return null;
@@ -667,6 +684,20 @@ public class GameCore implements GameCoreInterface {
                     //check if the player has the object in their inventory
                     for (int i = 0; i < playerIn.size(); i++){
                         if (itemName.equalsIgnoreCase(playerIn.get(i).getItemName())){
+                            
+                            // ----------------
+                            // GIFTING TO GHOUL
+                            Set<Ghoul> ghoulSet = room.getGhouls();
+                        
+                            for (Ghoul ghoul: ghoulSet){
+                                // If current ghoul is the one found above, poke, then return
+                                if (ghoul.getName().equalsIgnoreCase(ghoulName)){
+                                    ghoul.give();
+                                    break;
+                                }
+                            }
+                            // ----------------
+                            
                             playerIn.remove(i);
                             player.setCurrentInventory(playerIn);//updating the inventory
                             return playerName + " gifted " + ghoulName + " a " + itemName;
@@ -775,25 +806,25 @@ public class GameCore implements GameCoreInterface {
 
     //405
     public String ignore(String name, String ignoreName) {
-		if( name.equalsIgnoreCase(ignoreName) )
-			return "You can't ignore yourself.";
+  if( name.equalsIgnoreCase(ignoreName) )
+   return "You can't ignore yourself.";
 
-		//verify player being ignored exists
-		Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
-		if( ignoredPlayer == null )
-			return "Player " + ignoreName + " is not in the game.";
+  //verify player being ignored exists
+  Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
+  if( ignoredPlayer == null )
+   return "Player " + ignoreName + " is not in the game.";
 
-		Player thisPlayer = this.playerList.findPlayer(name);
-		//verify player is not already in ignore list
-		if( thisPlayer.searchIgnoreList(ignoreName) )
-			return "Player " + ignoreName + " is in ignored list.";
+  Player thisPlayer = this.playerList.findPlayer(name);
+  //verify player is not already in ignore list
+  if( thisPlayer.searchIgnoreList(ignoreName) )
+   return "Player " + ignoreName + " is in ignored list.";
 
-		//add ignoreName to ignore list
-		thisPlayer.ignorePlayer(ignoreName);
+  //add ignoreName to ignore list
+  thisPlayer.ignorePlayer(ignoreName);
 
-		//add ignoring player to ignored players ignoredBy list
-		ignoredPlayer.addIgnoredBy(name);
-		return ignoreName + " added to ignore list.";
+  //add ignoring player to ignored players ignoredBy list
+  ignoredPlayer.addIgnoredBy(name);
+  return ignoreName + " added to ignore list.";
     }
 
     //407
@@ -814,26 +845,26 @@ public class GameCore implements GameCoreInterface {
     }
     //408
     public String unIgnore(String name, String unIgnoreName) {
-		if( name.equalsIgnoreCase(unIgnoreName) )
-			return "You can't unignore yourself since you can't ignore yourself...";
+  if( name.equalsIgnoreCase(unIgnoreName) )
+   return "You can't unignore yourself since you can't ignore yourself...";
 
-		//verify player being unignored exists
-		Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
-		if( unIgnoredPlayer == null )
-			return "Player " + unIgnoreName + " is not in the game.";
+  //verify player being unignored exists
+  Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
+  if( unIgnoredPlayer == null )
+   return "Player " + unIgnoreName + " is not in the game.";
 
-		Player thisPlayer = this.playerList.findPlayer(name);
+  Player thisPlayer = this.playerList.findPlayer(name);
 
-		//verify player is in Ignore list
-		if( !thisPlayer.searchIgnoreList(unIgnoreName) )
-			return "Player " + unIgnoreName + " is not in ignored list.";
+  //verify player is in Ignore list
+  if( !thisPlayer.searchIgnoreList(unIgnoreName) )
+   return "Player " + unIgnoreName + " is not in ignored list.";
 
-		//remove ignoreName in ignore list
-		thisPlayer.unIgnorePlayer(unIgnoreName);
+  //remove ignoreName in ignore list
+  thisPlayer.unIgnorePlayer(unIgnoreName);
 
-		//add ignoring player to ignored players ignoredBy list
-		unIgnoredPlayer.removeIgnoredBy(name);
-		return unIgnoreName + " removed from ignore list.";
+  //add ignoring player to ignored players ignoredBy list
+  unIgnoredPlayer.removeIgnoredBy(name);
+  return unIgnoreName + " removed from ignore list.";
     }
     /* STOP 408_ignore */
 
@@ -1159,8 +1190,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play2.getName());
 
       return;
     }
@@ -1174,8 +1205,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName());
 
       return;
     }
@@ -1189,8 +1220,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName());
 
       return;
     }
@@ -1204,8 +1235,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play2.getName());
 
       return;
     }
@@ -1219,8 +1250,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play2.getName());
 
       return;
     }
@@ -1234,8 +1265,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName());
 
       return;
     }
@@ -1253,12 +1284,12 @@ public class GameCore implements GameCoreInterface {
     }
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
-	// Added by Brendan
+ // Added by Brendan
     public void checkBoard(String name) {
         Player player = this.playerList.findPlayer(name);
         if(player == null)
             return;
-		String board = this.leaderboard.getBoard();
+  String board = this.leaderboard.getBoard();
         player.getReplyWriter().println(board);
     }
 
