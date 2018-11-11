@@ -107,10 +107,18 @@ public class Room {
         return NONEXISTANT_EXIT_ID;
     }
     
-    public Exit getRandomValidExit(){
+    public Exit getRandomValidExit() {
         List<Exit> validExits = new LinkedList<>(exits);
         validExits.removeIf(exit -> exit.getRoom() == NONEXISTANT_EXIT_ID);
-        int index = new Random().nextInt(validExits.size());
+        int index;
+        try {
+            index = new Random().nextInt(validExits.size());
+        } catch (IllegalArgumentException e) {
+            System.err.println("Problem with exits in " + getId() + ": " + getTitle());
+            System.err.println("Exits: ");
+            validExits.forEach(exit -> System.out.println(gameCore.getMap().findRoom(exit.getRoom()).getTitle()));
+            throw e;
+        }
       return validExits.get(index);
     }
     
