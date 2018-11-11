@@ -736,6 +736,8 @@ public class GameCore implements GameCoreInterface {
         	return "Must gift an amount greater than 0!";
         if(trader.getMoney().sum() < amount)
         	return "You don't have that much money, silly!";
+        if(!(trader.hasUnits(amount)))
+        	return "You don't have the right money units, silly!";
         boolean result = this.giftsTracker.trackGift(trader, tradee, amount);
         if(result == false)
         	return "" + tradee.getName() + " already has an open trade!";

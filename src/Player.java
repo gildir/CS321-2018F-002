@@ -263,6 +263,33 @@ public class Player {
     this.currentDirection = direction;
   }
   
+  public boolean hasUnits(double amount) {
+	    // send money in units available to player 
+	    // if correct units are unavaialable, then return and give a message
+	    double valueCopy = amount;
+	    int[] unitsGiven = new int[5];
+	    int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
+	    double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
+	    int index = 0;
+	    
+	    while(index < 5){
+	      for (int i = 1; i <= numUnits[index]; i++){
+	        if(unitVals[index] * i > valueCopy){
+	          break;
+	        }
+	        unitsGiven[index]++;
+	      }
+	      
+	      if(unitsGiven[index] > 0){
+	        valueCopy -= unitVals[index] * unitsGiven[index];
+	      }
+	      index++;
+	    }
+	    if(valueCopy > 0)
+	    	return false;
+	    return true;
+  }
+  
   public Money giveMoney(Player giver,Player receiver,double value){
     Money moneyToGive = new Money();
     replyWriter.println("You are giving away "+ String.format("%1$,.2f", value)); 
