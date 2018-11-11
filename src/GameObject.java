@@ -374,4 +374,36 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
         return core.unIgnore(name,ignoreName);
     }
+
+    // Whiteboards
+    /**
+     * Returns a string displaying the Whiteboard of the room the player is in.
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String displayWhiteboard(String playerName) throws RemoteException {
+        return core.displayWhiteboard(playerName);
+    }
+    
+    /**
+     * [clearWhiteboard description]
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String clearWhiteboard(String playerName) throws RemoteException {
+        return core.clearWhiteboard(playerName);
+    }
+    
+    /**
+     * [writeWhiteboard description]
+     * @param  playerName
+     * @param  message
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String writeWhiteboard(String playerName, String message) throws RemoteException {
+        return core.writeWhiteboard(playerName, message);
+    }
 }

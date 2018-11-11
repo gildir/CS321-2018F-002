@@ -1282,4 +1282,74 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
+
+  // Whiteboards
+  /**
+   * 
+   * @param  playerName
+   * @return the room object where the player is
+   * @throws RemoteException
+   */
+  public Room getPlayerRoom(String playerName) {
+    Player player = findPlayer(playerName);
+    if (player == null) return null;
+
+    int roomId = player.getCurrentRoom();
+    // if (roomId == null) return null;
+
+    Room room = map.findRoom(roomId);
+    return room;
+  }
+
+  /**
+   * Returns a string displaying the Whiteboard of the room the player is in.
+   * @param  playerName
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String displayWhiteboard(String playerName) {
+    Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.display();
+  }
+  
+  /**
+   * [clearWhiteboard description]
+   * @param  playerName
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String clearWhiteboard(String playerName) {
+    Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.erase();
+  }
+  
+  /**
+   * [writeWhiteboard description]
+   * @param  playerName
+   * @param  message
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String writeWhiteboard(String playerName, String message) {
+    Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.write(message);
+  }
 }

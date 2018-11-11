@@ -9,17 +9,17 @@ public class WhiteBoard
 	public WhiteBoard(int id)
 	{
 		this.message = "";
-		this.id = id;
+		this.roomId = id;
 	}
 	public WhiteBoard(String text, int id)
 	{
 		this.message = text;
-		this.id = id;
+		this.roomId = id;
 	}
 
 	public String write(String text)
 	{
-		if(text == NULL)
+		if(text == null)
 		{
 			return "Please include a message to write.";
 		}
@@ -37,13 +37,13 @@ public class WhiteBoard
 	public String erase()
 	{
 		this.message = "";
-		return "The white board's message has been erased."
+		return "The white board's message has been erased.";
 	}
 
 	public String display()
 	{
 		String formatedMessage = "";
-		for(int i = 0, i < 124, i++)
+		for(int i = 0; i < 124; i++)
 		{
 			formatedMessage += "=";
 		}
@@ -52,21 +52,21 @@ public class WhiteBoard
 		formatedMessage += this.message;
 		if(this.message.length() < 120)
 		{
-			for(int i = this.message.length(), i < 120, i++)
+			for(int i = this.message.length(); i < 120; i++)
 			{
 				formatedMessage += " ";
 			}
 		}
 		formatedMessage += " |";
 		formatedMessage += "\n";
-		for(int i = 0, i < 124, i++)
+		for(int i = 0; i < 124; i++)
 		{
 			formatedMessage += "=";
 		}
 		return formatedMessage;
 	}
 
-	public Sring getMessage()
+	public String getMessage()
 	{
 		return this.message;
 	}
