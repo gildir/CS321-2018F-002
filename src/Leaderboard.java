@@ -87,7 +87,7 @@ public class Leaderboard {
             else {
                 rank = String.format("%-4d", j);
             }
-            wins = String.format("%-4d", score.getWins());
+            wins = String.format("%-4d", score.getWins()-score.getLosses());
             topTen += ("Rank: " + rank + " |   Score: " + wins + " |   Name: " + score.getName() + "\n");
         }
         //add string buffer for empty player 
