@@ -39,7 +39,6 @@ public class GameCore implements GameCoreInterface {
     private static final int NUM_OF_GHOSTS = 8;
     private static final int GHOST_AI_PERIOD_SECONDS_BASE = 20;
 
-
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
     private Leaderboard leaderboard;
@@ -715,7 +714,7 @@ public class GameCore implements GameCoreInterface {
         player.broadcast("Can't find a ghoul named " + ghoulName + " to give an item to.");
         return null;
     }
-    
+
     public boolean getTimeOfDay() {
         return timeOfDay;
     }
