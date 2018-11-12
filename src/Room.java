@@ -62,6 +62,10 @@ public class Room {
       return this;
     }
 
+    public WhiteBoard getWhiteBoard(){
+        return this.whiteboard;
+      }
+
     public String getExits() {
         String result = "";
         for(Exit exit : this.exits) {
