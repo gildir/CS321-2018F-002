@@ -23,6 +23,8 @@ public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Set<NPC> npcSet;
     private final Map map;
+    //Specifies a minimum and maximum amount of time until next item spawn
+    private final int minimumSpawnTime=100, maximumSpawnTime=600;
 
     private final Shop shop;
 
@@ -78,7 +80,7 @@ public class GameCore implements GameCoreInterface {
                 ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
-                        Thread.sleep(rand.nextInt(60000));
+			Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
                         object = objects.get(rand.nextInt(objects.size()));
                         room = map.randomRoom();
                         room.addObject(object);
