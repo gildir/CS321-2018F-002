@@ -70,20 +70,6 @@ public class WhiteBoard
 	{
 		return this.message;
 	}
-
-	public void store () throws IOException
-    {
-        String room_id = Integer.toString(room);
-        String coma = ",";
-        BufferedWriter writer = new BufferedWriter(new FileWriter("WhiteBoard.csv"));
-        writer.write(room_id);
-        writer.write(coma);
-        writer.write(" ");
-        writer.write(message);
-        writer.close();
-    }
-
-
 }
 
 

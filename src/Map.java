@@ -122,4 +122,8 @@ public class Map
         Random rand = new Random();
         return map.get(rand.nextInt(map.size()));
     }
+
+    public LinkedList<Room> getMap() {
+    	return this.map;
+    }
 }

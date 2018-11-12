@@ -406,4 +406,12 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String writeWhiteboard(String playerName, String message) throws RemoteException {
         return core.writeWhiteboard(playerName, message);
     }
+
+    /**
+     * Asks GameCore to save whiteboards info to file
+     * @throws RemoteException
+     */
+    public void saveWhiteboards() throws RemoteException {
+        core.saveWhiteboards();
+    }
 }

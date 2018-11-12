@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.io.IOException;
 import java.io.File;
@@ -1352,4 +1353,48 @@ public class GameCore implements GameCoreInterface {
 
     return wb.write(message);
   }
+
+  /**
+     * Opens WhiteBoard.csv file and stores whiteboards messages there
+     * @throws RemoteException
+     */
+    public void saveWhiteboards() {
+      StringBuilder sb = new StringBuilder();
+
+      LinkedList<Room> roomList = map.getMap();
+      Iterator rooms = roomList.listIterator(1);
+
+      while(rooms.hasNext()){ 
+        Room r = (Room) rooms.next();
+        // System.out.println(r.getId());
+        
+        WhiteBoard wb = r.getWB();
+
+        if (wb != null) {
+          String msg = wb.getMessage();
+
+          if (! msg.equals("")) {
+            sb.append(r.getId());
+            sb.append(", ");
+            sb.append(msg);
+            sb.append("\n");
+          }
+        }
+      }
+
+      try {
+          // Check for file
+          File file = new File("./WhiteBoard.csv");
+          if (! file.exists()) file.createNewFile();
+
+          // Write to file
+          FileWriter fw = new FileWriter(file.getAbsoluteFile(), false);
+          BufferedWriter bw = new BufferedWriter(fw);
+
+          bw.write(sb.toString());
+          bw.close();
+      } catch (IOException ex){
+          Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    }
 }

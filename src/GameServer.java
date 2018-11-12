@@ -49,16 +49,24 @@ public class GameServer {
 			Naming.rebind("rmi://"+host+"/GameService", remoteObject);
             System.err.println("[RUN] Game Server is now running and accepting connections.");
             
-            //Storing whiteboards
+            // Runs when server is closed
             Runtime.getRuntime().addShutdownHook(new Thread() 
             { 
-              public void run() 
-              { 
-               for (int i =0; i < map.size(); i++){
-                   Room room_aux = map.get(i);
-                   room_aux.getwhiteboard().store();
-               }
-              } 
+                public void run() 
+                {
+                    System.out.println("\n[SHUTDOWN] Closing server now...");
+                    try {
+                        // Save rooms
+                        remoteObject.saveWhiteboards();
+
+                        // Close the socket
+                        remoteListener.close();
+                    } catch (RemoteException re) {
+                        Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, re);
+                    } catch(IOException ex) {
+                        Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } 
             }); 
 		} catch(RemoteException re) {
 			Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, re);
