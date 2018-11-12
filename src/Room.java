@@ -42,11 +42,13 @@ public class Room {
         result += "-------------------------\n";
         result += this.getDescription() + "\n";
         result += "...................\n";
- result += "This room is " + this.getLocation() + "\n";
+        result += "It is currently " + (gameCore.getTimeOfDay() == GameCore.DAY ? "daytime.\n" : "nighttime.\n");
+        result += "...................\n";
+        result += "This room is " + this.getLocation() + "\n";
         result += "Objects in the area: " + this.getObjects() + "\n";
         result += "Players in the area: " + this.getPlayers(playerList) + "\n";
-        result += "Ghouls in the area: " + this.getGhoulsString() + "\n";
-        result += "Spirits in the area: " + this.getSpiritsString() + "\n";
+//        result += "Ghouls in the area: " + this.getGhoulsString() + "\n";
+//        result += "Spirits in the area: " + this.getSpiritsString() + "\n";
         result += "Monsters in the area: " + this.getNPCsString() + "\n";
         result += "You see paths in these directions: " + this.getExits() + "\n";
         result += "...................\n";
@@ -227,7 +229,7 @@ public class Room {
         return ghouls;
     }
 
-    @Deprecated // no longer in use in look command
+    @Deprecated // no longer in used in look command
     public String getGhoulsString() {
         Set<Ghoul> ghouls = getGhouls();
         if (ghouls.isEmpty())
@@ -244,7 +246,7 @@ public class Room {
             return "None";
         else {
             List<String> npcNames = npcs.stream().map(NPC::toString).collect(Collectors.toList());
-            return String.join(" ", npcNames);
+            return String.join(", ", npcNames);
         }
     }
 
@@ -262,6 +264,7 @@ public class Room {
         return spirits;
     }
 
+    @Deprecated // no longer in used in look command
     public String getSpiritsString() {
         Set<Spirit> spirits = getSpirits();
         String spiritsString;
