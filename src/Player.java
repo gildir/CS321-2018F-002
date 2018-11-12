@@ -43,10 +43,12 @@ public class Player {
      * @param message to send
      */
     public void broadcast(String message) {
-        if (replyWriter == null)
-            System.err.println("Trying to broadcast to a player that doesn't have a ReplyWriter yet.");
-        else
-            replyWriter.println(message);
+        synchronized (this) {
+            if (replyWriter == null)
+                System.err.println("Trying to broadcast to a player that doesn't have a ReplyWriter yet.");
+            else
+                replyWriter.println(message);
+        }
     }
 
     /**

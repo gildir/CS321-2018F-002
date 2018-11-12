@@ -611,7 +611,7 @@ public class GameCore implements GameCoreInterface {
      * Player pokes a ghoul that is in the same room.
      * @param playerName Name of the player that pokes the ghoul.
      * @param ghoulName Name of the ghoul that is poked
-     * @return an empty string, not used for anything.
+     * @return null
      */
     public String pokeGhoul(String playerName, String ghoulName) {
         Player player = playerList.findPlayer(playerName);
@@ -624,11 +624,11 @@ public class GameCore implements GameCoreInterface {
                     player.broadcastToOthersInRoom(player.getName() + " poked " + ghoul.getName() + ".");
                     ghoul.poke();
                 }
-                return "";
+                return null;
             }
         }
         player.broadcast("Can't find a ghoul named " + ghoulName + " to poke.");
-        return "";
+        return null;
     }
 
     /**
@@ -636,61 +636,29 @@ public class GameCore implements GameCoreInterface {
      * @param playerName Name of the player that gifts the ghoul.
      * @param ghoulName Name of the ghoul to give the item to.
      * @param itemName Name of the item to give to the ghoul.
-     * @return Message showing success or failure of the gifting action.
+     * @return null
      */
     public String giftGhoul(String playerName, String ghoulName, String itemName) {
+        Player player = playerList.findPlayer(playerName);
+        Room room = player.getCurrentRoomObject();
 
-        Player player = this.playerList.findPlayer(playerName);
-        boolean ghoulNotFound = true;
-        LinkedList<Item> playerIn = player.getCurrentInventory();
-        //check if inventory is empty
-        if (player.getCurrentInventory().isEmpty()){
-            return "Inventory is empty.";
-        }
-        //check if player exists
-        if (player != null){
-            Room room = map.findRoom(player.getCurrentRoom());
-            //find all the NPCs in the room that the player's in
-            ArrayList<String> npcsFound = new ArrayList<>();
-            npcsFound = room.getNamesOfNpcs(npcSet);
-            if (npcsFound != null){
-                //checking to see if the ghoulName matches any ghouls in the same room
-                for (int i = 0;(i < npcsFound.size() && ghoulNotFound); i++){
-                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
-                        i = 9999;
-                        ghoulNotFound = false;
+        for (Ghoul ghoul : room.getGhouls()) {
+            if (ghoul.getName().equalsIgnoreCase(ghoulName)) {
+                synchronized (ghoul) {
+                    Item item = player.removeObjectFomInventory(itemName);
+                    if (item == null)
+                        player.broadcast("Can't find an item named " + itemName + " in your inventory");
+                    else {
+                        player.broadcast("You gave " + ghoul.getName() + " a " + item.getItemName() + ".");
+                        player.broadcastToOthersInRoom(player.getName() + " gave " + ghoul.getName() +
+                                " a " + item.getItemName() + ".");
+                        ghoul.give(item);
                     }
                 }
-                if (!ghoulNotFound){
-                    //check if the player has the object in their inventory
-                    for (int i = 0; i < playerIn.size(); i++){
-                        if (itemName.equalsIgnoreCase(playerIn.get(i).getItemName())){
-                            
-                            // ----------------
-                            // GIFTING TO GHOUL
-                            Set<Ghoul> ghoulSet = room.getGhouls();
-                        
-                            for (Ghoul ghoul: ghoulSet){
-                                // If current ghoul is the one found above, poke, then return
-                                if (ghoul.getName().equalsIgnoreCase(ghoulName)){
-                                    ghoul.give();
-                                    break;
-                                }
-                            }
-                            // ----------------
-                            
-                            playerIn.remove(i);
-                            player.setCurrentInventory(playerIn);//updating the inventory
-                            return playerName + " gifted " + ghoulName + " a " + itemName;
-                        }
-                    }
-                    return "Player doesn't have a " + itemName + " in their inventory.";
-                }
-                else{
-                    return ghoulName + " is not in the same room as you.";
-                }
+                return null;
             }
         }
+        player.broadcast("Can't find a ghoul named " + ghoulName + " to give an item to.");
         return null;
     }
 

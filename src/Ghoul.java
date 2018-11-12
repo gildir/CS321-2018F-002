@@ -22,14 +22,18 @@ public class Ghoul extends NPC {
     // If anger goes below 0 and into the negative it will go back to zero
     // (possibly use negative int numbers as a friendly aggro or revamp)
     private void decreaseAnger(){
-
         if (anger <= 0){
             anger = 0;
         }
         else{
             anger -= getRandomNumberInRange(1,5);
         }
-        
+        //getCurrentRoom().broadcast(angerString()); // debugging message
+    }
+
+    private void increaseAnger(){
+        anger += getRandomNumberInRange(1,5);
+        //getCurrentRoom().broadcast(angerString()); // debugging message
     }
     
     // If poked, increase anger, and if that anger goes over the
@@ -37,8 +41,8 @@ public class Ghoul extends NPC {
     // Used in gameCore.pokeGhoul()
     public void poke(){
         synchronized (this) {
-            getCurrentRoom().broadcast("\"Grrrr, do not poke me!\", said " + getName() + ". *the ghouls anger level rises*");
-            anger += getRandomNumberInRange(1,5);
+            getCurrentRoom().broadcast("\"Grrrr, do not poke me!\", said " + getName() + ", who looks a little more angry.");
+            increaseAnger();
             if (anger >= MAXANGER) {
                 getCurrentRoom().broadcast("\"BLLLAAAARGH I've had it!\", said " + getName() + ".");
                 Player player = getCurrentRoom().getRandomPlayer();
@@ -65,8 +69,12 @@ public class Ghoul extends NPC {
     
     // If an item is gifted to the ghoul, decrease their anger
     // Use in gameCore.giftGhoul()
-    public void give(){
-        decreaseAnger();
+    public void give(Item item){
+        synchronized (this) {
+            getCurrentRoom().broadcast("\"Oooh, a " + item.getItemName() + ", my favorite!\", said " + getName()
+                                       + ", who looks a bit more calm.");
+            decreaseAnger();
+        }
     }
     
     // Getter for anger
