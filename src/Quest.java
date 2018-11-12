@@ -86,7 +86,6 @@ public class Quest
 					{
 						case "A to B":
 							scannedObjective = new AToBObjective(this, questScanner);
-							scannedObjective.printObjective();
 							break;
 					}
 					storeNewObjectivesHere[objectivesAdded] = scannedObjective;
@@ -168,13 +167,11 @@ public class Quest
 			if (activeObjectives[0] == null)
 			{
 				this.questComplete = true;
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!QUEST COMPLETE!!!!!!!!!!!!!!!!!!!!!!");
 			}
 		}
 		else
 		{
 			this.questComplete = true;
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!QUEST COMPLETE!!!!!!!!!!!!!!!!!!!!!!");
 		}
 	}
 	
