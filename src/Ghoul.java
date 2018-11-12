@@ -11,61 +11,71 @@ public class Ghoul extends NPC {
     // anger level
     private int anger = 0;
     // total anger level
-    public static final int MAXANGER = 100;
+    public static final int MAXANGER = 18;
 
     // Calling NPC's constructor
-    Ghoul(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds){
+    Ghoul(GameCore gameCore, String name, int roomId, long aiPeriodSeconds){
 
-        super(gameCore, name, currentRoom, aiPeriodSeconds);
+
+        super(gameCore, name, roomId, aiPeriodSeconds);
     }
 
     // If anger goes below 0 and into the negative it will go back to zero
     // (possibly use negative int numbers as a friendly aggro or revamp)
     private void decreaseAnger(){
-
         if (anger <= 0){
             anger = 0;
         }
         else{
             anger -= getRandomNumberInRange(1,5);
         }
-        
+        //getCurrentRoom().broadcast(angerString()); // debugging message
     }
 
-    // Randomly increases the Ghouls anger between 1 through 5
     private void increaseAnger(){
-
-        if (anger < MAXANGER){
-            anger += getRandomNumberInRange(1,5);
-        }
-
-    }
-
-    // Calls the NPC broading method which calls GameCore
-    private void replyAnger(){
-        super.broadcast("Grrrr, do not poke me! *the ghouls anger level rises*");
-    }
-
-    // When called resets the ghouls anger back to the inital state
-    private void resetAnger(){
-        anger = 0;
+        anger += getRandomNumberInRange(1,5);
+        //getCurrentRoom().broadcast(angerString()); // debugging message
     }
     
     // If poked, increase anger, and if that anger goes over the
     // threshold, reset the anger and call gameCore.dragPlayer()
     // Used in gameCore.pokeGhoul()
     public void poke(){
-        increaseAnger();
-        if (anger >= MAXANGER){
-            resetAnger();
-            // then a call to dragPlayer will happen
+        synchronized (this) {
+            getCurrentRoom().broadcast("\"Grrrr, do not poke me!\", said " + getName() + ", who looks a little more angry.");
+            increaseAnger();
+            if (anger >= MAXANGER) {
+                getCurrentRoom().broadcast("\"BLLLAAAARGH I've had it!\", said " + getName() + ".");
+                Player player = getCurrentRoom().getRandomPlayer();
+                dragPlayer(player);
+                anger = 0;
+            }
+        }
+    }
+
+    private void dragPlayer(Player player) {
+        synchronized (player) {
+            player.broadcast(getName() + " grabs you by the legs and drags you to " +
+                             gameCore.getMap().findRoom(Map.SPAWN_ROOM_ID).getTitle() + ".");
+            player.broadcastToOthersInRoom(getName() + " grabs " + player.getName() +
+                                           " by the legs and hobbles off, dragging " + player.getName() +
+                                           ", who is shrieking like a schoolgirl.");
+            player.setCurrentRoom(Map.SPAWN_ROOM_ID);
+            this.setCurrentRoomId(Map.SPAWN_ROOM_ID);
+            player.broadcastToOthersInRoom(getName() + " hobbles into the area dragging " + player.getName() +
+                                           " behind them, and tosses " + player.getName() +
+                                           " into the center of the room.");
         }
     }
     
     // If an item is gifted to the ghoul, decrease their anger
     // Use in gameCore.giftGhoul()
-    public void give(){
-        decreaseAnger();
+    public void give(Item item){
+        synchronized (this) {
+            getCurrentRoom().broadcast("\"Oooh, a " + item.getItemName() + ", my favorite!\", said " + getName()
+                                       + ", who looks a bit more calm.");
+            decreaseAnger();
+        }
     }
     
     // Getter for anger

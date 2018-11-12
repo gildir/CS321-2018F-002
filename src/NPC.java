@@ -12,42 +12,62 @@ import java.time.Instant;
 abstract class NPC {
 
   private String name;
-  private int currentRoom;
-  private int pastRoom;
+  private int currentRoomId;
+  private int pastRoomId;
   private long lastAiTime;
   private long aiPeriodSeconds;
-  protected GameCore gameCore;
+  protected final GameCore gameCore;
 
-  public NPC(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds) {
+  public NPC(GameCore gameCore, String name, int roomId, long aiPeriodSeconds) {
     this.name = name;
-    this.currentRoom = currentRoom;
-    this.pastRoom = -1;
-    this.lastAiTime = Instant.now().getEpochSecond();
+    this.currentRoomId = roomId;
+    this.pastRoomId = 0;
+    resetLastAiTime();
     this.aiPeriodSeconds = aiPeriodSeconds;
     this.gameCore = gameCore;
+  }
+
+  protected long getCurrentTime() {
+      return Instant.now().getEpochSecond();
+  }
+
+  protected void resetLastAiTime() {
+      lastAiTime = getCurrentTime();
   }
 
   public String getName(){
     return this.name;
   }
   
-  public int getCurrentRoom(){
-    return this.currentRoom;
+  public int getCurrentRoomId(){
+    return this.currentRoomId;
+  }
+
+  public Room getCurrentRoom() {
+      return gameCore.getMap().findRoom(currentRoomId);
   }
 
   /**
    * @return the last room this NPC was in.
-   * If this is the first room the NPC has been in, returns -1.
+   * If this is the first room the NPC has been in, returns 0.
    */
-  public int getPastRoom(){
-    return this.pastRoom;
+  public int getPastRoomId(){
+    return this.pastRoomId;
   }
   
-  protected void setCurrentRoom(int newRoom){
+  protected void setCurrentRoomId(int newRoomId){
     synchronized (this) {
-      pastRoom = currentRoom;
-      currentRoom = newRoom;
+      pastRoomId = currentRoomId;
+      currentRoomId = newRoomId;
     }
+  }
+
+  protected long getLastAiTime() {
+      return lastAiTime;
+  }
+
+  protected long getAiPeriodSeconds() {
+      return aiPeriodSeconds;
   }
   
   @Override
@@ -55,31 +75,31 @@ abstract class NPC {
     return this.getName();
   }
 
-  /**
-   * Output a message to all players in the same room as this NPC.
-   * @param message to output.
-   */
-  public void broadcast(String message) {
-    gameCore.broadcast(gameCore.getMap().findRoom(currentRoom), message);
-  }
-
   protected void moveRandomly() {
     synchronized (this) {
-      Exit exit = gameCore.getMap().findRoom(currentRoom).randomValidExit();
-      broadcast(name + " walked off to the " + exit.getDirection());
-      setCurrentRoom(exit.getRoom());
-      broadcast(name + " walked into the area");
+      Exit exit = getCurrentRoom().getRandomValidExit();
+      if (exit == null) {
+        System.err.println("Resetting " + getName() + " to its previous room");
+        getCurrentRoom().broadcast(name + " teleported away using hax");
+        setCurrentRoomId(getPastRoomId());
+      } else {
+        getCurrentRoom().broadcast(name + " walked off to the " + exit.getDirection());
+        setCurrentRoomId(exit.getRoom());
+      }
+      getCurrentRoom().broadcast(name + " walked into the area");
     }
   }
   
   public boolean tryAi() {
-    final long secondsSinceLastAi = Instant.now().getEpochSecond() - lastAiTime;
-    if (secondsSinceLastAi > aiPeriodSeconds) {
-      doAi();
-      lastAiTime = Instant.now().getEpochSecond();
-      return true;
-    } else
-      return false;
+    synchronized (this) {
+        final long secondsSinceLastAi = getCurrentTime() - getLastAiTime();
+        if (secondsSinceLastAi > getAiPeriodSeconds()) {
+            doAi();
+            resetLastAiTime();
+            return true;
+        } else
+            return false;
+    }
   }
   
   protected void doAi() {

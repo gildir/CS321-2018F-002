@@ -22,11 +22,22 @@ import java.io.FileWriter;
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Set<NPC> npcSet;
+    private final Set<NPC> nighttimeNpcSet;
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
     private final int minimumSpawnTime=100, maximumSpawnTime=600;
 
     private final Shop shop;
+
+    public static final boolean DAY = true;
+    public static final boolean NIGHT = false;
+    private boolean timeOfDay;
+    private static final int LENGTH_OF_HALF_DAY_MILLISECONDS = 900000; // 900000 ms = 15 minutes
+
+    private static final int NUM_OF_GHOULS = 8;
+    private static final int GHOUL_AI_PERIOD_SECONDS_BASE = 25;
+    private static final int NUM_OF_GHOSTS = 8;
+    private static final int GHOST_AI_PERIOD_SECONDS_BASE = 20;
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
@@ -42,15 +53,24 @@ public class GameCore implements GameCoreInterface {
         
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
+
         playerList = new PlayerList();
 
         shop = new Shop();
 
         npcSet = new HashSet<>();
+        nighttimeNpcSet = new HashSet<>();
 
-        // Initialize starting NPCs
-        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
-                                    new Ghoul(this, "Ghoul2", 3, 25)));
+        // Initialize Ghouls
+        for (int i = 1; i <= NUM_OF_GHOULS; i++) {
+            npcSet.add(new Ghoul(this, "Ghoul" + i, i, GHOUL_AI_PERIOD_SECONDS_BASE + i));
+            nighttimeNpcSet.add(new Ghoul(this, "Ghoul" + (i + NUM_OF_GHOULS), i, GHOUL_AI_PERIOD_SECONDS_BASE + i));
+        }
+        // Initialize Ghosts
+        for (int i = 1; i <= NUM_OF_GHOSTS; i++) {
+            npcSet.add(new Ghost(this, "Ghost" + i, i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
+            nighttimeNpcSet.add(new Ghost(this, "Ghost" + (i + NUM_OF_GHOULS), i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
+        }
 
         npcSet.addAll(Arrays.asList(new Spirit(this, "Happy Spirit", 1, 20, Spirits.HAPPY),
                                     new Spirit(this, "Sad Spirit", 3, 25, Spirits.SAD),
@@ -88,7 +108,7 @@ public class GameCore implements GameCoreInterface {
                 ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
-			Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
+   Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
                         object = objects.get(rand.nextInt(objects.size()));
                         room = map.randomRoom();
                         room.addObject(object);
@@ -103,6 +123,36 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
+
+        timeOfDay = DAY;
+        Thread dayNightCycleThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        Thread.sleep((LENGTH_OF_HALF_DAY_MILLISECONDS));
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    if (timeOfDay == DAY) {
+                        timeOfDay = NIGHT;
+                        broadcastGlobal("Darkness falls on the world, be wary of monsters at night.");
+                        synchronized (npcSet) {
+                            npcSet.addAll(nighttimeNpcSet);
+                        }
+                    } else {
+                        timeOfDay = DAY;
+                        broadcastGlobal("The sun rises, illuminating the sky. Many monsters shriek and flee.");
+                        synchronized (npcSet) {
+                            npcSet.removeAll(nighttimeNpcSet);
+                        }
+                    }
+                }
+            }
+        });
+        dayNightCycleThread.setDaemon(true);
+        dayNightCycleThread.start();
 
     }
 
@@ -125,12 +175,13 @@ public class GameCore implements GameCoreInterface {
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.
      * @param message Message to broadcast.
-     */   
+     */
+    @Deprecated // Use Player.broadcastToAllInRoom(message) instead
     @Override
     public void broadcast(Player player, String message) {
         for(Player otherPlayer : this.playerList) {
             if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()
-			    && !player.searchIgnoredBy( otherPlayer.getName() )) {	// 405_ignore, don't broadcast to players ignoring you
+       && !player.searchIgnoredBy( otherPlayer.getName() )) { // 405_ignore, don't broadcast to players ignoring you
                 otherPlayer.getReplyWriter().println(message);
             }
         }
@@ -157,7 +208,7 @@ public class GameCore implements GameCoreInterface {
     */
     public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
         if(sendingPlayer != receivingPlayer
-			&& !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
+   && !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
             receivingPlayer.getReplyWriter().println(message);
         }
     }
@@ -166,7 +217,8 @@ public class GameCore implements GameCoreInterface {
      * Broadcasts a message to all players in the specified room.
      * @param room Room to broadcast the message to.
      * @param message Message to broadcast.
-     */   
+     */
+    @Deprecated // Use Room.broadcast(message) instead
     @Override
     public void broadcast(Room room, String message) {
         for(Player player : this.playerList) {
@@ -174,6 +226,15 @@ public class GameCore implements GameCoreInterface {
                 player.getReplyWriter().println(message);
             }
         }
+    }
+
+    /**
+     * Broadcast a message to all players in the game.
+     * @param message to send.
+     */
+    public void broadcastGlobal(String message) {
+        for (Player player : playerList)
+            player.broadcast(message);
     }
 
     /**
@@ -205,7 +266,7 @@ public class GameCore implements GameCoreInterface {
         Player newPlayer;
         if(this.playerList.findPlayer(name) == null) {
             // New player, add them to the list and return true.
-            newPlayer = new Player(name);
+            newPlayer = new Player(this, name);
             this.playerList.addPlayer(newPlayer);
             this.leaderboard.addScore(name);
             // New player starts in a room.  Send a message to everyone else in that room,
@@ -569,7 +630,7 @@ public class GameCore implements GameCoreInterface {
     }
     /**
      * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
-     * @param player The player offering the item
+     * @param playerName The player offering the item
      * @param nameOffered Name of the person being offered an item
      * @param target The name of the item to offer
      * @return A message showing success.
@@ -613,25 +674,23 @@ public class GameCore implements GameCoreInterface {
      * Player pokes a ghoul that is in the same room.
      * @param playerName Name of the player that pokes the ghoul.
      * @param ghoulName Name of the ghoul that is poked
-     * @return Message showing success or failure of poke action.
+     * @return null
      */
     public String pokeGhoul(String playerName, String ghoulName) {
-        Player player = this.playerList.findPlayer(playerName);
-        ArrayList<String> npcsFound = new ArrayList<>();
-        //check if player exists
-        if (player != null){
-            Room room = map.findRoom(player.getCurrentRoom());
-            //find all the NPCs in the room that the player's in
-            npcsFound = room.getNamesOfNpcs(npcSet);
-            if (npcsFound != null){
-                //checking to see if the ghoulName matches any ghouls in the same room
-                for (int i = 0; i < npcsFound.size(); i++){
-                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
-                        return playerName + " POKED " + npcsFound.get(i) + "\n" + player.removeRandomItem();
-                    }
+        Player player = playerList.findPlayer(playerName);
+        Room room = player.getCurrentRoomObject();
+
+        for (Ghoul ghoul: room.getGhouls()){
+            if (ghoul.getName().equalsIgnoreCase(ghoulName)){
+                synchronized (ghoul) {
+                    player.broadcast("You poked " + ghoul.getName() + ".");
+                    player.broadcastToOthersInRoom(player.getName() + " poked " + ghoul.getName() + ".");
+                    ghoul.poke();
                 }
+                return null;
             }
         }
+        player.broadcast("Can't find a ghoul named " + ghoulName + " to poke.");
         return null;
     }
 
@@ -640,48 +699,34 @@ public class GameCore implements GameCoreInterface {
      * @param playerName Name of the player that gifts the ghoul.
      * @param ghoulName Name of the ghoul to give the item to.
      * @param itemName Name of the item to give to the ghoul.
-     * @return Message showing success or failure of the gifting action.
+     * @return null
      */
     public String giftGhoul(String playerName, String ghoulName, String itemName) {
+        Player player = playerList.findPlayer(playerName);
+        Room room = player.getCurrentRoomObject();
 
-        Player player = this.playerList.findPlayer(playerName);
-        boolean ghoulNotFound = true;
-        LinkedList<Item> playerIn = player.getCurrentInventory();
-        //check if inventory is empty
-        if (player.getCurrentInventory().isEmpty()){
-            return "Inventory is empty.";
-        }
-        //check if player exists
-        if (player != null){
-            Room room = map.findRoom(player.getCurrentRoom());
-            //find all the NPCs in the room that the player's in
-            ArrayList<String> npcsFound = new ArrayList<>();
-            npcsFound = room.getNamesOfNpcs(npcSet);
-            if (npcsFound != null){
-                //checking to see if the ghoulName matches any ghouls in the same room
-                for (int i = 0;(i < npcsFound.size() && ghoulNotFound); i++){
-                    if (ghoulName.equalsIgnoreCase(npcsFound.get(i))){
-                        i = 9999;
-                        ghoulNotFound = false;
+        for (Ghoul ghoul : room.getGhouls()) {
+            if (ghoul.getName().equalsIgnoreCase(ghoulName)) {
+                synchronized (ghoul) {
+                    Item item = player.removeObjectFomInventory(itemName);
+                    if (item == null)
+                        player.broadcast("Can't find an item named " + itemName + " in your inventory");
+                    else {
+                        player.broadcast("You gave " + ghoul.getName() + " a " + item.getItemName() + ".");
+                        player.broadcastToOthersInRoom(player.getName() + " gave " + ghoul.getName() +
+                                " a " + item.getItemName() + ".");
+                        ghoul.give(item);
                     }
                 }
-                if (!ghoulNotFound){
-                    //check if the player has the object in their inventory
-                    for (int i = 0; i < playerIn.size(); i++){
-                        if (itemName.equalsIgnoreCase(playerIn.get(i).getItemName())){
-                            playerIn.remove(i);
-                            player.setCurrentInventory(playerIn);//updating the inventory
-                            return playerName + " gifted " + ghoulName + " a " + itemName;
-                        }
-                    }
-                    return "Player doesn't have a " + itemName + " in their inventory.";
-                }
-                else{
-                    return ghoulName + " is not in the same room as you.";
-                }
+                return null;
             }
         }
+        player.broadcast("Can't find a ghoul named " + ghoulName + " to give an item to.");
         return null;
+    }
+
+    public boolean getTimeOfDay() {
+        return timeOfDay;
     }
 
     /**
@@ -703,7 +748,7 @@ public class GameCore implements GameCoreInterface {
 
     /**
      * Returns a list of nearby players you can gift
-     * @param name Player Name
+     * @param playerName Player Name
      * @return String representation of nearby players.
      */
     public String giftable(String playerName) {
@@ -777,25 +822,25 @@ public class GameCore implements GameCoreInterface {
 
     //405
     public String ignore(String name, String ignoreName) {
-		if( name.equalsIgnoreCase(ignoreName) )
-			return "You can't ignore yourself.";
+  if( name.equalsIgnoreCase(ignoreName) )
+   return "You can't ignore yourself.";
 
-		//verify player being ignored exists
-		Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
-		if( ignoredPlayer == null )
-			return "Player " + ignoreName + " is not in the game.";
+  //verify player being ignored exists
+  Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
+  if( ignoredPlayer == null )
+   return "Player " + ignoreName + " is not in the game.";
 
-		Player thisPlayer = this.playerList.findPlayer(name);
-		//verify player is not already in ignore list
-		if( thisPlayer.searchIgnoreList(ignoreName) )
-			return "Player " + ignoreName + " is in ignored list.";
+  Player thisPlayer = this.playerList.findPlayer(name);
+  //verify player is not already in ignore list
+  if( thisPlayer.searchIgnoreList(ignoreName) )
+   return "Player " + ignoreName + " is in ignored list.";
 
-		//add ignoreName to ignore list
-		thisPlayer.ignorePlayer(ignoreName);
+  //add ignoreName to ignore list
+  thisPlayer.ignorePlayer(ignoreName);
 
-		//add ignoring player to ignored players ignoredBy list
-		ignoredPlayer.addIgnoredBy(name);
-		return ignoreName + " added to ignore list.";
+  //add ignoring player to ignored players ignoredBy list
+  ignoredPlayer.addIgnoredBy(name);
+  return ignoreName + " added to ignore list.";
     }
 
     //407
@@ -816,26 +861,26 @@ public class GameCore implements GameCoreInterface {
     }
     //408
     public String unIgnore(String name, String unIgnoreName) {
-		if( name.equalsIgnoreCase(unIgnoreName) )
-			return "You can't unignore yourself since you can't ignore yourself...";
+  if( name.equalsIgnoreCase(unIgnoreName) )
+   return "You can't unignore yourself since you can't ignore yourself...";
 
-		//verify player being unignored exists
-		Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
-		if( unIgnoredPlayer == null )
-			return "Player " + unIgnoreName + " is not in the game.";
+  //verify player being unignored exists
+  Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
+  if( unIgnoredPlayer == null )
+   return "Player " + unIgnoreName + " is not in the game.";
 
-		Player thisPlayer = this.playerList.findPlayer(name);
+  Player thisPlayer = this.playerList.findPlayer(name);
 
-		//verify player is in Ignore list
-		if( !thisPlayer.searchIgnoreList(unIgnoreName) )
-			return "Player " + unIgnoreName + " is not in ignored list.";
+  //verify player is in Ignore list
+  if( !thisPlayer.searchIgnoreList(unIgnoreName) )
+   return "Player " + unIgnoreName + " is not in ignored list.";
 
-		//remove ignoreName in ignore list
-		thisPlayer.unIgnorePlayer(unIgnoreName);
+  //remove ignoreName in ignore list
+  thisPlayer.unIgnorePlayer(unIgnoreName);
 
-		//add ignoring player to ignored players ignoredBy list
-		unIgnoredPlayer.removeIgnoredBy(name);
-		return unIgnoreName + " removed from ignore list.";
+  //add ignoring player to ignored players ignoredBy list
+  unIgnoredPlayer.removeIgnoredBy(name);
+  return unIgnoreName + " removed from ignore list.";
     }
     /* STOP 408_ignore */
 
@@ -1161,8 +1206,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play2.getName());
 
       return;
     }
@@ -1176,8 +1221,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName());
 
       return;
     }
@@ -1191,8 +1236,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName());
 
       return;
     }
@@ -1206,8 +1251,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play2.getName());
 
       return;
     }
@@ -1221,8 +1266,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play2.getName());
 
       return;
     }
@@ -1236,8 +1281,8 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName());
 
       return;
     }
@@ -1255,12 +1300,12 @@ public class GameCore implements GameCoreInterface {
     }
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
-	// Added by Brendan
+ // Added by Brendan
     public void checkBoard(String name) {
         Player player = this.playerList.findPlayer(name);
         if(player == null)
             return;
-		String board = this.leaderboard.getBoard();
+  String board = this.leaderboard.getBoard();
         player.getReplyWriter().println(board);
     }
 
