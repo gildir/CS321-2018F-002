@@ -56,7 +56,16 @@ public class GameCore implements GameCoreInterface {
                                     new Ghoul(this, "Ghoul5", 5, 19),
                                     new Ghoul(this, "Ghoul6", 6, 20),
                                     new Ghoul(this, "Ghoul7", 7, 21),
-                                    new Ghoul(this, "Ghoul8", 8, 21)));
+                                    new Ghoul(this, "Ghoul8", 8, 21),
+                                    new Ghost(this, "Ghost1", 1, 25, new File("GhostSayings.txt")),
+                                    new Ghost(this, "Ghost2", 2, 26, new File("GhostSayings.txt")),
+                                    new Ghost(this, "Ghost3", 3, 27, new File("GhostSayings.txt")),
+                                    new Ghost(this, "Ghost4", 4, 28, new File("GhostSayings.txt")),
+                                    new Ghost(this, "Ghost5", 5, 29, new File("GhostSayings.txt")),
+                                    new Ghost(this, "Ghost6", 6, 24, new File("GhostSayings.txt")),
+                                    new Ghost(this, "Ghost7", 7, 23, new File("GhostSayings.txt")),
+                                    new Ghost(this, "Ghost8", 8, 22, new File("GhostSayings.txt"))));
+        
 
         Thread npcThread = new Thread(new Runnable() {
             @Override
