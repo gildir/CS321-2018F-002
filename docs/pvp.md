@@ -20,7 +20,7 @@ public void doBattle(String challenger, String player2, int p1, int p2, Battle b
         
 __Example of a Rock Paper Scissors Battle__
 
-![Brendan_Raymond_Battle_Screenshot.png - If youre reading this someone forgot to include the picture in the same directory](Brendan_Raymond_Battle_Screenshot.png "Battle Example")
+![Brendan_Raymond_Battle_Screenshot.png - If youre reading this someone forgot to include the picture in the same directory](../images/Brendan_Raymond_Battle_Screenshot.png "Battle Example")
 
 ___Author - Brendan Raymond___
 
@@ -53,11 +53,11 @@ Substitute `[Player2]` with the name of the player you wish to challenge.
 
 **Example of Challenging Another Player**
 
-![An_Ly_Challenge_Screenshot.png - If youre reading this someone forgot to include the picture in the same directory](An_Ly_Challenge_Screenshot.png "Challenge Example")
+![An_Ly_Challenge_Screenshot.png - If youre reading this someone forgot to include the picture in the same directory](../images/An_Ly_Challenge_Screenshot.png "Challenge Example")
 
 **Example of Challenging Another Player While In A Battle**
 
-![An_Ly_Challenge_Screenshot2.png - If youre reading this someone forgot to include the picture in the same directory](An_Ly_Challenge_Screenshot2.png "Challenge Example")
+![An_Ly_Challenge_Screenshot2.png - If youre reading this someone forgot to include the picture in the same directory](../images/An_Ly_Challenge_Screenshot2.png "Challenge Example")
 
 ___Author - An Ly___
 
@@ -87,7 +87,7 @@ To refuse a challenge from another player type: `Refuse [Player]`
 
 **Example of Refusing Another Player's Battle Request**
 
-![Jnanadeep_Dandu_Refuse_Screenshot.png -If you see this someone didnt include the picture in the same directory](Jnanadeep_Dandu_Refuse_Screenshot.png "Refuse Example")
+![Jnanadeep_Dandu_Refuse_Screenshot.png -If you see this someone didnt include the picture in the same directory](../images/Jnanadeep_Dandu_Refuse_Screenshot.png "Refuse Example")
 
 ___Author - Jnanadeep Dandu___
 
@@ -143,7 +143,7 @@ The complete Leaderboard can be viewed using the `LEADERBOARD` command, with eac
 
 **Example of the Leaderboard Feature**
 
-![Leaderboard Screenshot-If you see this someone didnt include the picture](Brendan_Raymond_Leaderboard_Screenshot.png "Leaderboard Example")
+![Leaderboard Screenshot-If you see this someone didnt include the picture](../images/Brendan_Raymond_Leaderboard_Screenshot.png "Leaderboard Example")
 
 ___Author - Brendan Raymond___
 
@@ -177,7 +177,7 @@ public void accept(String challenger, String player2)
 
 **Example of the Accept Battle Feature**
 
-![Justin_Lacks_Accept_Battle_Screenshot.png -If you see this someone didnt include the picture](Justin_Lacks_Accept_Battle_Screenshot.png "Accept Battle Example")
+![Justin_Lacks_Accept_Battle_Screenshot.png -If you see this someone didnt include the picture](../images/Justin_Lacks_Accept_Battle_Screenshot.png "Accept Battle Example")
 
 ___Author - Justin Lacks___
 
@@ -200,7 +200,7 @@ The standard rules for Rock Paper Scissors apply.
 
 **Example of Battle Result Broadcast Feature**
 
-![Ryan_Hoang_Battle_Result_Screenshot.png -If you see this someone didnt include the picture](Ryan_Hoang_Battle_Result_Screenshot.png "Battle Result Example")
+![Ryan_Hoang_Battle_Result_Screenshot.png -If you see this someone didnt include the picture](../images/Ryan_Hoang_Battle_Result_Screenshot.png "Battle Result Example")
 
 ___Author - Ryan Hoang___
 
@@ -224,7 +224,7 @@ public void writeLog(String play1, String play2, String p1, String p2, String wi
 
 **Example of the Battle Log Feature**
 
-![Justin_Lacks_Battle_Log_Screenshot.png -If you see this someone didnt include the picture](Justin_Lacks_Battle_Log_Screenshot.png "Battle Log Example")
+![Justin_Lacks_Battle_Log_Screenshot.png -If you see this someone didnt include the picture](../images/Justin_Lacks_Battle_Log_Screenshot.png "Battle Log Example")
 
 ___Author - Justin Lacks___
 

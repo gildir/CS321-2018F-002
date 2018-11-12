@@ -1,6 +1,8 @@
 LOOK,,Shows you the area around you
 LISTPLAYERS,,Shows a list of all the players in the world.
+IGNORE,-L;-A;-R PLAYER,Use -A to add players to ignore list; -R to remove from list; -L with no player name to show list.
 SAY,MESSAGE,Says <message> to any other players in the same area.
+SHOUT,MESSAGE,Says <MESSAGE> to all players in the game.
 WHISPER,PLAYER MESSAGE,Says <MESSAGE> to specified <PLAYER>.
 REPLY,MESSAGE,Says <MESSAGE> to last player who whispered you.
 MOVE,DIRECTION,Tries to walk in <direction>.

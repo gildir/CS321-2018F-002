@@ -7,7 +7,6 @@ import java.util.Random;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-
 /**
  *
  * @author Kevin
@@ -23,6 +22,11 @@ public class Player {
     private Money money;
 	// the player's list of all his/her Quests
 	private ArrayList<Quest> questBook = new ArrayList<Quest>();
+
+    /* START 405_ignore variables*/
+    private ArrayList<String> ignoreList;
+    private ArrayList<String> ignoredByList;
+    /* END 405_ignore variables*/
 
     public Player(String name) {
         this.currentRoom = 1;
@@ -40,6 +44,10 @@ public class Player {
 		{
 			System.out.println("Couldn't add quest: file containing quest information not found");
 		}
+		/* START 405_ignore*/
+        this.ignoreList = new ArrayList<String>();
+        this.ignoredByList = new ArrayList<String>();
+        /* END 405_ignore  */
     }
 
     public void turnLeft() {
@@ -175,7 +183,7 @@ public class Player {
     public Money getMoney() {
       return this.money;
     }
-    
+
     public void addMoney(double amount) {
         int dollars = (int) amount;
         Money amountAdded = new Money(dollars);
@@ -196,24 +204,24 @@ public class Player {
     public void setDirection(Direction direction){
         this.currentDirection = direction;
     }
-    
+
     public Money giveMoney(Player giver,Player receiver,double value){
         Money moneyToGive = new Money();
-        replyWriter.println("You are giving away "+value); 
-        
+        replyWriter.println("You are giving away "+value);
+
         if(this.money.sum() < value){
             replyWriter.println("Not enough money!");
-            return moneyToGive; 
-        }        
-        int i = 0; 
+            return moneyToGive;
+        }
+        int i = 0;
         while(i < value){
-            receiver.money.dollars.add(this.money.dollars.remove(0)); 
+            receiver.money.dollars.add(this.money.dollars.remove(0));
             i++;
         }
-        receiver.getReplyWriter().println("You received " +value + " dollars!"); 
+        receiver.getReplyWriter().println("You received " +value + " dollars!");
         return moneyToGive;
     }
-  
+
     public String viewInventory() {
         String result = "";
         if(this.currentInventory.isEmpty() == true) {
@@ -232,5 +240,49 @@ public class Player {
     @Override
     public String toString() {
         return "Player " + this.name + ": " + currentDirection.toString();
+    }
+
+	/* START 405_ignore */
+    public void ignorePlayer(String name) {
+		ignoreList.add(name);
+    }
+
+    public void addIgnoredBy( String name) {
+		ignoredByList.add(name);
+    }
+
+    public boolean searchIgnoredBy(String name) {
+    	int listSize = ignoredByList.size();
+		for( int x = 0; x < listSize; x++){
+			if( name.equalsIgnoreCase(ignoredByList.get(x)))
+				return true;
+		}
+		return false;
+    }
+
+    public boolean searchIgnoreList(String name) {
+    	int listSize = ignoreList.size();
+		for( int x = 0; x < listSize; x++){
+			if( name.equalsIgnoreCase(ignoreList.get(x)))
+				return true;
+		}
+		return false;
+    }
+    /* END 405_ignore */
+    //407
+    public String showIgnoreList()
+    {
+        String res = "";
+        for(int i = 0; i < ignoreList.size(); i++)
+            res += ignoreList.get(i) + " ";
+        return res;
+    }
+
+   public void unIgnorePlayer(String name) {
+		ignoreList.remove(name);
+    }
+
+ public void removeIgnoredBy( String name) {
+		ignoredByList.remove(name);
     }
 }
