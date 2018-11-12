@@ -19,6 +19,7 @@ ROCK,,Play <ROCK> in your current Rock Paper Scissors Battle.
 PAPER,,Play <PAPER> in your current Rock Paper Scissors Battle.
 SCISSORS,,Play <SCISSORS> in your current Rock Paper Scissors Battle.
 LEADERBOARD,,Display the current Rock Paper Scissors Leaderboard.
+TOPTEN,,Display Top Ten Players from Rock Paper Scissors Leaderboard.
 TUTORIAL,,Display a tutorial for Rock Paper Scissors.
 ENTER,SHOP,Enters shop at clock tower
 LEAVE,SHOP,Leaves shop
