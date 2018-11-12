@@ -127,6 +127,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException
      */
+    public String inventory(String name) throws RemoteException; 
 
     /**
      * Attempts to have a player <playerName> answer an offering player with <response>. Will return a message on success or failure.
@@ -137,8 +138,6 @@ public interface GameObjectInterface extends Remote {
      */
     public String offerResponse(String playerName, String response) throws RemoteException;
     
-    public String inventory(String name) throws RemoteException; 
-
     /**
      * Player pokes a ghoul that is in the same room.
      * @param ghoulName Name of the ghoul that is poked
