@@ -43,7 +43,7 @@ public class Leaderboard {
 	}
 	
 	public String getBoard() {
-		String head = "Rock-Paper-Scissors Global Leaderboard:\n\n";
+		String head = "\n\n\n\n\n\n\nRock-Paper-Scissors Global Leaderboard:\n";
 		PlayerScore playerScore = null;
 		String rank = null;
 		String title = null;
@@ -54,17 +54,18 @@ public class Leaderboard {
 		//String currentLossStreak = null;
 		for(int i = 0; i < this.board.size(); i++) {
 			playerScore = this.board.get(i);
-			rank = String.format("%-4d", (i+1));
-			title = String.format("%-32s", this.getTitle(playerScore, i));
-			score = String.format("%-4d", playerScore.getScore());
-			longestWinStreak = String.format("%-2d", playerScore.getLongestWinStreak());
+			rank = String.valueOf(i+1);
+			title = this.getTitle(playerScore, i);
+			score = String.valueOf(playerScore.getScore());
+			longestWinStreak = String.valueOf(playerScore.getLongestWinStreak());
 			//currentWinStreak = String.format("%-2d", playerScore.getCurrentWinStreak());
-			longestLossStreak = String.format("%-2d", playerScore.getLongestLossStreak());
+			longestLossStreak = String.valueOf(playerScore.getLongestLossStreak());
 			//currentLossStreak = String.format("%-2d", playerScore.getCurrentLossStreak());
-			head+="\n";
-			head += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Longest Loss Streak: " + longestLossStreak + " | Score: " + score + " | Title: " + title + " | Name: " + playerScore.getName() + "\n");
+			head+="\n===============================================================\n";
+			head += ("Rank:" + rank + "    Name:" + playerScore.getName() +"\nLongest Win Streak:" + longestWinStreak + "      Current Win Streak:" +playerScore.getCurrentWinStreak()+ " \nLongest Loss Streak:" + longestLossStreak +  "     Current Loss Streak:" +playerScore.getCurrentLossStreak() + "\nScore:" + score + "\nTitle: " + title);
 			//head += ("Rank: " + rank + " | Longest Win Streak: " + longestWinStreak + " | Current Win Streak: " + currentWinStreak + " | Longest Loss Streak: " + longestLossStreak + " | Current Loss Streak: " + currentLossStreak + " | Score: " + score + "Title: " + title + " | Name: " + playerScore.getName() + "\n");
 		}
+		head+="\n===============================================================\n";
 		return head;
 	}
 	
