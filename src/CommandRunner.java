@@ -177,9 +177,9 @@ public class CommandRunner {
         });
         commandFunctions.put("PICKUP",    (name, args) -> {
             try {
-                String object = args.remove(0);
-                while (!args.isEmpty()) {
-                    object += " " + args.remove(0);
+                String object = args.get(0);
+                for (int i = 1; i < args.size(); i++) {
+                    object += " " + args.get(i);
                 }
 
                 if (object.equals("")) {
@@ -549,29 +549,31 @@ public class CommandRunner {
     public void run(String command, ArrayList<String> args, String playerName) {
         // System.out.println(playerName + ": " + command + '(' + args + ')');
 	
-	String cmdToRun = command;
-	ArrayList<String> argsToRun = args;
-	
-	if (cmdToRun.equalsIgnoreCase("REDO")){
-	    if (lastCommand.equals("")){
-                    System.out.println("No previous command");
-                    return;
+    	String cmdToRun = command;
+    	ArrayList<String> argsToRun = args;
+    	
+    	if (cmdToRun.equalsIgnoreCase("REDO")){
+    	    if (lastCommand.equals("")) {
+                System.out.println("No previous command");
+                return;
             }
+
             cmdToRun = lastCommand;
             argsToRun = lastArgs;
-	}
+    	}
         Command cmd = commands.get(cmdToRun.toUpperCase());
 	
         if (cmd != null) {
 
             try {
+                lastCommand = cmdToRun;
+                lastArgs = argsToRun;
+
                 String result = cmd.run(playerName, argsToRun);
                 if (result != null)
                     System.out.println(result);
 
                 remoteGameInterface.logInteraction(playerName, cmdToRun, argsToRun, result);
-                lastCommand = cmdToRun;
-                lastArgs = argsToRun;
             } catch (RemoteException ex) {
                 Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
             }
