@@ -14,9 +14,10 @@ public class Ghoul extends NPC {
     public static final int MAXANGER = 18;
 
     // Calling NPC's constructor
-    Ghoul(GameCore gameCore, String name, int currentRoom, long aiPeriodSeconds){
+    Ghoul(GameCore gameCore, String name, int roomId, long aiPeriodSeconds){
 
-        super(gameCore, name, currentRoom, aiPeriodSeconds);
+
+        super(gameCore, name, roomId, aiPeriodSeconds);
     }
 
     // If anger goes below 0 and into the negative it will go back to zero

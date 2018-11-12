@@ -22,11 +22,22 @@ import java.io.FileWriter;
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Set<NPC> npcSet;
+    private final Set<NPC> nighttimeNpcSet;
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
     private final int minimumSpawnTime=100, maximumSpawnTime=600;
 
     private final Shop shop;
+
+    public static final boolean DAY = true;
+    public static final boolean NIGHT = false;
+    private boolean timeOfDay;
+
+    private static final int NUM_OF_GHOULS = 8;
+    private static final int GHOUL_AI_PERIOD_SECONDS_BASE = 22;
+    private static final int NUM_OF_GHOSTS = 8;
+    private static final int GHOST_AI_PERIOD_SECONDS_BASE = 16;
+
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
@@ -42,30 +53,24 @@ public class GameCore implements GameCoreInterface {
         
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
+
         playerList = new PlayerList();
 
         shop = new Shop();
 
         npcSet = new HashSet<>();
+        nighttimeNpcSet = new HashSet<>();
 
-        // Initialize starting NPCs
-        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 22),
-                                    new Ghoul(this, "Ghoul2", 2, 9001),
-                                    new Ghoul(this, "Ghoul3", 3, 24),
-                                    new Ghoul(this, "Ghoul4", 4, 18),
-                                    new Ghoul(this, "Ghoul5", 5, 19),
-                                    new Ghoul(this, "Ghoul6", 6, 20),
-                                    new Ghoul(this, "Ghoul7", 7, 21),
-                                    new Ghoul(this, "Ghoul8", 8, 21),
-                                    new Ghost(this, "Ghost1", 1, 25, new File("GhostSayings.txt")),
-                                    new Ghost(this, "Ghost2", 2, 26, new File("GhostSayings.txt")),
-                                    new Ghost(this, "Ghost3", 3, 27, new File("GhostSayings.txt")),
-                                    new Ghost(this, "Ghost4", 4, 28, new File("GhostSayings.txt")),
-                                    new Ghost(this, "Ghost5", 5, 29, new File("GhostSayings.txt")),
-                                    new Ghost(this, "Ghost6", 6, 24, new File("GhostSayings.txt")),
-                                    new Ghost(this, "Ghost7", 7, 23, new File("GhostSayings.txt")),
-                                    new Ghost(this, "Ghost8", 8, 22, new File("GhostSayings.txt"))));
-        
+        // Initialize Ghouls
+        for (int i = 1; i <= NUM_OF_GHOULS; i++) {
+            npcSet.add(new Ghoul(this, "Ghoul" + i, i, GHOUL_AI_PERIOD_SECONDS_BASE + i));
+            nighttimeNpcSet.add(new Ghoul(this, "Ghoul" + (i + NUM_OF_GHOULS), i, GHOUL_AI_PERIOD_SECONDS_BASE + i));
+        }
+        // Initialize Ghosts
+        for (int i = 1; i <= NUM_OF_GHOSTS; i++) {
+            npcSet.add(new Ghost(this, "Ghost" + i, i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
+            nighttimeNpcSet.add(new Ghost(this, "Ghost" + (i + NUM_OF_GHOULS), i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
+        }
 
         Thread npcThread = new Thread(new Runnable() {
             @Override
@@ -108,6 +113,36 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
+
+        timeOfDay = DAY;
+        Thread dayNightCycleThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    try {
+                        Thread.sleep((8000));
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    if (timeOfDay == DAY) {
+                        timeOfDay = NIGHT;
+                        broadcastGlobal("Darkness falls on the world, be wary of monsters at night.");
+                        synchronized (npcSet) {
+                            npcSet.addAll(nighttimeNpcSet);
+                        }
+                    } else {
+                        timeOfDay = DAY;
+                        broadcastGlobal("The sun rises, illuminating the sky. Many monsters shriek and flee.");
+                        synchronized (npcSet) {
+                            npcSet.removeAll(nighttimeNpcSet);
+                        }
+                    }
+                }
+            }
+        });
+        dayNightCycleThread.setDaemon(true);
+        dayNightCycleThread.start();
 
     }
 
@@ -181,6 +216,15 @@ public class GameCore implements GameCoreInterface {
                 player.getReplyWriter().println(message);
             }
         }
+    }
+
+    /**
+     * Broadcast a message to all players in the game.
+     * @param message to send.
+     */
+    public void broadcastGlobal(String message) {
+        for (Player player : playerList)
+            player.broadcast(message);
     }
 
     /**
