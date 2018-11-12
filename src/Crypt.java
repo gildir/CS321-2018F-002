@@ -89,6 +89,4 @@ public class Crypt{
     	return bin;
     	
     }
-    	
-	
 }
