@@ -70,7 +70,7 @@ public class Leaderboard {
 	
 	public PlayerScore getPlayerScore(String name) {
 		for (PlayerScore score : this.board) {
-			if (score.getName() == name)
+			if (score.getName().equals(name))
 				return score;
 		}
 		return null;
