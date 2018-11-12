@@ -32,11 +32,12 @@ public class GameCore implements GameCoreInterface {
     public static final boolean DAY = true;
     public static final boolean NIGHT = false;
     private boolean timeOfDay;
+    private static final int LENGTH_OF_HALF_DAY_MILLISECONDS = 900000; // 900000 ms = 15 minutes
 
     private static final int NUM_OF_GHOULS = 8;
-    private static final int GHOUL_AI_PERIOD_SECONDS_BASE = 22;
+    private static final int GHOUL_AI_PERIOD_SECONDS_BASE = 25;
     private static final int NUM_OF_GHOSTS = 8;
-    private static final int GHOST_AI_PERIOD_SECONDS_BASE = 16;
+    private static final int GHOST_AI_PERIOD_SECONDS_BASE = 20;
 
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
@@ -121,7 +122,7 @@ public class GameCore implements GameCoreInterface {
             public void run() {
                 while(true) {
                     try {
-                        Thread.sleep((8000));
+                        Thread.sleep((LENGTH_OF_HALF_DAY_MILLISECONDS));
                     } catch (InterruptedException ex) {
                         Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -713,6 +714,10 @@ public class GameCore implements GameCoreInterface {
         }
         player.broadcast("Can't find a ghoul named " + ghoulName + " to give an item to.");
         return null;
+    }
+    
+    public boolean getTimeOfDay() {
+        return timeOfDay;
     }
 
     /**
