@@ -45,6 +45,10 @@ public class Room {
         if(player.getCurrentRoom() == 10){
             result += "Type LEAVE SHOP to leave.\n";
         }
+	for(int i = 0; i < gameCore.getQuestNPCs().size(); i++){
+		if(gameCore.getQuestNPCs().get(i).getLocation().equals(title))
+			result+= "There is a NPC that gives quests in the room\n";
+	}
         return result;
     }
     

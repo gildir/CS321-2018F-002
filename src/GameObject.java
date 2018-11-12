@@ -309,6 +309,18 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         
         core.log(file, log);
     }
+
+
+    /**
+      * Interacts with NPC that provides quests
+      * @param name Name of the player
+      * @throws RemoteException
+      * @return A string indicating what quest you recieved
+      */
+    public String interact(String name) throws RemoteException{
+    	return core.interact(name);
+    }
+
 	//Rock Paper Scissors Battle Code here--------------------------------------
 	public void challenge(String challenger, String player2) throws RemoteException
 	{

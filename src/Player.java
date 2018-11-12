@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Random;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 
 /**
@@ -19,6 +21,8 @@ public class Player {
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
     private Money money;
+	//the player's list of all his/her Quests
+	private ArrayList<Quest> questBook = new ArrayList<Quest>();
 
     public Player(String name) {
         this.currentRoom = 1;
@@ -201,6 +205,13 @@ public class Player {
         }
         result += ".";
         return result;
+    }
+
+    public boolean addQuest(Quest quest){
+	if(quest == null)
+		return false;
+        questBook.add(quest);
+        return true;
     }
 
     @Override

@@ -195,6 +195,14 @@ public interface GameObjectInterface extends Remote {
      */
     public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
 
+    /**
+      * Interacts with NPC that provides quests
+      * @param name Name of the player that is interacting
+      * @return A String indicating which quest was recieved
+      * @throws RemoteException
+      */
+    public String interact(String name) throws RemoteException;
+
 //Rock Paper Scissors Battle Code Here---------------------------------
     public void challenge(String challenger, String player2) throws RemoteException;
     public void accept(String challenger, String player2) throws RemoteException;

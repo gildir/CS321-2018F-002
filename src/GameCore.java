@@ -25,6 +25,8 @@ public class GameCore implements GameCoreInterface {
     private final Map map;
 
     private final Shop shop;
+
+    private final List<questNPC> questNPCs;
     
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
@@ -92,6 +94,10 @@ public class GameCore implements GameCoreInterface {
         objectThread.setDaemon(true);
         objectThread.start();
 
+	questNPCs = new ArrayList<questNPC>();
+	questNPC clocktowerNPC = new questNPC("Clock Tower");
+	questNPCs.add(clocktowerNPC);
+
     }
 
     /**
@@ -107,6 +113,10 @@ public class GameCore implements GameCoreInterface {
 
     public Set<NPC> getNpcSet() {
         return npcSet;
+    }
+
+    public List<questNPC> getQuestNPCs() {
+	return questNPCs;
     }
 
     /**
@@ -636,7 +646,7 @@ public class GameCore implements GameCoreInterface {
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move
      * @return Message showing success.
-     */    
+     */
     @Override
     public String inventory(String name) {
         Player player = this.playerList.findPlayer(name);
@@ -783,6 +793,43 @@ public class GameCore implements GameCoreInterface {
             Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    /**
+      * Interact with an NPC that provides quests
+      * @param name Player that is interacting with the NPC
+      */
+      public String interact(String name){
+      
+      	Player player = this.playerList.findPlayer(name);
+	Room room = map.findRoom(player.getCurrentRoom());
+	questNPC npc = new questNPC("placeholder");
+	boolean hasNPC = false;
+	String result = "";
+	int input;
+	Scanner sc = new Scanner(System.in);
+
+      	for(int i = 0; i < questNPCs.size(); i++){
+		if(room.getTitle().equals(questNPCs.get(i).getLocation())){
+			hasNPC = true;
+			npc = questNPCs.get(i);
+		}
+	}
+	if(hasNPC == true){
+		player.getReplyWriter().println(npc.printQuests());
+		if(npc.getNumQuests() > 0){
+			player.getReplyWriter().println(">");
+			input = sc.nextInt();
+			boolean didAdd = player.addQuest(npc.getQuest(input));
+			if(didAdd)
+				player.getReplyWriter().println("The Quest was added to your Quest Book");
+		}
+		sc.close();
+		
+	}
+		
+      
+      return result;
+      }
 
 
 //Rock Paper Scissors Battle Methods -------------------------------------------

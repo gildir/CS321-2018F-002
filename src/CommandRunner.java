@@ -46,6 +46,7 @@ public class CommandRunner {
         commandFunctions.put("LISTPLAYERS", (name, args) -> remoteGameInterface.listAllPlayers(name));
         commandFunctions.put("LEFT",    (name, args) -> remoteGameInterface.left(name));
         commandFunctions.put("RIGHT",   (name, args) -> remoteGameInterface.right(name));
+	commandFunctions.put("INTERACT", (name, args) -> remoteGameInterface.interact(name));
         commandFunctions.put("SAY",     (name, args) -> {
             // Create empty string
             String message = String.join(" ", args);
