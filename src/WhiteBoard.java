@@ -70,6 +70,11 @@ public class WhiteBoard
 	{
 		return this.message;
 	}
+
+	public void setMessage(String msg)
+	{
+		this.message = msg;
+	}
 }
 
 
