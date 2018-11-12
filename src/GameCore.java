@@ -52,6 +52,16 @@ public class GameCore implements GameCoreInterface {
         npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
                                     new Ghoul(this, "Ghoul2", 3, 25)));
 
+        npcSet.addAll(Arrays.asList(new Spirit(this, "Happy Spirit", 1, 20, Spirits.HAPPY),
+                                    new Spirit(this, "Sad Spirit", 3, 25, Spirits.SAD),
+                                    new Spirit(this, "Spooky Spirit", 1, 45, Spirits.SPOOKY),
+                                    new Spirit(this, "Angry Spirit", 1, 2, Spirits.ANGRY),
+                                    new Spirit(this, "Sarcastic Spirit", 2, 20, Spirits.SARCASTIC),
+                                    new Spirit(this, "Shy Spirit", 4, 15, Spirits.SHY),
+                                    new Spirit(this, "Funny Spirit", 5, 15, Spirits.FUNNY),
+                                    new Spirit(this, "Tired Spirit", 2, 15, Spirits.TIRED),
+                                    new Spirit(this, "Clumsy Spirit", 2, 15, Spirits.CLUMSY)));
+
         Thread npcThread = new Thread(new Runnable() {
             @Override
             public void run() {

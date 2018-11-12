@@ -35,6 +35,7 @@ public class Room {
         result += "Objects in the area: " + this.getObjects() + "\n";
         result += "Players in the area: " + this.getPlayers(playerList) + "\n";
         result += "Ghouls in the area: " + this.getGhoulsString() + "\n";
+        result += "Spirits in the area: " + this.getSpiritsString() + "\n";
         result += "You see paths in these directions: " + this.getExits() + "\n";
         result += "...................\n";
         result += "You are facing: " + player.getCurrentDirection() + "\n";
@@ -206,5 +207,31 @@ public class Room {
             ghoulsString = String.join(" ", ghoulNames);
         }
         return ghoulsString;
+    }
+
+    /**
+     * @return a set of all the spirits in this room.
+     * If there are no spirits in this room, returns an empty set of spirits.
+     */
+    public Set<Spirit> getSpirits() {
+        Set<Spirit> spirits = new HashSet<>();
+        for (NPC npc : gameCore.getNpcSet()) {
+            if (npc instanceof Spirit && npc.getCurrentRoom() == id) {
+                spirits.add((Spirit) npc);
+            }
+        }
+        return spirits;
+    }
+
+    public String getSpiritsString() {
+        Set<Spirit> spirits = getSpirits();
+        String spiritsString;
+        if (spirits.isEmpty())
+            spiritsString = "None";
+        else {
+            List<String> spiritNames = spirits.stream().map(Spirit::toString).collect(Collectors.toList());
+            spiritsString = String.join(", ", spiritNames);
+        }
+        return spiritsString;
     }
 }
