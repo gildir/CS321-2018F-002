@@ -30,5 +30,6 @@ GIFTABLE,,List players in the same room that you can give money to
 GIVE,,Give amount of money to a friend
 GIFT,GHOULNAME ITEM,Player gifts a ghoul an object; this action decreases the ghoul's aggression.
 POKE,GHOULNAME,Player pokes a ghoul that is in the same room.
+CHANGEPREFIX,XXX,Input 3 characters for your new chat prefix.
 WHITEBOARD,COMMAND? MESSAGE?, Executes WRITE (with MESSAGE) or CLEAR command on the whiteboard. If no COMMAND specified it will display the current message in the whiteboard.
 MAP,,Displays an ASCII map of the world around you

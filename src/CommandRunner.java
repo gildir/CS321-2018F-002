@@ -349,7 +349,15 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
-
+        commandFunctions.put("CHANGEPREFIX", (name, args) -> {
+            try {
+                String newprefix = args.remove(0);
+                return remoteGameInterface.changeChatPrefix(newprefix);
+            }
+            catch(IndexOutOfBoundsException e) {
+                return "You need to input 3 characters for your new prefix.";
+            }
+        });
         commandFunctions.put("WHITEBOARD",   (name, args) -> {
             if (args.isEmpty()) {
                 return remoteGameInterface.displayWhiteboard(name);
@@ -366,7 +374,6 @@ public class CommandRunner {
                 return "[ERROR] Couldn't parse WHITEBOARD command.";
             }
         });
-
 	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
     }
 

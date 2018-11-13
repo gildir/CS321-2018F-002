@@ -55,7 +55,20 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         // Request join to the core and return the results back to the remotely calling method.
         return (core.joinGame(name) != null);
     }
-        
+
+    public void setChatPrefix(String prefix) throws RemoteException {
+        core.setChatPrefix(prefix);
+    }        
+
+    /**
+    * Changes the chat prefix to the new prefix specified by the player.
+    * @param prefix New chat prefix to be set.
+    * @return Returns message saying whether the prefix was successfully changed or not.
+    */
+    public String changeChatPrefix(String prefix) throws RemoteException {
+        return core.changeChatPrefix(prefix);
+    }
+
     /**
      * Returns a look at the area of the specified player.
      * @param playerName Player Name
