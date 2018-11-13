@@ -1247,9 +1247,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
-	    // Added by Brendan
-	    this.leaderboard.incrementScore(play1.getName(), true);
-	    this.leaderboard.incrementScore(play2.getName(), false);
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1263,9 +1263,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
-	    // Added by Brendan
-	    this.leaderboard.incrementScore(play1.getName(), true);
-	    this.leaderboard.incrementScore(play2.getName(), false);
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1279,9 +1279,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
-	    // Added by Brendan
-	    this.leaderboard.incrementScore(play1.getName(), false);
-	    this.leaderboard.incrementScore(play2.getName(), true);
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1295,9 +1295,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
-	    // Added by Brendan
-	    this.leaderboard.incrementScore(play1.getName(), false);
-	    this.leaderboard.incrementScore(play2.getName(), true);
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1311,9 +1311,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
-	    // Added by Brendan
-	    this.leaderboard.incrementScore(play1.getName(), true);
-	    this.leaderboard.incrementScore(play2.getName(), false);
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1331,12 +1331,12 @@ public class GameCore implements GameCoreInterface {
     }
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
- // Added by Brendan
+      // Added by Brendan
     public void checkBoard(String name) {
         Player player = this.playerList.findPlayer(name);
         if(player == null)
             return;
-  String board = this.leaderboard.getBoard();
+              String board = this.leaderboard.getBoard();
         player.getReplyWriter().println(board);
     }
 
