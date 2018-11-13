@@ -1,8 +1,0 @@
-Ivan Challenged ryan picking Paper against Scissors resulting in ryan winning
-
-ryan Challenged ivan picking Scissors against Paper resulting in ryan winning
-
-Ryan Challenged ivan picking Paper against Scissors resulting in ivan winning
-
-ivan Challenged ryan picking Paper against Scissors resulting in ryan winning
-
