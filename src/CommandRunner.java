@@ -18,7 +18,7 @@ public class CommandRunner {
      * Game interface
      */
     protected GameObjectInterface remoteGameInterface;
-
+ 
     /**
      * Wrap a lambda expression and allow it to throw a RemoteException
      */
@@ -32,6 +32,8 @@ public class CommandRunner {
      */
     private HashMap<String, CommandFunction<String, ArrayList<String>, String>> commandFunctions
             = new HashMap<String, CommandFunction<String, ArrayList<String>, String>>();
+    private String lastCommand = "";
+    private ArrayList<String> lastArgs = new ArrayList<String>();
 
     /**
      * For each command add it to the hashmap defining also a lambda expression
@@ -175,9 +177,9 @@ public class CommandRunner {
         });
         commandFunctions.put("PICKUP",    (name, args) -> {
             try {
-                String object = args.remove(0);
-                while (!args.isEmpty()) {
-                    object += " " + args.remove(0);
+                String object = args.get(0);
+                for (int i = 1; i < args.size(); i++) {
+                    object += " " + args.get(i);
                 }
 
                 if (object.equals("")) {
@@ -225,6 +227,7 @@ public class CommandRunner {
             }
         });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
+	commandFunctions.put("REDO", (name, args) -> null);
         //commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
 
         // PvP Commands
@@ -331,6 +334,7 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
+
         commandFunctions.put("WHITEBOARD",   (name, args) -> {
             if (args.isEmpty()) {
                 return remoteGameInterface.displayWhiteboard(name);
@@ -347,6 +351,8 @@ public class CommandRunner {
                 return "[ERROR] Couldn't parse WHITEBOARD command.";
             }
         });
+
+	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
     }
 
     /**
@@ -465,6 +471,7 @@ public class CommandRunner {
         descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
         descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});
         descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
+	descriptions.put("REDO",      new String[]{"",         "Performs the last command you entered."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
 
@@ -489,6 +496,9 @@ public class CommandRunner {
         descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
+	
+	//World Command
+	descriptions.put("MAP", new String[]{"", "Displays an ascii art map of the world."});
 
         //chat system
         descriptions.put("SHOUT",      new String[]{"MESSAGE", "Says <MESSAGE> to all players in the game."});
@@ -560,17 +570,32 @@ public class CommandRunner {
      */
     public void run(String command, ArrayList<String> args, String playerName) {
         // System.out.println(playerName + ": " + command + '(' + args + ')');
+	
+    	String cmdToRun = command;
+    	ArrayList<String> argsToRun = args;
+    	
+    	if (cmdToRun.equalsIgnoreCase("REDO")){
+    	    if (lastCommand.equals("")) {
+                System.out.println("No previous command");
+                return;
+            }
 
-        Command cmd = commands.get(command.toUpperCase());
-
+            cmdToRun = lastCommand;
+            argsToRun = lastArgs;
+    	}
+        Command cmd = commands.get(cmdToRun.toUpperCase());
+	
         if (cmd != null) {
 
             try {
-                String result = cmd.run(playerName, args);
+                lastCommand = cmdToRun;
+                lastArgs = argsToRun;
+
+                String result = cmd.run(playerName, argsToRun);
                 if (result != null)
                     System.out.println(result);
 
-                remoteGameInterface.logInteraction(playerName, command, args, result);
+                remoteGameInterface.logInteraction(playerName, cmdToRun, argsToRun, result);
             } catch (RemoteException ex) {
                 Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -595,4 +620,6 @@ public class CommandRunner {
 
         return s;
     }
+
+   
 }
