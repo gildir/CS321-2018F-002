@@ -78,7 +78,7 @@ public class GameCore implements GameCoreInterface {
                 ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
-			Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
+                      Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
                         object = objects.get(rand.nextInt(objects.size()));
                         room = map.randomRoom();
                         room.addObject(object);
@@ -120,7 +120,7 @@ public class GameCore implements GameCoreInterface {
     public void broadcast(Player player, String message) {
         for(Player otherPlayer : this.playerList) {
             if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()
-			    && !player.searchIgnoredBy( otherPlayer.getName() )) {	// 405_ignore, don't broadcast to players ignoring you
+                          && !player.searchIgnoredBy( otherPlayer.getName() )) { // 405_ignore, don't broadcast to players ignoring you
                 otherPlayer.getReplyWriter().println(message);
             }
         }
@@ -147,7 +147,7 @@ public class GameCore implements GameCoreInterface {
     */
     public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
         if(sendingPlayer != receivingPlayer
-			&& !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
+                      && !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
             receivingPlayer.getReplyWriter().println(message);
         }
     }
@@ -826,25 +826,25 @@ public class GameCore implements GameCoreInterface {
 
     //405
     public String ignore(String name, String ignoreName) {
-		if( name.equalsIgnoreCase(ignoreName) )
-			return "You can't ignore yourself.";
+              if( name.equalsIgnoreCase(ignoreName) )
+                      return "You can't ignore yourself.";
 
-		//verify player being ignored exists
-		Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
-		if( ignoredPlayer == null )
-			return "Player " + ignoreName + " is not in the game.";
+              //verify player being ignored exists
+              Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
+              if( ignoredPlayer == null )
+                      return "Player " + ignoreName + " is not in the game.";
 
-		Player thisPlayer = this.playerList.findPlayer(name);
-		//verify player is not already in ignore list
-		if( thisPlayer.searchIgnoreList(ignoreName) )
-			return "Player " + ignoreName + " is in ignored list.";
+              Player thisPlayer = this.playerList.findPlayer(name);
+              //verify player is not already in ignore list
+              if( thisPlayer.searchIgnoreList(ignoreName) )
+                      return "Player " + ignoreName + " is in ignored list.";
 
-		//add ignoreName to ignore list
-		thisPlayer.ignorePlayer(ignoreName);
+              //add ignoreName to ignore list
+              thisPlayer.ignorePlayer(ignoreName);
 
-		//add ignoring player to ignored players ignoredBy list
-		ignoredPlayer.addIgnoredBy(name);
-		return ignoreName + " added to ignore list.";
+              //add ignoring player to ignored players ignoredBy list
+              ignoredPlayer.addIgnoredBy(name);
+              return ignoreName + " added to ignore list.";
     }
 
     //407
@@ -865,26 +865,26 @@ public class GameCore implements GameCoreInterface {
     }
     //408
     public String unIgnore(String name, String unIgnoreName) {
-		if( name.equalsIgnoreCase(unIgnoreName) )
-			return "You can't unignore yourself since you can't ignore yourself...";
+              if( name.equalsIgnoreCase(unIgnoreName) )
+                      return "You can't unignore yourself since you can't ignore yourself...";
 
-		//verify player being unignored exists
-		Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
-		if( unIgnoredPlayer == null )
-			return "Player " + unIgnoreName + " is not in the game.";
+              //verify player being unignored exists
+              Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
+              if( unIgnoredPlayer == null )
+                      return "Player " + unIgnoreName + " is not in the game.";
 
-		Player thisPlayer = this.playerList.findPlayer(name);
+              Player thisPlayer = this.playerList.findPlayer(name);
 
-		//verify player is in Ignore list
-		if( !thisPlayer.searchIgnoreList(unIgnoreName) )
-			return "Player " + unIgnoreName + " is not in ignored list.";
+              //verify player is in Ignore list
+              if( !thisPlayer.searchIgnoreList(unIgnoreName) )
+                      return "Player " + unIgnoreName + " is not in ignored list.";
 
-		//remove ignoreName in ignore list
-		thisPlayer.unIgnorePlayer(unIgnoreName);
+              //remove ignoreName in ignore list
+              thisPlayer.unIgnorePlayer(unIgnoreName);
 
-		//add ignoring player to ignored players ignoredBy list
-		unIgnoredPlayer.removeIgnoredBy(name);
-		return unIgnoreName + " removed from ignore list.";
+              //add ignoring player to ignored players ignoredBy list
+              unIgnoredPlayer.removeIgnoredBy(name);
+              return unIgnoreName + " removed from ignore list.";
     }
     /* STOP 408_ignore */
 
@@ -920,6 +920,27 @@ public class GameCore implements GameCoreInterface {
       return "You have sold " + itemName + " to the shop.";
   }
 }
+
+ public String buy(String playerName, String itemName) {
+     //format user input for item
+     itemName = itemName.toLowerCase();
+     itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
+     //check if player not in shop or does not have item
+     if(!shop.playerInShop(playerName)) {
+         return "You cannot buy if you are not in a shop!";
+     }
+     Player player = this.playerList.findPlayer(playerName);
+     if(player == null)
+         return null;
+     //buyItem() will handle removing money since we do not have an Item obj
+     Boolean did_buy = shop.buyItem(player, itemName);
+     player.getReplyWriter().println(shop.displayShop());
+     if(did_buy == false){
+         return "You cannot buy " + itemName + "!";
+     }
+     return "You have bought a " + itemName + " from the shop.";
+ }
+ 
   /**
      * Logs a string into a file
      * @param fileName name of the file to log in
@@ -1311,12 +1332,12 @@ public class GameCore implements GameCoreInterface {
     }
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
-	// Added by Brendan
+      // Added by Brendan
     public void checkBoard(String name) {
         Player player = this.playerList.findPlayer(name);
         if(player == null)
             return;
-		String board = this.leaderboard.getBoard();
+              String board = this.leaderboard.getBoard();
         player.getReplyWriter().println(board);
     }
 
