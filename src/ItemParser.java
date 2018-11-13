@@ -19,24 +19,15 @@ public class ItemParser
 		try
 		{
 		   Scanner csvInputStream = new Scanner(itemListFile);
-			csvInputStream.useDelimiter("\n");
+		   csvInputStream.useDelimiter(",|\\n");
 		   while (csvInputStream.hasNext())
 		   {
-			String item = csvInputStream.next();
-			String[] tokens = item.split(",");
-			String name = tokens[0];
-			String weightString = tokens[1];
+			String name = csvInputStream.next();
+			String weightString = csvInputStream.next();
 			double weight = Double.parseDouble(weightString);
-			String priceString = tokens[2];
+			String priceString = csvInputStream.next();
 			double price = Double.parseDouble(priceString);
-			
-			String description = tokens[3];
-			for (int i = 4; i < tokens.length; i++)
-			{
-				description += "," + tokens[i];
-			}
-
-			Item tempItem = new Item(name, description, weight, price);
+			Item tempItem = new Item(name, weight, price);
 			itemList.add(tempItem);
 		   }
 		}
