@@ -197,7 +197,10 @@ public class GameCore implements GameCoreInterface {
             // New player, add them to the list and return true.
             newPlayer = new Player(name);
             this.playerList.addPlayer(newPlayer);
-            this.leaderboard.addScore(name);
+            if(!this.leaderboard.checkForPlayer(name))
+            {
+              this.leaderboard.addScore(name);
+            }
             // New player starts in a room.  Send a message to everyone else in that room,
             //  that the player has arrived.
             this.broadcast(newPlayer, newPlayer.getName() + " has arrived.");
@@ -1115,6 +1118,7 @@ public class GameCore implements GameCoreInterface {
     String message = "";
     if(p1 == p2)
     {
+
       //tie
       switch(p1)
       {
@@ -1152,7 +1156,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1167,7 +1172,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1182,7 +1188,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1197,7 +1204,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1212,7 +1220,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.incrementScore(play2.getName());
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1227,7 +1236,8 @@ public class GameCore implements GameCoreInterface {
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
 	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName());
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1281,11 +1291,5 @@ public class GameCore implements GameCoreInterface {
       }
       player.getReplyWriter().println(message);
       return "";
-  }
-
-  public void getRank(String player)
-  {
-    Player p = this.playerList.findPlayer(player);
-    p.getReplyWriter().println("Your current RPS Leaderboard rank is: "+ leaderboard.getPlayerRank(player));
   }
 }
