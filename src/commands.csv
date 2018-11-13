@@ -1,29 +1,39 @@
-LOOK,,Shows you the area around you,
-LISTPLAYERS,,Shows a list of all the players in the world.,
-SAY,MESSAGE,Says <message> to any other players in the same area.,
-WHISPER,PLAYER MESSAGE,Says <MESSAGE> to specified <PLAYER>.,
-REPLY,MESSAGE,Says <MESSAGE> to last player who whispered you.,
-MOVE,DIRECTION,Tries to walk in <direction>.,
-PICKUP,OBJECT,Tries to pick up an object in the same area.,
-DROPOFF,OBJECT,Tries to drop off an object in the same area.,
-OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.,
-INVENTORY,,Shows you what objects you have collected.,
-QUIT,,Quits the game.,
-HELP,,Displays the list of available commands,
-CHALLENGE,PLAYER,Challenges another <PLAYER> to a Rock Paper Scissors Battle.,
-ACCEPT,PLAYER,Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.,
-REFUSE,PLAYER,Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.,
-ROCK,,Play <ROCK> in your current Rock Paper Scissors Battle.,
-PAPER,,Play <PAPER> in your current Rock Paper Scissors Battle.,
-SCISSORS,,Play <SCISSORS> in your current Rock Paper Scissors Battle.,
-LEADERBOARD,,Display the current Rock Paper Scissors Leaderboard.,
+LOOK,,Shows you the area around you
+LISTPLAYERS,,Shows a list of all the players in the world.
+IGNORE,-L;-A;-R PLAYER,Use -A to add players to ignore list; -R to remove from list; -L with no player name to show list.
+SAY,MESSAGE,Says <message> to any other players in the same area.
+SHOUT,MESSAGE,Says <MESSAGE> to all players in the game.
+WHISPER,PLAYER MESSAGE,Says <MESSAGE> to specified <PLAYER>.
+REPLY,MESSAGE,Says <MESSAGE> to last player who whispered you.
+MOVE,DIRECTION,Tries to walk in <direction>.
+PICKUP,OBJECT,Tries to pick up an object in the same area.
+DESCRIBE,OBJECT,Describe the object in a player's inventory.
+DROPOFF,OBJECT,Tries to drop off an object in the same area.
+OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.
+OFFERRESPONSE,DECISION,Finishes a trade with a <DECISION>, you can decide to ACCEPT or REFUSE
+INVENTORY,,Shows you what objects you have collected.
+REDO,,Performs the last command you entered.
+QUIT,,Quits the game.
+HELP,,Displays the list of available commands
+CHALLENGE,PLAYER,Challenges another <PLAYER> to a Rock Paper Scissors Battle.
+ACCEPT,PLAYER,Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.
+REFUSE,PLAYER,Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.
+ROCK,,Play <ROCK> in your current Rock Paper Scissors Battle.
+PAPER,,Play <PAPER> in your current Rock Paper Scissors Battle.
+SCISSORS,,Play <SCISSORS> in your current Rock Paper Scissors Battle.
+LEADERBOARD,,Display the current Rock Paper Scissors Leaderboard.
+TUTORIAL,,Display a tutorial for Rock Paper Scissors.
+ENTER,SHOP,Enters shop at clock tower
+LEAVE,SHOP,Leaves shop
+SELL,ITEM,Sell item in your inventory to the shop
+BUY,ITEM,Buy an item from the shop
+MONEY,,Line-by-line display of money
+GIFTABLE,,List players in the same room that you can give money to
+GIVE,,Give amount of money to a friend
+GIFT,GHOULNAME ITEM,Player gifts a ghoul an object; this action decreases the ghoul's aggression.
+POKE,GHOULNAME,Player pokes a ghoul that is in the same room.
+SORTINVENTORY,ATTRIBUTE,Sorts inventory by <name> <value> or <weight>.
+CHANGEPREFIX,XXX,Input 3 characters for your new chat prefix.
+WHITEBOARD,COMMAND? MESSAGE?, Executes WRITE (with MESSAGE) or CLEAR command on the whiteboard. If no COMMAND specified it will display the current message in the whiteboard.
+MAP,,Displays an ASCII map of the world around you
 TOPTEN,,Display Top Ten Players from Rock Paper Scissors Leaderboard.,
-TUTORIAL,,Display a tutorial for Rock Paper Scissors.,
-ENTER,SHOP,Enters shop at clock tower,
-LEAVE,SHOP,Leaves shop,
-SELL,ITEM,Sell item in your inventory to the shop,
-MONEY,,Line-by-line display of money,
-GIFTABLE,,List players in the same room that you can give money to,
-GIVE,,Give amount of money to a friend,
-GIFT,GHOULNAME ITEM,Player gifts a ghoul an object, this action decreases the ghoul's aggression.
-POKE,GHOULNAME,Player pokes a ghoul that is in the same room.,
