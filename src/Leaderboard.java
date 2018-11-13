@@ -90,7 +90,7 @@ public class Leaderboard {
         String topTen = "\nRock-Paper-Scissors Global Top Ten RPS Ranking:\n\n";
         
         //sort leaderboard by number of wins in descending order
-        Collections.sort(leaderboard, new Comparator<PlayerScore>(){
+        Collections.sort(board, new Comparator<PlayerScore>(){
             public int compare(PlayerScore s1, PlayerScore s2) {
                 Integer a = new Integer(s1.getWins());
                 Integer b = new Integer(s2.getWins());
@@ -105,21 +105,21 @@ public class Leaderboard {
         
         // limit size of array list to no more than 10
         int size;
-        if (leaderboard.size() >= 10) {
+        if (board.size() >= 10) {
             size = 10;
         } else {
-            size = leaderboard.size(); 
+            size = board.size(); 
         }
         
         for(int i=0,j=1; i<size; i++) {
-            score = this.leaderboard.get(i);
+            score = this.board.get(i);
             
             // edge case when i=0, player's rank is 1 
             if(i==0) {
                 rank = String.format("%-4d", j);
             }
             // if score from previous player is greater than current player, increment rank
-            else if (leaderboard.get(i-1).getWins() > score.getWins())  {
+            else if (board.get(i-1).getWins() > score.getWins())  {
                 rank = String.format("%-4d", ++j);
             }
             // if current score is same as previous score, rank remain the same
