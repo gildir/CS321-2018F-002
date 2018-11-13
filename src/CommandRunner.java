@@ -191,22 +191,6 @@ public class CommandRunner {
                 return "[ERROR] No object specified";
             }
         });
-		commandFunctions.put("DESCRIBE",    (name, args) -> {
-            try {
-                String object = args.remove(0);
-                while (!args.isEmpty()) {
-                    object += " " + args.remove(0);
-                }
-
-                if (object.equals("")) {
-                    return "[ERROR] No object specified";
-                } else {
-                    return remoteGameInterface.describe(name, object);
-                }
-            } catch (IndexOutOfBoundsException ex) {
-                return "[ERROR] No object specified";
-            }
-        });
         commandFunctions.put("DROPOFF",   (name, args) -> {
             try {
                 String object = args.remove(0);
