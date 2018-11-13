@@ -354,6 +354,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
 	public void checkBoard(String player) throws RemoteException {
 		core.checkBoard(player);
 	}
+    public void topTen(String name) throws RemoteException {
+        core.topTen(name);
+    }
   //Rock Paper Scissors Battle Code here--------------------------------------
 
     //405

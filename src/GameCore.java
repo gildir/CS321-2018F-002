@@ -1282,4 +1282,13 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
+  
+  //Added by An
+  public void topTen(String name) {
+      Player player = this.playerList.findPlayer(name);
+      if(player == null)
+          return;
+      String topTenLeaderBoard = this.leaderboard.getTopTen();
+      player.getReplyWriter().println(topTenLeaderBoard);
+  }
 }

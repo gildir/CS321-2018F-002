@@ -117,6 +117,7 @@ public void paper(String player);
 public void scissors(String player);
 public void checkBoard(String player);
 public String tutorial(String name);
+public void topTen(String name);
 //Rock Paper Scissors Battle Code here--------------------------------------
 
     /* START 405_ignore */
