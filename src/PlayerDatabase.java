@@ -187,23 +187,45 @@ public class PlayerDatabase {
     * @param isLoggingIn Whether the player is logging in or logging out
     * @return true if log message is written successfully, false otherwise
     */
-   public static boolean loginLog(String name, boolean isLoggingIn) {
-    String log = name;
-    
-    try(FileOutputStream fos = new FileOutputStream(LOG_FILE, true)) {
-       if(isLoggingIn)
-          log += " logged in.\n";
-       else
-          log += " logged out.\n"; 
+    public static boolean loginLog(String name, boolean isLoggingIn) {
+        String log = name;
+        
+        try(FileOutputStream fos = new FileOutputStream(LOG_FILE, true)) {
+            if(isLoggingIn)
+                log += " logged in.\n";
+            else
+                log += " logged out.\n"; 
+            
+            //write log message to log file
+            fos.write(log.getBytes());
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * Determines if the username is less than 15 characters 
+     * and does not include numbers or symbols
+     * @return true if the username fits all requirements
+     */
+    public static boolean isUname(String username){
        
-       //write log message to log file
-       fos.write(log.getBytes());
+        //checking to make sure that username has at least one character and less than 15
+        if(username.length() > 15 || username.length() < 1){
+            System.out.println("Username must be between 1 and 15 characters");
+            return false;
+        }
+
+        //ensures all characters in the strings are alpha characters
+        if(!username.matches("[a-zA-Z]+"))
+        {
+            System.out.println("Username can only contain alphabetical characters");
+            return false;
+        }
+        return true;
     }
-    catch(IOException e) {
-       e.printStackTrace();
-       return false;
-    }
-    
-    return true;
- }
 }
