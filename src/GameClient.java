@@ -184,6 +184,8 @@ public class GameClient {
      * that will be stored in the database
      */
     private void createAccount(){
+        String password = "", question1, ans1, question2, ans2, question3, ans3;
+        
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         boolean nameSat = false; boolean nameConf = false;
@@ -233,16 +235,43 @@ public class GameClient {
             while(!isPassword){
                 System.out.println("Please enter a password.");
                 System.out.print("> ");
-                String password = keyboardInput.readLine(); update();
+                password = keyboardInput.readLine(); update();
                 if (password.length() == 0){
                     System.out.println("Password must contain at least one character");
                     isPassword = false;
                 }
                 else{
                     isPassword = true;
-                    PlayerDatabase.addPlayer(this.playerName, password);
+                    //PlayerDatabase.addPlayer(this.playerName, password);
                 }
             }
+            
+            //User enters and answers recovery questions
+            System.out.println("Setting up 3 recovery questions for your account");
+            System.out.println("Note: Answers are Case Sensitive");
+            System.out.println("Please enter the first recovery question.");
+            System.out.print("> ");
+            question1 = keyboardInput.readLine(); update();
+            System.out.println("Now enter an answer to that question.");
+            System.out.print("> ");
+            ans1 = keyboardInput.readLine(); update();
+            
+            System.out.println("Please enter the second recovery question.");
+            System.out.print("> ");
+            question2 = keyboardInput.readLine(); update();
+            System.out.println("Please answer your question.");
+            System.out.print("> ");
+            ans2 = keyboardInput.readLine(); update();
+            
+            System.out.println("Please enter one last recovery question.");
+            System.out.print("> ");
+            question3 = keyboardInput.readLine(); update();
+            System.out.println("Please answer your question.");
+            System.out.print("> ");
+            ans3 = keyboardInput.readLine(); update();
+            
+            //Write player information to the player database
+            PlayerDatabase.addPlayer(this.playerName, password, question1, ans1, question2, ans2, question3, ans3);
         }catch (IOException ex) {
             System.err.println("[CRITICAL ERROR] Error at reading any input properly.  Terminating the client now.");
             System.exit(-1);
@@ -253,6 +282,7 @@ public class GameClient {
      * Method helps the user login with their username and password
      */
     private void login(){
+    	int passwordsEnteredCount = 0;
         InputStreamReader keyboardReader = new InputStreamReader(System.in);
         BufferedReader keyboardInput = new BufferedReader(keyboardReader);
         try{
@@ -288,7 +318,24 @@ public class GameClient {
                         else System.out.println("Login Successful");
                         conf = true;
                     }
-                    else System.out.println("Password does not match");
+                    else {
+                    	System.out.println("Password does not match");
+                    	passwordsEnteredCount++;
+                    	if (passwordsEnteredCount == 3) {
+                            System.out.println("Please use your security questions to reset password");
+                            System.out.println("NOTE: Answers are Case-Sensitive");
+                    		if(PlayerDatabase.checkSecurityQestions(playerName)) {
+                    			update();
+                    			if(PlayerDatabase.changePassword(playerName)) {
+                    				update();
+                    				System.out.println("Password has been updated.");
+                                    passwordsEnteredCount = 0;
+                    			}
+                    			else System.out.println("Password update failed.");
+                    		}
+                    		else System.out.println("Security question(s) answered incorectly.");
+                    	}
+                    }
                 }
             }while(newuser == true);
         }catch (IOException ex) {
