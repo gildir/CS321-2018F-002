@@ -126,7 +126,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.shout(name, message);
     }
 
-    //Author Shayan AH
+    //302
     public String listAllPlayers(String name)throws RemoteException
     {
         return core.listAllPlayers(name);
@@ -158,7 +158,6 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
         return core.reply(name, message);
     }
-
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
      *  a message will be returned.  Will display LOOK on any partial success.
@@ -368,6 +367,13 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
 		core.checkBoard(player);
 	}
   //Rock Paper Scissors Battle Code here--------------------------------------
+  
+  //given a player name, returns an ascii art map of the world surrounding them
+  public String map(String name) throws RemoteException
+  {
+  	return core.map(name);
+}
+  
 
     //405
     @Override
