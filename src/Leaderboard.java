@@ -44,9 +44,9 @@ public class Leaderboard {
 	}
 	
 	public int getPlayerRank(String name) {
-		for (PlayerScore score : this.leaderboard) {
+		for (PlayerScore score : this.board) {
 			if (score.getName().equals(name))
-				return leaderboard.indexOf(score)+1;
+				return board.indexOf(score)+1;
 		}
 		return -1;
 	}
