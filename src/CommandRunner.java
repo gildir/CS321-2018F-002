@@ -207,6 +207,22 @@ public class CommandRunner {
                 return "[ERROR] No object specified";
             }
         });
+        commandFunctions.put("SORTINVENTORY",   (name, args) -> {
+            try {
+                String attribute = args.remove(0);
+                while (!args.isEmpty()) {
+                    attribute += " " + args.remove(0);
+                }
+
+                if (attribute.equals("")) {
+                    return "[ERROR] No attribute specified";
+                } else {
+                    return remoteGameInterface.sortInventory(name, attribute);
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No attribute specified";
+            }
+        });
         commandFunctions.put("OFFERITEM",   (name, args) -> {
             if(args.isEmpty()) {
                 return "You need to provide a player to offer an item.";
@@ -505,6 +521,7 @@ public class CommandRunner {
 	descriptions.put("REDO",      new String[]{"",         "Performs the last command you entered."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
+        descriptions.put("SORTINVENTORY",      new String[]{"ATTRIBUTE",         "Sorts inventory by specified name, value or weight."});
 
         // Ghoul commands
         descriptions.put("POKE",      new String[]{"GHOUL",    "Pokes <GHOUL>"});

@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.*;
 
 /**
  *
@@ -108,6 +109,32 @@ public class Player {
       }
     }
     return null;
+  }
+
+  /**
+ * Sorts items in the inventory by a given attribute
+ * @param attribute the attribute to sort inventory by
+ */
+  public void sortInventoryItems(String attribute) {
+    Collections.sort(this.currentInventory, new Comparator<Item>() {
+      @Override
+      public int compare(Item i1, Item i2) {
+        int item1 = 0;
+        int item2 = 0;
+        if(attribute.equalsIgnoreCase("name")) {
+            return i1.getItemName().compareTo(i2.getItemName());
+        }
+        if(attribute.equalsIgnoreCase("weight")) {
+              item1 = (int)(i1.getItemWeight() * 10000);
+              item2 = (int)(i2.getItemWeight() * 10000);
+        }
+        if(attribute.equalsIgnoreCase("value")) {
+            item1 = (int)(i1.getItemValue() * 10000);
+            item2 = (int)(i2.getItemValue() * 10000);
+        }
+        return Integer.compare(item1, item2);
+      }
+    });
   }
   
   /**

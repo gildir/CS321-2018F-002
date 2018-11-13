@@ -122,6 +122,14 @@ public interface GameObjectInterface extends Remote {
      */
     public String dropoff(String name, String object) throws RemoteException;
     /**
+     * Sorts inventory by specified attribute
+     * @param name Name of the player who's inventory is going to be sorted
+     * @param attribute The attribute by which to sort the inventory
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    public String sortInventory(String name, String attribute) throws RemoteException;
+    /**
      * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
      * @param player The player offering the item
      * @param nameOffered Name of the person being offered an item

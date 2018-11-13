@@ -216,6 +216,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.dropoff(name, target);
     }
     /**
+     * Sorts items in the inventory by the specified attribute
+     * @param name Name of the player who's inventory is going to be sorted
+     * @param attribute the attribute to sort the inventory by
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    @Override
+    public String sortInventory(String name, String attribute) throws RemoteException {
+        return core.sortInventory(name, attribute);
+    }
+    /**
      * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
      * @param player The player offering the item
      * @param nameOffered Name of the person being offered an item

@@ -645,6 +645,24 @@ public class GameCore implements GameCoreInterface {
         }
     }
     /**
+     * Sorts inventory by the specified item attribute
+     * @param name Name of the player who's inventory will be sorted
+     * @param attribute the item attribute to sort the inventory
+     * @return Message showing success.
+     */
+    public String sortInventory(String name, String attribute) {
+        Player player = this.playerList.findPlayer(name);
+            if( (!player.getCurrentInventory().isEmpty()) && (!attribute.isEmpty()) && ((attribute.equalsIgnoreCase("name") || attribute.equalsIgnoreCase("weight") || attribute.equalsIgnoreCase("value")))) {
+                player.sortInventoryItems(attribute);
+            }
+            else {
+                if(player.getCurrentInventory().isEmpty())
+                    return "Can't sort empty inventory";
+              return "Invalid attribute";
+            }
+            return null;
+    }
+    /**
      * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
      * @param player The player offering the item
      * @param nameOffered Name of the person being offered an item
