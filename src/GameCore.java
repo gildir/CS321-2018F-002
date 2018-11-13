@@ -42,6 +42,7 @@ public class GameCore implements GameCoreInterface {
         
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
+        
         playerList = new PlayerList();
 
         shop = new Shop();
@@ -1292,4 +1293,99 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
+  //if an exit exists in a direction from a room, then its title is returned
+  private String SingleExit(Room r, String s)
+  {
+  	List<Direction> l=new ArrayList<Direction>();
+	//parse string for directions
+	for(int i=0; i<s.length(); i++)
+		if(s.charAt(i)=='n')
+			l.add(Direction.NORTH);
+		else if(s.charAt(i)=='w')
+			l.add(Direction.WEST);
+		else if(s.charAt(i)=='e')
+			l.add(Direction.EAST);
+		else
+			l.add(Direction.SOUTH);
+	//for each direction found
+	for(Direction d: l)
+		if(r.canExit(d))
+			r=map.findRoom(r.getLink(d));
+		else//not a valid set of directions
+			return "";
+	return r.getTitle()+"("+s+")";
+}
+//returns all exit strings in a set of directions
+private String ExitString(Room r, int a, int b)
+{
+	String s="", e, t;
+	//convert coordinates to directions
+	for(; a<1; a++)
+		s+='n';
+	for(; a>1; a--)
+		s+='s';
+	for(; b<1; b++)
+		s+='w';
+	for(; b>1; b--)
+		s+='e';
+	e=SingleExit(r, s);
+	//check permutations of directions to find different possible locations
+	for(int i=0; i<s.length(); i++)
+		for(int j=i+1; j<s.length(); j++)
+		{
+			t=SingleExit(r, s.substring(0, i)+s.charAt(j)+s.substring(i+1, j)+s.charAt(i)+s.substring(j+1));//check a new permutation
+			if(t.length()>0&&!e.contains(t.substring(0, t.indexOf("("))))//if we found a new, valid location
+				e+=" or "+t;
+		}
+	if(e.startsWith(" or "))//if the first location wasn't valid
+		e=e.substring(4);
+	return e;
+}
+//returns a room String in a more ASCII-friendly format
+private String[] RoomStrings(String s, int l)
+{
+	String[] r=new String[3];
+	r[0]="";
+	r[1]=s;
+	for(int i=l-s.length(); i>0; i--)
+		r[1]=" "+r[1];
+	if(s.length()==0)//nothing here
+		return new String[]{r[1], r[1], r[1]};//return a bunch of spaces
+	for(int i=0; i<l; i++)
+		r[0]+="-";
+	r[1]="|"+r[1].substring(2)+"|";
+	r[2]=r[0];
+	return r;
+}
+//given a player name, returns an ascii map of the world surrounding them
+public String map(String name)
+{
+  	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());//get the room the player is in
+	//get the title of all exits
+	String[][] a=new String[3][3];//initialize the rooms
+	for(int i=0; i<3; i++)
+		for(int j=0; j<3; j++)
+			a[i][j]=ExitString(r, i, j);
+	a[1][1]=r.getTitle();
+	//get the longest length in each column for spacing
+	int[] l=new int[3];
+	for(int i=0; i<3; i++)
+		for(int j=0; j<3; j++)
+			l[j]=Math.max(l[j], a[i][j].length());
+	//build the map String
+	String m="";
+	String[][] t=new String[3][3];
+	for(int i=0; i<3; i++)
+	{
+		for(int j=0; j<3; j++)
+			t[j]=RoomStrings(a[i][j], l[j]+2);
+		for(int j=0; j<3; j++)
+		{
+			for(int k=0; k<3; k++)
+				m+=t[k][j]+" ";
+			m+="\n";
+		}
+	}
+	return m;
+}
 }
