@@ -118,6 +118,12 @@ public void scissors(String player);
 public void checkBoard(String player);
 public String tutorial(String name);
 //Rock Paper Scissors Battle Code here--------------------------------------
+	/**
+	 * gives an ASCII art map of the world surrounding a player
+	 * @param player the name of a player
+	 * @return the ASCII art map
+	 */
+	public String map(String player);
 
     /* START 405_ignore */
     /**
@@ -137,4 +143,29 @@ public String tutorial(String name);
      */
     public String unIgnore(String name, String ignorePlayerName);
 
+    // Whiteboards
+    /**
+     * Returns a string displaying the Whiteboard of the room the player is in.
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String displayWhiteboard(String playerName);
+    
+    /**
+     * [clearWhiteboard description]
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String clearWhiteboard(String playerName);
+    
+    /**
+     * [writeWhiteboard description]
+     * @param  playerName
+     * @param  message
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String writeWhiteboard(String playerName, String message);
 }
