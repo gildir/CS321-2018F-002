@@ -274,7 +274,6 @@ public class CommandRunner {
         commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
         commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
         commandFunctions.put("LEADERBOARD",   (name, args) -> { remoteGameInterface.checkBoard(name); return null; });
-        commandFunctions.put("RANK",   (name, args) -> { remoteGameInterface.getRank(name); return null; });
         commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
         commandFunctions.put("GIFT", (name, args) -> {
             if(args.isEmpty()) {
@@ -466,7 +465,6 @@ public class CommandRunner {
         descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
         descriptions.put("LEADERBOARD",  new String[]{"",      "Display the current Rock Paper Scissors Leaderboard."});
         descriptions.put("TUTORIAL",  new String[]{"",         "Display a tutorial for Rock Paper Scissors."});
-        descriptions.put("RANK",  new String[]{"",      "Display your current RPS Leaderboard Rank."});
 
         //Shops & Money
         descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });
