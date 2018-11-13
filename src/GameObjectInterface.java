@@ -103,6 +103,16 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public String pickup(String name, String object) throws RemoteException;
+	
+	/**
+     * Attempts to pick up an object < object >. Will return a message on any success or failure.
+     * @param name Name of the player to pickup an object
+     * @param object The case-insensitive name of the object to pickup.
+     * @return Message showing success.
+     * @throws RemoteException 
+     */    
+    public String describe(String name, String object) throws RemoteException;
+	
     /**
      * Attempts to drop off an object < object >. Will return a message on any success or failure.
      * @param name Name of the player to dropoff an object
