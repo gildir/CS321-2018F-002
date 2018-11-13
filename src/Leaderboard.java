@@ -83,4 +83,12 @@ public class Leaderboard {
 			return "noob";
 		return titles[rank];
 	}
+	
+	public int getPlayerRank(String name) {
+		for (PlayerScore score : this.board) {
+			if (score.getName().equals(name))
+				return board.indexOf(score)+1;
+		}
+		return -1;
+	}
 }
