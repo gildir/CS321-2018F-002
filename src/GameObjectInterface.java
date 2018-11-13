@@ -23,6 +23,16 @@ public interface GameObjectInterface extends Remote {
 
     public String gift(String playerName, String name, double amount) throws RemoteException;
 
+    public void setChatPrefix(String prefix) throws RemoteException;
+
+    /**
+    * Changes the chat prefix to the new prefix specified by the player.
+    * @param prefix New chat prefix to be set.
+    * @return Returns message saying whether the prefix was successfully changed or not.
+    * @throws RemoteException
+    */
+    public String changeChatPrefix(String prefix) throws RemoteException;
+
     /**
      * Returns a look at the area of the specified player.
      * @param name Player Name
@@ -170,6 +180,14 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public String sell(String playerName, String itemName) throws RemoteException;
+    
+    /**
+     * Buy an item from the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to buy
+     * @return A string indicating success or failure
+     */
+    public String buy(String playerName, String itemName) throws RemoteException;
 
     /**
      * Leaves the shop.
@@ -211,13 +229,47 @@ public interface GameObjectInterface extends Remote {
     public void rock(String player) throws RemoteException;
     public void paper(String player) throws RemoteException;
     public void scissors(String player) throws RemoteException;
-	  public String tutorial(String name) throws RemoteException;
+    public String tutorial(String name) throws RemoteException;
     public void checkBoard(String player) throws RemoteException;
 //Rock Paper Scissors Battle Code Here---------------------------------
+  
+	/**
+	 * gives an ASCII art map of the world surrounding a player
+	 * @param player the name of a player
+	 * @return the ASCII art map
+	 */
+	public String map(String player) throws RemoteException;
+  
     //405
     public String ignore(String name, String ignoreName) throws RemoteException;
     //407
     public String listIgnoredPlayers(String playerName)throws RemoteException;
     //408
     public String unIgnore(String name, String ignoreName) throws RemoteException;
+
+    // Whiteboards
+    /**
+     * Returns a string displaying the Whiteboard of the room the player is in.
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String displayWhiteboard(String playerName) throws RemoteException;
+    
+    /**
+     * [clearWhiteboard description]
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String clearWhiteboard(String playerName) throws RemoteException;
+    
+    /**
+     * [writeWhiteboard description]
+     * @param  playerName
+     * @param  message
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String writeWhiteboard(String playerName, String message) throws RemoteException;
 }

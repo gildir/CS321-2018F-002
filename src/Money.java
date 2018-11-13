@@ -4,83 +4,49 @@ import java.util.Arrays;
 
 public class Money{
 
-  // dollars is broken down into 1,5,10,etc bills
-  // coins is broken down in quarters, dimes, etc
-  public ArrayList<Dollar> dollars;
-  public ArrayList<Coin> coins;
+  // dollars is broken down into 1 and 5 dollar bills
+  // coins is broken down in quarters, dimes, pennies
+  int numFives;
+  int numOnes;
+  int numQuarters;
+  int numDimes;
+  int numPennies;  
   
   public Money(){
-    this.dollars = new ArrayList<Dollar>();
-    this.coins = new ArrayList<Coin>();
+    this.numFives = 0;
+    this.numOnes = 0;
+    this.numQuarters = 0;
+    this.numDimes = 0;
+    this.numPennies = 0;
   } 
   public Money(int ones){
-    this.dollars = new ArrayList<Dollar>();
-    for(int i = 0; i < ones; i++){
-      dollars.add(new oneDollar());
-    }
-    this.coins = new ArrayList<Coin>();
+    this.numFives = 0;
+    this.numOnes = 20;
+    this.numQuarters = 0;
+    this.numDimes = 0;
+    this.numPennies = 0;
   } 
   
   public double sum(){
     double sum = 0;
-    for(Dollar d : this.dollars){
-      sum += d.value;
-    }
-    for(Coin c : this.coins){
-      sum += c.value;
-    }
+    sum += 5 * this.numFives;
+    sum += this.numOnes;
+    sum += 0.25 * this.numQuarters;
+    sum += 0.10 * this.numDimes;
+    sum += 0.01 * this.numPennies;
     return sum;
   }
   // print a line by line display of money with units 
   public String toString(){
     String s = "";
     // print dollars
-    int[] dollarCount = new int[6];
-    for(Dollar d : this.dollars){
-      switch(d.value){
-        case(1): dollarCount[0]++;
-                 break;
-        case(5): dollarCount[1]++;
-                 break;
-        case(10):dollarCount[2]++;
-                 break;
-        case(20):dollarCount[3]++;
-                 break;
-        case(50):dollarCount[4]++;
-                 break;
-        case(100):dollarCount[5]++;
-                 break;
-      }
-    }
-    ArrayList<Dollar> dollarTypes = new ArrayList<Dollar>();
-    dollarTypes.addAll(Arrays.asList(new oneDollar(), new fiveDollar(), new tenDollar(), new twentyDollar(), new fiftyDollar(), new hundredDollar()));
-    for(int i = 0; i < 6; i++){
-      s += dollarCount[i] + " " + dollarTypes.get(i).toString() + "\n";
-    }
-    // print coins 
-    int[] coinCount = new int[4];
-    for(Coin c : this.coins){
-      switch(c.name){
-        case("pennies"):coinCount[0]++; break;
-        case("nickels"):coinCount[1]++; break;
-        case("dimes"):coinCount[2]++; break;
-        case("quarters"):coinCount[3]++; break;  
-      }
-    }
-    ArrayList<Coin> coinTypes = new ArrayList<Coin>();
-    coinTypes.addAll(Arrays.asList(new Penny(), new Nickel(), new Dime(), new Quarter()));
-    for(int i = 0; i < 4; i++){
-      s += coinCount[i] + " " + coinTypes.get(i).toString() + "\n";
-    }
+    s = this.numFives + " fives\n" + 
+        this.numOnes + " ones\n" + 
+        this.numQuarters  + " quarters\n" + 
+        this.numDimes + " dimes\n" + 
+        this.numPennies + " pennies\n";
     double sum = sum();
-    s += "Total:$" + sum + "\n";
+    s += "Total: " + String.format("%1$,.2f", sum) + "\n";
     return s;
-  }
-  
-  public ArrayList<Dollar> getDollars(){
-    return dollars;
-  }
-  public ArrayList<Coin> getCoins(){
-    return coins;
-  }
-}
+  }  
+ }
