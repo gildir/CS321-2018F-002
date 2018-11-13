@@ -72,7 +72,8 @@ public class GameCore implements GameCoreInterface {
             nighttimeNpcSet.add(new Ghost(this, "Ghost" + (i + NUM_OF_GHOULS), i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
         }
 
-        npcSet.addAll(Arrays.asList(new Spirit(this, "Happy Spirit", 1, 20, Spirits.HAPPY),
+        npcSet.addAll(Arrays.asList(new Ghoul(this, "GhoulOG", 2, 90000),
+                                    new Spirit(this, "Happy Spirit", 1, 20, Spirits.HAPPY),
                                     new Spirit(this, "Sad Spirit", 3, 25, Spirits.SAD),
                                     new Spirit(this, "Spooky Spirit", 1, 45, Spirits.SPOOKY),
                                     new Spirit(this, "Angry Spirit", 1, 2, Spirits.ANGRY),

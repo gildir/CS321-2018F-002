@@ -165,13 +165,13 @@ public class Player {
     public String removeRandomItem() {
         synchronized (this) {
             if (this.currentInventory.isEmpty()) {
-                return "You have no items in your inventory.";
+                return "nothing";
             }
             Random randInt = new Random();
             int randItem = randInt.nextInt(this.currentInventory.size());
-            String targetItem = this.currentInventory.remove(randItem).getItemName();
+            String itemName = this.currentInventory.remove(randItem).getItemName();
             setCurrentInventory(this.currentInventory);
-            return targetItem + " was removed from your inventory.";
+            return itemName;
         }
     }
 

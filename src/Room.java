@@ -110,14 +110,22 @@ public class Room {
         }
         return NONEXISTANT_EXIT_ID;
     }
-    
-    public Exit getRandomValidExit() {
+
+    /**
+     * Gets a random valid exit to this room, ignoring a specified room id if possible.
+     * Pass Room.NONEXISTANT_EXIT_ID for the ignoreRoomId parameter to not ignore any rooms.
+     * @param ignoreRoomId A room id to not get the exit for if possible.
+     * @return a random exit to this room.
+     */
+    public Exit getRandomValidExit(int ignoreRoomId) {
         List<Exit> validExits = new LinkedList<>(exits);
         validExits.removeIf(exit -> exit.getRoom() == NONEXISTANT_EXIT_ID);
         if (validExits.size() == 0) {
             System.err.println("Room " + getId() + ": " + getTitle() + " does not have any valid exits." );
             return null;
         }
+        if (validExits.size() > 1)
+            validExits.removeIf(exit -> exit.getRoom() == ignoreRoomId);
         int randomIndex = new Random().nextInt(validExits.size());
         return validExits.get(randomIndex);
     }

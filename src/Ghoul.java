@@ -55,13 +55,16 @@ public class Ghoul extends NPC {
 
     private void dragPlayer(Player player) {
         synchronized (player) {
+            String item = player.removeRandomItem();
             player.broadcast(getName() + " grabs you by the legs and drags you to " +
-                             gameCore.getMap().findRoom(Map.SPAWN_ROOM_ID).getTitle() + ".");
+                             gameCore.getMap().findRoom(Map.SPAWN_ROOM_ID).getTitle() +
+                             ", and takes a " + item + " from you.");
             player.broadcastToOthersInRoom(getName() + " grabs " + player.getName() +
                                            " by the legs and hobbles off, dragging " + player.getName() +
                                            ", who is shrieking like a schoolgirl.");
             player.setCurrentRoom(Map.SPAWN_ROOM_ID);
             this.setCurrentRoomId(Map.SPAWN_ROOM_ID);
+
             player.broadcastToOthersInRoom(getName() + " hobbles into the area dragging " + player.getName() +
                                            " behind them, and tosses " + player.getName() +
                                            " into the center of the room.");

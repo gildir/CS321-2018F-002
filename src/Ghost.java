@@ -51,7 +51,7 @@ public class Ghost extends NPC{
   @Override
   public void moveRandomly() {
     synchronized (this) {
-      Exit exit = getCurrentRoom().getRandomValidExit();
+      Exit exit = getCurrentRoom().getRandomValidExit(getPastRoomId());
       if (exit == null) {
         System.err.println("Resetting " + getName() + " to its previous room");
         getCurrentRoom().broadcast(getName() + " teleported away using hax");
