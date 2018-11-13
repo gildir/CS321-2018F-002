@@ -18,6 +18,8 @@ public class Player {
   private PrintWriter replyWriter = null;
   private DataOutputStream outputWriter = null;
   private Money money;
+  private String inTradeWithName = null;
+  private String inTradeWithItem = null;
   
   /* START 405_ignore variables*/
   private ArrayList<String> ignoreList;
@@ -261,6 +263,21 @@ public class Player {
   
   public void setDirection(Direction direction){
     this.currentDirection = direction;
+  }
+
+  public String getInTradeWithName(){
+    return this.inTradeWithName;
+  }
+
+  public String getInTradeWithItem(){
+    return this.inTradeWithItem;
+  }
+  public void setInTradeWithName(String playerName){
+    this.inTradeWithName = playerName;
+  }
+
+  public void setInTradeWithItem(String itemName){
+    this.inTradeWithItem = itemName;
   }
   
   public Money giveMoney(Player giver,Player receiver,double value){

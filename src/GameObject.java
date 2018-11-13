@@ -226,6 +226,16 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String offerItem(String playerName, String nameOffered, String target) throws RemoteException {
         return core.offerItem(playerName, nameOffered, target);
     }
+    /**
+     * Attempts to have a player <playerName> answer an offer with <response>. Will return a message on success or failure.
+     * @param playerName The player responding to the offer
+     * @param response The response that the player is sending
+     * @return A message showing success.
+     * @throws RemoteException
+     */
+    public String offerResponse(String playerName, String response) throws RemoteException {
+        return core.offerResponse(playerName, response);
+    }
 
     /**
      * Player pokes a ghoul that is in the same room.

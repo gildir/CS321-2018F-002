@@ -663,6 +663,10 @@ public class GameCore implements GameCoreInterface {
                 {
                     return "You can't offer yourself an item.";
                 }
+                if(playerOffered.getInTradeWithName() != null)
+                {
+                    return "This player is already in a trade.";
+                }
                 for(Item obj : playerInventory){
                     if(obj.getItemName().equalsIgnoreCase(target)){
                         hasItem = true;
@@ -670,7 +674,9 @@ public class GameCore implements GameCoreInterface {
                     }
                 }
                 if(hasItem) {
-                    playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
+                    playerOffered.setInTradeWithName(playerName);
+		            playerOffered.setInTradeWithItem(target);
+		            playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
                     return "You just offered " + nameOffered + " a " + target + " from your inventory.";
                 }
                 else {
@@ -684,6 +690,72 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
+    }
+    /**
+     * Attempts to have a player <playerName> answer an offering player with <response>. Will return a message on success or failure.
+     * @param playerName The player responding to the offer
+     * @param response The response that the player is sending
+     * @return A message showing success.
+     *
+     */
+    public String offerResponse(String playerName, String response){
+        Player player = this.playerList.findPlayer(playerName);
+        String nameOffering = player.getInTradeWithName();
+        String target = player.getInTradeWithItem();
+        if(nameOffering == null || target == null){
+            return "You are not in a valid trade";
+        }
+        Player playerOffering = this.playerList.findPlayer(nameOffering);
+        boolean hasItem = false;
+        if(player != null){
+                LinkedList<Item> playerInventory = playerOffering.getCurrentInventory();
+                if(playerOffering != null) {
+                    if (player == playerOffering)
+                    {
+                        return "You can't accept an item from yourself.";
+                    }
+                    for(Item obj : playerInventory){
+                        if(obj.getItemName().equalsIgnoreCase(target)){
+                            hasItem = true;
+                            break;
+                        }
+                    } 
+                    if(hasItem) {
+                        player.setInTradeWithName(null);
+                        player.setInTradeWithItem(null);
+
+                        if(response.equalsIgnoreCase("Accept")){
+                            if(player.getCurrentInventory().size() < 10){
+                                Item object = playerOffering.removeObjectFomInventory(target);
+                                player.addObjectToInventory(object);
+                                playerOffering.getReplyWriter().println(playerName + " accepted your " + target);
+                                return playerName + " got a " + target + " from " + nameOffering + ".";
+                            }
+                            else{
+                                playerOffering.getReplyWriter().println(playerName + " tried to accept your " + target + " but failed.");
+                                return playerName + " tried to accept a " + target + " from " + nameOffering + " but their inventory is full.";
+                            }
+                        }
+                        else if(response.equalsIgnoreCase("Refuse")){
+                                playerOffering.getReplyWriter().println(playerName + " refused your " + target);
+                                return playerName + " refused a " + target + " from " + nameOffering + ".";
+                        }
+                        else{
+                            return "Invalid response.";
+                        }
+                    }
+                    else {
+                        return "You just tried to respond to " + nameOffering + " about the " + target + ", but they don't have one.";
+                    }
+                }
+                else {
+                    return "You just tried to respond to " + nameOffering + " about the " + target + ", but " + nameOffering + " is not here.";
+                }
+            }
+            else {
+                return null;
+            }
+
     }
 
     /**

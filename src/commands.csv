@@ -9,6 +9,7 @@ MOVE,DIRECTION,Tries to walk in <direction>.
 PICKUP,OBJECT,Tries to pick up an object in the same area.
 DROPOFF,OBJECT,Tries to drop off an object in the same area.
 OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.
+OFFERRESPONSE,DECISION,Finishes a trade with a <DECISION>, you can decide to ACCEPT or REFUSE
 INVENTORY,,Shows you what objects you have collected.
 REDO,,Performs the last command you entered.
 QUIT,,Quits the game.
