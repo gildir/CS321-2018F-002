@@ -330,39 +330,39 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
 
         core.log(file, log);
     }
- //Rock Paper Scissors Battle Code here--------------------------------------
- public void challenge(String challenger, String player2) throws RemoteException
- {
-  core.challenge(challenger, player2);
- }
+        //Rock Paper Scissors Battle Code here--------------------------------------
+	    public void challenge(String challenger, String player2) throws RemoteException
+	    {
+		        core.challenge(challenger, player2);
+	    }
 
- public void accept(String challenger, String player2) throws RemoteException
- {
-  core.accept(challenger,player2);
- }
- public void refuse(String challenger, String player2) throws RemoteException
- {
-  core.refuse(challenger, player2);
- }
- public void rock(String player) throws RemoteException
- {
-  core.rock(player);
- }
- public void paper(String player) throws RemoteException
- {
-  core.paper(player);
- }
- public void scissors(String player) throws RemoteException
- {
-  core.scissors(player);
- }
+        public void accept(String challenger, String player2) throws RemoteException
+        {
+                core.accept(challenger,player2);
+        }
+        public void refuse(String challenger, String player2) throws RemoteException
+        {
+                core.refuse(challenger, player2);
+        }
+        public void rock(String player) throws RemoteException
+        {
+                core.rock(player);
+        }
+        public void paper(String player) throws RemoteException
+        {
+                core.paper(player);
+        }
+        public void scissors(String player) throws RemoteException
+        {
+                core.scissors(player);
+        }
   public String tutorial(String name) throws RemoteException
   {
       return core.tutorial(name);
   }
- public void checkBoard(String player) throws RemoteException {
-  core.checkBoard(player);
- }
+        public void checkBoard(String player) throws RemoteException {
+                core.checkBoard(player);
+        }
   //Rock Paper Scissors Battle Code here--------------------------------------
   
   //given a player name, returns an ascii art map of the world surrounding them
