@@ -3,6 +3,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -25,12 +26,30 @@ public class Map
 		this.gameCore = gameCore;
 		try
 		{
+			java.util.Map<Integer, String> whiteboards = new HashMap<Integer, String>();
+
+			File wbFile = new File("./WhiteBoard.csv");
+			if (wbFile.exists()) {
+				Scanner wbScanner = new Scanner(wbFile);
+
+				String line = null;
+
+				while (wbScanner.hasNextLine() && (line = wbScanner.nextLine()) != null) {
+					// if (line.equals("")) continue;
+
+					int wbId = Integer.parseInt(line.split(", ")[0]);
+					String wbMsg = line.split(", ")[1];
+
+					whiteboards.put(wbId, wbMsg);
+				}
+
+				wbScanner.close();
+			}
 			
 			// open a new scanner with the specified file as the input
 			File mapFile = new File(filename);
 			Scanner csvFileScanner = new Scanner(mapFile);
 			
-
 			while (csvFileScanner.hasNextLine())
 			{
 				
@@ -46,6 +65,15 @@ public class Map
 				csvFileScanner.skip(", ");					// skip the characters ", " at the beginning of the next token
 				description = csvFileScanner.next();		// get the description of this room
 				newRoom = new Room(gameCore, id, title, description, location);
+
+				if (location.equalsIgnoreCase("inside")) {
+					String msg = whiteboards.get(id);
+
+					if (msg != null) {
+						WhiteBoard wb = newRoom.getWB();
+						wb.setMessage(msg);
+					}
+				}
 				
 				/*
 				ADD THE EXITS TO THIS ROOM
@@ -126,4 +154,7 @@ public class Map
         return map.get(rand.nextInt(map.size()));
     }
 
+    public LinkedList<Room> getMap() {
+    	return this.map;
+    }
 }

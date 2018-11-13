@@ -1,6 +1,8 @@
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
@@ -8,11 +10,8 @@ import java.util.logging.Logger;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.*;
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.io.IOException;
-import java.io.File;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
 
 /**
@@ -26,6 +25,9 @@ public class GameCore implements GameCoreInterface {
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
     private final int minimumSpawnTime=100, maximumSpawnTime=600;
+
+    //Prefix that will help distinguish player chat from anything else
+    private String chatPrefix;
 
     private final Shop shop;
 
@@ -109,8 +111,8 @@ public class GameCore implements GameCoreInterface {
                 ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
-   Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
-                        object = objects.get(rand.nextInt(objects.size()));
+                      Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
+                        object = (Item)objects.get(rand.nextInt(objects.size())).clone();
                         room = map.randomRoom();
                         room.addObject(object);
                         
@@ -172,17 +174,41 @@ public class GameCore implements GameCoreInterface {
         return npcSet;
     }
 
+    public void setChatPrefix(String prefix) {
+      this.chatPrefix = prefix;
+    }
+
+    /**
+    * Changes the chat prefix to the new prefix specified by the player.
+    * @param prefix New chat prefix to be set.
+    * @return Returns message saying whether the prefix was successfully changed or not.
+    */
+    public String changeChatPrefix(String prefix) {
+      if(prefix.length() != 3) {
+        return "Prefix can only be 3 characters.";
+      }
+      try {
+        FileWriter chatConfig = new FileWriter("chatConfig.txt");
+        chatConfig.write(prefix);
+        chatConfig.close();
+        this.setChatPrefix(prefix);
+      }
+      catch(IOException e) {
+        System.err.println("Couldn't save new chat prefix.");
+      }
+      return "Prefix set successfully.";
+    }
+
     /**
      * Broadcasts a message to all other players in the same room as player.
      * @param player Player initiating the action.
      * @param message Message to broadcast.
      */
-    @Deprecated // Use Player.broadcastToAllInRoom(message) instead
     @Override
     public void broadcast(Player player, String message) {
         for(Player otherPlayer : this.playerList) {
             if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()
-       && !player.searchIgnoredBy( otherPlayer.getName() )) { // 405_ignore, don't broadcast to players ignoring you
+                          && !player.searchIgnoredBy( otherPlayer.getName() )) { // 405_ignore, don't broadcast to players ignoring you
                 otherPlayer.getReplyWriter().println(message);
             }
         }
@@ -209,7 +235,7 @@ public class GameCore implements GameCoreInterface {
     */
     public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
         if(sendingPlayer != receivingPlayer
-   && !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
+                      && !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
             receivingPlayer.getReplyWriter().println(message);
         }
     }
@@ -219,7 +245,6 @@ public class GameCore implements GameCoreInterface {
      * @param room Room to broadcast the message to.
      * @param message Message to broadcast.
      */
-    @Deprecated // Use Room.broadcast(message) instead
     @Override
     public void broadcast(Room room, String message) {
         for(Player player : this.playerList) {
@@ -269,7 +294,10 @@ public class GameCore implements GameCoreInterface {
             // New player, add them to the list and return true.
             newPlayer = new Player(this, name);
             this.playerList.addPlayer(newPlayer);
-            this.leaderboard.addScore(name);
+            if(!this.leaderboard.checkForPlayer(name))
+            {
+              this.leaderboard.addScore(name);
+            }
             // New player starts in a room.  Send a message to everyone else in that room,
             //  that the player has arrived.
             this.broadcast(newPlayer, newPlayer.getName() + " has arrived.");
@@ -304,7 +332,7 @@ public class GameCore implements GameCoreInterface {
         }
     }        
 
-    //author Shayan AH
+    //402
     public String listAllPlayers(String name)
     {
         Player player = this.playerList.findPlayer(name);
@@ -375,9 +403,13 @@ public class GameCore implements GameCoreInterface {
     @Override
     public String say(String name, String message) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null) {
-            this.broadcast(player, player.getName() + " says, \"" + message + "\"");
-            return "You say, \"" + message + "\"";
+        if(player != null)
+        {
+            String log = player.getName() + " says, \"" +
+                    message + "\" in the room " + player.getCurrentRoom();
+            add_chat_log(log);
+            this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"");
+            return chatPrefix + "You say, \"" + message + "\"";
         }
         else {
             return null;
@@ -392,9 +424,12 @@ public class GameCore implements GameCoreInterface {
     */
     public String shout(String name, String message) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null) {
-            this.broadcastShout(player, player.getName() + " shouts, \"" + message + "\"");
-            return "You shout, \"" + message + "\"";
+        if(player != null)
+        {
+            String log = player.getName() + " shouts, \"" + message + "\"";
+            add_chat_log(log);
+            this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"");
+            return chatPrefix + "You shout, \"" + message + "\"";
         }
         else {
             return null;
@@ -418,10 +453,14 @@ public class GameCore implements GameCoreInterface {
                 return "Cannot whisper yourself";
             else
             {
-                if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
-                    this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
+                if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
+                {
+                    String log = playerSending.getName() + " whispers, \"" + message + "\" to "
+                            + playerReceiving.getName();
+                    add_chat_log(log);
+                    this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
                     playerReceiving.setLastWhisperName(name1);
-                    return "message sent to " + playerReceiving.getName();
+                    return "Message sent to " + playerReceiving.getName();
                 }
                 else {
                     return "";
@@ -459,6 +498,51 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
 
+    public void add_chat_log(String line)
+    {
+
+        try( FileOutputStream os =  new FileOutputStream(
+                new File("chat_log.txt"),true ) )
+        {
+
+            OutputStreamWriter streamWriter = new OutputStreamWriter(os,StandardCharsets.UTF_8);
+            PrintWriter writer = new PrintWriter(streamWriter);
+            //print all chat logs (for admin)
+            writer.println(line);
+
+            writer.close();
+            os.close();
+        }
+        catch(Exception e)
+        {
+            System.err.println("Something went wrong when recording");
+        }
+
+    }
+    public void add_chat_log(List<String> lines)
+    {
+
+       try(FileOutputStream os =  new FileOutputStream(
+               new File("chat_log.txt"),true))
+       {
+
+           OutputStreamWriter streamWriter = new OutputStreamWriter(os,StandardCharsets.UTF_8);
+
+           PrintWriter writer = new PrintWriter(streamWriter);
+           //print all chat logs (for admin)
+           for(String line: lines)
+           {
+               writer.println(line);
+           }
+           writer.close();
+           os.close();
+       }
+       catch(Exception e)
+       {
+           System.err.println("Something went wrong when recording");
+       }
+
+    }
     public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
         if(player == null) {
@@ -648,6 +732,10 @@ public class GameCore implements GameCoreInterface {
                 {
                     return "You can't offer yourself an item.";
                 }
+                if(playerOffered.getInTradeWithName() != null)
+                {
+                    return "This player is already in a trade.";
+                }
                 for(Item obj : playerInventory){
                     if(obj.getItemName().equalsIgnoreCase(target)){
                         hasItem = true;
@@ -655,7 +743,9 @@ public class GameCore implements GameCoreInterface {
                     }
                 }
                 if(hasItem) {
-                    playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
+                    playerOffered.setInTradeWithName(playerName);
+		            playerOffered.setInTradeWithItem(target);
+		            playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
                     return "You just offered " + nameOffered + " a " + target + " from your inventory.";
                 }
                 else {
@@ -669,6 +759,72 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
+    }
+    /**
+     * Attempts to have a player <playerName> answer an offering player with <response>. Will return a message on success or failure.
+     * @param playerName The player responding to the offer
+     * @param response The response that the player is sending
+     * @return A message showing success.
+     *
+     */
+    public String offerResponse(String playerName, String response){
+        Player player = this.playerList.findPlayer(playerName);
+        String nameOffering = player.getInTradeWithName();
+        String target = player.getInTradeWithItem();
+        if(nameOffering == null || target == null){
+            return "You are not in a valid trade";
+        }
+        Player playerOffering = this.playerList.findPlayer(nameOffering);
+        boolean hasItem = false;
+        if(player != null){
+                LinkedList<Item> playerInventory = playerOffering.getCurrentInventory();
+                if(playerOffering != null) {
+                    if (player == playerOffering)
+                    {
+                        return "You can't accept an item from yourself.";
+                    }
+                    for(Item obj : playerInventory){
+                        if(obj.getItemName().equalsIgnoreCase(target)){
+                            hasItem = true;
+                            break;
+                        }
+                    } 
+                    if(hasItem) {
+                        player.setInTradeWithName(null);
+                        player.setInTradeWithItem(null);
+
+                        if(response.equalsIgnoreCase("Accept")){
+                            if(player.getCurrentInventory().size() < 10){
+                                Item object = playerOffering.removeObjectFomInventory(target);
+                                player.addObjectToInventory(object);
+                                playerOffering.getReplyWriter().println(playerName + " accepted your " + target);
+                                return playerName + " got a " + target + " from " + nameOffering + ".";
+                            }
+                            else{
+                                playerOffering.getReplyWriter().println(playerName + " tried to accept your " + target + " but failed.");
+                                return playerName + " tried to accept a " + target + " from " + nameOffering + " but their inventory is full.";
+                            }
+                        }
+                        else if(response.equalsIgnoreCase("Refuse")){
+                                playerOffering.getReplyWriter().println(playerName + " refused your " + target);
+                                return playerName + " refused a " + target + " from " + nameOffering + ".";
+                        }
+                        else{
+                            return "Invalid response.";
+                        }
+                    }
+                    else {
+                        return "You just tried to respond to " + nameOffering + " about the " + target + ", but they don't have one.";
+                    }
+                }
+                else {
+                    return "You just tried to respond to " + nameOffering + " about the " + target + ", but " + nameOffering + " is not here.";
+                }
+            }
+            else {
+                return null;
+            }
+
     }
 
     /**
@@ -823,25 +979,25 @@ public class GameCore implements GameCoreInterface {
 
     //405
     public String ignore(String name, String ignoreName) {
-  if( name.equalsIgnoreCase(ignoreName) )
-   return "You can't ignore yourself.";
+              if( name.equalsIgnoreCase(ignoreName) )
+                      return "You can't ignore yourself.";
 
-  //verify player being ignored exists
-  Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
-  if( ignoredPlayer == null )
-   return "Player " + ignoreName + " is not in the game.";
+              //verify player being ignored exists
+              Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
+              if( ignoredPlayer == null )
+                      return "Player " + ignoreName + " is not in the game.";
 
-  Player thisPlayer = this.playerList.findPlayer(name);
-  //verify player is not already in ignore list
-  if( thisPlayer.searchIgnoreList(ignoreName) )
-   return "Player " + ignoreName + " is in ignored list.";
+              Player thisPlayer = this.playerList.findPlayer(name);
+              //verify player is not already in ignore list
+              if( thisPlayer.searchIgnoreList(ignoreName) )
+                      return "Player " + ignoreName + " is in ignored list.";
 
-  //add ignoreName to ignore list
-  thisPlayer.ignorePlayer(ignoreName);
+              //add ignoreName to ignore list
+              thisPlayer.ignorePlayer(ignoreName);
 
-  //add ignoring player to ignored players ignoredBy list
-  ignoredPlayer.addIgnoredBy(name);
-  return ignoreName + " added to ignore list.";
+              //add ignoring player to ignored players ignoredBy list
+              ignoredPlayer.addIgnoredBy(name);
+              return ignoreName + " added to ignore list.";
     }
 
     //407
@@ -862,26 +1018,26 @@ public class GameCore implements GameCoreInterface {
     }
     //408
     public String unIgnore(String name, String unIgnoreName) {
-  if( name.equalsIgnoreCase(unIgnoreName) )
-   return "You can't unignore yourself since you can't ignore yourself...";
+              if( name.equalsIgnoreCase(unIgnoreName) )
+                      return "You can't unignore yourself since you can't ignore yourself...";
 
-  //verify player being unignored exists
-  Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
-  if( unIgnoredPlayer == null )
-   return "Player " + unIgnoreName + " is not in the game.";
+              //verify player being unignored exists
+              Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
+              if( unIgnoredPlayer == null )
+                      return "Player " + unIgnoreName + " is not in the game.";
 
-  Player thisPlayer = this.playerList.findPlayer(name);
+              Player thisPlayer = this.playerList.findPlayer(name);
 
-  //verify player is in Ignore list
-  if( !thisPlayer.searchIgnoreList(unIgnoreName) )
-   return "Player " + unIgnoreName + " is not in ignored list.";
+              //verify player is in Ignore list
+              if( !thisPlayer.searchIgnoreList(unIgnoreName) )
+                      return "Player " + unIgnoreName + " is not in ignored list.";
 
-  //remove ignoreName in ignore list
-  thisPlayer.unIgnorePlayer(unIgnoreName);
+              //remove ignoreName in ignore list
+              thisPlayer.unIgnorePlayer(unIgnoreName);
 
-  //add ignoring player to ignored players ignoredBy list
-  unIgnoredPlayer.removeIgnoredBy(name);
-  return unIgnoreName + " removed from ignore list.";
+              //add ignoring player to ignored players ignoredBy list
+              unIgnoredPlayer.removeIgnoredBy(name);
+              return unIgnoreName + " removed from ignore list.";
     }
     /* STOP 408_ignore */
 
@@ -917,6 +1073,27 @@ public class GameCore implements GameCoreInterface {
       return "You have sold " + itemName + " to the shop.";
   }
 }
+
+ public String buy(String playerName, String itemName) {
+     //format user input for item
+     itemName = itemName.toLowerCase();
+     itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
+     //check if player not in shop or does not have item
+     if(!shop.playerInShop(playerName)) {
+         return "You cannot buy if you are not in a shop!";
+     }
+     Player player = this.playerList.findPlayer(playerName);
+     if(player == null)
+         return null;
+     //buyItem() will handle removing money since we do not have an Item obj
+     Boolean did_buy = shop.buyItem(player, itemName);
+     player.getReplyWriter().println(shop.displayShop());
+     if(did_buy == false){
+         return "You cannot buy " + itemName + "!";
+     }
+     return "You have bought a " + itemName + " from the shop.";
+ }
+ 
   /**
      * Logs a string into a file
      * @param fileName name of the file to log in
@@ -1171,6 +1348,7 @@ public class GameCore implements GameCoreInterface {
     String message = "";
     if(p1 == p2)
     {
+
       //tie
       switch(p1)
       {
@@ -1207,8 +1385,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play2.getName());
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1222,8 +1401,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName());
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1237,8 +1417,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName());
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1252,8 +1433,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play2.getName());
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1267,8 +1449,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play2.getName());
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), false);
+	  this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1282,8 +1465,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName());
+	  // Added by Brendan
+	  this.leaderboard.incrementScore(play1.getName(), true);
+	  this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1301,12 +1485,12 @@ public class GameCore implements GameCoreInterface {
     }
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
- // Added by Brendan
+      // Added by Brendan
     public void checkBoard(String name) {
         Player player = this.playerList.findPlayer(name);
         if(player == null)
             return;
-  String board = this.leaderboard.getBoard();
+              String board = this.leaderboard.getBoard();
         player.getReplyWriter().println(board);
     }
 
@@ -1338,4 +1522,214 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
+
+  // Whiteboards
+  /**
+   * 
+   * @param  playerName
+   * @return the room object where the player is
+   * @throws RemoteException
+   */
+  public Room getPlayerRoom(String playerName) {
+    Player player = findPlayer(playerName);
+    if (player == null) return null;
+
+    int roomId = player.getCurrentRoom();
+    // if (roomId == null) return null;
+
+    Room room = map.findRoom(roomId);
+    return room;
+  }
+
+  /**
+   * Returns a string displaying the Whiteboard of the room the player is in.
+   * @param  playerName
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String displayWhiteboard(String playerName) {
+    Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.display();
+  }
+  
+  /**
+   * [clearWhiteboard description]
+   * @param  playerName
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String clearWhiteboard(String playerName) {
+    Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.erase();
+  }
+  
+  /**
+   * [writeWhiteboard description]
+   * @param  playerName
+   * @param  message
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String writeWhiteboard(String playerName, String message) {
+    Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.write(message);
+  }
+
+  /**
+     * Opens WhiteBoard.csv file and stores whiteboards messages there
+     * @throws RemoteException
+     */
+    public void saveWhiteboards() {
+      StringBuilder sb = new StringBuilder();
+
+      LinkedList<Room> roomList = map.getMap();
+      Iterator rooms = roomList.listIterator(1);
+
+      while(rooms.hasNext()){ 
+        Room r = (Room) rooms.next();
+        // System.out.println(r.getId());
+        
+        WhiteBoard wb = r.getWB();
+
+        if (wb != null) {
+          String msg = wb.getMessage();
+
+          if (! msg.equals("")) {
+            sb.append(r.getId());
+            sb.append(", ");
+            sb.append(msg);
+            sb.append("\n");
+          }
+        }
+      }
+
+      try {
+          // Check for file
+          File file = new File("./WhiteBoard.csv");
+          if (! file.exists()) file.createNewFile();
+
+          // Write to file
+          FileWriter fw = new FileWriter(file.getAbsoluteFile(), false);
+          BufferedWriter bw = new BufferedWriter(fw);
+
+          bw.write(sb.toString());
+          bw.close();
+      } catch (IOException ex){
+          Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    }
+
+  //if an exit exists in a direction from a room, then its title is returned
+  private String SingleExit(Room r, String s)
+  {
+  	List<Direction> l=new ArrayList<Direction>();
+	//parse string for directions
+	for(int i=0; i<s.length(); i++)
+		if(s.charAt(i)=='n')
+			l.add(Direction.NORTH);
+		else if(s.charAt(i)=='w')
+			l.add(Direction.WEST);
+		else if(s.charAt(i)=='e')
+			l.add(Direction.EAST);
+		else
+			l.add(Direction.SOUTH);
+	//for each direction found
+	for(Direction d: l)
+		if(r.canExit(d))
+			r=map.findRoom(r.getLink(d));
+		else//not a valid set of directions
+			return "";
+	return r.getTitle()+"("+s+")";
+}
+//returns all exit strings in a set of directions
+private String ExitString(Room r, int a, int b)
+{
+	String s="", e, t;
+	//convert coordinates to directions
+	for(; a<1; a++)
+		s+='n';
+	for(; a>1; a--)
+		s+='s';
+	for(; b<1; b++)
+		s+='w';
+	for(; b>1; b--)
+		s+='e';
+	e=SingleExit(r, s);
+	//check permutations of directions to find different possible locations
+	for(int i=0; i<s.length(); i++)
+		for(int j=i+1; j<s.length(); j++)
+		{
+			t=SingleExit(r, s.substring(0, i)+s.charAt(j)+s.substring(i+1, j)+s.charAt(i)+s.substring(j+1));//check a new permutation
+			if(t.length()>0&&!e.contains(t.substring(0, t.indexOf("("))))//if we found a new, valid location
+				e+=" or "+t;
+		}
+	if(e.startsWith(" or "))//if the first location wasn't valid
+		e=e.substring(4);
+	return e;
+}
+//returns a room String in a more ASCII-friendly format
+private String[] RoomStrings(String s, int l)
+{
+	String[] r=new String[3];
+	r[0]="";
+	r[1]=s;
+	for(int i=l-s.length(); i>0; i--)
+		r[1]=" "+r[1];
+	if(s.length()==0)//nothing here
+		return new String[]{r[1], r[1], r[1]};//return a bunch of spaces
+	for(int i=0; i<l; i++)
+		r[0]+="-";
+	r[1]="|"+r[1].substring(2)+"|";
+	r[2]=r[0];
+	return r;
+}
+//given a player name, returns an ascii map of the world surrounding them
+public String map(String name)
+{
+  	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());//get the room the player is in
+	//get the title of all exits
+	String[][] a=new String[3][3];//initialize the rooms
+	for(int i=0; i<3; i++)
+		for(int j=0; j<3; j++)
+			a[i][j]=ExitString(r, i, j);
+	a[1][1]=r.getTitle();
+	//get the longest length in each column for spacing
+	int[] l=new int[3];
+	for(int i=0; i<3; i++)
+		for(int j=0; j<3; j++)
+			l[j]=Math.max(l[j], a[i][j].length());
+	//build the map String
+	String m="";
+	String[][] t=new String[3][3];
+	for(int i=0; i<3; i++)
+	{
+		for(int j=0; j<3; j++)
+			t[j]=RoomStrings(a[i][j], l[j]+2);
+		for(int j=0; j<3; j++)
+		{
+			for(int k=0; k<3; k++)
+				m+=t[k][j]+" ";
+			m+="\n";
+		}
+	}
+	return m;
+}
 }
