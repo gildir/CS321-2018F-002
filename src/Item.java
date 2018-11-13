@@ -1,12 +1,14 @@
 import java.util.*;
 public class Item{
  private String itemName;
+ private String itemDescrip;
  private double itemWeight;
  private double itemValue;
 
  // Constructor
- Item(String itemName, double itemWeight, double itemValue){
-  this.itemName = itemName;
+ Item(String itemName, String itemDescrip, double itemWeight, double itemValue){
+  this.itemName = itemName; 
+  this.itemDescrip = itemDescrip;
   this.itemWeight = itemWeight;
   this.itemValue = itemValue;
  }
@@ -15,6 +17,11 @@ public class Item{
  public String getItemName(){
   return this.itemName;
  }
+ 
+ public String getItemDescrip(){
+  return this.itemDescrip;
+ }
+ 
  public double getItemWeight(){
   return this.itemWeight;
  }

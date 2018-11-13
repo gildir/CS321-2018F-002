@@ -618,7 +618,30 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }
+    }       
+	
+	/**
+     * Attempts to pick up an object < target >. Will return a message on any success or failure.
+     * @param name Name of the player to move
+     * @param target The case-insensitive name of the object to pickup.
+     * @return Message showing success.
+     */
+    public String describe(String name, String target) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            LinkedList<Item> playerInventory = player.getCurrentInventory();
+			
+			for(Item obj : playerInventory){
+				if(obj.getItemName().equalsIgnoreCase(target)){
+                    return obj.getItemDescrip();
+				}	
+            }
+            return "Hey uh...you can't ask me to describe something you don't own y'know?";
+		}
+		
+		return null;
+	}		
+	
     /**
      * Attempts to drop off an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
