@@ -82,7 +82,7 @@ public class GameCore implements GameCoreInterface {
                 while(true) {
                     try {
                       Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
-                        object = objects.get(rand.nextInt(objects.size()));
+                        object = (Item)objects.get(rand.nextInt(objects.size())).clone();
                         room = map.randomRoom();
                         room.addObject(object);
                         
