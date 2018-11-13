@@ -28,4 +28,3 @@ GIFTABLE,,List players in the same room that you can give money to
 GIVE,,Give amount of money to a friend
 GIFT,GHOULNAME ITEM,Player gifts a ghoul an object; this action decreases the ghoul's aggression.
 POKE,GHOULNAME,Player pokes a ghoul that is in the same room.
-RANK,,Display your current RPS Leaderboard Rank.
