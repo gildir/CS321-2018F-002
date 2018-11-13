@@ -7,6 +7,7 @@ WHISPER,PLAYER MESSAGE,Says <MESSAGE> to specified <PLAYER>.
 REPLY,MESSAGE,Says <MESSAGE> to last player who whispered you.
 MOVE,DIRECTION,Tries to walk in <direction>.
 PICKUP,OBJECT,Tries to pick up an object in the same area.
+DESCRIBE,OBJECT,Describe the object in a player's inventory.
 DROPOFF,OBJECT,Tries to drop off an object in the same area.
 OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.
 OFFERRESPONSE,DECISION,Finishes a trade with a <DECISION>, you can decide to ACCEPT or REFUSE

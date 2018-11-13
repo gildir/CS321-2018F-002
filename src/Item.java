@@ -1,6 +1,7 @@
 import java.util.*;
 public class Item implements Cloneable {
  private String itemName;
+ private String itemDescrip;
  private double itemWeight;
  private double itemValue;
  private String itemColor;
@@ -9,8 +10,9 @@ public class Item implements Cloneable {
  private static String size[] = {"Tiny", "Small", "Medium", "Large", "Huge"};
 
  // Constructor
- Item(String itemName, double itemWeight, double itemValue){
-  this.itemName = itemName;
+ Item(String itemName, String itemDescrip, double itemWeight, double itemValue){
+  this.itemName = itemName; 
+  this.itemDescrip = itemDescrip;
   this.itemWeight = itemWeight;
   this.itemValue = itemValue;
   this.itemColor = getRandColor();
@@ -21,6 +23,11 @@ public class Item implements Cloneable {
  public String getItemName(){
   return this.itemName;
  }
+ 
+ public String getItemDescrip(){
+  return this.itemDescrip;
+ }
+ 
  public double getItemWeight(){
   return this.itemWeight;
  }
