@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.*;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 
@@ -1347,6 +1348,121 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
+
+  // Whiteboards
+  /**
+   * 
+   * @param  playerName
+   * @return the room object where the player is
+   * @throws RemoteException
+   */
+  public Room getPlayerRoom(String playerName) {
+    Player player = findPlayer(playerName);
+    if (player == null) return null;
+
+    int roomId = player.getCurrentRoom();
+    // if (roomId == null) return null;
+
+    Room room = map.findRoom(roomId);
+    return room;
+  }
+
+  /**
+   * Returns a string displaying the Whiteboard of the room the player is in.
+   * @param  playerName
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String displayWhiteboard(String playerName) {
+    Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.display();
+  }
+  
+  /**
+   * [clearWhiteboard description]
+   * @param  playerName
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String clearWhiteboard(String playerName) {
+    Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.erase();
+  }
+  
+  /**
+   * [writeWhiteboard description]
+   * @param  playerName
+   * @param  message
+   * @return message to be displayed to player
+   * @throws RemoteException
+   */
+  public String writeWhiteboard(String playerName, String message) {
+    Room room = getPlayerRoom(playerName);
+    WhiteBoard wb = room.getWB();
+
+    if (wb == null) {
+      return "This room doesn't have a whiteboard! Go to an indoor room instead.";
+    }
+
+    return wb.write(message);
+  }
+
+  /**
+     * Opens WhiteBoard.csv file and stores whiteboards messages there
+     * @throws RemoteException
+     */
+    public void saveWhiteboards() {
+      StringBuilder sb = new StringBuilder();
+
+      LinkedList<Room> roomList = map.getMap();
+      Iterator rooms = roomList.listIterator(1);
+
+      while(rooms.hasNext()){ 
+        Room r = (Room) rooms.next();
+        // System.out.println(r.getId());
+        
+        WhiteBoard wb = r.getWB();
+
+        if (wb != null) {
+          String msg = wb.getMessage();
+
+          if (! msg.equals("")) {
+            sb.append(r.getId());
+            sb.append(", ");
+            sb.append(msg);
+            sb.append("\n");
+          }
+        }
+      }
+
+      try {
+          // Check for file
+          File file = new File("./WhiteBoard.csv");
+          if (! file.exists()) file.createNewFile();
+
+          // Write to file
+          FileWriter fw = new FileWriter(file.getAbsoluteFile(), false);
+          BufferedWriter bw = new BufferedWriter(fw);
+
+          bw.write(sb.toString());
+          bw.close();
+      } catch (IOException ex){
+          Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
+      }
+    }
+
   //if an exit exists in a direction from a room, then its title is returned
   private String SingleExit(Room r, String s)
   {
