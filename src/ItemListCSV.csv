@@ -2,11 +2,11 @@ Flower,0.26,1.5,"It's a flower. What color is it? Um, whatever you want it to be
 Textbook,4.8,300,Oh look. It's something you'll buy but never use! Maybe. It's actually rather heavy though.
 Phone,0.03,100,"A phone of some kind? Wait, seems to be a flip phone. People still use these?"
 Newspaper,0.06,1,"It's a newspaper! It details a lot of recent events, among other things."
-Student ID,0.01,5,Seems to be a Student ID. Someone's not getting back into their dorm…
+Student ID,0.01,5,Seems to be a Student ID. Someone's not getting back into their dorm
 Rock,5,0.2,"It's a rock, and rather heavy to say the least. Nothing else interesting about it though."
 TOADS Sign,0.2,2,It's a sign that says in big capital letters TOADS. You feel like you don't quite get it. Or do you?
 Used Sweatshirt,0.34,3,"Yuck, seems to be some kind of sweatshirt. It's dirty and soaked in water a bit. "
-Used Sock,0.2,2,"Yuck, who left there sock here? It's covered in grime and it just looks….gross."
+Used Sock,0.2,2,"Yuck, who left there sock here? It's covered in grime and it just looks.gross."
 Pencil,0.09,0.5,"A pencil! And in it's in decent condition. Welp, if you didn't have one before, you do now."
 Pen,0.09,0.5,"A pen! Seems to be still full of ink, in fact it seems unused. Might as well keep it, for now anyways."
 Dollar Bill,0.01,1,Fresh ol' dollar bill. Question is do you keep it or not?
@@ -22,36 +22,36 @@ MASON Hat,0.88,10,"It's a MASON hat. Seems someone lost it maybe, or it was give
 Notebook Paper,0.2,0.1,"A single sheet of notebook paper. Um, yay? Better than not having some though."
 Class Ring,0.02,469,"Woah uh, that's a class ring. You know whoever lost this is upset, these things are a fortune."
 Necklace,0.02,15,"It's a necklace of some sort. It's not exactly fancy, but the green on it is a nice touch."
-Yugiman Card,0.01,5,Ain't this from that one card game? Bakugamon? No? Hmmm….
+Yugiman Card,0.01,5,Ain't this from that one card game? Bakugamon? No? Hmmm.
 Chalk,0.04,1.5,A piece of chalk. Hey now you can write whatever you want on the sidewalks right? No? Why not?
 Sandals,2.5,10,"What are those?! Is what'd I say, but really they're just a pair of sandals."
 Binder,1.4,3,"It's a binder of some kind. Though there's nothing in it, not even a name. Yours now right?"
 Leftovers,3.7,2,"Leftovers. What else is there to say? Well, besides why you're picking it up that is."
 Pack Of Gum,0.1,1,Ooh a pack of gum. Better chew the pieces quick before everyone around you asks for one right?
 Soda Bottle,0.04,1,It's a plastic soda bottle. In other words it's trash. What's a recylcing bin?
-TV Remote,0.25,4,A…TV Remote? What's it doing out here? Probably best to not question it.
-Beer Can,0.03,1,A beer can…seems someone was having fun.
-Agenda,0.93,3.5,"Oh it's an agenda. Seems it hasn't been used yet, it's even in…the wrong year. Oh."
+TV Remote,0.25,4,A TV Remote? What's it doing out here? Probably best to not question it.
+Beer Can,0.03,1,A beer can seems someone was having fun.
+Agenda,0.93,3.5,"Oh it's an agenda. Seems it hasn't been used yet, it's even in the wrong year. Oh."
 Bowl,1.25,8,"A bowl. Why is it out here? Who knows, probably from Southside though by the looks of it."
-Fork,0.72,3,A fork. It's…relatively clean? Seems like it is anyways.
+Fork,0.72,3,A fork. It's relatively clean? Seems like it is anyways.
 Spoon,0.72,3,A spoon. You wonder if you can bend it backwards. Or not.
 Napkin,0.06,0.03,It's a napkin. You use it to wipe your hands. Oh you already knew that?
-Deck Of Many Things,0.21,200,A mystical deck of cards. It can grant many wonders. Though misfortunes also. Best to not risk it…
-Syringe,0.01,0.58,…a syringe. You don't wanna question why it's here.
-Half-Eaten Sandwich,0.23,0.01,A half-eaten sandwich. Why did you pick this up? You're not gonna eat it are you…
+Deck Of Many Things,0.21,200,A mystical deck of cards. It can grant many wonders. Though misfortunes also. Best to not risk it
+Syringe,0.01,0.58,a syringe. You don't wanna question why it's here.
+Half-Eaten Sandwich,0.23,0.01,A half-eaten sandwich. Why did you pick this up? You're not gonna eat it are you
 Pizza Box,0.92,8.53,It's a pizza box. Are you really gonna carry this around though?
-Parking Pass,0.01,500,"…it's a parking pass. Why is it here? Who knows, but someone's screaming somewhere. That's a fact."
+Parking Pass,0.01,500,"it's a parking pass. Why is it here? Who knows, but someone's screaming somewhere. That's a fact."
 Empty Starbucks Cup,0.02,0.76,Seems someone was lazy. Why are these everywhere anyways?
 Image Of A Dog,0.2,5,It's a picture of a dog. Such cute. Much wow.
 Starbucks Coffee,0.52,2.1,"It's a fresh cup of coffee from Starbucks. Well, if you need to stay awake you have the caffeine to do it now."
 Lottery Ticket,0.01,20,It's a lotto ticket. Feeling lucky?
-Mushroom,0.44,7,"It's a mushroom, looks very familiar. Er, wait do mushrooms normally have eyes…?"
+Mushroom,0.44,7,"It's a mushroom, looks very familiar. Er, wait do mushrooms normally have eyes?"
 Chipotle Burrito,0.45,7.5,"It's a burrito from Chipotle, fresh at that. Well might as well save it for later if you're not hungry now right?"
 Chick-fil-A Sandwich,0.45,5.45,"Oh, it's a sandwich from Chick-fil-A. It seems fresh too, maybe save it for later if you get hungry."
 Mac'n Cheese,0.44,4.5,The mac with cheese. Definitely a classic. Hmm? You're not a fan? Oh you never said that? Good.
 Pumpkin,7,5,"It's a pumpkin, it's also rather heavy. Wanna carve something into it?"
 Candy,0.09,1.45,It's a piece of candy! Who doesn't like sweets! Hmm? Not everyone does? Preposterous.
-Scissors,0.25,2,"Oh look it's a pair of scissors. Welp, time to cut something right? Wait, stop looking at me like that…"
+Scissors,0.25,2,"Oh look it's a pair of scissors. Welp, time to cut something right? Wait, stop looking at me like that"
 Ruler,0.06,5.69,"A ruler of average length. Welp if you can't draw a straight line, you can now."
 Highlighter,0.09,0.5,"Oh, a highlighter. Maybe you could use it for your next class?"
 Dime,0.01,0.1,"Oh, a dime. That's 5 more than a nickel. Did you like that quick math?"
