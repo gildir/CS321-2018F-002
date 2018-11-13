@@ -58,9 +58,10 @@ public class PlayerDatabase {
       //build comma-seperated inputs for database with user's name and password
       try(FileOutputStream fos = new FileOutputStream(DATABASE_FILE, true)) {
          StringBuilder sb = new StringBuilder(name);
+         String en = Crypt.encrypt(password, name);
          
-         sb.append(",");
-         sb.append(password);
+         sb.append(","); sb.append(en);
+	      
          sb.append("\n");
          
          //write inputs to database
@@ -122,7 +123,8 @@ public class PlayerDatabase {
              
              //checks if the username on this line is equal to the given username
 			if(info[0].equals(name)) {
-                if(info[1].equals(password))
+				String decrypted = Crypt.decrypt(info[1], name);
+                if(decrypted.equals(password))
                     return true;
              }
 			 }
