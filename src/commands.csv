@@ -10,6 +10,7 @@ PICKUP,OBJECT,Tries to pick up an object in the same area.
 DROPOFF,OBJECT,Tries to drop off an object in the same area.
 OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.
 INVENTORY,,Shows you what objects you have collected.
+REDO,,Performs the last command you entered.
 QUIT,,Quits the game.
 HELP,,Displays the list of available commands
 CHALLENGE,PLAYER,Challenges another <PLAYER> to a Rock Paper Scissors Battle.
@@ -29,3 +30,4 @@ GIFTABLE,,List players in the same room that you can give money to
 GIVE,,Give amount of money to a friend
 GIFT,GHOULNAME ITEM,Player gifts a ghoul an object; this action decreases the ghoul's aggression.
 POKE,GHOULNAME,Player pokes a ghoul that is in the same room.
+MAP,,Displays an ASCII map of the world around you

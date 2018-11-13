@@ -1,6 +1,8 @@
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.StandardOpenOption;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
@@ -9,10 +11,6 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.*;
 import java.util.LinkedList;
-import java.io.IOException;
-import java.io.File;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 
 
 /**
@@ -42,6 +40,7 @@ public class GameCore implements GameCoreInterface {
         
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
+        
         playerList = new PlayerList();
 
         shop = new Shop();
@@ -197,7 +196,10 @@ public class GameCore implements GameCoreInterface {
             // New player, add them to the list and return true.
             newPlayer = new Player(name);
             this.playerList.addPlayer(newPlayer);
-            this.leaderboard.addScore(name);
+            if(!this.leaderboard.checkForPlayer(name))
+            {
+              this.leaderboard.addScore(name);
+            }
             // New player starts in a room.  Send a message to everyone else in that room,
             //  that the player has arrived.
             this.broadcast(newPlayer, newPlayer.getName() + " has arrived.");
@@ -232,7 +234,7 @@ public class GameCore implements GameCoreInterface {
         }
     }        
 
-    //author Shayan AH
+    //402
     public String listAllPlayers(String name)
     {
         Player player = this.playerList.findPlayer(name);
@@ -303,7 +305,11 @@ public class GameCore implements GameCoreInterface {
     @Override
     public String say(String name, String message) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null) {
+        if(player != null)
+        {
+            String log = player.getName() + " says, \"" +
+                    message + "\" in the room " + player.getCurrentRoom();
+            add_chat_log(log);
             this.broadcast(player, player.getName() + " says, \"" + message + "\"");
             return "You say, \"" + message + "\"";
         }
@@ -320,7 +326,10 @@ public class GameCore implements GameCoreInterface {
     */
     public String shout(String name, String message) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null) {
+        if(player != null)
+        {
+            String log = player.getName() + " shouts, \"" + message + "\"";
+            add_chat_log(log);
             this.broadcastShout(player, player.getName() + " shouts, \"" + message + "\"");
             return "You shout, \"" + message + "\"";
         }
@@ -346,10 +355,14 @@ public class GameCore implements GameCoreInterface {
                 return "Cannot whisper yourself";
             else
             {
-                if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
+                if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
+                {
+                    String log = playerSending.getName() + " whispers, \"" + message + "\" to "
+                            + playerReceiving.getName();
+                    add_chat_log(log);
                     this.broadcast(playerSending, playerReceiving, playerSending.getName() + " whispers, \"" + message + "\"");
                     playerReceiving.setLastWhisperName(name1);
-                    return "message sent to " + playerReceiving.getName();
+                    return "Message sent to " + playerReceiving.getName();
                 }
                 else {
                     return "";
@@ -387,6 +400,51 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
 
+    public void add_chat_log(String line)
+    {
+
+        try( FileOutputStream os =  new FileOutputStream(
+                new File("chat_log.txt"),true ) )
+        {
+
+            OutputStreamWriter streamWriter = new OutputStreamWriter(os,StandardCharsets.UTF_8);
+            PrintWriter writer = new PrintWriter(streamWriter);
+            //print all chat logs (for admin)
+            writer.println(line);
+
+            writer.close();
+            os.close();
+        }
+        catch(Exception e)
+        {
+            System.err.println("Something went wrong when recording");
+        }
+
+    }
+    public void add_chat_log(List<String> lines)
+    {
+
+       try(FileOutputStream os =  new FileOutputStream(
+               new File("chat_log.txt"),true))
+       {
+
+           OutputStreamWriter streamWriter = new OutputStreamWriter(os,StandardCharsets.UTF_8);
+
+           PrintWriter writer = new PrintWriter(streamWriter);
+           //print all chat logs (for admin)
+           for(String line: lines)
+           {
+               writer.println(line);
+           }
+           writer.close();
+           os.close();
+       }
+       catch(Exception e)
+       {
+           System.err.println("Something went wrong when recording");
+       }
+
+    }
     public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
         if(player == null) {
@@ -1136,6 +1194,7 @@ public class GameCore implements GameCoreInterface {
     String message = "";
     if(p1 == p2)
     {
+
       //tie
       switch(p1)
       {
@@ -1172,8 +1231,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play2.getName());
+	    // Added by Brendan
+	    this.leaderboard.incrementScore(play1.getName(), false);
+	    this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1187,8 +1247,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName());
+	    // Added by Brendan
+	    this.leaderboard.incrementScore(play1.getName(), true);
+	    this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1202,8 +1263,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName());
+	    // Added by Brendan
+	    this.leaderboard.incrementScore(play1.getName(), true);
+	    this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1217,8 +1279,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play2.getName());
+	    // Added by Brendan
+	    this.leaderboard.incrementScore(play1.getName(), false);
+	    this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1232,8 +1295,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play2.getName());
+	    // Added by Brendan
+	    this.leaderboard.incrementScore(play1.getName(), false);
+	    this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1247,8 +1311,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName());
+	    // Added by Brendan
+	    this.leaderboard.incrementScore(play1.getName(), true);
+	    this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1303,4 +1368,99 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
+  //if an exit exists in a direction from a room, then its title is returned
+  private String SingleExit(Room r, String s)
+  {
+  	List<Direction> l=new ArrayList<Direction>();
+	//parse string for directions
+	for(int i=0; i<s.length(); i++)
+		if(s.charAt(i)=='n')
+			l.add(Direction.NORTH);
+		else if(s.charAt(i)=='w')
+			l.add(Direction.WEST);
+		else if(s.charAt(i)=='e')
+			l.add(Direction.EAST);
+		else
+			l.add(Direction.SOUTH);
+	//for each direction found
+	for(Direction d: l)
+		if(r.canExit(d))
+			r=map.findRoom(r.getLink(d));
+		else//not a valid set of directions
+			return "";
+	return r.getTitle()+"("+s+")";
+}
+//returns all exit strings in a set of directions
+private String ExitString(Room r, int a, int b)
+{
+	String s="", e, t;
+	//convert coordinates to directions
+	for(; a<1; a++)
+		s+='n';
+	for(; a>1; a--)
+		s+='s';
+	for(; b<1; b++)
+		s+='w';
+	for(; b>1; b--)
+		s+='e';
+	e=SingleExit(r, s);
+	//check permutations of directions to find different possible locations
+	for(int i=0; i<s.length(); i++)
+		for(int j=i+1; j<s.length(); j++)
+		{
+			t=SingleExit(r, s.substring(0, i)+s.charAt(j)+s.substring(i+1, j)+s.charAt(i)+s.substring(j+1));//check a new permutation
+			if(t.length()>0&&!e.contains(t.substring(0, t.indexOf("("))))//if we found a new, valid location
+				e+=" or "+t;
+		}
+	if(e.startsWith(" or "))//if the first location wasn't valid
+		e=e.substring(4);
+	return e;
+}
+//returns a room String in a more ASCII-friendly format
+private String[] RoomStrings(String s, int l)
+{
+	String[] r=new String[3];
+	r[0]="";
+	r[1]=s;
+	for(int i=l-s.length(); i>0; i--)
+		r[1]=" "+r[1];
+	if(s.length()==0)//nothing here
+		return new String[]{r[1], r[1], r[1]};//return a bunch of spaces
+	for(int i=0; i<l; i++)
+		r[0]+="-";
+	r[1]="|"+r[1].substring(2)+"|";
+	r[2]=r[0];
+	return r;
+}
+//given a player name, returns an ascii map of the world surrounding them
+public String map(String name)
+{
+  	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());//get the room the player is in
+	//get the title of all exits
+	String[][] a=new String[3][3];//initialize the rooms
+	for(int i=0; i<3; i++)
+		for(int j=0; j<3; j++)
+			a[i][j]=ExitString(r, i, j);
+	a[1][1]=r.getTitle();
+	//get the longest length in each column for spacing
+	int[] l=new int[3];
+	for(int i=0; i<3; i++)
+		for(int j=0; j<3; j++)
+			l[j]=Math.max(l[j], a[i][j].length());
+	//build the map String
+	String m="";
+	String[][] t=new String[3][3];
+	for(int i=0; i<3; i++)
+	{
+		for(int j=0; j<3; j++)
+			t[j]=RoomStrings(a[i][j], l[j]+2);
+		for(int j=0; j<3; j++)
+		{
+			for(int k=0; k<3; k++)
+				m+=t[k][j]+" ";
+			m+="\n";
+		}
+	}
+	return m;
+}
 }
