@@ -44,11 +44,12 @@ public class GameCore implements GameCoreInterface {
      */
      //now takes filename for Map
     public GameCore(String filename) {
+
+      date = new Date();
         
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
 
-        date = new Date();
         playerList = new PlayerList();
 
         shop = new Shop();
