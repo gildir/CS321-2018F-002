@@ -19,10 +19,6 @@ public class CommandRunner {
      */
     protected GameObjectInterface remoteGameInterface;
 
-    //START 409_censor
-    protected ArrayList<String> censorList;
-    //END 409_censor
-
     /**
      * Wrap a lambda expression and allow it to throw a RemoteException
      */
@@ -58,7 +54,7 @@ public class CommandRunner {
             if (message.equals("")) {
                 return "[ERROR] Empty message";
             } else {
-                return remoteGameInterface.say(name, message, censorList); // 409_censor pass censor list
+                return remoteGameInterface.say(name, message);
             }
         });
         commandFunctions.put("WHISPER", (name, args) -> {
@@ -72,7 +68,7 @@ public class CommandRunner {
                     return "[ERROR] You need to include a message to whisper.";
                 }
                 else {
-                    return remoteGameInterface.whisper(name, receiver, message, censorList); // 409_censor pass censor list
+                    return remoteGameInterface.whisper(name, receiver, message);
                     //return null;
                 }
             }
@@ -87,7 +83,7 @@ public class CommandRunner {
                     return "[ERROR] You need to include a message to reply.";
                 }
                 else {
-                    return remoteGameInterface.reply(name, message, censorList); // 409_censor pass censor list
+                    return remoteGameInterface.reply(name, message);
                 }
             }
             catch(IndexOutOfBoundsException ex) {
@@ -106,7 +102,7 @@ public class CommandRunner {
                else
                {
                    String message = String.join(" ", args);
-                   res = remoteGameInterface.shout(name, message, censorList); //409_censor pass censor list
+                   res = remoteGameInterface.shout(name, message);
 
                }
                return res;
@@ -402,8 +398,7 @@ public class CommandRunner {
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi) {
-        censorList = loadCensorList();    //409_censor load censor list
-	this.remoteGameInterface = rgi;
+        this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();
     }
@@ -414,8 +409,7 @@ public class CommandRunner {
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
-        censorList = loadCensorList();    //409_censor load censor list
-	this.remoteGameInterface = rgi;
+        this.remoteGameInterface = rgi;
         setupFunctions();
 
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
@@ -585,31 +579,4 @@ public class CommandRunner {
 
         return s;
     }
-    //START 409_censor
-    private ArrayList<String> loadCensorList(){
-        Scanner fileIn = null;
-        String tempStr = null;
-	ArrayList<String> temp = new ArrayList<String>();
-        try{
-            fileIn = new Scanner( new FileReader( "censorlist.txt" ) );
-            while( fileIn.hasNextLine() ){
-                tempStr = fileIn.nextLine();
-		//check if string from file is empty or all spaces
-		//ignore if it is, add to ArrayList temp if it is not
-                if( !tempStr.isEmpty() && !tempStr.replaceAll("\\s+","").isEmpty() )
-			temp.add( tempStr );
-            }
-            if(false){    //Used for debugging
-                System.out.println( "******Contents of censorList: " + temp.toString() );
-            }
-        }catch( IOException e ){
-            System.out.println( e );
-        }finally{
-           if( fileIn != null )
-                   fileIn.close();
-        }
-        return temp;    //return temp variable, it has all items in censorlist.txt
-    }
-    //END 409_censor
-
 }
