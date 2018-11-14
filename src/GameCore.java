@@ -345,17 +345,16 @@ public class GameCore implements GameCoreInterface {
         if(player != null)
         {
             String log = player.getName() + " says, \"" +
-
-                    message + "\" in the room " + player.getCurrentRoom() + " " + date.toString();
+                    message + "\" in the room " + player.getCurrentRoom();
             add_chat_log(log);
-            this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"" +  " " + date.toString());
-
+            this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"" + " " + date.toString());
             return chatPrefix + "You say, \"" + message + "\"" + " " + date.toString();
         }
         else {
             return null;
         }
     }
+
 
     /**
     * Shouts "message" to everyone in the world.
