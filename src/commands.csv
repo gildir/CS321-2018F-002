@@ -30,6 +30,8 @@ BUY,ITEM,Buy an item from the shop
 MONEY,,Line-by-line display of money
 GIFTABLE,,List players in the same room that you can give money to
 GIVE,,Give amount of money to a friend
+RECEIVE,,Accept a gift offer
+DECLINE,,Decline a gift offer
 GIFT,GHOULNAME ITEM,Player gifts a ghoul an object; this action decreases the ghoul's aggression.
 POKE,GHOULNAME,Player pokes a ghoul that is in the same room.
 SORTINVENTORY,ATTRIBUTE,Sorts inventory by <name> <value> or <weight>.

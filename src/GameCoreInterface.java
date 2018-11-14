@@ -22,7 +22,10 @@ public interface GameCoreInterface {
     
 
     public String gift(String playerName, String name, double amount);
-
+    
+    public String acceptGift(String name);
+    
+    public String declineGift(String name);
 
     /**
      * Returns the player with the given name or null if no such player.

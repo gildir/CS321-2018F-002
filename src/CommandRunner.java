@@ -380,8 +380,7 @@ public class CommandRunner {
                     Double amount = Double.parseDouble(args.remove(0));
                     
                     if(amount > 0){
-                        remoteGameInterface.gift(name, receiver, amount);
-                        return "";
+                        return remoteGameInterface.gift(name, receiver, amount);
                     }
                     else {
                         return "Amount of money gifted must be greater than 0";
@@ -391,6 +390,11 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
+
+        commandFunctions.put("RECEIVE",   (name, args) -> { return remoteGameInterface.acceptGift(name);  });
+        
+        commandFunctions.put("DECLINE",   (name, args) -> { return remoteGameInterface.declineGift(name);  });
+
         commandFunctions.put("CHANGEPREFIX", (name, args) -> {
             try {
                 String newprefix = args.remove(0);
@@ -563,6 +567,7 @@ public class CommandRunner {
         descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
+        descriptions.put("RECEIVE", new String[]{"", "Receive a gift if someone has tried to gift you" });
 	
 	//World Command
 	descriptions.put("MAP", new String[]{"", "Displays an ascii art map of the world."});
