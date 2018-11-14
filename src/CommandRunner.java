@@ -18,11 +18,7 @@ public class CommandRunner {
      * Game interface
      */
     protected GameObjectInterface remoteGameInterface;
-
-    //START 409_censor
-    protected ArrayList<String> censorList;
-    //END 409_censor
-
+ 
     /**
      * Wrap a lambda expression and allow it to throw a RemoteException
      */
@@ -36,6 +32,8 @@ public class CommandRunner {
      */
     private HashMap<String, CommandFunction<String, ArrayList<String>, String>> commandFunctions
             = new HashMap<String, CommandFunction<String, ArrayList<String>, String>>();
+    private String lastCommand = "";
+    private ArrayList<String> lastArgs = new ArrayList<String>();
 
     /**
      * For each command add it to the hashmap defining also a lambda expression
@@ -58,7 +56,7 @@ public class CommandRunner {
             if (message.equals("")) {
                 return "[ERROR] Empty message";
             } else {
-                return remoteGameInterface.say(name, message, censorList); // 409_censor pass censor list
+                return remoteGameInterface.say(name, message);
             }
         });
         commandFunctions.put("WHISPER", (name, args) -> {
@@ -72,7 +70,7 @@ public class CommandRunner {
                     return "[ERROR] You need to include a message to whisper.";
                 }
                 else {
-                    return remoteGameInterface.whisper(name, receiver, message, censorList); // 409_censor pass censor list
+                    return remoteGameInterface.whisper(name, receiver, message);
                     //return null;
                 }
             }
@@ -87,7 +85,7 @@ public class CommandRunner {
                     return "[ERROR] You need to include a message to reply.";
                 }
                 else {
-                    return remoteGameInterface.reply(name, message, censorList); // 409_censor pass censor list
+                    return remoteGameInterface.reply(name, message);
                 }
             }
             catch(IndexOutOfBoundsException ex) {
@@ -106,7 +104,7 @@ public class CommandRunner {
                else
                {
                    String message = String.join(" ", args);
-                   res = remoteGameInterface.shout(name, message, censorList); //409_censor pass censor list
+                   res = remoteGameInterface.shout(name, message);
 
                }
                return res;
@@ -179,6 +177,22 @@ public class CommandRunner {
         });
         commandFunctions.put("PICKUP",    (name, args) -> {
             try {
+                String object = args.get(0);
+                for (int i = 1; i < args.size(); i++) {
+                    object += " " + args.get(i);
+                }
+
+                if (object.equals("")) {
+                    return "[ERROR] No object specified";
+                } else {
+                    return remoteGameInterface.pickup(name, object);
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No object specified";
+            }
+        });
+		commandFunctions.put("DESCRIBE",    (name, args) -> {
+            try {
                 String object = args.remove(0);
                 while (!args.isEmpty()) {
                     object += " " + args.remove(0);
@@ -187,7 +201,7 @@ public class CommandRunner {
                 if (object.equals("")) {
                     return "[ERROR] No object specified";
                 } else {
-                    return remoteGameInterface.pickup(name, object);
+                    return remoteGameInterface.describe(name, object);
                 }
             } catch (IndexOutOfBoundsException ex) {
                 return "[ERROR] No object specified";
@@ -209,6 +223,22 @@ public class CommandRunner {
                 return "[ERROR] No object specified";
             }
         });
+        commandFunctions.put("SORTINVENTORY",   (name, args) -> {
+            try {
+                String attribute = args.remove(0);
+                while (!args.isEmpty()) {
+                    attribute += " " + args.remove(0);
+                }
+
+                if (attribute.equals("")) {
+                    return "[ERROR] No attribute specified";
+                } else {
+                    return remoteGameInterface.sortInventory(name, attribute);
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No attribute specified";
+            }
+        });
         commandFunctions.put("OFFERITEM",   (name, args) -> {
             if(args.isEmpty()) {
                 return "You need to provide a player to offer an item.";
@@ -228,7 +258,17 @@ public class CommandRunner {
                 }
             }
         });
+        commandFunctions.put("OFFERRESPONSE",   (name, args) -> {
+            if(args.isEmpty()) {
+                return "You need to either accept or refuse the offer.";
+            }
+            else {
+                String decision = args.remove(0);
+                return remoteGameInterface.offerResponse(name, decision);
+            }
+        });
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
+	commandFunctions.put("REDO", (name, args) -> null);
         //commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
 
         // PvP Commands
@@ -278,6 +318,7 @@ public class CommandRunner {
         commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
         commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
         commandFunctions.put("LEADERBOARD",   (name, args) -> { remoteGameInterface.checkBoard(name); return null; });
+        commandFunctions.put("RANK",   (name, args) -> { remoteGameInterface.getRank(name); return null; });
         commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
         commandFunctions.put("GIFT", (name, args) -> {
             if(args.isEmpty()) {
@@ -310,7 +351,22 @@ public class CommandRunner {
             }
         });
         commandFunctions.put("LEAVE", (name, args) -> { return remoteGameInterface.leaveRoom(name); });
-        commandFunctions.put("SELL",       (name, args) -> { return remoteGameInterface.sell(name, args.get(0));  });
+        commandFunctions.put("SELL",       (name, args) -> { 
+            if(args.size() < 1)
+                return "Specify an item to sell.";
+            String item = args.remove(0);
+            while(args.size() != 0){
+                item += " " + args.remove(0);
+            }
+            return remoteGameInterface.sell(name, item);  });
+        commandFunctions.put("BUY",        (name, args) -> { 
+            if(args.size() < 1)
+                return "Specify an item to buy.";
+            String item = args.remove(0);
+            while(args.size() != 0){
+                item += " " + args.remove(0);
+            }
+            return remoteGameInterface.buy(name, item);  });
         commandFunctions.put("MONEY",      (name, args) -> { return remoteGameInterface.money(name);  });
         commandFunctions.put("GIFTABLE",   (name, args) -> { return remoteGameInterface.giftable(name);  });
         commandFunctions.put("GIVE",       (name, args) -> { 
@@ -324,8 +380,7 @@ public class CommandRunner {
                     Double amount = Double.parseDouble(args.remove(0));
                     
                     if(amount > 0){
-                        remoteGameInterface.gift(name, receiver, amount);
-                        return "";
+                        return remoteGameInterface.gift(name, receiver, amount);
                     }
                     else {
                         return "Amount of money gifted must be greater than 0";
@@ -335,6 +390,37 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
+
+        commandFunctions.put("RECEIVE",   (name, args) -> { return remoteGameInterface.acceptGift(name);  });
+        
+        commandFunctions.put("DECLINE",   (name, args) -> { return remoteGameInterface.declineGift(name);  });
+
+        commandFunctions.put("CHANGEPREFIX", (name, args) -> {
+            try {
+                String newprefix = args.remove(0);
+                return remoteGameInterface.changeChatPrefix(newprefix);
+            }
+            catch(IndexOutOfBoundsException e) {
+                return "You need to input 3 characters for your new prefix.";
+            }
+        });
+        commandFunctions.put("WHITEBOARD",   (name, args) -> {
+            if (args.isEmpty()) {
+                return remoteGameInterface.displayWhiteboard(name);
+            } else if (args.size() == 1 && args.get(0).equalsIgnoreCase("CLEAR")) {
+                return remoteGameInterface.clearWhiteboard(name);
+            } else if (args.size() >= 1 && args.get(0).equalsIgnoreCase("WRITE")) {
+                if (args.size() > 1) {
+                    args.remove(0);
+                    return remoteGameInterface.writeWhiteboard(name, String.join(" ", args));
+                } else {
+                    return "[ERROR] You need to specify a MESSAGE to WRITE.";
+                }
+            } else {
+                return "[ERROR] Couldn't parse WHITEBOARD command.";
+            }
+        });
+	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
     }
 
     /**
@@ -402,8 +488,7 @@ public class CommandRunner {
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi) {
-        censorList = loadCensorList();    //409_censor load censor list
-	this.remoteGameInterface = rgi;
+        this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();
     }
@@ -414,8 +499,7 @@ public class CommandRunner {
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
-        censorList = loadCensorList();    //409_censor load censor list
-	this.remoteGameInterface = rgi;
+        this.remoteGameInterface = rgi;
         setupFunctions();
 
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
@@ -455,8 +539,10 @@ public class CommandRunner {
         descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
         descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});
         descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
+	descriptions.put("REDO",      new String[]{"",         "Performs the last command you entered."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
+        descriptions.put("SORTINVENTORY",      new String[]{"ATTRIBUTE",         "Sorts inventory by specified name, value or weight."});
 
         // Ghoul commands
         descriptions.put("POKE",      new String[]{"GHOUL",    "Pokes <GHOUL>"});
@@ -471,14 +557,20 @@ public class CommandRunner {
         descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
         descriptions.put("LEADERBOARD",  new String[]{"",      "Display the current Rock Paper Scissors Leaderboard."});
         descriptions.put("TUTORIAL",  new String[]{"",         "Display a tutorial for Rock Paper Scissors."});
+        descriptions.put("RANK",  new String[]{"",      "Display your current RPS Leaderboard Rank."});
 
         //Shops & Money
         descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });
         descriptions.put("LEAVE",     new String[]{"SHOP",     "Leaves shop" });
         descriptions.put("SELL",      new String[]{"ITEM",     "Sell item in your inventory to the shop" });
+        descriptions.put("BUY",      new String[]{"ITEM",      "Buy an item from the shop" });
         descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
+        descriptions.put("RECEIVE", new String[]{"", "Receive a gift if someone has tried to gift you" });
+	
+	//World Command
+	descriptions.put("MAP", new String[]{"", "Displays an ascii art map of the world."});
 
         //chat system
         descriptions.put("SHOUT",      new String[]{"MESSAGE", "Says <MESSAGE> to all players in the game."});
@@ -550,17 +642,32 @@ public class CommandRunner {
      */
     public void run(String command, ArrayList<String> args, String playerName) {
         // System.out.println(playerName + ": " + command + '(' + args + ')');
+	
+    	String cmdToRun = command;
+    	ArrayList<String> argsToRun = args;
+    	
+    	if (cmdToRun.equalsIgnoreCase("REDO")){
+    	    if (lastCommand.equals("")) {
+                System.out.println("No previous command");
+                return;
+            }
 
-        Command cmd = commands.get(command.toUpperCase());
-
+            cmdToRun = lastCommand;
+            argsToRun = lastArgs;
+    	}
+        Command cmd = commands.get(cmdToRun.toUpperCase());
+	
         if (cmd != null) {
 
             try {
-                String result = cmd.run(playerName, args);
+                lastCommand = cmdToRun;
+                lastArgs = argsToRun;
+
+                String result = cmd.run(playerName, argsToRun);
                 if (result != null)
                     System.out.println(result);
 
-                remoteGameInterface.logInteraction(playerName, command, args, result);
+                remoteGameInterface.logInteraction(playerName, cmdToRun, argsToRun, result);
             } catch (RemoteException ex) {
                 Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -585,31 +692,6 @@ public class CommandRunner {
 
         return s;
     }
-    //START 409_censor
-    private ArrayList<String> loadCensorList(){
-        Scanner fileIn = null;
-        String tempStr = null;
-	ArrayList<String> temp = new ArrayList<String>();
-        try{
-            fileIn = new Scanner( new FileReader( "censorlist.txt" ) );
-            while( fileIn.hasNextLine() ){
-                tempStr = fileIn.nextLine();
-		//check if string from file is empty or all spaces
-		//ignore if it is, add to ArrayList temp if it is not
-                if( !tempStr.isEmpty() && !tempStr.replaceAll("\\s+","").isEmpty() )
-			temp.add( tempStr );
-            }
-            if(false){    //Used for debugging
-                System.out.println( "******Contents of censorList: " + temp.toString() );
-            }
-        }catch( IOException e ){
-            System.out.println( e );
-        }finally{
-           if( fileIn != null )
-                   fileIn.close();
-        }
-        return temp;    //return temp variable, it has all items in censorlist.txt
-    }
-    //END 409_censor
 
+   
 }
