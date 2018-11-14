@@ -347,8 +347,10 @@ public class GameCore implements GameCoreInterface {
             String log = player.getName() + " says, \"" +
                     message + "\" in the room " + player.getCurrentRoom();
             add_chat_log(log);
+
             this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"" + " " + date.toString());
             return chatPrefix + "You say, \"" + message + "\"" + " " + date.toString();
+
         }
         else {
             return null;
@@ -371,7 +373,6 @@ public class GameCore implements GameCoreInterface {
             add_chat_log(log);
 
             this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"" + " " + date.toString());
-
             return chatPrefix + "You shout, \"" + message + "\"" + " " + date.toString();
         }
         else {
@@ -404,9 +405,10 @@ public class GameCore implements GameCoreInterface {
                             + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
                     this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
-                    playerReceiving.setLastWhisperName(name1); 
 
+                    playerReceiving.setLastWhisperName(name1); 
                     return "Message sent to " + playerReceiving.getName() + " " + date.toString();
+
                 }
                 else {
                     return "";
