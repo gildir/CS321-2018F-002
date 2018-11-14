@@ -38,4 +38,5 @@ SORTINVENTORY,ATTRIBUTE,Sorts inventory by <name> <value> or <weight>.
 CHANGEPREFIX,XXX,Input 3 characters for your new chat prefix.
 WHITEBOARD,COMMAND? MESSAGE?, Executes WRITE (with MESSAGE) or CLEAR command on the whiteboard. If no COMMAND specified it will display the current message in the whiteboard.
 MAP,,Displays an ASCII map of the world around you
+TOPTEN,,Display Top Ten Players from Rock Paper Scissors Leaderboard.
 RANK,,Display your current RPS Leaderboard Rank.

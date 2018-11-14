@@ -120,7 +120,9 @@ public void paper(String player);
 public void scissors(String player);
 public void checkBoard(String player);
 public String tutorial(String name);
+public void topTen(String name);
 public void getRank(String player);
+
 //Rock Paper Scissors Battle Code here--------------------------------------
 	/**
 	 * gives an ASCII art map of the world surrounding a player
