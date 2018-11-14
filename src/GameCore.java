@@ -1510,7 +1510,11 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
-
+  public void getRank(String player)
+  {
+    Player p = this.playerList.findPlayer(player);
+    p.getReplyWriter().println("Your current RPS Leaderboard rank is: "+ leaderboard.getPlayerRank(player));
+  }
   // Whiteboards
   /**
    * 
