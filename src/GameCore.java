@@ -1556,11 +1556,30 @@ if(playerSending.searchIgnoredBy(name2)){
       player.getReplyWriter().println(message);
       return "";
   }
+
+
+
+  
+  //Added by An
+  public void topTen(String name) {
+      Player player = this.playerList.findPlayer(name);
+      if(player == null)
+          return;
+      String topTenLeaderBoard = this.leaderboard.getTopTen();
+      player.getReplyWriter().println(topTenLeaderBoard);
+  }
+
+
+
+
   public void getRank(String player)
   {
     Player p = this.playerList.findPlayer(player);
     p.getReplyWriter().println("Your current RPS Leaderboard rank is: "+ leaderboard.getPlayerRank(player));
   }
+
+
+
   // Whiteboards
   /**
    * 
