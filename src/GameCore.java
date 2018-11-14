@@ -47,7 +47,6 @@ public class GameCore implements GameCoreInterface {
         
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
-
         date = new Date();
         
         playerList = new PlayerList();
