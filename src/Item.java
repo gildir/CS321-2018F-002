@@ -49,7 +49,7 @@ public class Item implements Cloneable {
  public String toString(){
   String weightString = String.format("%.2f", itemWeight);
   String valueString = String.format("%.2f", itemValue);
-  return "[" + itemSize + itemColor + "] " + itemName + "(" + weightString + " lb, $" + valueString +")";
+  return "[" + itemSize + itemColor + "] " + itemName + " (" + weightString + " lb, $" + valueString +")";
  }
  // Method spits out a random color
  private String getRandColor(){
