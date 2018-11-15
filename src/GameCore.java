@@ -1149,6 +1149,9 @@ public class GameCore implements GameCoreInterface {
      if(did_buy == false){
          return "You cannot buy " + itemName + "!";
      }
+     if(did_buy == true){
+       this.broadcast(player, itemName + " has been bought by " + player.getName());
+     }
      return "You have bought a " + itemName + " from the shop.";
  }
  
