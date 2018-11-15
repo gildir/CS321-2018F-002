@@ -67,13 +67,10 @@ public class Shop {
      //Iterate through shop items to try and find a match
      for(Item obj : this.items){
          if(obj.getItemName().equalsIgnoreCase(itemName)) {
-             double cost = obj.getItemValue() * 1.2;
-             if(player.getMoney().sum() >= cost){
-                 //add item to player inventory and update inventory and bool
+             if(player.getMoney().sum() >= (obj.getItemValue() * 1.2)){
+                 //add item to player inventory and update
                  inventory.add(obj);
                  player.setCurrentInventory(inventory);
-                 //remove money from player
-                 player.removeMoney(cost);
                  did_buy = true;
                  //remove item from shop's list of items
                  items.remove(obj);
@@ -113,7 +110,7 @@ public class Shop {
   * Builds the string to represent the shop
   * @return String representation of shop
   */
- public String displayShop() {
+ public synchronized String displayShop() {
   ArrayList<ItemStock> itemList = new ArrayList<ItemStock>();
   for(Item item : this.items) {
    ItemStock iStock = new ItemStock(item.getItemName(), 1, item.getItemValue() * 1.2);
