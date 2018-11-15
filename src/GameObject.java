@@ -417,7 +417,6 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
   {
       return core.tutorial(name);
   }
-
   public void checkBoard(String player) throws RemoteException {
         core.checkBoard(player);
     }
@@ -427,7 +426,6 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
   public void topTen(String name) throws RemoteException {
         core.topTen(name);
     }
-
   //Rock Paper Scissors Battle Code here--------------------------------------
   
   //given a player name, returns an ascii art map of the world surrounding them
