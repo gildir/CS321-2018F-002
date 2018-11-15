@@ -949,8 +949,8 @@ public class GameCore implements GameCoreInterface {
         boolean result = this.giftsTracker.trackGift(trader, tradee, amount);
         if(result == false)
          return "" + tradee.getName() + " already has an open trade!";
-        tradee.getReplyWriter().println("" + trader.getName() + " wants to gift you $" + amount + "!\nEnter RECEIVE GIFT to accept.");
-        return "You try to gift " + tradee.getName() + " $" + amount; 
+        tradee.getReplyWriter().println("" + trader.getName() + " wants to gift you $" + String.format("%1$,.2f", amount) + "!\nEnter RECEIVE GIFT to accept.");
+        return "You try to gift " + tradee.getName() + " $" +   String.format("%1$,.2f", amount); 
     }
     
     public String acceptGift(String name) {
