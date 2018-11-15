@@ -465,15 +465,6 @@ public class Player {
     }
 
     /**
-     * Output a message to all players in the same room as this player,
-     * including outputting a message to this player.
-     * @param message to send
-     */
-    public void broadcastToAllInRoom(String message) {
-        getCurrentRoomObject().broadcast(message);
-    }
-
-    /**
      * Output a message to all other players in the same room as this player,
      * not including outputting a message to this player.
      * @param message to send
