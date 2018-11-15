@@ -1123,8 +1123,7 @@ public class GameCore implements GameCoreInterface {
       catch (InterruptedException e){
         return "thread exception!";
       }
-      player.getReplyWriter().println("You have sold " + itemName + " to the shop");
-      return "";
+      return "You have sold " + itemName + " to the shop";
   }
 }
 
