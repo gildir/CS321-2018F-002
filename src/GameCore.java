@@ -86,10 +86,8 @@ public class GameCore implements GameCoreInterface {
                 ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
-
                       Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
                         object = (Item)objects.get(rand.nextInt(objects.size())).clone();
-
                         room = map.randomRoom();
                         room.addObject(object);
                         
@@ -158,9 +156,7 @@ public class GameCore implements GameCoreInterface {
     public void broadcast(Player player, String message) {
         for(Player otherPlayer : this.playerList) {
             if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()
-
                           && !player.searchIgnoredBy( otherPlayer.getName() )) { // 405_ignore, don't broadcast to players ignoring you
-
                 otherPlayer.getReplyWriter().println(message);
             }
         }
@@ -187,9 +183,7 @@ public class GameCore implements GameCoreInterface {
     */
     public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
         if(sendingPlayer != receivingPlayer
-
                       && !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
-
             receivingPlayer.getReplyWriter().println(message);
         }
     }
@@ -669,15 +663,7 @@ public class GameCore implements GameCoreInterface {
     /**
      * Attempts to drop off an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
-     * @param target The case-insensitive name of the object to 
-     
-     
-     
-     
-     
-     
-     
-     off.
+     * @param target The case-insensitive name of the object to dropoff.
      * @return Message showing success.
      */
     public String dropoff(String name, String target) {
@@ -685,20 +671,8 @@ public class GameCore implements GameCoreInterface {
         if(player != null) {
             Item object = player.removeObjectFomInventory(target);
             Room room = map.findRoom(player.getCurrentRoom());
-            if(object != null) {      
-              
-              String newName = object.getItemName(); 
-              double newValue = 0.0;               //creates a new variable double
-              newValue = object.getItemValue()*.8;         //turns the value of the item to 80% of the old value
-              double w = object.getItemWeight(); 
-              
-              Item newItem = new Item(newName, w, newValue); 
-                
-              player.removeObjectFomInventory(target); 
-              room.addObject(newItem);
-              
-              
-  
+            if(object != null) {
+                room.addObjectFromPlayer(object);
                 this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
                 return "You just dropped off a " + target + ".";
             }
@@ -1050,7 +1024,6 @@ public class GameCore implements GameCoreInterface {
 
     //405
     public String ignore(String name, String ignoreName) {
-
               if( name.equalsIgnoreCase(ignoreName) )
                       return "You can't ignore yourself.";
 
@@ -1070,7 +1043,6 @@ public class GameCore implements GameCoreInterface {
               //add ignoring player to ignored players ignoredBy list
               ignoredPlayer.addIgnoredBy(name);
               return ignoreName + " added to ignore list.";
-
     }
 
     //407
@@ -1091,7 +1063,6 @@ public class GameCore implements GameCoreInterface {
     }
     //408
     public String unIgnore(String name, String unIgnoreName) {
-
               if( name.equalsIgnoreCase(unIgnoreName) )
                       return "You can't unignore yourself since you can't ignore yourself...";
 
@@ -1112,7 +1083,6 @@ public class GameCore implements GameCoreInterface {
               //add ignoring player to ignored players ignoredBy list
               unIgnoredPlayer.removeIgnoredBy(name);
               return unIgnoreName + " removed from ignore list.";
-
     }
     /* STOP 408_ignore */
 
@@ -1460,11 +1430,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 
-
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName(), false);
 	  this.leaderboard.incrementScore(play2.getName(), true);
-
 
       return;
     }
@@ -1478,11 +1446,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
-
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName(), true);
 	  this.leaderboard.incrementScore(play2.getName(), false);
-
 
       return;
     }
@@ -1496,11 +1462,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
-
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName(), true);
 	  this.leaderboard.incrementScore(play2.getName(), false);
-
 
       return;
     }
@@ -1514,11 +1478,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
-
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName(), false);
 	  this.leaderboard.incrementScore(play2.getName(), true);
-
 
       return;
     }
@@ -1532,11 +1494,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
-
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName(), false);
 	  this.leaderboard.incrementScore(play2.getName(), true);
-
 
       return;
     }
@@ -1550,11 +1510,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
-
 	  // Added by Brendan
 	  this.leaderboard.incrementScore(play1.getName(), true);
 	  this.leaderboard.incrementScore(play2.getName(), false);
-
 
       return;
     }
@@ -1572,16 +1530,12 @@ public class GameCore implements GameCoreInterface {
     }
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
-
       // Added by Brendan
-
     public void checkBoard(String name) {
         Player player = this.playerList.findPlayer(name);
         if(player == null)
             return;
-
               String board = this.leaderboard.getBoard();
-
         player.getReplyWriter().println(board);
     }
 
