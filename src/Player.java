@@ -458,7 +458,7 @@ public class Player {
     public void broadcast(String message) {
         synchronized (this) {
             if (replyWriter == null)
-                System.err.println("Trying to broadcast to a player that doesn't have a ReplyWriter yet.");
+                System.err.println("Trying to broadcast to " + getName() + ", who doesn't have a ReplyWriter yet.");
             else
                 replyWriter.println(message);
         }
