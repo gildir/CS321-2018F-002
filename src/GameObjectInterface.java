@@ -165,7 +165,14 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public String offerResponse(String playerName, String response) throws RemoteException;
-    
+    /**
+     * Attempts to use an item the player has called <itemName>. Will return a message on success or failure.
+     * @param playerName Name of the player using the item
+     * @param itemName The case-insensitive name of the item to use
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    public String useItem(String playerName, String itemName) throws RemoteException;
     /**
      * Player pokes a ghoul that is in the same room.
      * @param ghoulName Name of the ghoul that is poked

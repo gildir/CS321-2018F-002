@@ -267,8 +267,20 @@ public class CommandRunner {
                 return remoteGameInterface.offerResponse(name, decision);
             }
         });
+	commandFunctions.put("USEITEM", (name, args) -> {
+	    if(args.isEmpty()){
+		    return "You need to specify an item to use.";
+	    }
+	    else {
+		String item = args.remove(0);
+		while(!args.isEmpty()){
+			item = item + " " + args.remove(0);
+		}
+		return remoteGameInterface.useItem(name, item);
+	    }
+	});
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
-	commandFunctions.put("REDO", (name, args) -> null);
+commandFunctions.put("REDO", (name, args) -> null);
         //commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
 
         // PvP Commands

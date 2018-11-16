@@ -33,6 +33,9 @@ public class GameCore implements GameCoreInterface {
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
     private Leaderboard leaderboard;
+
+    private static Timer titleTimer;
+
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -798,6 +801,53 @@ public class GameCore implements GameCoreInterface {
             }
 
     }
+
+    /**
+     * Attempts to use an item the player has called < itemName >. Will return a message on any success or failure.
+     * @param playerName Name of the player to use the item
+     * @param itemName The case-insensitive name of the item to use
+     * @return Message showing success.
+     */
+    public String useItem(String playerName, String itemName){
+	Player player = this.playerList.findPlayer(playerName);
+        if(player != null) {
+            Item object = player.removeObjectFomInventory(itemName);
+            if(object != null) {
+                player.setTitle(object.getItemTitle()); 
+		titleTimerUpdate(player);
+                this.broadcast(player, player.getName() + " has used a " + itemName + " from personal inventory.");
+                return "You just used a " + itemName + ".";
+            }
+            else {
+                this.broadcast(player, player.getName() + " tried to use something, but doesn't seem to find what they were looking for.");
+                return "You just tried to use a " + itemName + ", but you don't have one.";
+            }
+        }
+        else {
+            return null;
+        }
+
+    }
+    /**
+     * Updates a timer for the title
+     */
+    public void titleTimerUpdate(Player player){
+        TimerTask timerTask = new TimerTask(){
+            public void run(){
+                    System.out.println("Your title ran out");
+		    player.setTitle(null);
+                    titleTimer.cancel();
+            }
+        };
+	if(titleTimer != null){
+          titleTimer.cancel();
+          titleTimer.purge();
+	}
+        titleTimer = new Timer();
+        titleTimer.schedule(timerTask, 120000); // sets title for 2 minutes
+    }
+
+
 
     /**
      * Player pokes a ghoul that is in the same room.
