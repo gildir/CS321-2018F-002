@@ -36,6 +36,9 @@ public class GameCore implements GameCoreInterface {
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
     private Leaderboard leaderboard;
+    
+    private ChatRoomTracker chatRoomTracker;  //416_GroupChat
+
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -53,6 +56,8 @@ public class GameCore implements GameCoreInterface {
         shop = new Shop();
 
         npcSet = new HashSet<>();
+
+	chatRoomTracker = new GroupChatTracker();  //416_GroupChat
 
         // Initialize starting NPCs
         npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
