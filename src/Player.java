@@ -113,6 +113,11 @@ public class Player {
     this.currentInventory = currentInventory;
   }
   
+	public ArrayList<Quest> getQuestBook()
+	{
+		return this.questBook;
+	}
+  
   public void addObjectToInventory(Item object) {
     this.currentInventory.add(object);
   }

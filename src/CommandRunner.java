@@ -422,6 +422,7 @@ public class CommandRunner {
             }
         });
 	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
+		commandFunctions.put("OBJECTIVES", (name, args) -> {return remoteGameInterface.objectives(name);});
     }
 
     /**
@@ -574,6 +575,9 @@ public class CommandRunner {
 	
 	//World Command
 	descriptions.put("MAP", new String[]{"", "Displays an ascii art map of the world."});
+		
+		// Objective information command
+		descriptions.put("OBJECTIVES",new String[]{"", "Displays the Player's active Quest Objectives"});
 
         //chat system
         descriptions.put("SHOUT",      new String[]{"MESSAGE", "Says <MESSAGE> to all players in the game."});
