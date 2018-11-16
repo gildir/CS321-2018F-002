@@ -340,7 +340,7 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
     @Override
-    public String say(String name, String message) {
+    public String say(String name, String message, ArrayList<String> censorList) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
@@ -363,7 +363,7 @@ public class GameCore implements GameCoreInterface {
     * @param message Message that will be shouted
     * @return Message showing success.
     */
-    public String shout(String name, String message) {
+    public String shout(String name, String message, ArrayList<String> censorList) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
@@ -386,7 +386,7 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to whisper
     * @return Message showing success.
     */
-    public String whisper(String name1, String name2, String message) {
+    public String whisper(String name1, String name2, String message, ArrayList<String> censorList) {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
         if(playerSending != null && playerReceiving != null)
@@ -425,7 +425,7 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to be whispered
     * @return Message showing success.
     */
-    public String reply(String name, String message) {
+    public String reply(String name, String message, ArrayList<String> censorList) {
         Player playerSending = this.playerList.findPlayer(name);
         if(playerSending.getLastWhisperName() == null) {
 
@@ -433,7 +433,7 @@ public class GameCore implements GameCoreInterface {
         }
         String name2 = playerSending.getLastWhisperName();
         Player playerReceiving = this.playerList.findPlayer(name2);
-        return this.whisper(name, name2, message);
+        return this.whisper(name, name2, message, censorList); //409_censor whisper command scrubs message of unwanted words
     }
 
     /**
