@@ -36,6 +36,8 @@ public class GameCore implements GameCoreInterface {
 
     private static Timer titleTimer;
 
+    private static Timer bottleTimer; 
+
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -149,6 +151,11 @@ public class GameCore implements GameCoreInterface {
      */   
     @Override
     public void broadcast(Player player, String message) {
+        if(player.getIsDrunk()){
+            message = message.toLowerCase();
+            message = message.replace(".", "!");
+            message = message.replace(",", "?");
+        }
         for(Player otherPlayer : this.playerList) {
             if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()
                           && !player.searchIgnoredBy( otherPlayer.getName() )) { // 405_ignore, don't broadcast to players ignoring you
@@ -163,6 +170,11 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to broadcast
     */
     public void broadcastShout(Player player, String message) {
+        if(player.getIsDrunk()){
+            message = message.toLowerCase();
+            message = message.replace(".", "!");
+            message = message.replace(",", "?");
+        }
         for(Player otherPlayer : this.playerList) {
             if(otherPlayer != player && !player.searchIgnoredBy( otherPlayer.getName())) {
                 otherPlayer.getReplyWriter().println(message);
@@ -177,6 +189,11 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to broadcast
     */
     public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
+        if(sendingPlayer.getIsDrunk()){
+            message = message.toLowerCase();
+            message = message.replace(".", "!");
+            message = message.replace(",", "?");
+        }
         if(sendingPlayer != receivingPlayer
                       && !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
             receivingPlayer.getReplyWriter().println(message);
@@ -360,6 +377,11 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null)
         {
+            if(player.getIsDrunk()){
+                message = message.toLowerCase();
+                message = message.replace(".", "!");
+                message = message.replace(",", "?");
+            }
             String log = player.getName() + " shouts, \"" + message + "\"";
             add_chat_log(log);
             this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"");
@@ -389,6 +411,11 @@ public class GameCore implements GameCoreInterface {
             {
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
+                    if(playerSending.getIsDrunk()){
+                        message = message.toLowerCase();
+                        message = message.replace(".", "!");
+                        message = message.replace(",", "?");
+                    }
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
                             + playerReceiving.getName();
                     add_chat_log(log);
@@ -422,6 +449,11 @@ public class GameCore implements GameCoreInterface {
         }
         String name2 = playerSending.getLastWhisperName();
         Player playerReceiving = this.playerList.findPlayer(name2);
+        if(playerSending.getIsDrunk()){
+            message = message.toLowerCase();
+            message = message.replace(".", "!");
+            message = message.replace(",", "?");
+        }
         return this.whisper(name, name2, message);
     }
 
@@ -813,7 +845,11 @@ public class GameCore implements GameCoreInterface {
         if(player != null) {
             Item object = player.removeObjectFomInventory(itemName);
             if(object != null) {
-                player.setTitle(object.getItemTitle()); 
+                player.setTitle(object.getItemTitle());
+                if(itemName.equalsIgnoreCase("rathskeller bottle"))
+                {
+                    bottelTimerUpdate(player);
+                }    
 		titleTimerUpdate(player);
                 this.broadcast(player, player.getName() + " has used a " + itemName + " from personal inventory.");
                 return "You just used a " + itemName + ".";
@@ -835,7 +871,7 @@ public class GameCore implements GameCoreInterface {
         TimerTask timerTask = new TimerTask(){
             public void run(){
                     System.out.println("Your title ran out");
-		    player.setTitle(null);
+		            player.setTitle(null);
                     titleTimer.cancel();
             }
         };
@@ -845,6 +881,24 @@ public class GameCore implements GameCoreInterface {
 	}
         titleTimer = new Timer();
         titleTimer.schedule(timerTask, 120000); // sets title for 2 minutes
+    }
+
+    public void bottleTimerUpdate(Player player){
+        TimerTask bottleTask = new TimerTask(){
+            public void run(){
+                System.out.println("Your not drunk anymore =[");
+                player.setIsDrunk(false);
+                bottleTimer.cancel();
+
+            }
+        };
+        if(bottleTimer != null){
+            bottleTimer.cancel();
+            bottleTimer.purge();
+        }
+        bottleTimer = new Timer();
+        bottleTimer.schedule(bottleTask, 60000); // your drunk for 1 minute
+
     }
 
 
