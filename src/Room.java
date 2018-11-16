@@ -131,7 +131,12 @@ public class Room {
             return "None.";
         }
         else {
-            return this.objects.toString();
+            String objectsStr = "[" + objects.get(0).getItemName();
+            for (int i = 1; i < objects.size(); i++) {
+                objectsStr += ", " + objects.get(i).getItemName();
+            }
+            objectsStr += "]";
+            return objectsStr;
         }
     }
     
