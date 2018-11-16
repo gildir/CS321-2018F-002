@@ -31,6 +31,7 @@ public class GameCore implements GameCoreInterface {
     private String chatPrefix;
 
     private final Shop shop;
+    Date date;
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
@@ -43,7 +44,7 @@ public class GameCore implements GameCoreInterface {
      */
      //now takes filename for Map
     public GameCore(String filename) {
-        
+ 
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
         
@@ -100,6 +101,9 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
+
+      date = new Date();
 
     }
 
@@ -336,21 +340,22 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
     @Override
-    public String say(String name, String message, ArrayList<String> censorList) {
+    public String say(String name, String message) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
-
             String log = player.getName() + " says, \"" +
                     message + "\" in the room " + player.getCurrentRoom();
             add_chat_log(log);
-            this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"");
-            return chatPrefix + "You say, \"" + message + "\"";
+
+            this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"" + " " + date.toString());
+            return chatPrefix + "You say, \"" + message + "\"" + " " + date.toString();
         }
         else {
             return null;
         }
     }
+
 
     /**
     * Shouts "message" to everyone in the world.
@@ -358,15 +363,15 @@ public class GameCore implements GameCoreInterface {
     * @param message Message that will be shouted
     * @return Message showing success.
     */
-    public String shout(String name, String message, ArrayList<String> censorList) {
+    public String shout(String name, String message) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
-
-            String log = player.getName() + " shouts, \"" + message + "\"";
+            String log = player.getName() + " shouts, \"" + message + "\"" + " " + date.toString();
             add_chat_log(log);
-            this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"");
-            return chatPrefix + "You shout, \"" + message + "\"";
+
+            this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"" + " " + date.toString());
+            return chatPrefix + "You shout, \"" + message + "\"" + " " + date.toString();
         }
         else {
             return null;
@@ -381,23 +386,25 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to whisper
     * @return Message showing success.
     */
-    public String whisper(String name1, String name2, String message, ArrayList<String> censorList) {
+    public String whisper(String name1, String name2, String message) {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
         if(playerSending != null && playerReceiving != null)
         {
+
             if(name1.equalsIgnoreCase(name2))
-                return "Cannot whisper yourself";
+                return "Cannot whisper yourself" + " " + date.toString();
             else
             {
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
                     message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
-                            + playerReceiving.getName();
+                            + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
                     this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
-                    playerReceiving.setLastWhisperName(name1);
-                    return "Message sent to " + playerReceiving.getName();
+
+                    playerReceiving.setLastWhisperName(name1); 
+                    return "Message sent to " + playerReceiving.getName() + " " + date.toString();
                 }
                 else {
                     return "";
@@ -418,14 +425,15 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to be whispered
     * @return Message showing success.
     */
-    public String reply(String name, String message, ArrayList<String> censorList) {
+    public String reply(String name, String message) {
         Player playerSending = this.playerList.findPlayer(name);
         if(playerSending.getLastWhisperName() == null) {
-            return "You have not received a whisper to reply to.";
+
+            return "You have not received a whisper to reply to." + " " + date.toString();
         }
         String name2 = playerSending.getLastWhisperName();
         Player playerReceiving = this.playerList.findPlayer(name2);
-        return this.whisper(name, name2, message, censorList);    //409_censor whisper command scrubs message of unwanted words
+        return this.whisper(name, name2, message);
     }
 
     /**
@@ -1571,7 +1579,6 @@ public class GameCore implements GameCoreInterface {
         return message;
     }
     //409_censor END
-
   
   //Added by An
   public void topTen(String name) {

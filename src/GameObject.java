@@ -111,8 +111,8 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @throws RemoteException 
      */
     @Override
-    public String say(String name, String message, ArrayList<String> censorList) throws RemoteException {
-        return core.say(name, message, censorList);
+    public String say(String name, String message) throws RemoteException {
+        return core.say(name, message);
     }
 
     /**
@@ -122,8 +122,8 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     * @return Message showing success
     * @throws RemoteException
     */
-    public String shout(String name, String message, ArrayList<String> censorList) throws RemoteException {
-        return core.shout(name, message, censorList);
+    public String shout(String name, String message) throws RemoteException {
+        return core.shout(name, message);
     }
 
     //302
@@ -141,9 +141,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     * @throws RemoteException
     */
     @Override
-    public String whisper(String name1, String name2, String message, ArrayList<String> censorList) throws RemoteException
+    public String whisper(String name1, String name2, String message) throws RemoteException
     {
-        return core.whisper(name1, name2, message, censorList);
+        return core.whisper(name1, name2, message);
     }
 
     /**
@@ -154,9 +154,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     * @throws RemoteException
     */
     @Override
-    public String reply(String name, String message, ArrayList<String> censorList) throws RemoteException
+    public String reply(String name, String message) throws RemoteException
     {
-        return core.reply(name, message, censorList);
+        return core.reply(name, message);
     }
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,

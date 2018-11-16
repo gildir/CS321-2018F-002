@@ -58,7 +58,7 @@ public class CommandRunner {
             if (message.equals("")) {
                 return "[ERROR] Empty message";
             } else {
-                return remoteGameInterface.say(name, message, censorList); // 409_censor pass censor list
+                return remoteGameInterface.say(name, message);
             }
         });
         commandFunctions.put("WHISPER", (name, args) -> {
@@ -72,7 +72,7 @@ public class CommandRunner {
                     return "[ERROR] You need to include a message to whisper.";
                 }
                 else {
-                    return remoteGameInterface.whisper(name, receiver, message, censorList); // 409_censor pass censor list
+                    return remoteGameInterface.whisper(name, receiver, message);
                     //return null;
                 }
             }
@@ -87,7 +87,7 @@ public class CommandRunner {
                     return "[ERROR] You need to include a message to reply.";
                 }
                 else {
-                    return remoteGameInterface.reply(name, message, censorList); // 409_censor pass censor list
+                    return remoteGameInterface.reply(name, message);
                 }
             }
             catch(IndexOutOfBoundsException ex) {
@@ -106,7 +106,7 @@ public class CommandRunner {
                else
                {
                    String message = String.join(" ", args);
-                   res = remoteGameInterface.shout(name, message, censorList); //409_censor pass censor list
+                   res = remoteGameInterface.shout(name, message);
 
                }
                return res;
@@ -491,8 +491,7 @@ public class CommandRunner {
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi) {
-        censorList = loadCensorList();    //409_censor load censor list
-	this.remoteGameInterface = rgi;
+        this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();
     }
@@ -503,8 +502,7 @@ public class CommandRunner {
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
-        censorList = loadCensorList();    //409_censor load censor list
-	this.remoteGameInterface = rgi;
+        this.remoteGameInterface = rgi;
         setupFunctions();
 
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
