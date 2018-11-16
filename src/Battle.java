@@ -100,4 +100,9 @@ public class Battle
   {
     return maxRounds;
   }
+  
+  public void incrementRound()
+  {
+    currentRound++;
+  }
 }

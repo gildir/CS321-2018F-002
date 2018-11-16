@@ -275,11 +275,12 @@ public class CommandRunner {
         commandFunctions.put("CHALLENGE",    (name, args) -> {
             try {
                 String player = args.get(0);
+                String rounds = args.get(1);
 
                 if (player.equals("")) {
                     return "[ERROR] No player specified";
                 } else {
-                    remoteGameInterface.challenge(name, player);
+                    remoteGameInterface.challenge(name, player, Integer.parseInt(rounds));
                     return null;
                 }
             } catch (IndexOutOfBoundsException ex) {
@@ -544,7 +545,7 @@ public class CommandRunner {
         descriptions.put("GIFT",      new String[]{"GHOUL, ITEM", "Gives your <ITEM> to <GHOUL>"});
 
         // PvP Commands
-        descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another <PLAYER> to a Rock Paper Scissors Battle."});
+        descriptions.put("CHALLENGE", new String[]{"PLAYER ROUNDS",   "Challenges another <PLAYER> to a Rock Paper Scissors Battle."});
         descriptions.put("ACCEPT",    new String[]{"PLAYER",   "Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
         descriptions.put("REFUSE",    new String[]{"PLAYER",   "Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
         descriptions.put("ROCK",      new String[]{"",         "Play <ROCK> in your current Rock Paper Scissors Battle."});
