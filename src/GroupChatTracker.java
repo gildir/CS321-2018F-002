@@ -26,7 +26,56 @@ public class GroupChatTracker{
 		Tracker.put( groupChatNameLC, temp );
 		return "Group chat " + groupChatNameLC + " created";
 	}
+
+	//function does not report back to the game
+	//not adding logic to check for groups existence, only a memmber of the group can invite another player
+	//Prior to calling this function, the following conditions are checked in GameCore:
+	// 1. valid playerName
+	// 2. player already in group 
+	public void addMember( String groupChatName, String playerName){
+		Tracker.get( groupChatName.toLowerCase() ).add( playerName);
+		
+	}
+
+	public boolean checkMembership( String groupChatName, String playerName){
+		ArrayList<String> members = Tracker.get( groupChatName.toLowerCase() );
+		for( String member : members ){
+			if(member.equalsIgnoreCase( playerName ) ){
+				return true;
+			}
+
+		}
+		return false;
+	}
 	
+	
+	//Prior to calling leaveGroup(), the following conditions are checked in GameCore:
+	// 1. player already in group 
+	public void removeMember( String groupChatName, String playerName){
+		//find location of playerName in groupChat ArrayList
+		int position = 0;
+		String groupChatNameLC = groupChatName.toLowerCase();
+		ArrayList<String> members = Tracker.get( groupChatNameLC );
+		for( String member : members ){
+			if(member.equalsIgnoreCase( playerName ) ){
+				break;
+			}
+			position++;
+
+		}
+		//remove player from group
+		Tracker.get( groupChatNameLC ).remove(position);
+		//if the group doesn't have any members, delete the group
+		if( Tracker.get( groupChatNameLC ).size() == 0 )
+			Tracker.remove( groupChatNameLC); 
+
+	}
+
+	public boolean checkGroupExists( String groupChatName){
+		String groupChatNameLC = groupChatName.toLowerCase();
+		return Tracker.containsKey( groupChatNameLC );
+	}
+
 	//print group chat tracking object, used for debugging
 	public String printGroup( String groupChatName ){
 		String groupChatNameLC = groupChatName.toLowerCase();
