@@ -1,7 +1,7 @@
 Flower,0.26,1.5,Flower boy,"It's a flower. What color is it? Um, whatever you want it to be. Hope you aren't allergic."
 Textbook,4.8,300,Study buddy,Oh look. It's something you'll buy but never use! Maybe. It's actually rather heavy though.
 Phone,0.03,100,Cool kid,"A phone of some kind? Wait, seems to be a flip phone. People still use these?"
-Newspaper,0.06,1,Reader"It's a newspaper! It details a lot of recent events, among other things."
+Newspaper,0.06,1,Reader,"It's a newspaper! It details a lot of recent events, among other things."
 Student ID,0.01,5,Identity Thief,Seems to be a Student ID. Someone's not getting back into their dorm
 Rock,5,0.2,Dwayne,"It's a rock, and rather heavy to say the least. Nothing else interesting about it though."
 TOADS Sign,0.2,2,The Toad,It's a sign that says in big capital letters TOADS. You feel like you don't quite get it. Or do you?
@@ -14,10 +14,10 @@ Five Dollar Bill,0.01,5,Rich,"It's a five dollar bill. What's it worth? Oh, dumb
 Twenty Dollar Bill,0.01,20,Rich,"It's a twenty dollar bill. Oof, someone's probably not happy they lost this. Unless it was yours. Grats if so."
 Nickel,0.11,0.05,Rich,"A nickel. Well, if you got a change jar, might as well keep it. Or not, your choice."
 Penny,0.01,0.01,Rich,"A penny. Well, it's better than nothing right?"
-Quarter,0.01,0.25,Rich"A shiny quarter! Or not, but hey a quarter's a quarter right?"
+Quarter,0.01,0.25,Rich,"A shiny quarter! Or not, but hey a quarter's a quarter right?"
 Half Dollar,0.03,0.5,Rich,"Seems to be a half dollar. Don't see these often, so why not keep it?"
 Headphones,0.33,20,Listener,"A pair of headphones. They don't look expensive, but they don't look cheap either. "
-Business Card,0.01,0.01,Business-y"Hey look, a business card. How often do you actually read these though, let's be honest."
+Business Card,0.01,0.01,Business-y,"Hey look, a business card. How often do you actually read these though, let's be honest."
 MASON Hat,0.88,10,Patriot,"It's a MASON hat. Seems someone lost it maybe, or it was given out at one of those events. Yours now though."
 Notebook Paper,0.2,0.1,Writer,"A single sheet of notebook paper. Um, yay? Better than not having some though."
 Class Ring,0.02,469,Jewel keeper,"Woah uh, that's a class ring. You know whoever lost this is upset, these things are a fortune."
