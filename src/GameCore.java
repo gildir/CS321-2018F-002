@@ -23,7 +23,7 @@ public class GameCore implements GameCoreInterface {
     private final Set<NPC> npcSet;
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
-    private final int minimumSpawnTime=100, maximumSpawnTime=600;
+    private final int minimumSpawnTime=40, maximumSpawnTime=60;
 
     //Prefix that will help distinguish player chat from anything else
     private String chatPrefix;
@@ -78,7 +78,7 @@ public class GameCore implements GameCoreInterface {
                 Random rand = new Random();
                 Room room;
                 Item object;
-                ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
+                ArrayList<Item> objects = ItemParser.parse("./RPSdemoitems.csv");//"./ItemListCSV.csv"
                 while(true) {
                     try {
                       Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
