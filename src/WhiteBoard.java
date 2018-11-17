@@ -43,23 +43,30 @@ public class WhiteBoard
 	public String display()
 	{
 		String formatedMessage = "";
-		for(int i = 0; i < 124; i++)
+		for(int i = 0; i < 80; i++)
 		{
 			formatedMessage += "=";
 		}
 		formatedMessage += "\n";
 		formatedMessage += "| ";
-		formatedMessage += this.message;
+		if(this.message.length() > 80){
+			formatedMessage += this.message.substring(0, 76);
+			formatedMessage += " |";
+			formatedMessage += "\n";
+			formatedMessage += "| ";
+			formatedMessage += this.message.substring(76);
+		}
+		else{formatedMessage += this.message;}
 		if(this.message.length() < 120)
 		{
-			for(int i = this.message.length(); i < 120; i++)
+			for(int i = this.message.length(); i < 152; i++)
 			{
 				formatedMessage += " ";
 			}
 		}
 		formatedMessage += " |";
 		formatedMessage += "\n";
-		for(int i = 0; i < 124; i++)
+		for(int i = 0; i < 80; i++)
 		{
 			formatedMessage += "=";
 		}
