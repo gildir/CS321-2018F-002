@@ -58,11 +58,11 @@ public class Ghoul extends NPC {
     synchronized (player) {
       player.broadcast("Now's your chance to fight off the ghoul!");
       Battle fight = new Battle(player.getName(), getName());
-      gameCore.accept(player.getName(), getName());
+     // gameCore.accept(player.getName(), getName());
       fight.setStatus("active");
       gameCore.getActiveBattles().add(fight);
       gameCore.getPendingBattles().remove(fight);
-//      player.getReplyWriter().println("\nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
+      player.getReplyWriter().println("\nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
 //      boolean blank = false;
       fight.setChoiceP2(new Random().nextInt(3) + 1);
 //      
