@@ -297,6 +297,16 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String gift(String yourname,String name, double amount) throws RemoteException {
      return core.gift(yourname, name,amount);
     }
+    
+    @Override
+    public String acceptGift(String name) throws RemoteException{
+    	return core.acceptGift(name);
+    }
+    
+    @Override
+    public String declineGift(String name) throws RemoteException{
+    	return core.declineGift(name);
+    }
 
     @Override
     public String money(String name) throws RemoteException {
@@ -417,9 +427,15 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
   {
       return core.tutorial(name);
   }
-      public void checkBoard(String player) throws RemoteException {
-              core.checkBoard(player);
-      }
+  public void checkBoard(String player) throws RemoteException {
+        core.checkBoard(player);
+    }
+  public void getRank(String player) throws RemoteException {
+        core.getRank(player);
+    }  
+  public void topTen(String name) throws RemoteException {
+        core.topTen(name);
+    }
   //Rock Paper Scissors Battle Code here--------------------------------------
   
   //given a player name, returns an ascii art map of the world surrounding them

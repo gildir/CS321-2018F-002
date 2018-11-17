@@ -330,7 +330,9 @@ commandFunctions.put("REDO", (name, args) -> null);
         commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
         commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
         commandFunctions.put("LEADERBOARD",   (name, args) -> { remoteGameInterface.checkBoard(name); return null; });
+        commandFunctions.put("RANK",   (name, args) -> { remoteGameInterface.getRank(name); return null; });
         commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
+        commandFunctions.put("TOPTEN",   (name, args) -> { remoteGameInterface.topTen(name); return null; });
         commandFunctions.put("GIFT", (name, args) -> {
             if(args.isEmpty()) {
                 return "You need to provide a ghoul name and an object.";
@@ -391,8 +393,7 @@ commandFunctions.put("REDO", (name, args) -> null);
                     Double amount = Double.parseDouble(args.remove(0));
                     
                     if(amount > 0){
-                        remoteGameInterface.gift(name, receiver, amount);
-                        return "";
+                        return remoteGameInterface.gift(name, receiver, amount);
                     }
                     else {
                         return "Amount of money gifted must be greater than 0";
@@ -402,6 +403,11 @@ commandFunctions.put("REDO", (name, args) -> null);
                 return "invalid amount of money specified";
             } 
         });
+
+        commandFunctions.put("RECEIVE",   (name, args) -> { return remoteGameInterface.acceptGift(name);  });
+        
+        commandFunctions.put("DECLINE",   (name, args) -> { return remoteGameInterface.declineGift(name);  });
+
         commandFunctions.put("CHANGEPREFIX", (name, args) -> {
             try {
                 String newprefix = args.remove(0);
@@ -564,6 +570,9 @@ commandFunctions.put("REDO", (name, args) -> null);
         descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
         descriptions.put("LEADERBOARD",  new String[]{"",      "Display the current Rock Paper Scissors Leaderboard."});
         descriptions.put("TUTORIAL",  new String[]{"",         "Display a tutorial for Rock Paper Scissors."});
+        descriptions.put("TOPTEN",    new String[]{"",         "Display Top Ten Players from Rock Paper Scissors Leaderboard."});
+        descriptions.put("RANK",  new String[]{"",      "Display your current RPS Leaderboard Rank."});
+
 
         //Shops & Money
         descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });
@@ -573,6 +582,7 @@ commandFunctions.put("REDO", (name, args) -> null);
         descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
+        descriptions.put("RECEIVE", new String[]{"", "Receive a gift if someone has tried to gift you" });
 	
 	//World Command
 	descriptions.put("MAP", new String[]{"", "Displays an ascii art map of the world."});
