@@ -49,19 +49,20 @@ public class Leaderboard {
 		//819
 		Collections.sort(board, new Comparator<PlayerScore>(){
             public int compare(PlayerScore s1, PlayerScore s2) {
+				Integer a,b;
 				if (s1.getScore()!=s2.getScore()) {
-					Integer a = new Integer(s1.getScore());
-	                Integer b = new Integer(s2.getScore());	
+					a = new Integer(s1.getScore());
+	                b = new Integer(s2.getScore());	
 				} 
 				// if their scores are equal, compare their current winning streaks
 				else if (s1.getCurrentWinStreak()!=s2.getCurrentWinStreak()) {
-					Integer a = new Integer(s1.getCurrentWinStreak());
-					Integer b = new Integer(s2.getCurrentWinStreak());	
+					a = new Integer(s1.getCurrentWinStreak());
+					b = new Integer(s2.getCurrentWinStreak());	
 				}
 				// if their current winning streaks are equal, compare their longest winning streaks
 				else {
-					Integer a = new Integer(s1.getLongestWinStreak());
-					Integer b = new Integer(s2.getLongestWinStreak());
+					a = new Integer(s1.getLongestWinStreak());
+					b = new Integer(s2.getLongestWinStreak());
 				}
 				return b.compareTo(a);
             }
