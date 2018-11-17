@@ -90,10 +90,20 @@ public class Battle
   {
     return p1Score;
   }
+  
+  public void incP1Score()
+  {
+    p1Score++;
+  }
 
   public int getP2Score()
   {
     return p2Score;
+  }
+  
+  public void incP2Score()
+  {
+    p2Score++;
   }
   
   public int getMaxRounds()

@@ -277,6 +277,10 @@ public class CommandRunner {
                 String player = args.get(0);
                 String rounds = args.get(1);
 
+                if (Integer.parseInt(rounds) != 1 && Integer.parseInt(rounds) != 3 && Integer.parseInt(rounds) != 5){
+                    return "[ERROR] You must specify 1 3 or 5 as the number of rounds.";
+                }
+                
                 if (player.equals("")) {
                     return "[ERROR] No player specified";
                 } else {
@@ -284,7 +288,7 @@ public class CommandRunner {
                     return null;
                 }
             } catch (IndexOutOfBoundsException ex) {
-                return "[ERROR] No player specified";
+                return (args.size() == 1) ? "[ERROR] Number of rounds unspecified." : "[ERROR] No player specified.\n[ERROR] Number of rounds unspecified.";
             }
         });
         commandFunctions.put("ACCEPT",    (name, args) -> {
