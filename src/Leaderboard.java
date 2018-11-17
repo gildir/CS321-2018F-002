@@ -98,7 +98,7 @@ public class Leaderboard {
             // if this player's score equal previous player's score, compare their currentWin/currentLoss
             else {
 				p2WinStreak = this.board.get(i-1).getCurrentWinStreak();
-				if (p1WinStreak<p2WinStreak) {
+				if (p2WinStreak>p1WinStreak) {
 					rank = String.format("%-4d", ++pRank);
 				} 
 				else {
@@ -107,12 +107,12 @@ public class Leaderboard {
 					p1Score = p1WinStreak - p1LoseStreak; 
 					p2Score = p2WinStreak - p2LoseStreak;
 					// comparing 2 and 3
-					if (p1Score<p2Score) {
+					if (p2Score>p1Score) {
 						rank = String.format("%-4d", ++pRank);
 					} 
 					// 1 and 4 are equivalent, check their longest winning streak
 					else {
-						if (playerScore.getLongestWinStreak()<this.board.get(i-1).getLongestWinStreak()) {
+						if (this.board.get(i-1).getLongestWinStreak()>playerScore.getLongestWinStreak()) {
 							rank = String.format("%-4d", ++pRank);
 						}
 						else {
