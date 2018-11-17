@@ -96,7 +96,7 @@ public class Player {
 
   public String getNameWithTitle(){
     if(this.playerTitle != null){
-    	return name + " [" + playerTitle + "]";
+    	return "[" + playerTitle + "] " + name;
     }
     else{
 	    return name;

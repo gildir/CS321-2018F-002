@@ -835,7 +835,7 @@ if(playerSending.searchIgnoredBy(name2)){
             Item object = player.removeObjectFomInventory(itemName);
             if(object != null) {
                 player.setTitle(object.getItemTitle()); 
-		titleTimerUpdate(player);
+		        titleTimerUpdate(player);
                 this.broadcast(player, player.getName() + " has used a " + itemName + " from personal inventory.");
                 return "You just used a " + itemName + ".";
             }
@@ -855,15 +855,15 @@ if(playerSending.searchIgnoredBy(name2)){
     public void titleTimerUpdate(Player player){
         TimerTask timerTask = new TimerTask(){
             public void run(){
-                    System.out.println("Your title ran out");
-		    player.setTitle(null);
-                    titleTimer.cancel();
+                player.getReplyWriter().println("Your title ran out");
+                player.setTitle(null);
+                titleTimer.cancel();
             }
         };
-	if(titleTimer != null){
-          titleTimer.cancel();
-          titleTimer.purge();
-	}
+        if(titleTimer != null){
+            titleTimer.cancel();
+            titleTimer.purge();
+        }
         titleTimer = new Timer();
         titleTimer.schedule(timerTask, 120000); // sets title for 2 minutes
     }
