@@ -396,7 +396,13 @@ public class GameCore implements GameCoreInterface {
                 return "Cannot whisper yourself" + " " + date.toString();
             else
             {
-                if(!playerSending.searchIgnoredBy(playerReceiving.getName())) {
+		
+		if(playerSending.searchIgnoredBy(name2)){
+			return "Cannot whisper player that has ignored you";
+	    	}
+                if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
+                {
+
                     message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
                             + playerReceiving.getName() + " " + date.toString();
@@ -1591,11 +1597,14 @@ public class GameCore implements GameCoreInterface {
 
 
 
+
   public void getRank(String player)
   {
     Player p = this.playerList.findPlayer(player);
     p.getReplyWriter().println("Your current RPS Leaderboard rank is: "+ leaderboard.getPlayerRank(player));
   }
+
+
 
   // Whiteboards
   /**
