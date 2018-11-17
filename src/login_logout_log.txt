@@ -1,6 +1,0 @@
-a logged in.
-b logged in.
-c logged in.
-b logged out.
-c logged out.
-a logged out.
