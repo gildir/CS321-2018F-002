@@ -83,7 +83,7 @@ public class GameCore implements GameCoreInterface {
                 Random rand = new Random();
                 Room room;
                 Item object;
-                ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
+                ArrayList<Item> objects = ItemParser.parse("./RPSdemoitems.csv");//"./ItemListCSV.csv"
                 while(true) {
                     try {
                       Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
@@ -1217,7 +1217,40 @@ if(playerSending.searchIgnoredBy(name2)){
       }
     }
 
-    for(Battle b : pendingBattles)//Challenger already asked this person to battle and is waiting for a response still.
+      LinkedList<Item> inventory = play2.getCurrentInventory();  //you can only challenge a player if they have a rock paper or scissors
+      int hasBattleItemP2 = 0;
+      for (Item obj : inventory) {
+          if (obj.getItemName().equals("Rock") || obj.getItemName().equals("Paper") || obj.getItemName().equals("Scissors")) {
+              hasBattleItemP2 ++;
+
+
+          }
+      }
+
+      if (hasBattleItemP2 == 0) {
+
+          play1.getReplyWriter().println("\nThe other person does not have a battle item");
+          return;
+      }
+
+      LinkedList<Item> inventory2 = play1.getCurrentInventory(); //you can only challenge if you have a rock, paper, or scissors
+      int hasBattleItemP1 = 0;
+      for (Item obj : inventory2) {
+          if (obj.getItemName().equals("Rock") || obj.getItemName().equals("Paper") || obj.getItemName().equals("Scissors")) {
+              hasBattleItemP1 ++;
+
+
+          }
+      }
+
+      if (hasBattleItemP1 == 0) {
+
+          play1.getReplyWriter().println("\nYou do not have a battle item");
+          return;
+      }
+
+
+      for(Battle b : pendingBattles)//Challenger already asked this person to battle and is waiting for a response still.
     {
       if(b.hasPlayers(challenger,player2))
       {
@@ -1246,6 +1279,7 @@ if(playerSending.searchIgnoredBy(name2)){
         return;
       }
     }
+
 
     if(play1 == null)//other player doesnt exist
     {
@@ -1299,13 +1333,31 @@ if(playerSending.searchIgnoredBy(name2)){
 
   public void rock(String player)
   {
+
+
+
     Player p = this.playerList.findPlayer(player);
+      LinkedList<Item> inventory = p.getCurrentInventory();
+      int hasBattleItem = 0;
+      for (Item obj : inventory) {
+          if (obj.getItemName().equals("Rock")) {
+              hasBattleItem ++;
+
+
+          }
+      }
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player))
       {
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
+          if (hasBattleItem == 0){
+
+            p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+          }
+          p.removeObjectFomInventory("Rock");
           b.setChoiceP1(1);
           p.getReplyWriter().println("You Chose Rock.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
@@ -1316,6 +1368,12 @@ if(playerSending.searchIgnoredBy(name2)){
         }
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
+            if(hasBattleItem == 0){
+
+                p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+            }
+          p.removeObjectFomInventory("Rock");
           b.setChoiceP2(1);
           p.getReplyWriter().println("You Chose Rock.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
@@ -1332,12 +1390,29 @@ if(playerSending.searchIgnoredBy(name2)){
   public void paper(String player)
   {
     Player p = this.playerList.findPlayer(player);
+
+    LinkedList<Item> inventory = p.getCurrentInventory();
+    int hasBattleItem = 0;
+    for (Item obj : inventory) {
+        if (obj.getItemName().equals("Paper")) {
+            hasBattleItem ++;
+
+
+        }
+    }
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player))
       {
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
+            if (hasBattleItem == 0){
+
+                p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+
+            }
+          p.removeObjectFomInventory("Paper");
           b.setChoiceP1(2);
           p.getReplyWriter().println("You Chose Paper.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
@@ -1348,6 +1423,13 @@ if(playerSending.searchIgnoredBy(name2)){
         }
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
+            if (hasBattleItem == 0){
+
+                p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+
+            }
+          p.removeObjectFomInventory("Paper");
           b.setChoiceP2(2);
           p.getReplyWriter().println("You Chose Paper.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
@@ -1364,12 +1446,28 @@ if(playerSending.searchIgnoredBy(name2)){
   public void scissors(String player)
   {
     Player p = this.playerList.findPlayer(player);
+      LinkedList<Item> inventory = p.getCurrentInventory();
+      int hasBattleItem = 0;
+      for (Item obj : inventory) {
+          if (obj.getItemName().equals("Scissors")) {
+              hasBattleItem ++;
+
+
+          }
+      }
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player))
       {
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
+            if (hasBattleItem == 0){
+
+                p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+
+            }
+          p.removeObjectFomInventory("Scissors");
           b.setChoiceP1(3);
           p.getReplyWriter().println("You Chose Scissors.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
@@ -1380,6 +1478,13 @@ if(playerSending.searchIgnoredBy(name2)){
         }
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
+            if (hasBattleItem == 0){
+
+                p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+
+            }
+          p.removeObjectFomInventory("Scissors");
           b.setChoiceP2(3);
           p.getReplyWriter().println("You Chose Scissors.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
