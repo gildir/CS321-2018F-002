@@ -32,7 +32,7 @@ public class ItemParser
 			String title = tokens[3];
 	
 			String description = tokens[4];
-			for (int i = 4; i < tokens.length; i++)
+			for (int i = 5; i < tokens.length; i++)
 			{
 				description += "," + tokens[i];
 			}
