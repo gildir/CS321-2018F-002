@@ -137,4 +137,12 @@ public String tutorial(String name);
      */
     public String unIgnore(String name, String ignorePlayerName);
 
+
+    /* START 416_GroupChat */
+    /**
+     * Creates group chat
+     * @return none.
+     */
+    public void createGroupChat(String groupChatName, String playerName);
+    /* END 416_GroupCat */
 }
