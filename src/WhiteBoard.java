@@ -61,6 +61,7 @@ public class WhiteBoard
 		{
 			for(int i = this.message.length(); i < 152; i++)
 			{
+				if(i == 76 && this.message.length() < 76){break;}
 				formatedMessage += " ";
 			}
 		}
