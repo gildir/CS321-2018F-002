@@ -37,7 +37,7 @@ public class GameCore implements GameCoreInterface {
     private ArrayList<Battle> pendingBattles;
     private Leaderboard leaderboard;
     
-    private ChatRoomTracker chatRoomTracker;  //416_GroupChat
+    private GroupChatTracker groupChatTracker;  //416_GroupChat
 
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
@@ -57,7 +57,7 @@ public class GameCore implements GameCoreInterface {
 
         npcSet = new HashSet<>();
 
-	chatRoomTracker = new GroupChatTracker();  //416_GroupChat
+	groupChatTracker = new GroupChatTracker();  //416_GroupChat
 
         // Initialize starting NPCs
         npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
@@ -1395,4 +1395,15 @@ public class GameCore implements GameCoreInterface {
         return message;
     }
     //409_censor END
+
+    //416_GroupChat Start
+    //declared at top: private GroupChatTracker groupChatTracker;  //416_GroupChat
+    public String createGroupChat( String groupChatName, String playerName){
+    	return groupChatTracker.createGroupChat( groupChatName, playerName);
+    }
+
+    public String printGroupChat( String groupChatName ){
+	    return groupChatTracker.printGroup( groupChatName);
+    }
+    //416_GroupChat End
 }

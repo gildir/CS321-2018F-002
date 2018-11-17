@@ -386,4 +386,15 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
         return core.unIgnore(name,ignoreName);
     }
+    //416_GroupChat START
+    public String createGroupChat( String chatGroupName, String playerName) throws RemoteException
+    {
+	return core.createGroupChat( chatGroupName, playerName);
+    }
+
+    public String printGroupChat( String chatGroupName) throws RemoteException
+    {
+	    return core.printGroupChat( chatGroupName );
+    }
+    //416_GroupChat END
 }

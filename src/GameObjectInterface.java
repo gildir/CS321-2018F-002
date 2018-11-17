@@ -230,4 +230,8 @@ public interface GameObjectInterface extends Remote {
     public String listIgnoredPlayers(String playerName)throws RemoteException;
     //408
     public String unIgnore(String name, String ignoreName) throws RemoteException;
+    //406_GroupChat START
+    public String createGroupChat( String chatGroupName, String playerName) throws RemoteException;
+    public String printGroupChat( String chatGroupName) throws RemoteException;
+    //406_GroupChat END
 }

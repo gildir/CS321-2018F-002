@@ -6,28 +6,31 @@ public class GroupChatTracker{
 	//Tracker keeps track of all group chats
 	//Group chats are a combination of name 
 	// GroupChat object can be retrieves from HashMap using group chat name
+	// NOTE: Group chat names will always be saved in lowercase and need to be used in lowercase
 	private HashMap< String, ArrayList<String> > Tracker;
 
 	GroupChatTracker(){
 		System.out.println("This is a test from inside GroupChatTracker");
-		Tracker = new HashMap<String, ArrayList<String>();
+		Tracker = new HashMap<String, ArrayList<String> >();
 	}
 
 	//track a new group chats
 	//return true if group created, false if not created
-	boolean void createGroupChat( String chatGroupName , String playerName ){
+	public String createGroupChat( String groupChatName , String playerName ){
 		//TO DO:
 		// 1. return false if room with that name already exists. Ignore case.
 		
+		String groupChatNameLC = groupChatName.toLowerCase();
 		ArrayList<String> temp = new ArrayList<String>();
 		temp.add( playerName );
-		Tracker.put( chatGroupName, temp );
-		return true;
+		Tracker.put( groupChatNameLC, temp );
+		return "Group chat " + groupChatNameLC + " created";
 	}
 	
 	//print group chat tracking object, used for debugging
-	void printGroup( String groupName ){
-		System.out.println( Tracker.get(groupName) );
+	public String printGroup( String groupChatName ){
+		String groupChatNameLC = groupChatName.toLowerCase();
+		return groupChatName + " contents: " + Tracker.get(groupChatName);
 	}
 
 	/*****************************************/

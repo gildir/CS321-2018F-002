@@ -141,8 +141,13 @@ public String tutorial(String name);
     /* START 416_GroupChat */
     /**
      * Creates group chat
-     * @return none.
+     * @return Success or Failure message.
      */
-    public void createGroupChat(String groupChatName, String playerName);
+    public String createGroupChat(String groupChatName, String playerName);
+    
+    /**
+     * @return print out of groupChatName HashMap entry.
+     */
+    public String printGroupChat(String groupChatName);
     /* END 416_GroupCat */
 }

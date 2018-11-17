@@ -344,6 +344,22 @@ public class CommandRunner {
                 return "You need to input 3 characters for your new prefix.";
             }
         });
+	//406_GroupChat START
+	commandFunctions.put("GROUPCHAT", (name, args) -> {
+		//TODO: 
+		// 1. check that chat room name is not the same as an existing game command
+		// 2. check for improper command syntax, i.e. too many words following it
+		
+		return remoteGameInterface.createGroupChat( args.get(0), name);
+
+	});
+	commandFunctions.put("GROUPCHATPRINT", (name, args) -> {
+		//This is primarily used for debugging
+		return remoteGameInterface.printGroupChat( args.get(0));
+
+	});
+
+	//406_GroupChat END
     }
 
     /**
@@ -492,7 +508,8 @@ public class CommandRunner {
         //chat system
         descriptions.put("SHOUT",      new String[]{"MESSAGE", "Says <MESSAGE> to all players in the game."});
         descriptions.put("IGNORE",     new String[]{"-L;-A;-R PLAYER", "Use -A to add players to ignore list; -R to remove from list; -L with no player name to show list."});
-
+        descriptions.put("GROUPCHAT",      new String[]{"NAME", "Creates group chat NAME."});
+        descriptions.put("GROUPCHATPRINT",      new String[]{"NAME", "Prints group chat members."});
         // Create them
         createCommands(descriptions);
     }

@@ -29,3 +29,5 @@ GIVE,,Give amount of money to a friend
 GIFT,GHOULNAME ITEM,Player gifts a ghoul an object; this action decreases the ghoul's aggression.
 POKE,GHOULNAME,Player pokes a ghoul that is in the same room.
 CHANGEPREFIX,XXX,Input 3 characters for your new chat prefix.
+GROUPCHAT,NAME,Creates group chat NAME.
+GROUPCHATPRINT,NAME,Prints group chat members.
