@@ -87,7 +87,7 @@ public class Leaderboard {
 			//819s
 			p1WinStreak  = playerScore.getCurrentWinStreak();
 			p1LoseStreak = playerScore.getCurrentLossStreak();
-			// check edge case = =1 && to prevent negative array index on other cases
+			// check edge case = 1 && to prevent negative array index on other cases
 			if (i==0) {
 				rank = String.format("%-4d", pRank);
 			}
@@ -110,9 +110,14 @@ public class Leaderboard {
 					if (p1Score<p2Score) {
 						rank = String.format("%-4d", ++pRank);
 					} 
-					// 1 and 4 are equivalent so rank stays the same
+					// 1 and 4 are equivalent, check their longest winning streak
 					else {
-						rank = String.format("%-4d", pRank);
+						if (playerScore.getLongestWinStreak()<this.board.get(i-1).getLongestWinStreak()) {
+							rank = String.format("%-4d", ++pRank);
+						}
+						else {
+							rank = String.format("%-4d", pRank);
+						}
 					}
 				}
             }
