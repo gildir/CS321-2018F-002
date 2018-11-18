@@ -67,10 +67,13 @@ public class Shop {
      //Iterate through shop items to try and find a match
      for(Item obj : this.items){
          if(obj.getItemName().equalsIgnoreCase(itemName)) {
-             if(player.getMoney().sum() >= (obj.getItemValue() * 1.2)){
+             double cost = obj.getItemValue() * 1.2;
+             if(player.getMoney().sum() >= cost){
                  //add item to player inventory and update
                  inventory.add(obj);
                  player.setCurrentInventory(inventory);
+                 //remove money from player
+                 player.removeMoney(cost);
                  did_buy = true;
                  //remove item from shop's list of items
                  items.remove(obj);
