@@ -24,7 +24,7 @@ public class Player {
   private DataOutputStream outputWriter = null;
   private Money money;
   // the player's list of all his/her Quests
-	private ArrayList<Quest> questBook = new ArrayList<Quest>();
+ private ArrayList<Quest> questBook = new ArrayList<Quest>();
   private String inTradeWithName = null;
   private String inTradeWithItem = null;
   
@@ -40,15 +40,15 @@ public class Player {
     this.currentInventory = new LinkedList<>();
     this.money = new Money(20);
     try
-		{
-			// add a tutorial Quest to the player
-			questBook.add(new Quest(this, new File("go_to_dk_hall.quest")));
-			questBook.get(0).printQuest();
-		}
-		catch (FileNotFoundException fnfe)
-		{
-			System.out.println("Couldn't add quest: file containing quest information not found");
-		}
+  {
+   // add a tutorial Quest to the player
+   questBook.add(new Quest(this, new File("go_to_dk_hall.quest")));
+   questBook.get(0).printQuest();
+  }
+  catch (FileNotFoundException fnfe)
+  {
+   System.out.println("Couldn't add quest: file containing quest information not found");
+  }
     /* START 405_ignore*/
     this.ignoreList = new ArrayList<String>();
     this.ignoredByList = new ArrayList<String>();
@@ -193,16 +193,16 @@ public class Player {
     updateAllQuests();
     }
 
-	// updates all objectives in the player's questBook
-	// for all Quests in the Player's questBook
-	// if the Quest hasn't been completed, update that quest
-	private void updateAllQuests() {
-		for (Quest q : questBook) {
-			if ( !(q.getQuestComplete()) ) {
-				q.updateQuest();
-			}
-		}
-	}
+ // updates all objectives in the player's questBook
+ // for all Quests in the Player's questBook
+ // if the Quest hasn't been completed, update that quest
+ private void updateAllQuests() {
+  for (Quest q : questBook) {
+   if ( !(q.getQuestComplete()) ) {
+    q.updateQuest();
+   }
+  }
+ }
   
   public String getCurrentDirection() {
     return this.currentDirection.name();
@@ -337,35 +337,35 @@ public class Player {
   }
   
   public boolean hasUnits(double amount) {
-	    // send money in units available to player 
-	    // if correct units are unavaialable, then return and give a message
-	    double valueCopy = amount;
-	    int[] unitsGiven = new int[5];
-	    int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
-	    double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
-	    int index = 0;
-	    
-	    while(index < 5){
-	      for (int i = 1; i <= numUnits[index]; i++){
-	        if(unitVals[index] * i > valueCopy){
-	          break;
-	        }
-	        unitsGiven[index]++;
-	      }
-	      
-	      if(unitsGiven[index] > 0){
-	        valueCopy -= unitVals[index] * unitsGiven[index];
-	      }
-	      index++;
-	    }
-	    if(valueCopy > 0)
-	    	return false;
-	    return true;
+     // send money in units available to player 
+     // if correct units are unavaialable, then return and give a message
+     double valueCopy = amount;
+     int[] unitsGiven = new int[5];
+     int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
+     double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
+     int index = 0;
+     
+     while(index < 5){
+       for (int i = 1; i <= numUnits[index]; i++){
+         if(unitVals[index] * i > valueCopy){
+           break;
+         }
+         unitsGiven[index]++;
+       }
+       
+       if(unitsGiven[index] > 0){
+         valueCopy -= unitVals[index] * unitsGiven[index];
+       }
+       index++;
+     }
+     if(valueCopy > 0)
+      return false;
+     return true;
   }
   
   public Money giveMoney(Player giver,Player receiver,double value){
     Money moneyToGive = new Money();
-    replyWriter.println("You are giving away "+ String.format("%1$,.2f", value)); 
+    //replyWriter.println("You are giving away "+ String.format("%1$,.2f", value)); 
     
     if(this.money.sum() <= 0){
       replyWriter.println("Must give a positive amount of money!");
