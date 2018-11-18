@@ -1,6 +1,3 @@
-
-
-
 import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -317,8 +314,18 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
       * @throws RemoteException
       * @return A string indicating what quest you recieved
       */
-    public String interact(String name) throws RemoteException{
-    	return core.interact(name);
+    public String availableQuests(String name) throws RemoteException{
+    	return core.availableQuests(name);
+    }
+
+    /**
+      * Takes quest from NPC
+      * @param name Name of the player
+      * @param questNumber Index of the quest
+      * @return A string confirming the quest was taken
+      */
+    public String takeQuest(String name, int questNumber) throws RemoteException{
+        return core.takeQuest(name, questNumber);
     }
 
 	//Rock Paper Scissors Battle Code here--------------------------------------

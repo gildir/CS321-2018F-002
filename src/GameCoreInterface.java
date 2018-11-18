@@ -96,7 +96,7 @@ public interface GameCoreInterface {
      * @param fileName name of the file to log in
      * @param log      message to log
      */
-    public void log(String fileName, String log);
+    public void log(String fileName, String log);;
     
 //Rock Paper Scissors Battle Code here--------------------------------------
 public void challenge(String challenger, String player2);

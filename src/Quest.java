@@ -217,5 +217,10 @@ public class Quest
 		}
 		return String.format("Quest: %s\nDescription: %s\nStatus: %s", this.QUEST_NAME, this.QUEST_DESCRIPTION, status);
 	}
+
+	public String getQuestName()
+	{
+		return QUEST_NAME;
+	} 
 	
 }

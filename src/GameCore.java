@@ -1,4 +1,3 @@
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.LinkedList;
@@ -13,7 +12,7 @@ import java.io.IOException;
 import java.io.File;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-
+import java.io.FileNotFoundException;
 
 /**
  *
@@ -95,11 +94,11 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
-
+	
+	
 	questNPCs = new ArrayList<questNPC>();
 	questNPC clocktowerNPC = new questNPC("Clock Tower");
 	questNPCs.add(clocktowerNPC);
-
     }
 
     /**
@@ -797,40 +796,105 @@ public class GameCore implements GameCoreInterface {
     }
 
     /**
-      * Interact with an NPC that provides quests
+      *
+      * Check available quests from NPC
       * @param name Player that is interacting with the NPC
       */
-      public String interact(String name){
-      
-      	Player player = this.playerList.findPlayer(name);
+      public String availableQuests(String name){
+	
+	Player player = this.playerList.findPlayer(name);
 	Room room = map.findRoom(player.getCurrentRoom());
-	questNPC npc = new questNPC("placeholder");
+	questNPC npc  = new questNPC("placeholder");
 	boolean hasNPC = false;
 	String result = "";
-	int input;
-	Scanner sc = new Scanner(System.in);
+	Quest quest1 = null;
+	Quest quest2 = null;
+	Quest quest3 = null;
+	try{
+		quest1 = new Quest(player, new File("test_quest_1.quest"));
+		quest2 = new Quest(player, new File("test_quest_2.quest"));
+		quest3 = new Quest(player, new File("go_to_dk_hall.quest"));		
+      }
+	catch (FileNotFoundException fnfe){
+		System.out.println("Some quests files were unable to be found");
+	}
+	boolean playerHasQuest;
 
-      	for(int i = 0; i < questNPCs.size(); i++){
+	for(int i = 0; i < questNPCs.size(); i++){
 		if(room.getTitle().equals(questNPCs.get(i).getLocation())){
-			hasNPC = true;
+			hasNPC=true;
 			npc = questNPCs.get(i);
 		}
 	}
-	if(hasNPC == true){
+
+	playerHasQuest = player.hasQuest(quest1);
+	if(playerHasQuest == false)
+		npc.addQuest(quest1);
+	playerHasQuest = player.hasQuest(quest2);
+	if(playerHasQuest == false)
+		npc.addQuest(quest2);
+	playerHasQuest = player.hasQuest(quest3);
+	if(playerHasQuest == false)
+		npc.addQuest(quest3);
+
+	if(hasNPC == true)
 		player.getReplyWriter().println(npc.printQuests());
-		if(npc.getNumQuests() > 0){
-			player.getReplyWriter().println(">");
-			input = sc.nextInt();
-			boolean didAdd = player.addQuest(npc.getQuest(input));
-			if(didAdd)
-				player.getReplyWriter().println("The Quest was added to your Quest Book");
-		}
-		sc.close();
-		
+	else
+		player.getReplyWriter().println("There isn't an npc that provides quests in this room");
+	npc.clearQuests(npc.getNumQuests());
+	return result;
 	}
-		
+
+    /**
+      * Interact with an NPC that provides quests
+      * @param name Player that is interacting with the NPC
+      */
+      public String takeQuest(String name, int questNumber){
       
-      return result;
+     		Player player = this.playerList.findPlayer(name);
+		Room room = map.findRoom(player.getCurrentRoom());
+		questNPC npc = new questNPC("placeholder");
+		boolean hasNPC = false;
+		String result = "";
+		Quest quest1 = null;
+		Quest quest2 = null;
+
+		try{
+			quest1 = new Quest(player, new File("test_quest_1.quest"));
+			quest2 = new Quest(player, new File("test_quest_2.quest"));
+		}
+		catch (FileNotFoundException fnfe){
+			System.out.println("Some quest files were unable to be found");
+		}
+		boolean playerHasQuest;
+	
+      	for(int i = 0; i < questNPCs.size(); i++){
+			if(room.getTitle().equals(questNPCs.get(i).getLocation())){
+				hasNPC = true;
+				npc = questNPCs.get(i);
+			}
+		}	
+
+		playerHasQuest = player.hasQuest(quest1);
+		if(playerHasQuest == false)
+			npc.addQuest(quest1);
+		playerHasQuest = player.hasQuest(quest2);
+		if(playerHasQuest == false)
+			npc.addQuest(quest2);
+
+		if(hasNPC == true){
+			if(questNumber < 0 || questNumber > npc.getNumQuests()){
+				npc.clearQuests(npc.getNumQuests());
+				return "Not a valid quest number";
+			}
+			else{
+				player.addQuest(npc.getQuest(questNumber));
+				result += "Quest Added to your Quest Book\n";
+			}
+		}
+		npc.clearQuests(npc.getNumQuests());
+        	result += "Please come again";
+		return result;
       }
 
 

@@ -33,6 +33,11 @@ public class questNPC{
 		availableQuest.remove(questNumber-1);
 		return quest;
 	}
+
+	public void clearQuests(int numQuests){
+		for(int i = 0; i < numQuests; i++)
+			availableQuest.remove(0);
+	}
 	
 	public String getLocation(){
 		return location;

@@ -1,5 +1,3 @@
-
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -198,10 +196,19 @@ public interface GameObjectInterface extends Remote {
     /**
       * Interacts with NPC that provides quests
       * @param name Name of the player that is interacting
-      * @return A String indicating which quest was recieved
+      * @return A String with a list of available quests
       * @throws RemoteException
       */
-    public String interact(String name) throws RemoteException;
+    public String availableQuests(String name) throws RemoteException;
+
+    /**
+      * Takes a quest from the NPC
+      * @param name Name of player taking the quest
+      * @param questNumber The index of the quest to be taken
+      * @return A string confirming the quest was taken
+      * @throws RemoteException
+      */
+    public String takeQuest(String name, int questNumber) throws RemoteException;
 
 //Rock Paper Scissors Battle Code Here---------------------------------
     public void challenge(String challenger, String player2) throws RemoteException;

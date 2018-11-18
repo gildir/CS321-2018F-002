@@ -1,4 +1,3 @@
-
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
@@ -23,7 +22,7 @@ public class Player {
     private Money money;
 	// the player's list of all his/her Quests
 	private ArrayList<Quest> questBook = new ArrayList<Quest>();
-
+ 
     public Player(String name) {
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
@@ -234,6 +233,14 @@ public class Player {
 		return false;
         questBook.add(quest);
         return true;
+    }
+
+    public boolean hasQuest(Quest quest){
+	for(int i = 0; i < questBook.size(); i++){
+		if(questBook.get(i).getQuestName().equals(quest.getQuestName()))
+			return true;
+	}
+	return false;
     }
 
     @Override
