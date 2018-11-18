@@ -390,7 +390,7 @@ public class GameClient {
     
     private boolean checkDynamicCommand( String command, ArrayList<String> tokens, String input){
 	try{
-	    String groupName = command;
+	    String groupName = command.toLowerCase();
             //check if groupname is being invoked
 	    if( remoteGameInterface.checkGCExists( groupName ) ){
 		//check if there is no additional tokens, there should be
@@ -432,7 +432,8 @@ public class GameClient {
                             if( !remoteGameInterface.checkGCMembership( groupName, this.playerName) )
                                 System.out.println("You aren't in group [" + groupName + "].");
 			    else
-			        remoteGameInterface.GCMessage(groupName, this.playerName, input);
+				//here command is passed instead of groupName because the original letter case is needed
+			        remoteGameInterface.GCMessage(command, this.playerName, input);
 			
 		    break;
 			    

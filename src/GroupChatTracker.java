@@ -147,7 +147,7 @@ public class GroupChatTracker{
 
 	//return group members ArrayList
 	public ArrayList<String> groupMembers (String groupName){
-            return Tracker.get( groupName );
+            return Tracker.get( groupName.toLowerCase() );
 	}
 
 	//this function is called when a player accepts an invite

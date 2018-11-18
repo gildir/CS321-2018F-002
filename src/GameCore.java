@@ -1432,6 +1432,12 @@ public class GameCore implements GameCoreInterface {
 	     
 	}
 
+	//check if inviting inviting and invited player are the same
+	if( playerInvited.equalsIgnoreCase( playerInviting ) ){
+		return "You are already in group [" + groupName + "].";
+
+	}
+	
 	//Track the invite
 	groupChatTracker.trackInvite( groupName, playerInvited );
 
@@ -1447,7 +1453,7 @@ public class GameCore implements GameCoreInterface {
     public void GCMessage( String groupName, String playerName, String rawInput){
 	    
 	//rawInput has the groupName at the start, it needs to be removed
-	String message = rawInput.replaceAll( "^" + groupName, "[" + groupName + "] " + playerName + " : " ); 
+	String message = rawInput.replaceAll( "^" + groupName, "[" + groupName.toLowerCase() + "] " + playerName + " : " ); 
 	
 	//Get list of all members in group chat
 	ArrayList<String> group = groupChatTracker.groupMembers( groupName );
