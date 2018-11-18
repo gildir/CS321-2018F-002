@@ -396,5 +396,35 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
 	    return core.printGroupChat( chatGroupName );
     }
+
+    public boolean checkGCExists(String groupChatName) throws RemoteException
+    {
+	    return core.checkGCExists( groupChatName );
+    }
+
+     public String GCInvite( String groupName, String playerInvited, String playerInviting) throws RemoteException
+    {
+        return core.GCInvite( groupName, playerInvited, playerInviting);
+    }
+
+    public void GCMessage( String groupName, String playerName, String rawInput) throws RemoteException
+    {
+        core.GCMessage( groupName, playerName, rawInput);
+    }
+
+    public String GCLeave( String groupName, String playerName) throws RemoteException
+    {
+        return core.GCLeave( groupName, playerName);
+    }
+
+     public String GCJoin( String groupName, String playerName) throws RemoteException
+     {
+        return core.GCJoin( groupName, playerName);
+     }
+
+     public boolean checkGCMembership( String groupName, String playerName) throws RemoteException
+     {
+        return core.checkGCMembership( groupName, playerName);
+     }
     //416_GroupChat END
 }

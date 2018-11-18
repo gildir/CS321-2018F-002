@@ -233,5 +233,17 @@ public interface GameObjectInterface extends Remote {
     //406_GroupChat START
     public String createGroupChat( String chatGroupName, String playerName) throws RemoteException;
     public String printGroupChat( String chatGroupName) throws RemoteException;
+
+    public boolean checkGCExists(String groupChatName) throws RemoteException;
+
+    public String GCInvite( String groupName, String playerInvited, String playerInviting) throws RemoteException;
+
+    public void GCMessage( String groupName, String playerName, String rawInput) throws RemoteException;
+    
+    public String GCLeave( String groupName, String playerName) throws RemoteException;
+    
+    public String GCJoin( String groupName, String playerName) throws RemoteException;
+    
+    public boolean checkGCMembership( String groupName, String playerName) throws RemoteException;
     //406_GroupChat END
 }

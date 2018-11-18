@@ -348,17 +348,31 @@ public class CommandRunner {
 	commandFunctions.put("GROUPCHAT", (name, args) -> {
 		//TODO: 
 		// 1. check that chat room name is not the same as an existing game command
-		// 2. check for improper command syntax, i.e. too many words following it
+		
+		//expect only one argument with command
+		if( args.size() != 1 )
+			return "The command takes one argument. Correct usage is GROUPCHAT <Group Name>.";
 		
 		return remoteGameInterface.createGroupChat( args.get(0), name);
 
 	});
 	commandFunctions.put("GROUPCHATPRINT", (name, args) -> {
 		//This is primarily used for debugging
+		//expect only one argument with command
+		if( args.size() != 1 )
+			return "The command takes one argument. Correct usage is GROUPCHATPRINT <Group Name>.";
+
 		return remoteGameInterface.printGroupChat( args.get(0));
 
 	});
 
+	commandFunctions.put("JOIN", (name, args) -> {
+		//expect only one argument with command
+		if( args.size() != 1 )
+			return "The command takes one argument. Correct usage is JOIN <Group Name>.";
+		
+		return remoteGameInterface.GCJoin( args.get(0), name);
+	});
 	//406_GroupChat END
     }
 
@@ -510,7 +524,8 @@ public class CommandRunner {
         descriptions.put("IGNORE",     new String[]{"-L;-A;-R PLAYER", "Use -A to add players to ignore list; -R to remove from list; -L with no player name to show list."});
         descriptions.put("GROUPCHAT",      new String[]{"NAME", "Creates group chat NAME."});
         descriptions.put("GROUPCHATPRINT",      new String[]{"NAME", "Prints group chat members."});
-        // Create them
+        descriptions.put("JOIN",       new String[]{"GROUPCHATNAME", "Joins player to group chat with name GROUPCHATNAME."});
+	// Create them
         createCommands(descriptions);
     }
 

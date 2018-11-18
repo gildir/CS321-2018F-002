@@ -376,10 +376,76 @@ public class GameClient {
             deleteCharacter();
         }
         update();
-        commandRunner.run(command, tokens, this.playerName);
-        update();
+	//416_GroupChat START
+	if( checkDynamicCommand( command, tokens, input) ){
+		//work on in checkDynamicCommand()
+	}
+	//416_groupChat END
+	else{
+	        commandRunner.run(command, tokens, this.playerName);
+        	update();
+	}
     }
+	//416_GroupChat START
+    
+    private boolean checkDynamicCommand( String command, ArrayList<String> tokens, String input){
+	try{
+	    String groupName = command;
+            //check if groupname is being invoked
+	    if( remoteGameInterface.checkGCExists( groupName ) ){
+		//check if there is no additional tokens, there should be
+		if( tokens.size() == 0){
+                    //The error message depends on whether or not the user is part of the group. 
+		    if( remoteGameInterface.checkGCMembership( groupName, this.playerName ) ) 
+                        System.out.println("Command not used properly, type GROUPCHAT HELP for group chat context command help");
+                    else
+		        System.out.println("You're not in group [" + groupName + "].");
+	            return true;
+		}
 
+	        //group exists, check for groupchat context commands, ignore case
+	        switch( tokens.get(0).toLowerCase() )
+	        {
+	            //check for /invite
+	            case "/invite":
+			    //two command arguments are needed
+			    //there should only be 2 tokens left
+			    if( tokens.size() != 2)
+				System.out.println("Command not used properly, type GROUPCHAT HELP for group chat context command help");
+			    else 
+                                System.out.println( remoteGameInterface.GCInvite( groupName, tokens.get(1) /*player being invited*/ , this.playerName ) );
+		    break;
+
+		    //check for /leave
+		    case "/leave":
+		            //one command argument is needed
+			    //there should only be 1 token left
+			    if( tokens.size() != 1)
+				    System.out.println("Command not used properly, type GROUPCHAT HELP for group chat context command list");
+			    else
+				    System.out.println( remoteGameInterface.GCLeave(groupName, this.playerName) );
+			    break;
+	            
+		    //its a message, send it to the group
+		    default:
+			     //check that player is in the group
+                            if( !remoteGameInterface.checkGCMembership( groupName, this.playerName) )
+                                System.out.println("You aren't in group [" + groupName + "].");
+			    else
+			        remoteGameInterface.GCMessage(groupName, this.playerName, input);
+			
+		    break;
+			    
+			    
+	        }	    
+		return true;
+            }
+	}catch( RemoteException re ){
+		    System.exit(-1);
+	}
+        return false;
+    }
+    //416_GruopChat END
     public static void main(String[] args) {
         if(args.length < 1) {
             System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");

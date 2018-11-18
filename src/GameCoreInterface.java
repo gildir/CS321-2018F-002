@@ -149,5 +149,26 @@ public String tutorial(String name);
      * @return print out of groupChatName HashMap entry.
      */
     public String printGroupChat(String groupChatName);
+
+    
+    /**
+     *  check if group chat exists
+     *  @return true if group with name exists, otherwise false
+     */
+    public boolean checkGCExists(String groupChatName);
+    
+     /**
+     * Invites player to join a group chat 
+     * @return feed back to the user.
+     */
+    public String GCInvite( String groupName, String playerInvited, String playerInviting);
+    
+    public void GCMessage( String groupName, String playerName, String rawInput);
+    
+    public String GCLeave( String groupName, String playerName);
+
+    public String GCJoin( String groupName, String playerName);
+    
+    public boolean checkGCMembership( String groupName, String playerName);
     /* END 416_GroupCat */
 }
