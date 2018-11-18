@@ -24,11 +24,14 @@ public class GameCore implements GameCoreInterface {
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
     private final int minimumSpawnTime=100, maximumSpawnTime=600;
+    
+    private final GiftsTracker giftsTracker;
 
     //Prefix that will help distinguish player chat from anything else
     private String chatPrefix;
 
     private final Shop shop;
+    Date date;
 
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
@@ -41,13 +44,15 @@ public class GameCore implements GameCoreInterface {
      */
      //now takes filename for Map
     public GameCore(String filename) {
-        
+ 
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
         
         playerList = new PlayerList();
 
         shop = new Shop();
+        
+        giftsTracker = new GiftsTracker();
 
         npcSet = new HashSet<>();
 
@@ -82,7 +87,7 @@ public class GameCore implements GameCoreInterface {
                 while(true) {
                     try {
                       Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
-                        object = objects.get(rand.nextInt(objects.size()));
+                        object = (Item)objects.get(rand.nextInt(objects.size())).clone();
                         room = map.randomRoom();
                         room.addObject(object);
                         
@@ -96,6 +101,9 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
+
+      date = new Date();
 
     }
 
@@ -332,20 +340,22 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
     @Override
-    public String say(String name, String message) {
+    public String say(String name, String message, ArrayList<String> censorList) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null)
-        {
+        if(player != null) {
+            message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
             String log = player.getName() + " says, \"" +
                     message + "\" in the room " + player.getCurrentRoom();
             add_chat_log(log);
-            this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"");
-            return chatPrefix + "You say, \"" + message + "\"";
+
+            this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"" + " " + date.toString());
+            return chatPrefix + "You say, \"" + message + "\"" + " " + date.toString();
         }
         else {
             return null;
         }
     }
+
 
     /**
     * Shouts "message" to everyone in the world.
@@ -353,14 +363,15 @@ public class GameCore implements GameCoreInterface {
     * @param message Message that will be shouted
     * @return Message showing success.
     */
-    public String shout(String name, String message) {
+    public String shout(String name, String message, ArrayList<String> censorList) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null)
-        {
-            String log = player.getName() + " shouts, \"" + message + "\"";
+        if(player != null) {
+            message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
+            String log = player.getName() + " shouts, \"" + message + "\"" + " " + date.toString();
             add_chat_log(log);
-            this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"");
-            return chatPrefix + "You shout, \"" + message + "\"";
+
+            this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"" + " " + date.toString());
+            return chatPrefix + "You shout, \"" + message + "\"" + " " + date.toString();
         }
         else {
             return null;
@@ -375,23 +386,31 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to whisper
     * @return Message showing success.
     */
-    public String whisper(String name1, String name2, String message) {
+    public String whisper(String name1, String name2, String message, ArrayList<String> censorList) {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
         if(playerSending != null && playerReceiving != null)
         {
+
             if(name1.equalsIgnoreCase(name2))
-                return "Cannot whisper yourself";
+                return "Cannot whisper yourself" + " " + date.toString();
             else
             {
+		
+		if(playerSending.searchIgnoredBy(name2)){
+			return "Cannot whisper player that has ignored you";
+	    	}
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
+
+                    message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
-                            + playerReceiving.getName();
+                            + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
                     this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
-                    playerReceiving.setLastWhisperName(name1);
-                    return "Message sent to " + playerReceiving.getName();
+
+                    playerReceiving.setLastWhisperName(name1); 
+                    return "Message sent to " + playerReceiving.getName() + " " + date.toString();
                 }
                 else {
                     return "";
@@ -412,14 +431,15 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to be whispered
     * @return Message showing success.
     */
-    public String reply(String name, String message) {
+    public String reply(String name, String message, ArrayList<String> censorList) {
         Player playerSending = this.playerList.findPlayer(name);
         if(playerSending.getLastWhisperName() == null) {
-            return "You have not received a whisper to reply to.";
+
+            return "You have not received a whisper to reply to." + " " + date.toString();
         }
         String name2 = playerSending.getLastWhisperName();
         Player playerReceiving = this.playerList.findPlayer(name2);
-        return this.whisper(name, name2, message);
+        return this.whisper(name, name2, message, censorList); //409_censor whisper command scrubs message of unwanted words
     }
 
     /**
@@ -618,7 +638,30 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }
+    }       
+	
+	/**
+     * Attempts to pick up an object < target >. Will return a message on any success or failure.
+     * @param name Name of the player to move
+     * @param target The case-insensitive name of the object to pickup.
+     * @return Message showing success.
+     */
+    public String describe(String name, String target) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            LinkedList<Item> playerInventory = player.getCurrentInventory();
+			
+			for(Item obj : playerInventory){
+				if(obj.getItemName().equalsIgnoreCase(target)){
+                    return obj.getItemDescrip();
+				}	
+            }
+            return "Hey uh...you can't ask me to describe something you don't own y'know?";
+		}
+		
+		return null;
+	}		
+	
     /**
      * Attempts to drop off an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
@@ -645,6 +688,24 @@ public class GameCore implements GameCoreInterface {
         }
     }
     /**
+     * Sorts inventory by the specified item attribute
+     * @param name Name of the player who's inventory will be sorted
+     * @param attribute the item attribute to sort the inventory
+     * @return Message showing success.
+     */
+    public String sortInventory(String name, String attribute) {
+        Player player = this.playerList.findPlayer(name);
+            if( (!player.getCurrentInventory().isEmpty()) && (!attribute.isEmpty()) && ((attribute.equalsIgnoreCase("name") || attribute.equalsIgnoreCase("weight") || attribute.equalsIgnoreCase("value")))) {
+                player.sortInventoryItems(attribute);
+            }
+            else {
+                if(player.getCurrentInventory().isEmpty())
+                    return "Can't sort empty inventory";
+              return "Invalid attribute";
+            }
+            return null;
+    }
+    /**
      * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
      * @param player The player offering the item
      * @param nameOffered Name of the person being offered an item
@@ -663,6 +724,10 @@ public class GameCore implements GameCoreInterface {
                 {
                     return "You can't offer yourself an item.";
                 }
+                if(playerOffered.getInTradeWithName() != null)
+                {
+                    return "This player is already in a trade.";
+                }
                 for(Item obj : playerInventory){
                     if(obj.getItemName().equalsIgnoreCase(target)){
                         hasItem = true;
@@ -670,7 +735,9 @@ public class GameCore implements GameCoreInterface {
                     }
                 }
                 if(hasItem) {
-                    playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
+                    playerOffered.setInTradeWithName(playerName);
+		            playerOffered.setInTradeWithItem(target);
+		            playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
                     return "You just offered " + nameOffered + " a " + target + " from your inventory.";
                 }
                 else {
@@ -684,6 +751,72 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
+    }
+    /**
+     * Attempts to have a player <playerName> answer an offering player with <response>. Will return a message on success or failure.
+     * @param playerName The player responding to the offer
+     * @param response The response that the player is sending
+     * @return A message showing success.
+     *
+     */
+    public String offerResponse(String playerName, String response){
+        Player player = this.playerList.findPlayer(playerName);
+        String nameOffering = player.getInTradeWithName();
+        String target = player.getInTradeWithItem();
+        if(nameOffering == null || target == null){
+            return "You are not in a valid trade";
+        }
+        Player playerOffering = this.playerList.findPlayer(nameOffering);
+        boolean hasItem = false;
+        if(player != null){
+                LinkedList<Item> playerInventory = playerOffering.getCurrentInventory();
+                if(playerOffering != null) {
+                    if (player == playerOffering)
+                    {
+                        return "You can't accept an item from yourself.";
+                    }
+                    for(Item obj : playerInventory){
+                        if(obj.getItemName().equalsIgnoreCase(target)){
+                            hasItem = true;
+                            break;
+                        }
+                    } 
+                    if(hasItem) {
+                        player.setInTradeWithName(null);
+                        player.setInTradeWithItem(null);
+
+                        if(response.equalsIgnoreCase("Accept")){
+                            if(player.getCurrentInventory().size() < 10){
+                                Item object = playerOffering.removeObjectFomInventory(target);
+                                player.addObjectToInventory(object);
+                                playerOffering.getReplyWriter().println(playerName + " accepted your " + target);
+                                return playerName + " got a " + target + " from " + nameOffering + ".";
+                            }
+                            else{
+                                playerOffering.getReplyWriter().println(playerName + " tried to accept your " + target + " but failed.");
+                                return playerName + " tried to accept a " + target + " from " + nameOffering + " but their inventory is full.";
+                            }
+                        }
+                        else if(response.equalsIgnoreCase("Refuse")){
+                                playerOffering.getReplyWriter().println(playerName + " refused your " + target);
+                                return playerName + " refused a " + target + " from " + nameOffering + ".";
+                        }
+                        else{
+                            return "Invalid response.";
+                        }
+                    }
+                    else {
+                        return "You just tried to respond to " + nameOffering + " about the " + target + ", but they don't have one.";
+                    }
+                }
+                else {
+                    return "You just tried to respond to " + nameOffering + " about the " + target + ", but " + nameOffering + " is not here.";
+                }
+            }
+            else {
+                return null;
+            }
+
     }
 
     /**
@@ -811,29 +944,68 @@ public class GameCore implements GameCoreInterface {
     }    
     @Override
     public String gift(String yourname ,String name, double amount){
-        Player receiver = this.playerList.findPlayer(name);
-        Player you = this.playerList.findPlayer(yourname);
-        if(receiver != null){
-          if(you.getMoney().sum() < amount){
-           return "NOT ENOUGH MONEY!";
-          }
-            this.broadcast(you, you.getName() + " offers a gift to " + receiver.getName());
-           //Scanner read = new Scanner(System.in);
-
-            receiver.getReplyWriter().println("Accept gift? (y/n):");
-
-           /*String input = read.nextLine();
-
-           if(input.toLowerCase().equals("y")) {
-
-            receiver.acceptMoney(you.giveMoney(you,receiver,amount));
-
-           return "User accepted gift!";*/
-            return "";
-           //}
-      }else{
-            return "NO USER WITH THAT NAME";
-      }
+    	if(yourname.toLowerCase().equals(name.toLowerCase()))
+    		return "Can't trade yourself, silly! Get some friends!";
+    	Player tradee = this.playerList.findPlayer(name); 
+        Player trader = this.playerList.findPlayer(yourname);
+        if(trader == null || tradee == null)
+        	return "" + name + " does not exist!";
+        if(trader.getCurrentRoom() != tradee.getCurrentRoom())
+        	return "You are not close enough to give!";
+        if(amount <= 0)
+        	return "Must gift an amount greater than 0!";
+        if(trader.getMoney().sum() < amount)
+        	return "You don't have that much money, silly!";
+        if(!(trader.hasUnits(amount)))
+        	return "You don't have the right money units, silly!";
+        boolean result = this.giftsTracker.trackGift(trader, tradee, amount);
+        if(result == false)
+        	return "" + tradee.getName() + " already has an open trade!";
+        tradee.getReplyWriter().println("" + trader.getName() + " wants to gift you $" + amount + "!\nEnter RECEIVE GIFT to accept.");
+        return "You try to gift " + tradee.getName() + " $" + amount; 
+    }
+    
+    public String acceptGift(String name) {
+    	Player tradee = this.playerList.findPlayer(name);
+    	if(tradee == null)
+    		return null;
+    	if(!(this.giftsTracker.hasOpenRequest(tradee))) {
+    		return "Nobody has gifted you anything! Maybe wait till Christmas!";
+    	}
+    	GiftsTracker.GiftRequest request = this.giftsTracker.getRequest(tradee);
+    	if(request == null)
+    		return null;
+    	Player trader = request.getTrader();
+    	if(trader == null)
+    		return null;
+    	double giftAmount = request.getAmount();
+    	if(trader.getMoney().sum() < giftAmount) {
+    		this.giftsTracker.close(request);
+    		return "" + trader.getName() + " ran out of money!";
+    	}
+    	trader.giveMoney(trader, tradee, giftAmount);
+    	trader.getReplyWriter().println(tradee.getName() + " has accepted your gift!");
+    	this.giftsTracker.close(request);
+    	return "You have receieved the gift!";
+    }
+    
+    public String declineGift(String name) {
+    	Player player = playerList.findPlayer(name);
+    	if(player == null)
+    		return null;
+    	if(!(giftsTracker.hasOpenRequest(player))) 
+    		return "Nobody has gifted you anything! Maybe wait till Christmas!";
+    	GiftsTracker.GiftRequest request = this.giftsTracker.getRequest(player);
+    	if(request == null)
+    		return null;
+    	Player trader = request.getTrader();
+    	if(trader == null) {
+    		giftsTracker.close(request);
+    		return "You declined the gift.";
+    	}
+    	trader.getReplyWriter().println(player.getName() + " has declined your gift.");
+    	giftsTracker.close(request);
+    	return "You declined the gift.";
     }
 
      /**
@@ -1357,7 +1529,7 @@ public class GameCore implements GameCoreInterface {
              writer.close();
          }
          catch(IOException e) {}
-    }
+}
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
       // Added by Brendan
@@ -1397,6 +1569,42 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(message);
       return "";
   }
+
+    //409_censor START
+    private String scrubMessage( String message, ArrayList<String> censorList ){
+        if( message == null || message.equals(' ') )
+                return message;
+        if( censorList == null || censorList.size()==0)
+                return message;
+        for( String word:censorList){
+            String censor = "*";
+            for( int x = 1; x<word.length();x++)
+                    censor+="*";
+            message = message.replaceAll( "(?i)(" + word.toString() + ")", censor);
+        }
+        return message;
+    }
+    //409_censor END
+  
+  //Added by An
+  public void topTen(String name) {
+      Player player = this.playerList.findPlayer(name);
+      if(player == null)
+          return;
+      String topTenLeaderBoard = this.leaderboard.getTopTen();
+      player.getReplyWriter().println(topTenLeaderBoard);
+  }
+
+
+
+
+  public void getRank(String player)
+  {
+    Player p = this.playerList.findPlayer(player);
+    p.getReplyWriter().println("Your current RPS Leaderboard rank is: "+ leaderboard.getPlayerRank(player));
+  }
+
+
 
   // Whiteboards
   /**
