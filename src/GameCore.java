@@ -340,17 +340,16 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
     @Override
-    public String say(String name, String message) {
+    public String say(String name, String message, ArrayList<String> censorList) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null)
-        {
+        if(player != null) {
+            message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
             String log = player.getName() + " says, \"" +
                     message + "\" in the room " + player.getCurrentRoom();
             add_chat_log(log);
 
             this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"" + " " + date.toString());
             return chatPrefix + "You say, \"" + message + "\"" + " " + date.toString();
-
         }
         else {
             return null;
@@ -364,11 +363,10 @@ public class GameCore implements GameCoreInterface {
     * @param message Message that will be shouted
     * @return Message showing success.
     */
-    public String shout(String name, String message) {
+    public String shout(String name, String message, ArrayList<String> censorList) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null)
-        {
-
+        if(player != null) {
+            message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
             String log = player.getName() + " shouts, \"" + message + "\"" + " " + date.toString();
             add_chat_log(log);
 
@@ -388,7 +386,7 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to whisper
     * @return Message showing success.
     */
-    public String whisper(String name1, String name2, String message) {
+    public String whisper(String name1, String name2, String message, ArrayList<String> censorList) {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
         if(playerSending != null && playerReceiving != null)
@@ -398,12 +396,14 @@ public class GameCore implements GameCoreInterface {
                 return "Cannot whisper yourself" + " " + date.toString();
             else
             {
-if(playerSending.searchIgnoredBy(name2)){
-		return "Cannot whisper player that has ignored you";
-	    }
+		
+		if(playerSending.searchIgnoredBy(name2)){
+			return "Cannot whisper player that has ignored you";
+	    	}
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
 
+                    message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
                             + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
@@ -411,7 +411,6 @@ if(playerSending.searchIgnoredBy(name2)){
 
                     playerReceiving.setLastWhisperName(name1); 
                     return "Message sent to " + playerReceiving.getName() + " " + date.toString();
-
                 }
                 else {
                     return "";
@@ -432,7 +431,7 @@ if(playerSending.searchIgnoredBy(name2)){
     * @param message Message to be whispered
     * @return Message showing success.
     */
-    public String reply(String name, String message) {
+    public String reply(String name, String message, ArrayList<String> censorList) {
         Player playerSending = this.playerList.findPlayer(name);
         if(playerSending.getLastWhisperName() == null) {
 
@@ -440,7 +439,7 @@ if(playerSending.searchIgnoredBy(name2)){
         }
         String name2 = playerSending.getLastWhisperName();
         Player playerReceiving = this.playerList.findPlayer(name2);
-        return this.whisper(name, name2, message);
+        return this.whisper(name, name2, message, censorList); //409_censor whisper command scrubs message of unwanted words
     }
 
     /**
@@ -1530,7 +1529,7 @@ if(playerSending.searchIgnoredBy(name2)){
              writer.close();
          }
          catch(IOException e) {}
-    }
+}
 //Rock Paper Scissors Battle Methods -------------------------------------------
 
       // Added by Brendan
@@ -1571,8 +1570,21 @@ if(playerSending.searchIgnoredBy(name2)){
       return "";
   }
 
-
-
+    //409_censor START
+    private String scrubMessage( String message, ArrayList<String> censorList ){
+        if( message == null || message.equals(' ') )
+                return message;
+        if( censorList == null || censorList.size()==0)
+                return message;
+        for( String word:censorList){
+            String censor = "*";
+            for( int x = 1; x<word.length();x++)
+                    censor+="*";
+            message = message.replaceAll( "(?i)(" + word.toString() + ")", censor);
+        }
+        return message;
+    }
+    //409_censor END
   
   //Added by An
   public void topTen(String name) {
