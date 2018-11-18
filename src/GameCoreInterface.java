@@ -22,7 +22,10 @@ public interface GameCoreInterface {
     
 
     public String gift(String playerName, String name, double amount);
-
+    
+    public String acceptGift(String name);
+    
+    public String declineGift(String name);
 
     /**
      * Returns the player with the given name or null if no such player.
@@ -117,6 +120,9 @@ public void paper(String player);
 public void scissors(String player);
 public void checkBoard(String player);
 public String tutorial(String name);
+public void topTen(String name);
+public void getRank(String player);
+
 //Rock Paper Scissors Battle Code here--------------------------------------
 	/**
 	 * gives an ASCII art map of the world surrounding a player
