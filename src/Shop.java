@@ -133,7 +133,7 @@ public class Shop {
    result += "" + item.amount + " ..................... " + item.itemName + " $" + (String.format("%.2f",item.value)) +"\n";
   }
   result += "To sell an item enter SELL <ITEM>\n" + "To buy an item enter BUY <ITEM>\n";
-  result += "To exit the shop enter LEAVE SHOP\n\n";
+  result += "To exit the shop enter LEAVE SHOP or MOVE <ANY DIRECTION>\n\n";
   return result;
  }
 }
