@@ -1,15 +1,19 @@
+//Team 8
+
+//Battle: manages variables used in Rock-Paper-Scissors battle between two players
 public class Battle
 {
-  private String player1 = "";//Challenger
-  private String player2 = "";//Challenged
-  private String currentStatus = "";//status of battle (Active, Pending)
-  private int[] choicePlayer1;
-  private int[] choicePlayer2;
-  private int p1Score;
-  private int p2Score;
-  private int currentRound;
-  private int maxRounds;
+  private String player1 = "";			//challenger
+  private String player2 = "";			//opposing player
+  private String currentStatus = "";	//current status of battle (active or pending)
+  private int[] choicePlayer1;			//list of choices made each round by player1
+  private int[] choicePlayer2;			//list of choices made each round by player2
+  private int p1Score;					//player1 score across multiple rounds (not PlayerScore)
+  private int p2Score;					//player2 score across multiple rounds (not PlayerScore)
+  private int currentRound;				//current round in battle
+  private int maxRounds;				//total rounds in battle
 
+  //Constructor: new battle between challenger and player, with 'rounds' rounds
   public Battle(String challenger, String otherPlayer, int rounds)
   {
     player1 = challenger;
@@ -21,6 +25,8 @@ public class Battle
     maxRounds = rounds;
   }
 
+  //Setters
+  
   public void setStatus(String newStatus)
   {
     currentStatus = newStatus;
@@ -31,6 +37,13 @@ public class Battle
     choicePlayer1[currentRound] = choice;
   }
 
+  public void setChoiceP2(int choice)
+  {
+    choicePlayer2[currentRound] = choice;
+  }
+
+  //Getters
+  
   public String getPlayer1()
   {
     return player1;
@@ -39,11 +52,6 @@ public class Battle
   public String getPlayer2()
   {
     return player2;
-  }
-
-  public void setChoiceP2(int choice)
-  {
-    choicePlayer2[currentRound] = choice;
   }
 
   public int[] getChoiceP1()
@@ -61,26 +69,6 @@ public class Battle
     return currentStatus;
   }
 
-  public boolean hasPlayers(String p1, String p2)
-  {
-    return (player1.equalsIgnoreCase(p1)) && (player2.equalsIgnoreCase(p2));
-  }
-
-  public boolean containsPlayer(String p)
-  {
-    return (player1.equalsIgnoreCase(p)) || (player2.equalsIgnoreCase(p));
-  }
-
-  public boolean isActive()
-  {
-    return "active".equalsIgnoreCase(currentStatus);
-  }
-
-  public boolean isPending()
-  {
-    return "pending".equalsIgnoreCase(currentStatus);
-  }
-  
   public int getCurrentRound()
   {
     return currentRound;
@@ -91,24 +79,52 @@ public class Battle
     return p1Score;
   }
   
-  public void incP1Score()
-  {
-    p1Score++;
-  }
-
   public int getP2Score()
   {
     return p2Score;
   }
   
-  public void incP2Score()
-  {
-    p2Score++;
-  }
-  
   public int getMaxRounds()
   {
     return maxRounds;
+  }
+  
+  //Boolean Methods
+  
+  //Returns true if player1 and player2 match p1 and p2 respectively, else returns false
+  public boolean hasPlayers(String p1, String p2)
+  {
+    return (player1.equalsIgnoreCase(p1)) && (player2.equalsIgnoreCase(p2));
+  }
+
+  //Returns true if player1 or player2 match p1, else returns false
+  public boolean containsPlayer(String p)
+  {
+    return (player1.equalsIgnoreCase(p)) || (player2.equalsIgnoreCase(p));
+  }
+
+  //Returns true if battle is active, else returns false
+  public boolean isActive()
+  {
+    return "active".equalsIgnoreCase(currentStatus);
+  }
+
+  //Returns true if battle is pending, else returns false
+  public boolean isPending()
+  {
+    return "pending".equalsIgnoreCase(currentStatus);
+  }
+  
+  //Incrementer Methods
+  
+  public void incP1Score()
+  {
+    p1Score++;
+  }
+
+  public void incP2Score()
+  {
+    p2Score++;
   }
   
   public void incrementRound()
