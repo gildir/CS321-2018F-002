@@ -130,7 +130,8 @@ public class GroupChatTracker{
 
 	//checks if playerName has been invited to groupChatName
 	//returns false if invite does not exist, or if group does not exit
-	public boolean checkInvite( String groupChatNameLC, String playerName){
+	public boolean checkInvite( String groupChatName, String playerName){
+		String groupChatNameLC = groupChatName.toLowerCase();
 		//check that group exists
 		if( !checkGroupExists( groupChatNameLC ) )
 			return false;
