@@ -71,6 +71,8 @@ public class Shop {
                  //add item to player inventory and update
                  inventory.add(obj);
                  player.setCurrentInventory(inventory);
+                 // remove player money equal to item value marked up
+                 player.removeMoney(obj.getItemValue() * 1.2);
                  did_buy = true;
                  //remove item from shop's list of items
                  items.remove(obj);
