@@ -2,42 +2,7 @@ import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 
-/**
-* An Objective (something that requires action) in a Quest
-* 
-* An Objective is something a Player must do to satisfy part of a Quest.
-* We "hide" an Objective from the player until it becomes relevant.
-* EXAMPLE: We "hide" [Write your name] if the Player must first complete the Objectives [Find up a pen] and [Find a piece of paper].
-* An active Objective is an Objective that the player is aware of.
-* Objectives act similarly to a Linked List and form a directed acyclic graph (DAG).
-* Each Objective stores references to the next Objective(s) (directed)
-* Objectives do NOT store references to the previous Objective(s) (acyclic)
-* 
-* SEE EXAMPLE DIAGRAM BELOW
-* concurrent Objectives are on the same row
-* 
-*         0 (start)
-* 		/   \
-* 	   1     2
-* 		\   /
-* 		  3
-* 	    / | \
-* 	   4  5  6
-* 	    \ | /
-* 		  7 (end)
-* 
-* 0 = [Talk to Professor Russell]
-* 1 = [Find a pen]
-* 2 = [Find a piece of paper]
-* 3 = [Talk to Professor Russell]
-* 4 = [Write your name down]
-* 5 = [Write your G# down]
-* 6 = [Write your Mason email address down]
-* 7 = [Give the piece of paper to Professor Russell]
-* 
-*/
-
-public abstract class Objective
+public class purchaseObjective extends Objective
 {
 	
 	/**
@@ -57,15 +22,15 @@ public abstract class Objective
 	 * Type: Item		|	Objective Description: "Pick up a newspaper."
 	 * Type: Action		|	Objective Description: "Talk to Professor Russell."
 	*/
-	public final String OBJECTIVE_TYPE = "";
+	public final String OBJECTIVE_TYPE = "Purchase";
 	/**
 	 * The description of this Objective
 	*/
-	public final String OBJECTIVE_DESCRIPTION = "";
+	public final String OBJECTIVE_DESCRIPTION;
 	/**
 	 * The unique ID number of the Quest this Objective belongs to
 	*/
-	public final Quest ASSOCIATED_QUEST = null;
+	public final Quest ASSOCIATED_QUEST;
 	/**
 	 * The boolean status of whether this Objective has been completed (false until updated)
 	*/
@@ -81,9 +46,14 @@ public abstract class Objective
 	 * @param q the Quest associated with this Objective
 	 * @param objScanner the scanner from the input file for a Quest
 	*/
-	public Objective() throws InputMismatchException, NoSuchElementException
+	public purchaseObjective(Quest q, Scanner objScanner) throws InputMismatchException, NoSuchElementException
 	{
-		
+		if(objScanner == null){
+			throw new NullPointerException("NullPointerException: scanner passed to purchaseObjective constructor was null.");
+		}
+		this.OBJECTIVE_ID = Quest.generateID();
+		this.ASSOCIATED_QUEST = q;
+		this.OBJECTIVE_DESCRIPTION = objScanner.next();
 	}
 	
 	/**

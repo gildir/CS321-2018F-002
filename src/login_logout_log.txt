@@ -1,2 +1,2 @@
-David logged in.
-David logged out.
+d logged in.
+d logged out.

@@ -20,6 +20,7 @@ public class Player {
     private PrintWriter replyWriter = null;
     private DataOutputStream outputWriter = null;
     private Money money;
+    private int numOfPurchases;
 	// the player's list of all his/her Quests
 	private ArrayList<Quest> questBook = new ArrayList<Quest>();
  
@@ -29,6 +30,7 @@ public class Player {
         this.name = name;
         this.currentInventory = new LinkedList<>();
         this.money = new Money(20);
+	this.numOfPurchases = 0;
 		try
 		{
 			// add a tutorial Quest to the player
@@ -241,6 +243,10 @@ public class Player {
 			return true;
 	}
 	return false;
+    }
+
+    public int getNumPurchases(){
+	return numOfPurchases;
     }
 
     @Override
