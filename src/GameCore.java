@@ -1708,7 +1708,13 @@ if(playerSending.searchIgnoredBy(name2)){
       }
     }
 
-  //if an exit exists in a direction from a room, then its title is returned
+/*
+ * @author James Bruce
+ * if an exit exists in a direction from a room, then its title is returned
+ * @param r a Room to branch off of
+ * @param s a String to parse directions from
+ * @return a String representing the Room in the direction(s) given
+ */
   private String SingleExit(Room r, String s)
   {
   	List<Direction> l=new ArrayList<Direction>();
@@ -1725,12 +1731,20 @@ if(playerSending.searchIgnoredBy(name2)){
 	//for each direction found
 	for(Direction d: l)
 		if(r.canExit(d))
-			r=map.findRoom(r.getLink(d));
+			r=map.findRoom(r.getLink(d));//shift the current room to the next room
 		else//not a valid set of directions
 			return "";
 	return r.getTitle()+"("+s+")";
 }
-//returns all exit strings in a set of directions
+
+/*
+ * @author James Bruce
+ * returns all exit strings in a set of directions
+ * @param r a Room to branch off of
+ * @param a the vertical distance to branch off from the room
+ * @param b the horizontal distance to branch off from the room
+ * @return a String containing all exits branching off from a Room
+ */
 private String ExitString(Room r, int a, int b)
 {
 	String s="", e, t;
@@ -1756,23 +1770,36 @@ private String ExitString(Room r, int a, int b)
 		e=e.substring(4);
 	return e;
 }
-//returns a room String in a more ASCII-friendly format
+
+/*
+ * @author James Bruce
+ * returns a room String in a more ASCII-friendly format
+ * @param s a String representing the Room name
+ * @param l the length to pad the String to
+ * @return an array of Strings representing an ASCII representation of a Room
+ */
 private String[] RoomStrings(String s, int l)
 {
 	String[] r=new String[3];
 	r[0]="";
 	r[1]=s;
 	for(int i=l-s.length(); i>0; i--)
-		r[1]=" "+r[1];
+		r[1]=" "+r[1];//put spaces until the length requirement is met
 	if(s.length()==0)//nothing here
 		return new String[]{r[1], r[1], r[1]};//return a bunch of spaces
 	for(int i=0; i<l; i++)
-		r[0]+="-";
+		r[0]+="-";//put dashes to surround the Room name
 	r[1]="|"+r[1].substring(2)+"|";
 	r[2]=r[0];
 	return r;
 }
-//given a player name, returns an ascii map of the world surrounding them
+
+/*
+ * @author James Bruce
+ * given a player name, returns an ascii map of the world surrounding them
+ * @param name the name of the Player using the command
+ * @return an ASCII representation of a map of the world surrounding the player
+ */
 public String map(String name)
 {
   	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());//get the room the player is in
