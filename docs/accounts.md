@@ -17,7 +17,14 @@ What is stored in the database?
 7) User's unique security question 3
 8) Answer to security question 3
 
-**NOTE:** PlayerDatabase.java file was created for the use of all user account information needs. The class contains addPlayer(String name, String password) to add a new player to the database, isPlayer(String name) to check if the user already exists, isPassword(String name, String password) to ensure the password is correct to that user, and removePlayer(String name) to remove that player from the database. This class also includes other methods that are required for other features (well documented inside the Java file).
+**NOTE:** PlayerDatabase.java file was created for the use of all user account information needs. The class contains:
+* addPlayer(String name, String password) to add a new player to the database
+* isPlayer(String name) to check if the user already exists
+* isPassword(String name, String password) to ensure the password is correct to that user
+* removePlayer(String name) to remove that player from the database. 
+* encrypt/decrypt 
+This class also includes other methods that are required for other features such as hasAccount() checkSecurityQestions(String name)(well documented inside the Java file).
+
 > ![UserDatabase](../images/userdatabase.png)
 
 ## Account Creation
