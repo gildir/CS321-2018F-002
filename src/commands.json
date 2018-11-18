@@ -144,6 +144,28 @@
     "description":      "Shows you what items you have collected.",
     "uses": []
 }, {
+    "name":             "SORTINVENTORY",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Shows you what items you have collected.",
+    "uses": [{
+        "case":         "NAME",
+        "description":  "Sort items in inventory by name."
+    }, {
+        "case":         "VALUE",
+        "description":  "Sort items in inventory by value."
+    }, {
+        "case":         "WEIGHT",
+        "description":  "Sort items in inventory by weight."
+    }]
+}, {
+    "name":             "DESCRIBE",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Shows you what items you have collected.",
+    "uses": [{
+        "case":         "[OBJECT]",
+        "description":  "Describe an object in inventory."
+    }]
+}, {
     "name":             "PICKUP",
     "category":         "ITEMS AND MONEY",
     "description":      "Interact with items.",
@@ -160,18 +182,29 @@
         "description":  "Tries to drop off an item in the room."
     }]
 }, {
+    "name":             "MONEY",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Line-by-line display of money.",
+    "uses": []
+}, {
     "name":             "OFFERITEM",
     "category":         "ITEMS AND MONEY",
-    "description":      "Interact with items.",
+    "description":      "Trade with items.",
     "uses": [{
         "case":         "[PLAYER] [ITEM]",
         "description":  "Offer an item from your inventory to a player."
     }]
 }, {
-    "name":             "MONEY",
+    "name":             "OFFERRESPONSE",
     "category":         "ITEMS AND MONEY",
-    "description":      "Line-by-line display of money.",
-    "uses": []
+    "description":      "Trade with items.",
+    "uses": [{
+        "case":         "ACCEPT",
+        "description":  "Finish an item trade by accepting an offer"
+    }, {
+        "case":         "REFUSE",
+        "description":  "Finish an item trade by refusing an offer"
+    }]
 }, {
     "name":             "BUY",
     "category":         "ITEMS AND MONEY",
@@ -201,6 +234,16 @@
         "case":         "[AMMOUNT] [PLAYER]",
         "description":  "Give some money to a player."
     }]
+}, {
+    "name":             "RECEIVE",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Accept a gift offer.",
+    "uses": []
+}, {
+    "name":             "DECLINE",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Decline a gift offer.",
+    "uses": []
 },
 
 
@@ -266,6 +309,16 @@
     "name":             "LEADERBOARD",
     "category":         "BATTLES",
     "description":      "Display the current Rock Paper Scissors Leaderboard.",
+    "uses": []
+}, {
+    "name":             "TOPTEN",
+    "category":         "BATTLES",
+    "description":      "Display the current Top Ten Players from Rock Paper Scissors Leaderboard.",
+    "uses": []
+}, {
+    "name":             "RANK",
+    "category":         "BATTLES",
+    "description":      "Display your current rank in Rock Paper Scissors Battles.",
     "uses": []
 }, {
     "name":             "TUTORIAL",
