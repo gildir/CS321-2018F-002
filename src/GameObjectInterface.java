@@ -71,7 +71,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException 
      */
-    public String say(String name, String message) throws RemoteException;
+    public String say(String name, String message, ArrayList<String> censorList) throws RemoteException;
 
     /**
     * Shouts "message" to everyone in the game.
@@ -80,7 +80,7 @@ public interface GameObjectInterface extends Remote {
     * @return Message showing success
     * @throws RemoteException
     */
-    public String shout(String name, String message) throws RemoteException;
+    public String shout(String name, String message, ArrayList<String> censorList) throws RemoteException;
 
     /**
     * Whispers "message" to specified player.
@@ -90,7 +90,7 @@ public interface GameObjectInterface extends Remote {
     * @return Message showing success.
     * @throws RemoteException
     */
-    public String whisper(String name1, String name2, String message) throws RemoteException;
+    public String whisper(String name1, String name2, String message, ArrayList<String> censorList) throws RemoteException;
 
     /**
     * Sends a whisper the last player that whispered.
@@ -98,7 +98,7 @@ public interface GameObjectInterface extends Remote {
     * @param message Message to be whispered
     * @return Message showing success.
     */
-    public String reply(String name, String message) throws RemoteException;
+    public String reply(String name, String message, ArrayList<String> censorList) throws RemoteException;
 
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
