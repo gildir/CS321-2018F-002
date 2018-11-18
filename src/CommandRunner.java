@@ -659,6 +659,10 @@ public class CommandRunner {
         // Add name
         String name = ((String) cmd.get("name")).toUpperCase();
         uiBuild.append(String.format("%-15s", name));
+        
+        // Get alias
+        String alias = commands.get(name).getAlias();
+        Boolean aliasSet = alias.equals("");
 
         // Add description
         String[] description = ((String) cmd.get("description")).split(" ");
@@ -668,7 +672,14 @@ public class CommandRunner {
             int l = next.length();
 
             if ((count + l + 1) > 60) {
-                uiBuild.append("\n" + String.join("", Collections.nCopies(18, " ")));
+                // Add alias if there's a second line of description
+                if (! aliasSet) {
+                    String aliasAppend = "\n(alias: " + alias + ")";
+                    uiBuild.append(aliasAppend + String.join("", Collections.nCopies((18 - aliasAppend.length()), " ")));
+                    aliasSet = true;
+                } else {
+                    uiBuild.append("\n" + String.join("", Collections.nCopies(18, " ")));
+                }
                 count = 0;
                 uiBuild.append(next);
             } else {
@@ -679,11 +690,11 @@ public class CommandRunner {
         }
         uiBuild.append("\n");
 
-        // Add alias if existing
-        // String alias = commands.get(name).getAlias();
-        // if (! alias.equals("")) {
-        //     uiBuild.append("    alias:  " + alias + "\n");
-        // }
+        // Add alias if not set yet
+        if (! aliasSet) {
+            uiBuild.append("(alias: " + alias + ")\n");
+            aliasSet = true;
+        }
 
         // Add uses if any
         JSONArray uses = (JSONArray) cmd.get("uses");
