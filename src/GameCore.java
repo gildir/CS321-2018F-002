@@ -3,6 +3,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardOpenOption;
+import java.sql.Time;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
@@ -90,7 +91,6 @@ public class GameCore implements GameCoreInterface {
                         object = (Item)objects.get(rand.nextInt(objects.size())).clone();
                         room = map.randomRoom();
                         room.addObject(object);
-                        
                         GameCore.this.broadcast(room, "You see a student rush past and drop a " + object + " on the ground.");
 
                     } catch (InterruptedException ex) {
@@ -151,11 +151,6 @@ public class GameCore implements GameCoreInterface {
      */   
     @Override
     public void broadcast(Player player, String message) {
-        if(player.getIsDrunk()){
-            message = message.toLowerCase();
-            message = message.replace(".", "!");
-            message = message.replace(",", "?");
-        }
         for(Player otherPlayer : this.playerList) {
             if(otherPlayer != player && otherPlayer.getCurrentRoom() == player.getCurrentRoom()
                           && !player.searchIgnoredBy( otherPlayer.getName() )) { // 405_ignore, don't broadcast to players ignoring you
@@ -170,11 +165,6 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to broadcast
     */
     public void broadcastShout(Player player, String message) {
-        if(player.getIsDrunk()){
-            message = message.toLowerCase();
-            message = message.replace(".", "!");
-            message = message.replace(",", "?");
-        }
         for(Player otherPlayer : this.playerList) {
             if(otherPlayer != player && !player.searchIgnoredBy( otherPlayer.getName())) {
                 otherPlayer.getReplyWriter().println(message);
@@ -189,11 +179,6 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to broadcast
     */
     public void broadcast(Player sendingPlayer, Player receivingPlayer, String message) {
-        if(sendingPlayer.getIsDrunk()){
-            message = message.toLowerCase();
-            message = message.replace(".", "!");
-            message = message.replace(",", "?");
-        }
         if(sendingPlayer != receivingPlayer
                       && !sendingPlayer.searchIgnoredBy( receivingPlayer.getName() )) { //405_ignore, don't broadcast to players ignoring you
             receivingPlayer.getReplyWriter().println(message);
@@ -356,6 +341,10 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null)
         {
+            if(player.getIsDrunk())
+            {
+                message = drunkText(message);
+            }
             String log = player.getName() + " says, \"" +
                     message + "\" in the room " + player.getCurrentRoom();
             add_chat_log(log);
@@ -378,9 +367,7 @@ public class GameCore implements GameCoreInterface {
         if(player != null)
         {
             if(player.getIsDrunk()){
-                message = message.toLowerCase();
-                message = message.replace(".", "!");
-                message = message.replace(",", "?");
+                message = drunkText(message);
             }
             String log = player.getName() + " shouts, \"" + message + "\"";
             add_chat_log(log);
@@ -412,9 +399,7 @@ public class GameCore implements GameCoreInterface {
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
                     if(playerSending.getIsDrunk()){
-                        message = message.toLowerCase();
-                        message = message.replace(".", "!");
-                        message = message.replace(",", "?");
+                        message = drunkText(message);
                     }
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
                             + playerReceiving.getName();
@@ -450,9 +435,7 @@ public class GameCore implements GameCoreInterface {
         String name2 = playerSending.getLastWhisperName();
         Player playerReceiving = this.playerList.findPlayer(name2);
         if(playerSending.getIsDrunk()){
-            message = message.toLowerCase();
-            message = message.replace(".", "!");
-            message = message.replace(",", "?");
+            message = drunkText(message);
         }
         return this.whisper(name, name2, message);
     }
@@ -848,7 +831,8 @@ public class GameCore implements GameCoreInterface {
                 player.setTitle(object.getItemTitle());
                 if(itemName.equalsIgnoreCase("rathskeller bottle"))
                 {
-                    bottelTimerUpdate(player);
+                    player.setIsDrunk(true);
+                    bottleTimerUpdate(player);
                 }    
 		titleTimerUpdate(player);
                 this.broadcast(player, player.getName() + " has used a " + itemName + " from personal inventory.");
@@ -883,6 +867,10 @@ public class GameCore implements GameCoreInterface {
         titleTimer.schedule(timerTask, 120000); // sets title for 2 minutes
     }
 
+    /**
+     * A timer that makes you sober after a minute of using the rathskeller bottle
+     * 
+     */
     public void bottleTimerUpdate(Player player){
         TimerTask bottleTask = new TimerTask(){
             public void run(){
@@ -897,8 +885,47 @@ public class GameCore implements GameCoreInterface {
             bottleTimer.purge();
         }
         bottleTimer = new Timer();
-        bottleTimer.schedule(bottleTask, 60000); // your drunk for 1 minute
+        bottleTimer.schedule(bottleTask, 60000); // stop being drunk after 1 minute
 
+    }
+    
+    /**
+     * This method turns all punctuation into either a ? or !, it also 
+     * turns the message to lower case.
+     * @param message a String message we need to scramble
+     * @return message scrambled message string
+     */
+    private static String drunkText(String message)
+    {
+        message = message.toLowerCase();
+        char arry[] = {'!','?'};
+        Random randy = new Random();
+        message = message.replace('?', arry[randy.nextInt(arry.length)]);
+        message = message.replace('!', arry[randy.nextInt(arry.length)]);
+        message = message.replace('.', arry[randy.nextInt(arry.length)]);
+        message = message.replace(':', arry[randy.nextInt(arry.length)]);
+        message = message.replace(',', arry[randy.nextInt(arry.length)]);
+        message = message.replace(';', arry[randy.nextInt(arry.length)]);
+        message = message.replace('\'', arry[randy.nextInt(arry.length)]);
+        message = message.replace('\"', arry[randy.nextInt(arry.length)]);
+        message = message.replace('(', arry[randy.nextInt(arry.length)]);
+        message = message.replace(')', arry[randy.nextInt(arry.length)]);
+        message = message.replace('[', arry[randy.nextInt(arry.length)]);
+        message = message.replace(']', arry[randy.nextInt(arry.length)]);
+        message = message.replace('{', arry[randy.nextInt(arry.length)]);
+        message = message.replace('}', arry[randy.nextInt(arry.length)]);
+        message = message.replace('-', arry[randy.nextInt(arry.length)]);
+        message = message.replace('\\', arry[randy.nextInt(arry.length)]);
+        message = message.replace('@', arry[randy.nextInt(arry.length)]);
+        message = message.replace('&', arry[randy.nextInt(arry.length)]);
+        message = message.replace('*', arry[randy.nextInt(arry.length)]);
+        message = message.replace('_', arry[randy.nextInt(arry.length)]);
+        message = message.replace('/', arry[randy.nextInt(arry.length)]);
+        message = message.replace('>', arry[randy.nextInt(arry.length)]);
+        message = message.replace(',', arry[randy.nextInt(arry.length)]);
+        
+
+        return message;
     }
 
 
