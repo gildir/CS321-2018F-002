@@ -546,7 +546,7 @@ public class GameCore implements GameCoreInterface {
       int newID;
       //add more if statements for different shops
       if(location.equalsIgnoreCase("shop"))
-        newID = 172;
+        newID = 182;
       else
         return location + " is unknown.";
       //if player not near a shop, return.
@@ -573,7 +573,7 @@ public class GameCore implements GameCoreInterface {
       if(player == null) return null;
       int newID;
       //add more if statements for different shops
-      if(player.getCurrentRoom() == 172)
+      if(player.getCurrentRoom() == 182)
         newID = 1;
       else
         return "Can't leave, did you mean quit?";
