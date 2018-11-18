@@ -560,6 +560,12 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
       shop.addPlayer(name);
       player.getReplyWriter().println(shop.displayShop());
+      
+      //TESTING : DELETE AFTER
+      ArrayList<Item> demands = shop.getInDemand();
+      for(int i = 0; i < demands.size(); i++) {
+    	  player.getCurrentInventory().add(demands.get(i));
+      }
       return "You stop moving and begin to stand around again.";
     }
 
@@ -932,7 +938,12 @@ public class GameCore implements GameCoreInterface {
             return null;
       }
     }
-
+    
+    /**
+     * Display a view of the players money
+     * @param name Player name
+     * @return String representation of money
+     */
     public String money(String name) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
@@ -941,7 +952,15 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }    
+    }  
+    
+    /**
+     * Give a player a money gift
+     * @param yourname Traders name
+     * @param name Receivers name
+     * @param amount Amount to give
+     * @return Indication of success or failure
+     */
     @Override
     public String gift(String yourname ,String name, double amount){
     	if(yourname.toLowerCase().equals(name.toLowerCase()))
@@ -965,6 +984,11 @@ public class GameCore implements GameCoreInterface {
         return "You try to gift " + tradee.getName() + " $" + amount; 
     }
     
+    /**
+     * Accept a money gift, if one exists
+     * @param name Player attempting to receive the gift
+     * @return String indicating success or failure
+     */
     public String acceptGift(String name) {
     	Player tradee = this.playerList.findPlayer(name);
     	if(tradee == null)
@@ -989,6 +1013,11 @@ public class GameCore implements GameCoreInterface {
     	return "You have receieved the gift!";
     }
     
+    /**
+     * Decline a money gift, if one exists
+     * @param name Player attempting to decline the gift
+     * @return String indicating success or failure
+     */
     public String declineGift(String name) {
     	Player player = playerList.findPlayer(name);
     	if(player == null)
@@ -1114,8 +1143,12 @@ public class GameCore implements GameCoreInterface {
       //remove item from inventory, update player inventory, increase money
       //inventory.remove(itemName);
       player.setCurrentInventory(inventory);
-      shop.sellItem(object);
-      player.addMoney(object.getItemValue());
+      boolean demanded = shop.sellItem(object);
+      if(demanded) { //if the item was in demand, sell for an extra 20%
+    	  player.addMoney(object.getItemValue() * 1.2);
+      }else{  //item not in demand, sell for regular price
+    	  player.addMoney(object.getItemValue());
+      }
       player.getReplyWriter().println(shop.displayShop());
       return "You have sold " + itemName + " to the shop.";
   }

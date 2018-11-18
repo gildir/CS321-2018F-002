@@ -215,6 +215,10 @@ public class Player {
     return this.money;
   }
   
+  /**
+   * Adds a double value to this players money
+   * @param value Amount to add
+   */
   public void addMoney(double value) {
    // System.out.printf("%f", value);
     Money added = new Money();
@@ -251,10 +255,15 @@ public class Player {
     this.money.numPennies -= moneyRemove.numPennies;
   }
   
+  /**
+   * Removes a double value from the players money
+   * @param value Amount to be removed
+   */
   public void removeMoney(double value){
     if(this.money.sum() < value){
       return;
     }
+    //Check if the players units allow for this removal
     double valueCopy = value;
     int[] unitsRemoved = new int[5];
     int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
@@ -275,7 +284,7 @@ public class Player {
       }
       index++;
     }
-   
+   //if true, player has the correct units so update their money
     if(valueCopy == 0.0){
       this.money.numFives -= unitsRemoved[0];
       this.money.numOnes -= unitsRemoved[1];
@@ -284,7 +293,7 @@ public class Player {
       this.money.numPennies -= unitsRemoved[4];
       return;
     }
-    // player must overcompensate and then get change
+    // Players units do not work, player must overcompensate and then get change
     else if(valueCopy > 0){
       double currentSum = value - valueCopy;
       // round to the nearest dollar, if there are enough dollars
@@ -336,6 +345,11 @@ public class Player {
     this.inTradeWithItem = itemName;
   }
   
+  /**
+   * Checks if the players units can reach the desired amount
+   * @param amount Amount to be reached using players units
+   * @return true if player can reach the amount
+   */
   public boolean hasUnits(double amount) {
 	    // send money in units available to player 
 	    // if correct units are unavaialable, then return and give a message
