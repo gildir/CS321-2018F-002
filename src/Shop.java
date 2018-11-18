@@ -125,13 +125,15 @@ public class Shop {
     incumbent.amount++;
    }
   }
-  String result = "\nAMOUNT ................ ITEM/PRICE\n";
+  String result = "\nSHOP INVENTORY\n";
+  result += "AMOUNT ................ ITEM/PRICE\n";
   if(items.size() == 0)
-   result += "shop is empty\n";
+   result += "Shop is currently empty.\n";
   for(ItemStock item : itemList) {
    result += "" + item.amount + " ..................... " + item.itemName + " $" + (String.format("%.2f",item.value)) +"\n";
   }
-  result += "To sell an item enter SELL <ITEM>\nTo buy an item enter BUY <ITEM>\n\n";
+  result += "To sell an item enter SELL <ITEM>\n" + "To buy an item enter BUY <ITEM>\n";
+  result += "To exit the shop enter LEAVE SHOP\n\n";
   return result;
  }
 }

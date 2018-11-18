@@ -396,10 +396,10 @@ public class GameCore implements GameCoreInterface {
                 return "Cannot whisper yourself" + " " + date.toString();
             else
             {
-		
-		if(playerSending.searchIgnoredBy(name2)){
-			return "Cannot whisper player that has ignored you";
-	    	}
+  
+  if(playerSending.searchIgnoredBy(name2)){
+   return "Cannot whisper player that has ignored you";
+      }
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
 
@@ -1125,7 +1125,7 @@ public class GameCore implements GameCoreInterface {
       catch (InterruptedException e){
         return "thread exception!";
       }
-      return "You have sold " + itemName + " to the shop";
+      return "You have sold " + itemName + " to the shop.";
   }
 }
 
