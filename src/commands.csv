@@ -1,13 +1,18 @@
 LOOK,,Shows you the area around you
 LISTPLAYERS,,Shows a list of all the players in the world.
+IGNORE,-L;-A;-R PLAYER,Use -A to add players to ignore list; -R to remove from list; -L with no player name to show list.
 SAY,MESSAGE,Says <message> to any other players in the same area.
+SHOUT,MESSAGE,Says <MESSAGE> to all players in the game.
 WHISPER,PLAYER MESSAGE,Says <MESSAGE> to specified <PLAYER>.
 REPLY,MESSAGE,Says <MESSAGE> to last player who whispered you.
 MOVE,DIRECTION,Tries to walk in <direction>.
 PICKUP,OBJECT,Tries to pick up an object in the same area.
+DESCRIBE,OBJECT,Describe the object in a player's inventory.
 DROPOFF,OBJECT,Tries to drop off an object in the same area.
 OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.
+OFFERRESPONSE,DECISION,Finishes a trade with a <DECISION>, you can decide to ACCEPT or REFUSE
 INVENTORY,,Shows you what objects you have collected.
+REDO,,Performs the last command you entered.
 QUIT,,Quits the game.
 HELP,,Displays the list of available commands
 CHALLENGE,PLAYER,Challenges another <PLAYER> to a Rock Paper Scissors Battle.
@@ -21,10 +26,19 @@ TUTORIAL,,Display a tutorial for Rock Paper Scissors.
 ENTER,SHOP,Enters shop at clock tower
 LEAVE,SHOP,Leaves shop
 SELL,ITEM,Sell item in your inventory to the shop
+BUY,ITEM,Buy an item from the shop
 MONEY,,Line-by-line display of money
 GIFTABLE,,List players in the same room that you can give money to
 GIVE,,Give amount of money to a friend
+RECEIVE,,Accept a gift offer
+DECLINE,,Decline a gift offer
 GIFT,GHOULNAME ITEM,Player gifts a ghoul an object; this action decreases the ghoul's aggression.
-POKE,GHOULNAME,Player pokes a ghoul that is in the same room
-QUESTS,,Interact with an NPC in a room that can provide quests
-TAKEQUEST,,Take a quest from the quest NPC in the room
+POKE,GHOULNAME,Player pokes a ghoul that is in the same room.
+SORTINVENTORY,ATTRIBUTE,Sorts inventory by <name> <value> or <weight>.
+CHANGEPREFIX,XXX,Input 3 characters for your new chat prefix.
+WHITEBOARD,COMMAND? MESSAGE?, Executes WRITE (with MESSAGE) or CLEAR command on the whiteboard. If no COMMAND specified it will display the current message in the whiteboard.
+MAP,,Displays an ASCII map of the world around you
+TOPTEN,,Display Top Ten Players from Rock Paper Scissors Leaderboard.
+RANK,,Display your current RPS Leaderboard Rank.
+QUESTS,,Check available quests at local NPC
+TAKEQUEST, QUESTNUMBER, Take quest from local NPC

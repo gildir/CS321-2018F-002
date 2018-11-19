@@ -88,6 +88,10 @@ public class Quest
 							scannedObjective = new AToBObjective(this, questScanner);
 							scannedObjective.printObjective();
 							break;
+						case "purchase":
+							scannedObjective = new purchaseObjective(this, questScanner);
+							scannedObjective.printObjective();
+							break;
 					}
 					storeNewObjectivesHere[objectivesAdded] = scannedObjective;
 					objectivesAdded++;

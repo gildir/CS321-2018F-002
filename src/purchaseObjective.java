@@ -36,6 +36,10 @@ public class purchaseObjective extends Objective
 	*/
 	private boolean objectiveComplete = false;
 	/**
+	 * Number of purchases the player had when obtaining the quest.
+	*/
+	private int initialNumOfPurchases;
+	/**
 	 * Array storing references to the next Objectives (there should never be more than 5 concurrent objectives)
 	*/
 	public final Objective NEXT_OBJECTIVES[] = new Objective[5];
@@ -54,6 +58,7 @@ public class purchaseObjective extends Objective
 		this.OBJECTIVE_ID = Quest.generateID();
 		this.ASSOCIATED_QUEST = q;
 		this.OBJECTIVE_DESCRIPTION = objScanner.next();
+		this.initialNumOfPurchases = q.OWNER.getNumPurchases();
 	}
 	
 	/**
@@ -69,7 +74,8 @@ public class purchaseObjective extends Objective
 	*/
 	public void updateObjectiveCompletion()
 	{
-		System.out.println("Implement updateObjectiveCompletion(Player p) method");
+		if(initialNumOfPurchases < ASSOCIATED_QUEST.OWNER.getNumPurchases())
+			this.objectiveComplete = true;
 	}
 	
 	/**
@@ -80,7 +86,9 @@ public class purchaseObjective extends Objective
 	*/
 	public Objective getNextObjective(int x)
 	{
-		return null;
+		if ((x < 0) || (x >=5))
+			throw new IllegalArgumentException("Illegal Argument Exception: must pass a number in the range [0,5)");
+		return NEXT_OBJECTIVES[x];
 	}
 	
 	/**
@@ -88,7 +96,7 @@ public class purchaseObjective extends Objective
 	 */
 	public void printObjective()
 	{
-		System.out.println("Implement printObjective() method");
+	
 	}
 	
 	/**

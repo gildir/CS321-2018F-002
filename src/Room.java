@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
  *
  * @author Kevin
  */
+
 public class Room {
     private final int id;
     private final String title;
@@ -13,7 +14,9 @@ public class Room {
     private final LinkedList<Item> objects;
     private final LinkedList<Exit> exits;
     private final GameCore gameCore;
-    
+        
+    private WhiteBoard whiteboard;
+
     public Room(GameCore gameCore, int id, String title, String description, String location) {
         this.objects = new LinkedList<>();
         this.exits = new LinkedList<>();        
@@ -23,6 +26,10 @@ public class Room {
         this.description = description;
 	this.location = location;
         this.gameCore = gameCore;
+
+        if (this.location.equalsIgnoreCase("inside")) {
+            this.whiteboard = new WhiteBoard(this.id);
+        }
     }
     
     public String toString(PlayerList playerList, Player player) {
@@ -58,6 +65,10 @@ public class Room {
     public Room getRoom(int id){
       return this;
     }
+
+    public WhiteBoard getWhiteBoard(){
+        return this.whiteboard;
+      }
 
     public String getExits() {
         String result = "";
@@ -210,5 +221,9 @@ public class Room {
             ghoulsString = String.join(" ", ghoulNames);
         }
         return ghoulsString;
+    }
+
+    public WhiteBoard getWB(){
+    	return this.whiteboard;
     }
 }

@@ -21,7 +21,10 @@ public class questNPC{
 		String result = "";
 		result += "Here is a list of quests for you to take:\n";
 		for(int i = 0; i < availableQuest.size(); i++){
-			result += i+1 + ": " + availableQuest.get(i).QUEST_NAME + "\n";
+			if(availableQuest.size() == (i+1))
+				result += i+1 + ": " + availableQuest.get(i).QUEST_NAME;
+			else
+				result += i+1 + ": " + availableQuest.get(i).QUEST_NAME + "\n";
 		}
 		if(availableQuest.size() == 0)
 			result += "No quests are currently available.\n";
