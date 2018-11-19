@@ -59,6 +59,17 @@ class PlayerList
 ### Code Analysis 
 PlayerList class keep a linked list of players called palyerList. toString methods returns the one string separated by space of all players in the linked list. 
 GameCore class is responsible for underlying actions. ListAllPlayers is a method in this class that gets the player name, if the player name is valid then it returns a string of all players int the world using toString method of playerList.  
+
+## 403) Admin Chat Log
+### Usage
+
+### Command Implementation
+
+### Class: GameCore, File: GameCore.java
+The following changes were made to this class:
+1. Function added
+
+
 ## 404) Reply
 ### Usage
 There is one way to invoke the reply command:
@@ -151,6 +162,15 @@ public  void  broadcast (Player  sendingPlayer , Player  receivingPlayer , Strin
 ```
 Does not broadcast to ignoring players
 
+## 406) Ignored Response 
+### Usage
+
+### Command Implementation
+
+### Class: GameCore, File: GameCore.java
+The following changes were made to this class:
+1. Function added
+
 
 
 
@@ -203,6 +223,17 @@ class GameObject
 The unignore feature essentially takes in two arguments, name of player as well as unignore name. First, our function checks whether the player is attempting to unignore himself in which case an exception occurs, and if not true, the function begins to verify if the ignored player even exists in the game. If the player that the current player wants to ignore exists and is in their ignored list, then the player becomes unignored and we remove them from the ignored list within the player class.
 
 
+
+## 409) Censor Words from file 
+### Usage
+
+### Command Implementation
+
+### Class: GameCore, File: GameCore.java
+The following changes were made to this class:
+1. Function added
+
+
 ## 412) Shout ![shout](../images/megaphone.svg)
 ### Usage
 There is one way to invoke the shout command:
@@ -226,6 +257,29 @@ The function for shout is pretty much identical to say. It only rquires a name f
 public void broadcastShout(Player player, String message)
 ```
 The shout command required a new broadcast function with a specific name. This broadcastShout method is similar to the broadcast method used by say. The difference is that this method doesn't check if the players are in the same room as the one shouting since shouts should be heard everywhere. Due to this difference we were unable to get say and shout to work with the same broadcast method, so we created this one.
+
+## 413,415) Time Stamps
+### Usage
+
+### Command Implementation
+
+### Class: GameCore, File: GameCore.java
+The following changes were made to this class:
+1. Function added
+
+
+
+## 414) Chat Prefix 
+### Usage
+
+### Command Implementation
+
+### Class: GameCore, File: GameCore.java
+The following changes were made to this class:
+1. Function added
+
+
+
 
 ## Team Members
 * Shayan Amirhosseini
