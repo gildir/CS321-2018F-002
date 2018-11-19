@@ -560,12 +560,6 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
       shop.addPlayer(name);
       player.getReplyWriter().println(shop.displayShop());
-      
-      //TESTING : DELETE AFTER
-      ArrayList<Item> demands = shop.getInDemand();
-      for(int i = 0; i < demands.size(); i++) {
-    	  player.getCurrentInventory().add(demands.get(i));
-      }
       return "You stop moving and begin to stand around again.";
     }
 
