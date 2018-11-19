@@ -1,3 +1,7 @@
+import java.util.Scanner;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
+
 /**
 * An Objective (something that requires action) in a Quest
 * 
@@ -32,6 +36,7 @@
 * 7 = [Give the piece of paper to Professor Russell]
 * 
 */
+
 public abstract class Objective
 {
 	
@@ -42,7 +47,7 @@ public abstract class Objective
 	 * "idGenerator" in the Quest class (tracking the total number of quests
 	 * that have been instantiated)
 	*/
-	public final int OBJECTIVE_ID;
+	public final int OBJECTIVE_ID = -1;
 	/**
 	 * The type of this Objective
 	 * 
@@ -52,15 +57,15 @@ public abstract class Objective
 	 * Type: Item		|	Objective Description: "Pick up a newspaper."
 	 * Type: Action		|	Objective Description: "Talk to Professor Russell."
 	*/
-	public final String OBJECTIVE_TYPE;
+	public final String OBJECTIVE_TYPE = "";
 	/**
 	 * The description of this Objective
 	*/
-	public final String OBJECTIVE_DESCRIPTION;
+	public final String OBJECTIVE_DESCRIPTION = "";
 	/**
 	 * The unique ID number of the Quest this Objective belongs to
 	*/
-	public final int ASSOCIATED_QUEST_ID;
+	public final Quest ASSOCIATED_QUEST = null;
 	/**
 	 * The boolean status of whether this Objective has been completed (false until updated)
 	*/
@@ -73,17 +78,12 @@ public abstract class Objective
 	/**
 	 * Constructor for an Objective
 	 * 
-	 * @param objID the unique ID number for this Objective
-	 * @param qID the unique ID number for the Quest associated with this Objective
-	 * @param desc the description of this Objective
-	 * @param type the type of this Objective (example: location-based, item-based, etc.)
+	 * @param q the Quest associated with this Objective
+	 * @param objScanner the scanner from the input file for a Quest
 	*/
-	public Objective(int objID, int qID, String desc, String type)
+	public Objective() throws InputMismatchException, NoSuchElementException
 	{
-		this.OBJECTIVE_ID = objID;
-		this.ASSOCIATED_QUEST_ID = qID;
-		this.OBJECTIVE_TYPE = type;
-		this.OBJECTIVE_DESCRIPTION = desc;
+		
 	}
 	
 	/**
@@ -97,23 +97,28 @@ public abstract class Objective
 	/**
 	 * Changes the completion status of this Objective to "true" when the Objective has been completed
 	*/
-	private void updateObjectiveCompletion()
+	public void updateObjectiveCompletion()
 	{
-		// will need to know how we track objectives in order to write this method effectively.
-		// for now, objective is always set as complete when this method is called.
-		this.objectiveComplete = true;
+		System.out.println("Implement updateObjectiveCompletion(Player p) method");
 	}
 	
 	/**
 	* Returns the Objective at the given position in the array NEXT_OBJECTIVES
+	* 
+	* Returns the Objective at the given position in the array NEXT_OBJECTIVES,
+	* which can be an Objective or null.
 	*/
 	public Objective getNextObjective(int x)
 	{
-		if ( (x < 0) || (x >= 5) )
-		{
-			throw new IllegalArgumentException("Illegal Argument Exception: must pass a number in the range [0,5)");
-		}
-		return NEXT_OBJECTIVES[x];
+		return null;
+	}
+	
+	/**
+	 * Prints out an informative representation of this Objective
+	 */
+	public void printObjective()
+	{
+		System.out.println("Implement printObjective() method");
 	}
 	
 	/**

@@ -49,15 +49,32 @@ public class GameServer {
 			remoteObject = new GameObject(filename);//We need to know which Map to load!
 			//  c) Bind the remote object to the rmi service (rmiregistry must be running)
 			Naming.rebind("rmi://"+host+"/GameService", remoteObject);
-			System.err.println("[RUN] Game Server is now running and accepting connections.");
+            System.err.println("[RUN] Game Server is now running and accepting connections.");
+            
+            // Runs when server is closed
+            Runtime.getRuntime().addShutdownHook(new Thread() 
+            { 
+                public void run() 
+                {
+                    System.out.println("\n[SHUTDOWN] Closing server now...");
+                    try {
+                        // Save rooms
+                        remoteObject.saveWhiteboards();
 
-
-
+                        // Close the socket
+                        remoteListener.close();
+                    } catch (RemoteException re) {
+                        Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, re);
+                    } catch(IOException ex) {
+                        Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } 
+            });
 		} catch(RemoteException re) {
 			Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, re);
 		} catch (MalformedURLException ex) {
 			Logger.getLogger(GameServer.class.getName()).log(Level.SEVERE, null, ex);
-		}
+        }
 	}
     
     public static void main(String[] args) {
