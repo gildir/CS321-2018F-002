@@ -2,42 +2,7 @@ import java.util.Scanner;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 
-/**
-* An Objective (something that requires action) in a Quest
-* 
-* An Objective is something a Player must do to satisfy part of a Quest.
-* We "hide" an Objective from the player until it becomes relevant.
-* EXAMPLE: We "hide" [Write your name] if the Player must first complete the Objectives [Find up a pen] and [Find a piece of paper].
-* An active Objective is an Objective that the player is aware of.
-* Objectives act similarly to a Linked List and form a directed acyclic graph (DAG).
-* Each Objective stores references to the next Objective(s) (directed)
-* Objectives do NOT store references to the previous Objective(s) (acyclic)
-* 
-* SEE EXAMPLE DIAGRAM BELOW
-* concurrent Objectives are on the same row
-* 
-*         0 (start)
-* 		/   \
-* 	   1     2
-* 		\   /
-* 		  3
-* 	    / | \
-* 	   4  5  6
-* 	    \ | /
-* 		  7 (end)
-* 
-* 0 = [Talk to Professor Russell]
-* 1 = [Find a pen]
-* 2 = [Find a piece of paper]
-* 3 = [Talk to Professor Russell]
-* 4 = [Write your name down]
-* 5 = [Write your G# down]
-* 6 = [Write your Mason email address down]
-* 7 = [Give the piece of paper to Professor Russell]
-* 
-*/
-
-public abstract class Objective
+public class AToBObjective extends Objective
 {
 	
 	/**
@@ -47,7 +12,7 @@ public abstract class Objective
 	 * "idGenerator" in the Quest class (tracking the total number of quests
 	 * that have been instantiated)
 	*/
-	public final int OBJECTIVE_ID = -1;
+	public final int OBJECTIVE_ID;
 	/**
 	 * The type of this Objective
 	 * 
@@ -57,15 +22,15 @@ public abstract class Objective
 	 * Type: Item		|	Objective Description: "Pick up a newspaper."
 	 * Type: Action		|	Objective Description: "Talk to Professor Russell."
 	*/
-	public final String OBJECTIVE_TYPE = "";
+	public final String OBJECTIVE_TYPE  = "A to B";
 	/**
 	 * The description of this Objective
 	*/
-	public final String OBJECTIVE_DESCRIPTION = "";
+	public final String OBJECTIVE_DESCRIPTION;
 	/**
 	 * The unique ID number of the Quest this Objective belongs to
 	*/
-	public final Quest ASSOCIATED_QUEST = null;
+	public final Quest ASSOCIATED_QUEST;
 	/**
 	 * The boolean status of whether this Objective has been completed (false until updated)
 	*/
@@ -74,6 +39,14 @@ public abstract class Objective
 	 * Array storing references to the next Objectives (there should never be more than 5 concurrent objectives)
 	*/
 	public final Objective NEXT_OBJECTIVES[] = new Objective[5];
+	/**
+	 * The first location the Player must go to
+	 */
+	private int pointA;
+	/**
+	 * The second location the Player must go to
+	 */
+	private int pointB;
 	
 	/**
 	 * Constructor for an Objective
@@ -81,9 +54,17 @@ public abstract class Objective
 	 * @param q the Quest associated with this Objective
 	 * @param objScanner the scanner from the input file for a Quest
 	*/
-	public Objective() throws InputMismatchException, NoSuchElementException
+	public AToBObjective(Quest q, Scanner objScanner) throws InputMismatchException, NoSuchElementException
 	{
-		
+		if (objScanner == null)
+		{
+			throw new NullPointerException("NullPointerException: scanner passed to AToBObjective constructor was null.");
+		}
+		this.OBJECTIVE_ID = Quest.generateID();
+		this.ASSOCIATED_QUEST = q;
+		this.OBJECTIVE_DESCRIPTION = objScanner.next();
+		this.pointA = objScanner.nextInt();
+		this.pointB = objScanner.nextInt();
 	}
 	
 	/**
@@ -99,7 +80,27 @@ public abstract class Objective
 	*/
 	public void updateObjectiveCompletion()
 	{
-		System.out.println("Implement updateObjectiveCompletion(Player p) method");
+		if (ASSOCIATED_QUEST.OWNER != null)
+		{
+			// if pointA is set to -1, it means that this area has already been visited since receiving the quest
+			if (pointA != -1)
+			{
+				if (ASSOCIATED_QUEST.OWNER.getCurrentRoom() == pointA)
+				{
+					pointA = -1;
+				}
+			}
+			// if pointB is set to -1, it means that this area has already been visited after having
+			// visited pointA since receiving the quest (the objective should already be complete)
+			else if (pointB != -1)
+			{
+				if (ASSOCIATED_QUEST.OWNER.getCurrentRoom() == pointB)
+				{
+					pointB = -1;
+					this.objectiveComplete = true;
+				}
+			}
+		}
 	}
 	
 	/**
@@ -110,7 +111,11 @@ public abstract class Objective
 	*/
 	public Objective getNextObjective(int x)
 	{
-		return null;
+		if ( (x < 0) || (x >= 5) )
+		{
+			throw new IllegalArgumentException("Illegal Argument Exception: must pass a number in the range [0,5)");
+		}
+		return NEXT_OBJECTIVES[x];
 	}
 	
 	/**
@@ -118,7 +123,17 @@ public abstract class Objective
 	 */
 	public void printObjective()
 	{
-		System.out.println("Implement printObjective() method");
+		System.out.println();
+		System.out.println("----------OBJECTIVE INFORMATION----------");
+		System.out.println(String.format("Objective ID: %d", OBJECTIVE_ID));
+		System.out.println(String.format("Objective Type: %s", OBJECTIVE_TYPE));
+		System.out.println(String.format("Objective Description: %s", OBJECTIVE_DESCRIPTION));
+		System.out.println(String.format("Associated Quest: %s", ASSOCIATED_QUEST.QUEST_NAME));
+		System.out.println(String.format("Objective Completion Status: %b", objectiveComplete));
+		System.out.println(String.format("Point A: %d", pointA));
+		System.out.println(String.format("Point B: %d", pointB));
+		System.out.println("-----------------------------------------");
+		System.out.println();
 	}
 	
 	/**

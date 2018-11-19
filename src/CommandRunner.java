@@ -18,7 +18,9 @@ public class CommandRunner {
      * Game interface
      */
     protected GameObjectInterface remoteGameInterface;
- 
+    
+    protected ArrayList<String> censorList;  //409_censor
+    
     /**
      * Wrap a lambda expression and allow it to throw a RemoteException
      */
@@ -56,7 +58,7 @@ public class CommandRunner {
             if (message.equals("")) {
                 return "[ERROR] Empty message";
             } else {
-                return remoteGameInterface.say(name, message);
+                return remoteGameInterface.say(name, message, censorList);  //409_censor pass censor list
             }
         });
         commandFunctions.put("WHISPER", (name, args) -> {
@@ -70,7 +72,7 @@ public class CommandRunner {
                     return "[ERROR] You need to include a message to whisper.";
                 }
                 else {
-                    return remoteGameInterface.whisper(name, receiver, message);
+                    return remoteGameInterface.whisper(name, receiver, message, censorList);  //409_censor pass censor list
                     //return null;
                 }
             }
@@ -85,7 +87,7 @@ public class CommandRunner {
                     return "[ERROR] You need to include a message to reply.";
                 }
                 else {
-                    return remoteGameInterface.reply(name, message);
+                    return remoteGameInterface.reply(name, message, censorList);  //409_censor pass censor list
                 }
             }
             catch(IndexOutOfBoundsException ex) {
@@ -104,7 +106,7 @@ public class CommandRunner {
                else
                {
                    String message = String.join(" ", args);
-                   res = remoteGameInterface.shout(name, message);
+                   res = remoteGameInterface.shout(name, message, censorList);  //409_censor pass censor list
 
                }
                return res;
@@ -191,6 +193,22 @@ public class CommandRunner {
                 return "[ERROR] No object specified";
             }
         });
+		commandFunctions.put("DESCRIBE",    (name, args) -> {
+            try {
+                String object = args.remove(0);
+                while (!args.isEmpty()) {
+                    object += " " + args.remove(0);
+                }
+
+                if (object.equals("")) {
+                    return "[ERROR] No object specified";
+                } else {
+                    return remoteGameInterface.describe(name, object);
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No object specified";
+            }
+        });
         commandFunctions.put("DROPOFF",   (name, args) -> {
             try {
                 String object = args.remove(0);
@@ -205,6 +223,22 @@ public class CommandRunner {
                 }
             } catch (IndexOutOfBoundsException ex) {
                 return "[ERROR] No object specified";
+            }
+        });
+        commandFunctions.put("SORTINVENTORY",   (name, args) -> {
+            try {
+                String attribute = args.remove(0);
+                while (!args.isEmpty()) {
+                    attribute += " " + args.remove(0);
+                }
+
+                if (attribute.equals("")) {
+                    return "[ERROR] No attribute specified";
+                } else {
+                    return remoteGameInterface.sortInventory(name, attribute);
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return "[ERROR] No attribute specified";
             }
         });
         commandFunctions.put("OFFERITEM",   (name, args) -> {
@@ -286,7 +320,9 @@ public class CommandRunner {
         commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
         commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
         commandFunctions.put("LEADERBOARD",   (name, args) -> { remoteGameInterface.checkBoard(name); return null; });
+        commandFunctions.put("RANK",   (name, args) -> { remoteGameInterface.getRank(name); return null; });
         commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
+        commandFunctions.put("TOPTEN",   (name, args) -> { remoteGameInterface.topTen(name); return null; });
         commandFunctions.put("GIFT", (name, args) -> {
             if(args.size() < 2) {
                 return "You need to provide a ghoul name and the item to gift.";
@@ -353,8 +389,7 @@ public class CommandRunner {
                     Double amount = Double.parseDouble(args.remove(0));
                     
                     if(amount > 0){
-                        remoteGameInterface.gift(name, receiver, amount);
-                        return "";
+                        return remoteGameInterface.gift(name, receiver, amount);
                     }
                     else {
                         return "Amount of money gifted must be greater than 0";
@@ -364,6 +399,11 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
+
+        commandFunctions.put("RECEIVE",   (name, args) -> { return remoteGameInterface.acceptGift(name);  });
+        
+        commandFunctions.put("DECLINE",   (name, args) -> { return remoteGameInterface.declineGift(name);  });
+
         commandFunctions.put("CHANGEPREFIX", (name, args) -> {
             try {
                 String newprefix = args.remove(0);
@@ -457,7 +497,8 @@ public class CommandRunner {
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi) {
-        this.remoteGameInterface = rgi;
+        censorList = loadCensorList();
+	this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();
     }
@@ -468,7 +509,8 @@ public class CommandRunner {
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
-        this.remoteGameInterface = rgi;
+        censorList = loadCensorList();
+	this.remoteGameInterface = rgi;
         setupFunctions();
 
         // TODO: Read file, extract command descriptions and call createCommands(descriptions)
@@ -511,6 +553,7 @@ public class CommandRunner {
 	descriptions.put("REDO",      new String[]{"",         "Performs the last command you entered."});
         descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
         descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
+        descriptions.put("SORTINVENTORY",      new String[]{"ATTRIBUTE",         "Sorts inventory by specified name, value or weight."});
 
         // Ghoul commands
         descriptions.put("POKE",      new String[]{"GHOUL",    "Pokes <GHOUL>"});
@@ -530,6 +573,9 @@ public class CommandRunner {
         descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
         descriptions.put("LEADERBOARD",  new String[]{"",      "Display the current Rock Paper Scissors Leaderboard."});
         descriptions.put("TUTORIAL",  new String[]{"",         "Display a tutorial for Rock Paper Scissors."});
+        descriptions.put("TOPTEN",    new String[]{"",         "Display Top Ten Players from Rock Paper Scissors Leaderboard."});
+        descriptions.put("RANK",  new String[]{"",      "Display your current RPS Leaderboard Rank."});
+
 
         //Shops & Money
         descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });
@@ -539,6 +585,7 @@ public class CommandRunner {
         descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
         descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
         descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
+        descriptions.put("RECEIVE", new String[]{"", "Receive a gift if someone has tried to gift you" });
 	
 	//World Command
 	descriptions.put("MAP", new String[]{"", "Displays an ascii art map of the world."});
@@ -663,6 +710,32 @@ public class CommandRunner {
 
         return s;
     }
-
+    
+    //START 409_censor
+    private ArrayList<String> loadCensorList(){
+        Scanner fileIn = null;
+        String tempStr = null;
+	ArrayList<String> temp = new ArrayList<String>();
+        try{
+            fileIn = new Scanner( new FileReader( "censorlist.txt" ) );
+            while( fileIn.hasNextLine() ){
+                tempStr = fileIn.nextLine();
+		//check if string from file is empty or all spaces
+		//ignore if it is, add to ArrayList temp if it is not
+                if( !tempStr.isEmpty() && !tempStr.replaceAll("\\s+","").isEmpty() )
+			temp.add( tempStr );
+            }
+            if(false){    //Used for debugging
+                System.out.println( "******Contents of censorList: " + temp.toString() );
+            }
+        }catch( IOException e ){
+            System.out.println( e );
+        }finally{
+           if( fileIn != null )
+                   fileIn.close();
+        }
+        return temp;    //return temp variable, it has all items in censorlist.txt
+    }
+    //END 409_censor
    
 }
