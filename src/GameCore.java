@@ -202,20 +202,6 @@ public class GameCore implements GameCoreInterface {
         }
     }
 
-    /**
-     * Returns the player with the given name or null if no such player.
-     * @param name Name of the player to find.
-     * @return Player found or null if none.
-     */
-    @Override
-    public Player findPlayer(String name) {
-        for(Player player : this.playerList) {
-            if(player.getName().equalsIgnoreCase(name)) {
-                return player;
-            }
-        }
-        return null;
-    }
     
     /**
      * Allows a player to join the game.  If a player with the same name (case-insensitive)
@@ -271,21 +257,6 @@ public class GameCore implements GameCoreInterface {
         }
     }        
 
-    //402
-    public String listAllPlayers(String name)
-    {
-        Player player = this.playerList.findPlayer(name);
-        String l = "Players in the world: ";
-         if(player != null)
-        {
-            l += playerList.listOfPlayers();
-            return l;
-        }
-        else
-            {
-                return null;
-            }
-    }
 
     /**
      * Turns the player left.
@@ -333,10 +304,42 @@ public class GameCore implements GameCoreInterface {
         }
     }    
     
+    //START CHAT FUNCTIONS
+
+    /**
+     * Returns the player with the given name or null if no such player.
+     * @param name Name of the player to find.
+     * @return Player found or null if none.
+     */
+    @Override
+    public Player findPlayer(String name) {
+        for(Player player : this.playerList) {
+            if(player.getName().equalsIgnoreCase(name)) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public String listAllPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Players in the world: ";
+         if(player != null)
+        {
+            l += playerList.listOfPlayers();
+            return l;
+        }
+        else
+            {
+                return null;
+            }
+    }
     /**
      * Says "message" to everyone in the current area.
      * @param name Name of the player to speak
      * @param message Message to speak
+     * @param censorList list of words to censor
      * @return Message showing success.
      */
     @Override
@@ -361,6 +364,7 @@ public class GameCore implements GameCoreInterface {
     * Shouts "message" to everyone in the world.
     * @param name Name of the player shouting
     * @param message Message that will be shouted
+    * @param censorList list of words to censor
     * @return Message showing success.
     */
     public String shout(String name, String message, ArrayList<String> censorList) {
@@ -384,6 +388,7 @@ public class GameCore implements GameCoreInterface {
     * @param name1 Name of player sending whisper
     * @param name2 Name of player receiving whisper
     * @param message Message to whisper
+    * @param censorList list of words to censor
     * @return Message showing success.
     */
     public String whisper(String name1, String name2, String message, ArrayList<String> censorList) {
@@ -429,6 +434,7 @@ public class GameCore implements GameCoreInterface {
     * Sends a whisper the last player that whispered.
     * @param name Name of player replying to whisper
     * @param message Message to be whispered
+    * @param censorList list of words to censor
     * @return Message showing success.
     */
     public String reply(String name, String message, ArrayList<String> censorList) {
@@ -442,13 +448,93 @@ public class GameCore implements GameCoreInterface {
         return this.whisper(name, name2, message, censorList); //409_censor whisper command scrubs message of unwanted words
     }
 
-    /**
-     * Attempts to walk forward < distance > times.  If unable to make it all the way,
-     *  a message will be returned.  Will display LOOK on any partial success.
-     * @param name Name of the player to move
-     * @return Message showing success.
-     */
 
+    /**
+    * Ignore a player
+    * @param name Name of player ignoring
+    * @param ignoreName  Name of player to ignore
+    * @return Message showing result of operation
+    */
+   public String ignore(String name, String ignoreName) {
+              if( name.equalsIgnoreCase(ignoreName) )
+                      return "You can't ignore yourself.";
+
+              //verify player being ignored exists
+              Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
+              if( ignoredPlayer == null )
+                      return "Player " + ignoreName + " is not in the game.";
+
+              Player thisPlayer = this.playerList.findPlayer(name);
+              //verify player is not already in ignore list
+              if( thisPlayer.searchIgnoreList(ignoreName) )
+                      return "Player " + ignoreName + " is in ignored list.";
+
+              //add ignoreName to ignore list
+              thisPlayer.ignorePlayer(ignoreName);
+
+              //add ignoring player to ignored players ignoredBy list
+              ignoredPlayer.addIgnoredBy(name);
+              return ignoreName + " added to ignore list.";
+    }
+
+    
+    /**
+    * List ignored players
+    * @param name Name of current player
+    * @return List of ignored players for current player
+    */
+ 
+    public String listIgnoredPlayers(String name)
+    {
+        Player player = this.playerList.findPlayer(name);
+        String l = "Ignored Players: ";
+
+        if(player != null)
+        {
+            l += player.showIgnoreList();
+            return l;
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    
+    /**
+    * Unignore a player
+    * @param name Player performing unignore request
+    * @param unIgnoreName Player to unignore
+    * @return Message showing unignore result
+    */
+ 
+    public String unIgnore(String name, String unIgnoreName) {
+              if( name.equalsIgnoreCase(unIgnoreName) )
+                      return "You can't unignore yourself since you can't ignore yourself...";
+
+              //verify player being unignored exists
+              Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
+              if( unIgnoredPlayer == null )
+                      return "Player " + unIgnoreName + " is not in the game.";
+
+              Player thisPlayer = this.playerList.findPlayer(name);
+
+              //verify player is in Ignore list
+              if( !thisPlayer.searchIgnoreList(unIgnoreName) )
+                      return "Player " + unIgnoreName + " is not in ignored list.";
+
+              //remove ignoreName in ignore list
+              thisPlayer.unIgnorePlayer(unIgnoreName);
+
+              //add ignoring player to ignored players ignoredBy list
+              unIgnoredPlayer.removeIgnoredBy(name);
+              return unIgnoreName + " removed from ignore list.";
+    }
+
+/**
+ * Add message to chat log
+ * @param line Message to print to logs
+ */
     public void add_chat_log(String line)
     {
 
@@ -470,6 +556,11 @@ public class GameCore implements GameCoreInterface {
         }
 
     }
+
+    /**
+     * Add messages to chat log
+     * @param lines Set of lines to add to logs
+     */
     public void add_chat_log(List<String> lines)
     {
 
@@ -494,6 +585,15 @@ public class GameCore implements GameCoreInterface {
        }
 
     }
+
+    //END CHAT FUNCTIONS
+  
+    /**
+     * Attempts to walk forward < distance > times.  If unable to make it all the way,
+     *  a message will be returned.  Will display LOOK on any partial success.
+     * @param name Name of the player to move
+     * @return Message showing success.
+     */
     public String move(String name, String direction) {
         Player player = this.playerList.findPlayer(name);
         if(player == null) {
@@ -1023,71 +1123,6 @@ public class GameCore implements GameCoreInterface {
         }
         return null;
     }
-
-    //405
-    public String ignore(String name, String ignoreName) {
-              if( name.equalsIgnoreCase(ignoreName) )
-                      return "You can't ignore yourself.";
-
-              //verify player being ignored exists
-              Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
-              if( ignoredPlayer == null )
-                      return "Player " + ignoreName + " is not in the game.";
-
-              Player thisPlayer = this.playerList.findPlayer(name);
-              //verify player is not already in ignore list
-              if( thisPlayer.searchIgnoreList(ignoreName) )
-                      return "Player " + ignoreName + " is in ignored list.";
-
-              //add ignoreName to ignore list
-              thisPlayer.ignorePlayer(ignoreName);
-
-              //add ignoring player to ignored players ignoredBy list
-              ignoredPlayer.addIgnoredBy(name);
-              return ignoreName + " added to ignore list.";
-    }
-
-    //407
-    public String listIgnoredPlayers(String name)
-    {
-        Player player = this.playerList.findPlayer(name);
-        String l = "Ignored Players: ";
-
-        if(player != null)
-        {
-            l += player.showIgnoreList();
-            return l;
-        }
-        else
-        {
-            return null;
-        }
-    }
-    //408
-    public String unIgnore(String name, String unIgnoreName) {
-              if( name.equalsIgnoreCase(unIgnoreName) )
-                      return "You can't unignore yourself since you can't ignore yourself...";
-
-              //verify player being unignored exists
-              Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
-              if( unIgnoredPlayer == null )
-                      return "Player " + unIgnoreName + " is not in the game.";
-
-              Player thisPlayer = this.playerList.findPlayer(name);
-
-              //verify player is in Ignore list
-              if( !thisPlayer.searchIgnoreList(unIgnoreName) )
-                      return "Player " + unIgnoreName + " is not in ignored list.";
-
-              //remove ignoreName in ignore list
-              thisPlayer.unIgnorePlayer(unIgnoreName);
-
-              //add ignoring player to ignored players ignoredBy list
-              unIgnoredPlayer.removeIgnoredBy(name);
-              return unIgnoreName + " removed from ignore list.";
-    }
-    /* STOP 408_ignore */
-
 /**
      * Sell an item to the shop the player is currently in
      * @param playerName player who is selling
