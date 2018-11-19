@@ -125,6 +125,7 @@ public void getRank(String player);
 
 //Rock Paper Scissors Battle Code here--------------------------------------
 	/**
+	 * @author James Bruce
 	 * gives an ASCII art map of the world surrounding a player
 	 * @param player the name of a player
 	 * @return the ASCII art map
