@@ -273,21 +273,33 @@ public class CommandRunner {
 	commandFunctions.put("REDO", (name, args) -> null);
         //commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
 
-        // PvP Commands
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Team 8
+		
+        //Rock-Paper-Scissors Commands
+		
+		//Challenge player 'name' to RPS battle
         commandFunctions.put("CHALLENGE",    (name, args) -> {
             try {
                 String player = args.get(0);
+                String rounds = args.get(1);
 
+                if (Integer.parseInt(rounds) != 1 && Integer.parseInt(rounds) != 3 && Integer.parseInt(rounds) != 5){
+                    return "[ERROR] You must specify 1 3 or 5 as the number of rounds.";
+                }
+                
                 if (player.equals("")) {
                     return "[ERROR] No player specified";
                 } else {
-                    remoteGameInterface.challenge(name, player);
+                    remoteGameInterface.challenge(name, player, Integer.parseInt(rounds));
                     return null;
                 }
             } catch (IndexOutOfBoundsException ex) {
-                return "[ERROR] No player specified";
+                return (args.size() == 1) ? "[ERROR] Number of rounds unspecified." : "[ERROR] No player specified.\n[ERROR] Number of rounds unspecified.";
             }
         });
+		
+		//Accept challenge to RPS battle from player 'name'
         commandFunctions.put("ACCEPT",    (name, args) -> {
             try {
                 String player = args.get(0);
@@ -302,6 +314,8 @@ public class CommandRunner {
                 return "[ERROR] No player specified";
             }
         });
+		
+		//Refuse challenge to RPS battle from player 'name'
         commandFunctions.put("REFUSE",    (name, args) -> {
             try {
                 String player = args.get(0);
@@ -316,14 +330,20 @@ public class CommandRunner {
                 return "[ERROR] No player specified";
             }
         });
-        commandFunctions.put("ROCK",       (name, args) -> { remoteGameInterface.rock(name); return null; });
-        commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
-        commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
-        commandFunctions.put("LEADERBOARD",   (name, args) -> { remoteGameInterface.checkBoard(name); return null; });
-        commandFunctions.put("RANK",   (name, args) -> { remoteGameInterface.getRank(name); return null; });
-        commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
-        commandFunctions.put("TOPTEN",   (name, args) -> { remoteGameInterface.topTen(name); return null; });
-        commandFunctions.put("GIFT", (name, args) -> {
+		
+		//Choose rock, paper, or scissors in RPS battle
+        commandFunctions.put("ROCK",		(name, args) -> { remoteGameInterface.rock(name); return null; });
+        commandFunctions.put("PAPER",		(name, args) -> { remoteGameInterface.paper(name); return null; });
+        commandFunctions.put("SCISSORS",	(name, args) -> { remoteGameInterface.scissors(name); return null; });
+		
+		//Display RPS leaderboard, player rank, tutorial, or top-ten player list
+        commandFunctions.put("LEADERBOARD",	(name, args) -> { remoteGameInterface.checkBoard(name); return null; });
+        commandFunctions.put("RANK",		(name, args) -> { remoteGameInterface.getRank(name); return null; });
+        commandFunctions.put("TUTORIAL",	(name, args) -> { remoteGameInterface.tutorial(name); return null; });
+        commandFunctions.put("TOPTEN",		(name, args) -> { remoteGameInterface.topTen(name); return null; });
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+        commandFunctions.put("GIFT",	(name, args) -> {
             if(args.isEmpty()) {
                 return "You need to provide a ghoul name and an object.";
             }
@@ -553,18 +573,20 @@ public class CommandRunner {
         descriptions.put("POKE",      new String[]{"GHOUL",    "Pokes <GHOUL>"});
         descriptions.put("GIFT",      new String[]{"GHOUL, ITEM", "Gives your <ITEM> to <GHOUL>"});
 
-        // PvP Commands
-        descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another <PLAYER> to a Rock Paper Scissors Battle."});
-        descriptions.put("ACCEPT",    new String[]{"PLAYER",   "Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
-        descriptions.put("REFUSE",    new String[]{"PLAYER",   "Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
-        descriptions.put("ROCK",      new String[]{"",         "Play <ROCK> in your current Rock Paper Scissors Battle."});
-        descriptions.put("PAPER",     new String[]{"",         "Play <PAPER> in your current Rock Paper Scissors Battle."});
-        descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
-        descriptions.put("LEADERBOARD",  new String[]{"",      "Display the current Rock Paper Scissors Leaderboard."});
-        descriptions.put("TUTORIAL",  new String[]{"",         "Display a tutorial for Rock Paper Scissors."});
-        descriptions.put("TOPTEN",    new String[]{"",         "Display Top Ten Players from Rock Paper Scissors Leaderboard."});
-        descriptions.put("RANK",  new String[]{"",      "Display your current RPS Leaderboard Rank."});
-
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Team 8
+        //RPS Command Descriptions
+        descriptions.put("CHALLENGE",	new String[]{"PLAYER ROUNDS",	"Challenges another <PLAYER> to a Rock Paper Scissors Battle."});
+        descriptions.put("ACCEPT",		new String[]{"PLAYER",			"Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
+        descriptions.put("REFUSE",		new String[]{"PLAYER",			"Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
+        descriptions.put("ROCK",		new String[]{"",				"Play <ROCK> in your current Rock Paper Scissors Battle."});
+        descriptions.put("PAPER",		new String[]{"",				"Play <PAPER> in your current Rock Paper Scissors Battle."});
+        descriptions.put("SCISSORS",	new String[]{"",				"Play <SCISSORS> in your current Rock Paper Scissors Battle."});
+        descriptions.put("LEADERBOARD",	new String[]{"",				"Display the current Rock Paper Scissors Leaderboard."});
+        descriptions.put("TUTORIAL",	new String[]{"",				"Display a tutorial for Rock Paper Scissors."});
+        descriptions.put("TOPTEN",		new String[]{"",				"Display Top Ten Players from Rock Paper Scissors Leaderboard."});
+        descriptions.put("RANK",		new String[]{"",				"Display your current RPS Leaderboard Rank."});
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //Shops & Money
         descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });

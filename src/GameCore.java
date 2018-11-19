@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.*;
 import java.util.HashMap;
 import java.util.LinkedList;
-
+import java.text.*;
 
 /**
  *
@@ -74,16 +74,25 @@ public class GameCore implements GameCoreInterface {
         npcThread.setDaemon(true);
         npcThread.start();
 
-        activeBattles = new ArrayList<Battle>();
-        pendingBattles = new ArrayList<Battle>();
-        this.leaderboard = new Leaderboard();
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Team 8
+        this.activeBattles = new ArrayList<Battle>();	//list of ongoing battles
+        this.pendingBattles = new ArrayList<Battle>();	//list of battle challenges waiting for a response
+        this.leaderboard = new Leaderboard();			//ranked list of RPS player scores
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
         Thread objectThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 Random rand = new Random();
                 Room room;
                 Item object;
+				
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				//Team 8
                 ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
+				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+				
                 while(true) {
                     try {
                       Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
@@ -1170,51 +1179,84 @@ public class GameCore implements GameCoreInterface {
         }
     }
 
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //Team 8
+  
+  //Rock Paper Scissors Battle Methods
 
-//Rock Paper Scissors Battle Methods -------------------------------------------
-
-  // Broadcasts to player2
-  /*
-  [Player1] challenges you to a Rock Paper Scissors Battle!
-  Type 'Accept [Player1]' to accept the challenge.
-  OR
-  Type 'Refuse [Player1]' to refuse the challenge.
-  */
-  //Edge case: If one player challenges another but the other player challenges back, this is counted as an acceptance of battle in place of an 'accept [player1]'.
-  //Checks if player2 exists, if not broadcasts to challenger "That player doesnt exist." and returns false.
-  //if player2 does exist, broadcast to challenger "Request sent. You will be notified when they respond."
-  public void challenge(String challenger, String player2)
+  //Challenger challenges player2 to RPS battle with 'rounds' rounds
+  //Edge case: If one player challenges another but the other player challenges back, this is counted as an acceptance of battle in place of an 'accept [player1]'. (WHERE IS THIS IMPLMENTED?)
+  public void challenge(String challenger, String player2, int rounds)
   {
-    Player play1 = this.playerList.findPlayer(challenger);
-    Player play2 = this.playerList.findPlayer(player2);
+    Player play1 = this.playerList.findPlayer(challenger);	//challenger
+    Player play2 = this.playerList.findPlayer(player2);		//opposing player
+    
+	//rounds component of challenge message
+    String battletype = MessageFormat.format( (rounds == 1) ? " ":" best {0} out of {1} ",(int)Math.ceil(rounds/2.0),rounds);
 
-    if(play2 == null)//other player doesnt exist
+	//prevent challenge if play2 does not exist
+    if(play2 == null)
     {
       play1.getReplyWriter().println("\nThat player doesn't exist.");
       return;
     }
 
-    if(challenger.equalsIgnoreCase(player2)) // Challenger is challenging himself. Stupid challenger...
+	//prevent play1 from challenging themselves
+    if(challenger.equalsIgnoreCase(player2))
     {
       play1.getReplyWriter().println("\nYou can't challenge yourself.\n");
       return;
     }
 
+	//check for conflicting battles
     for(Battle b : activeBattles)
     {
-      if(b.containsPlayer(challenger))// Challenger is already in an active battle
+	  //prevent challenge if play1 is already engaged in battle
+      if(b.containsPlayer(challenger))
       {
         play1.getReplyWriter().println("\nYou can only be in one battle at a time. Finish the current one you are in before challenging someone else.");
         return;
       }
-      if(b.containsPlayer(player2))// Other Player is already in an active battle.
+	  //prevent challenge if play2 is already engaged in battle
+      if(b.containsPlayer(player2))
       {
         play1.getReplyWriter().println("\nYou cant challenge " + player2 + " right now, they're currently in a battle. ");
         return;
       }
     }
 
-    for(Battle b : pendingBattles)//Challenger already asked this person to battle and is waiting for a response still.
+	  //check play2 inventory for battle object (rock, paper, or scissors)
+      LinkedList<Item> inventory = play2.getCurrentInventory();
+      int hasBattleItemP2 = 0;
+      for (Item obj : inventory) {
+          if (obj.getItemName().equals("Rock") || obj.getItemName().equals("Paper") || obj.getItemName().equals("Scissors")) {
+              hasBattleItemP2 ++;
+          }
+      }
+	  
+	  //prevent challenge if play2 does not have battle object
+      if (hasBattleItemP2 == 0) {
+          play1.getReplyWriter().println("\nThe other person does not have a battle item");
+          return;
+      }
+
+	  //check play1 inventory for battle object (rock, paper, or scissors)
+      LinkedList<Item> inventory2 = play1.getCurrentInventory();
+      int hasBattleItemP1 = 0;
+      for (Item obj : inventory2) {
+          if (obj.getItemName().equals("Rock") || obj.getItemName().equals("Paper") || obj.getItemName().equals("Scissors")) {
+              hasBattleItemP1 ++;
+          }
+      }
+
+	  //prevent challenge if play1 does not have battle object
+      if (hasBattleItemP1 == 0) {
+          play1.getReplyWriter().println("\nYou do not have a battle item");
+          return;
+      }
+
+	  //prevent challenge if play1 has already challenged play2
+      for(Battle b : pendingBattles)
     {
       if(b.hasPlayers(challenger,player2))
       {
@@ -1222,34 +1264,42 @@ public class GameCore implements GameCoreInterface {
         return;
       }
     }
-    play2.getReplyWriter().println("\n" + challenger + " has challenged you to a Rock Paper Scissors Battle. \n\nTo accept, type 'Accept " + challenger + "' and press ENTER." + "\n\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
-    pendingBattles.add(new Battle(challenger, player2));
+	
+	//broadcaast challenge message to play2, add battle to pending battle list, notify everyone of challenge
+    play2.getReplyWriter().println("\n" + challenger + " has challenged you to a" + battletype + "Rock Paper Scissors Battle. \n\nTo accept, type 'Accept " 
+                  + challenger + "' and press ENTER." + "\n\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
+    pendingBattles.add(new Battle(challenger, player2, rounds));
     System.out.println("Player: " + challenger + " Challenged: " + player2);
   }
 
+  //Player2 accepts challenge to RPS battle by challenger
   public void accept(String challenger, String player2)
   {
-    Player play1 = this.playerList.findPlayer(challenger);
-    Player play2 = this.playerList.findPlayer(player2);
+    Player play1 = this.playerList.findPlayer(challenger);	//challenger
+    Player play2 = this.playerList.findPlayer(player2);		//opposing player
 
-
+	//prevent acceptance if play2 is already engaged in battle
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player2))
       {
-        play2.getReplyWriter().println("You're already in a Rock Paper Scissors challenge with someone. \nMake a choice of 'rock', 'paper', or 'scissors' \nand wait for the challenge to end before trying to accept another.\n");
+        play2.getReplyWriter().println("You're already in a Rock Paper Scissors challenge with someone." + 
+                  "\nMake a choice of 'rock', 'paper', or 'scissors' \nand wait for the challenge to end before trying to accept another.\n");
         return;
       }
     }
 
-    if(play1 == null)//other player doesnt exist
+	//prevent acceptance if play1 does not exists
+    if(play1 == null)
     {
       play2.getReplyWriter().println("You can't accept a challenge from a player that doesn't exist.");
     }
     else
     {
-      for(Battle b : pendingBattles)
+      //check for challenge from play1
+	  for(Battle b : pendingBattles)
       {
+		//broadcast acceptance message to play1, confirm acceptance to play2, move battle to active battle list
         if(b.hasPlayers(challenger,player2) && b.getStatus().equalsIgnoreCase("pending"))
         {
           play1.getReplyWriter().println(player2 + " has accepted your Rock Paper Scissors challenge. \nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
@@ -1261,24 +1311,30 @@ public class GameCore implements GameCoreInterface {
           return;
         }
       }
+	  //prevent acceptance if no challenge made by play1 to play2
       play2.getReplyWriter().println("You don't have any pending requests from that player.");
     }
+	//notify everyone of challenge acceptance 
     System.out.println("Player: " + player2 + " Accepted " + challenger + "'s' Challenge.");
   }
 
+  //Player2 refuses challenge to RPS battle by challenger
   public void refuse(String challenger, String player2)
   {
-    Player play1 = this.playerList.findPlayer(challenger);
-    Player play2 = this.playerList.findPlayer(player2);
+    Player play1 = this.playerList.findPlayer(challenger);	//challenger
+    Player play2 = this.playerList.findPlayer(player2);		//opposing player
 
-    if(play1 == null)//other player doesnt exist
+	//prevent refusal if play1 doesn't exist
+    if(play1 == null)
     {
       play2.getReplyWriter().println("You can't refuse a challenge from a player that doesn't exist.");
     }
     else
     {
+	  //check for challenge from play1
       for(Battle b : pendingBattles)
       {
+		//broadcast refusal message to play1, confirm acceptance to play2, remove battle from pending battle list
         if(b.hasPlayers(challenger,player2) && b.getStatus().equalsIgnoreCase("pending"))
         {
           play1.getReplyWriter().println(player2 + " has refused your Rock Paper Scissors Challenge. :(");
@@ -1287,260 +1343,496 @@ public class GameCore implements GameCoreInterface {
           return;
         }
       }
+	  //prevent refusal if no challenge made by play1 to play2
       play2.getReplyWriter().println("You don't have any pending requests from that player.");
     }
+	//notify everyone of challenge refusal 
     System.out.println("Player: " + player2 + " Refused " + challenger + "'s' Challenge.");
   }
 
+  //Player selects rock in RPS battle round
   public void rock(String player)
   {
-    Player p = this.playerList.findPlayer(player);
+      Player p = this.playerList.findPlayer(player);		//player
+      LinkedList<Item> inventory = p.getCurrentInventory();	//player inventory
+	  
+	  //amount of rocks in player inventory
+      int hasBattleItem = 0;
+      for (Item obj : inventory) {
+          if (obj.getItemName().equals("Rock")) {
+              hasBattleItem ++;
+          }
+      }
+
+	//find battle
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player))
       {
+		//check if player is challenger
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
+		  //prevent choice if player has no rocks
+          if (hasBattleItem == 0){
+            p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+          }
+		  //remove rock from inventory, set challenger choice to rock for current round, confirm choice to player
+          p.removeObjectFomInventory("Rock");
           b.setChoiceP1(1);
-          p.getReplyWriter().println("You Chose Rock.\n");
-          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          p.getReplyWriter().println("You Chose Rock.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
+		  
+		  //initiate battle if both players have made a choice
+          if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
-            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
           return;
         }
+		//check if player is opposing player
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
+		    //prevent choice if player has no rocks
+            if(hasBattleItem == 0){
+                p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+            }
+		  //remove rock from inventory, set opposing player choice to rock for current round, confirm choice to player
+          p.removeObjectFomInventory("Rock");
           b.setChoiceP2(1);
-          p.getReplyWriter().println("You Chose Rock.\n");
-          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          p.getReplyWriter().println("You Chose Rock.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
+		  
+		  //initiate battle if both players have made a choice
+          if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
-            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
           return;
         }
       }
     }
+	//prevent choice if player is not engaged in any battle
     p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
+  //Player selects paper in RPS battle round
   public void paper(String player)
   {
-    Player p = this.playerList.findPlayer(player);
+    Player p = this.playerList.findPlayer(player);			//player
+    LinkedList<Item> inventory = p.getCurrentInventory();	//player inventory
+	
+	//amount of paper in player inventory
+    int hasBattleItem = 0;
+    for (Item obj : inventory) {
+        if (obj.getItemName().equals("Paper")) {
+            hasBattleItem ++;
+        }
+    }
+	//find battle
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player))
       {
+		//check if player is challenger
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
+		    //prevent choice if player has no paper
+            if (hasBattleItem == 0){
+                p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+            }
+		  //remove paper from inventory, set challenger choice to paper for current round, confirm choice to player
+          p.removeObjectFomInventory("Paper");
           b.setChoiceP1(2);
-          p.getReplyWriter().println("You Chose Paper.\n");
-          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          p.getReplyWriter().println("You Chose Paper.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
+		  
+		  //initiate battle if both players have made a choice
+          if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
-            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
           return;
         }
+		//check if player is opposing player
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
+		    //prevent choice if player has no paper
+            if (hasBattleItem == 0){
+                p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+            }
+		  //remove paper from inventory, set opposing player choice to paper for current round, confirm choice to player
+          p.removeObjectFomInventory("Paper");
           b.setChoiceP2(2);
-          p.getReplyWriter().println("You Chose Paper.\n");
-          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          p.getReplyWriter().println("You Chose Paper.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
+		  
+		  //initiate battle if both players have made a choice
+          if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
-            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
           return;
         }
       }
     }
+	//prevent choice if player is not engaged in any battle
     p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
+  //Player selects scissors in RPS battle round
   public void scissors(String player)
   {
-    Player p = this.playerList.findPlayer(player);
+      Player p = this.playerList.findPlayer(player);		//player
+      LinkedList<Item> inventory = p.getCurrentInventory();	//player inventory
+	  
+	  //amount of scissors in player inventory
+      int hasBattleItem = 0;
+      for (Item obj : inventory) {
+          if (obj.getItemName().equals("Scissors")) {
+              hasBattleItem ++;
+          }
+      }
+	
+	//find battle
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player))
       {
+		//check if player is challenger
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
+		    //prevent choice if player has no scissors
+            if (hasBattleItem == 0){
+                p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+            }
+		  //remove scissors from inventory, set challenger choice to scissors for current round, confirm choice to player
+          p.removeObjectFomInventory("Scissors");
           b.setChoiceP1(3);
-          p.getReplyWriter().println("You Chose Scissors.\n");
-          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          p.getReplyWriter().println("You Chose Scissors.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
+		  
+		  //initiate battle if both players have made a choice
+          if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
-            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
           return;
         }
+		//check if player is opposing player
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
+		    //prevent choice if player has no scissors
+            if (hasBattleItem == 0){
+                p.getReplyWriter().println("You don't have that item, pick again");
+                return;
+            }
+		  //remove scissors from inventory, set opposing player choice to scissors for current round, confirm choice to player
+          p.removeObjectFomInventory("Scissors");
           b.setChoiceP2(3);
-          p.getReplyWriter().println("You Chose Scissors.\n");
-          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
+          p.getReplyWriter().println("You Chose Scissors.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
+		  
+		  //initiate battle if both players have made a choice
+          if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
-            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
           return;
         }
       }
     }
+	//prevent choice if player is not engaged in any battle
     p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
-  public void doBattle(String challenger, String player2, int p1, int p2, Battle b)
+  //Perform RPS battle b with 'rounds' rounds between challenger, making choices 'p1', and player2, making choices 'p2'
+  public void doBattle(String challenger, String player2, int[] p1, int[] p2, Battle b, int rounds) 
   {
-    Player play1 = this.playerList.findPlayer(challenger);
-    Player play2 = this.playerList.findPlayer(player2);
-    String message = "";
-    if(p1 == p2)
+    Player play1 = this.playerList.findPlayer(challenger);	//challenger
+    Player play2 = this.playerList.findPlayer(player2);		//opposing player
+    String message = "";									//end of battle message
+    String roundResult  = "";								//result of each round
+	
+	//tie: no winner
+    if(p1[b.getCurrentRound()] == p2[b.getCurrentRound()])
     {
-
-      //tie
-      switch(p1)
+      switch(p1[b.getCurrentRound()])
       {
+		//rock-rock tie
         case 1:
+          roundResult = "You Both Tied.";
           play1.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
-          message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
-          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-          activeBattles.remove(b);
+          
+		  //if final round, finish battle
+          if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
+          {
+              String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
+              message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                        MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
+              this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+              activeBattles.remove(b);
+              updateLeaderboard(b);
+              writeLog(b);
+          }
+		  //otherwise, prompt players for choices in next round
+          else
+          {
+              String broadcast = MessageFormat.format("\nThat was round {0}, You have {1} more round(s) to go. Please choose 'Rock' 'Paper' or 'Scissors' for the next round." +
+                    "\nOnce both of you have sent in your choices, the next round will be triggered.",b.getCurrentRound()+1, b.getMaxRounds() - (b.getCurrentRound()+1));
+              play1.getReplyWriter().println(broadcast);
+              play2.getReplyWriter().println(broadcast);
+              b.incrementRound();
+          }
           return;
+		
+		//paper-paper tie
         case 2:
           play1.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
-          message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
-          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-          activeBattles.remove(b);
+          
+          if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
+          {
+              String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
+              message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                        MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
+              this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+              activeBattles.remove(b);
+              updateLeaderboard(b);
+              writeLog(b);
+          }
+          else
+          {
+              String broadcast = MessageFormat.format("\nThat was round {0}, You have {1} more round(s) to go. Please choose 'Rock' 'Paper' or 'Scissors' for the next round." +
+                    "\nOnce both of you have sent in your choices, the next round will be triggered.",b.getCurrentRound()+1, b.getMaxRounds() - (b.getCurrentRound()+1));
+              play1.getReplyWriter().println(broadcast);
+              play2.getReplyWriter().println(broadcast);
+              b.incrementRound();
+          }
           return;
+		
+		//scissors-scissors tie
         case 3:
           play1.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
-          message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
-          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-          activeBattles.remove(b);
+          
+          if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
+          {
+              String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
+              message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                        MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+              this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+              activeBattles.remove(b);
+              updateLeaderboard(b);
+              writeLog(b);
+          }
+          else
+          {
+              String broadcast = MessageFormat.format("\nThat was round {0}, You have {1} more round(s) to go. Please choose 'Rock' 'Paper' or 'Scissors' for the next round." +
+                    "\nOnce both of you have sent in your choices, the next round will be triggered.",b.getCurrentRound()+1, b.getMaxRounds() - (b.getCurrentRound()+1));
+              play1.getReplyWriter().println(broadcast);
+              play2.getReplyWriter().println(broadcast);
+              b.incrementRound();
+          }
           return;
       }
     }
-    else if(p1 == 1 && p2 == 2)
+	//rock-paper: play2 wins
+    else if(p1[b.getCurrentRound()] == 1 && p2[b.getCurrentRound()] == 2)
     {
-      //rock paper
       play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Paper. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Rock. \nYou win.\n");
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-      activeBattles.remove(b);
-      writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
-
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), false);
-	  this.leaderboard.incrementScore(play2.getName(), true);
-
+      
+      b.incP2Score();
+                
+      if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
+      {
+          String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
+          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+          activeBattles.remove(b);
+          updateLeaderboard(b);
+          writeLog(b);
+      }
+      else
+      {
+          String broadcast = MessageFormat.format("\nThat was round {0}, You have {1} more round(s) to go. Please choose 'Rock' 'Paper' or 'Scissors' for the next round." +
+                "\nOnce both of you have sent in your choices, the next round will be triggered.",b.getCurrentRound()+1, b.getMaxRounds() - (b.getCurrentRound()+1));
+          play1.getReplyWriter().println(broadcast);
+          play2.getReplyWriter().println(broadcast);
+          b.incrementRound();
+      }
       return;
     }
-    else if(p1 == 1 && p2 == 3)
+	//rock-scissors: play1 wins
+    else if(p1[b.getCurrentRound()] == 1 && p2[b.getCurrentRound()] == 3)
     {
-      //rock scissors
       play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Scissors. \nYou win.\n");
       play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Rock. \nYou lose.\n");
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-      activeBattles.remove(b);
-      writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
-
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), true);
-	  this.leaderboard.incrementScore(play2.getName(), false);
-
+      
+      b.incP1Score();
+      
+      if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
+      {
+          String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
+          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+          activeBattles.remove(b);
+          updateLeaderboard(b);
+          writeLog(b);
+      }
+      else
+      {
+          String broadcast = MessageFormat.format("\nThat was round {0}, You have {1} more round(s) to go. Please choose 'Rock' 'Paper' or 'Scissors' for the next round." +
+                "\nOnce both of you have sent in your choices, the next round will be triggered.",b.getCurrentRound()+1, b.getMaxRounds() - (b.getCurrentRound()+1));
+          play1.getReplyWriter().println(broadcast);
+          play2.getReplyWriter().println(broadcast);
+          b.incrementRound();
+      }
       return;
     }
-    else if(p1 == 2 && p2 == 1)
+	//paper-rock: play1 wins
+    else if(p1[b.getCurrentRound()] == 2 && p2[b.getCurrentRound()] == 1)
     {
-      //paper rock
       play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Rock. \nYou win.\n");
       play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Paper. \nYou lose.\n");
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-      activeBattles.remove(b);
-      writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
-
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), true);
-	  this.leaderboard.incrementScore(play2.getName(), false);
-
+      
+      b.incP1Score();
+      
+      if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
+      {
+          String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
+          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+          activeBattles.remove(b);
+          updateLeaderboard(b);
+          writeLog(b);
+      }
+      else
+      {
+          String broadcast = MessageFormat.format("\nThat was round {0}, You have {1} more round(s) to go. Please choose 'Rock' 'Paper' or 'Scissors' for the next round." +
+                "\nOnce both of you have sent in your choices, the next round will be triggered.",b.getCurrentRound()+1, b.getMaxRounds() - (b.getCurrentRound()+1));
+          play1.getReplyWriter().println(broadcast);
+          play2.getReplyWriter().println(broadcast);
+          b.incrementRound();
+      }
       return;
     }
-    else if(p1 == 2 && p2 == 3)
+	//paper-scissors: play2 wins
+    else if(p1[b.getCurrentRound()] == 2 && p2[b.getCurrentRound()] == 3)
     {
-      //paper scissors
       play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Scissors. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Paper. \nYou win.\n");
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-      activeBattles.remove(b);
-      writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
-
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), false);
-	  this.leaderboard.incrementScore(play2.getName(), true);
-
+      
+      b.incP2Score();
+      
+      if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
+      {
+          String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
+          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+          activeBattles.remove(b);
+          updateLeaderboard(b);
+          writeLog(b);
+      }
+      else
+      {
+          String broadcast = MessageFormat.format("\nThat was round {0}, You have {1} more round(s) to go. Please choose 'Rock' 'Paper' or 'Scissors' for the next round." +
+                "\nOnce both of you have sent in your choices, the next round will be triggered.",b.getCurrentRound()+1, b.getMaxRounds() - (b.getCurrentRound()+1));
+          play1.getReplyWriter().println(broadcast);
+          play2.getReplyWriter().println(broadcast);
+          b.incrementRound();
+      }
       return;
     }
-    else if(p1 == 3 && p2 == 1)
+	//scissors-rock: play2 wins
+    else if(p1[b.getCurrentRound()] == 3 && p2[b.getCurrentRound()] == 1)
     {
-      //scissors rock
       play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Rock. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Scissors. \nYou win.\n");
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-      activeBattles.remove(b);
-      writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
-
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), false);
-	  this.leaderboard.incrementScore(play2.getName(), true);
-
+      
+      b.incP2Score();
+      
+      if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
+      {
+          String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
+          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+          activeBattles.remove(b);
+          updateLeaderboard(b);
+          writeLog(b);
+      }
+      else
+      {
+          String broadcast = MessageFormat.format("\nThat was round {0}, You have {1} more round(s) to go. Please choose 'Rock' 'Paper' or 'Scissors' for the next round." +
+                "\nOnce both of you have sent in your choices, the next round will be triggered.",b.getCurrentRound()+1, b.getMaxRounds() - (b.getCurrentRound()+1));
+          play1.getReplyWriter().println(broadcast);
+          play2.getReplyWriter().println(broadcast);
+          b.incrementRound();
+      }
       return;
     }
-    else if(p1 == 3 && p2 == 2)
+	//scissors-paper: play1 wins
+    else if(p1[b.getCurrentRound()] == 3 && p2[b.getCurrentRound()] == 2)
     {
-      //scissors paper
       play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Paper. \nYou win.\n");
       play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Scissors. \nYou lose.\n");
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);;
-      activeBattles.remove(b);
-      writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
-
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), true);
-	  this.leaderboard.incrementScore(play2.getName(), false);
-
+    
+      b.incP1Score();
+    
+      if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
+      {
+          String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
+          this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
+          activeBattles.remove(b);
+          updateLeaderboard(b);
+          writeLog(b);
+      }
+      else
+      {
+          String broadcast = MessageFormat.format("\nThat was round {0}, You have {1} more round(s) to go. Please choose 'Rock' 'Paper' or 'Scissors' for the next round." +
+                "\nOnce both of you have sent in your choices, the next round will be triggered.",b.getCurrentRound()+1, b.getMaxRounds() - (b.getCurrentRound()+1));
+          play1.getReplyWriter().println(broadcast);
+          play2.getReplyWriter().println(broadcast);
+          b.incrementRound();
+      }
       return;
     }
   }
 
-    public void writeLog(String play1, String play2, String p1, String p2, String winner)
-    {
-         try(BufferedWriter writer = new BufferedWriter(new FileWriter("battlelog.txt",true)))
-         {
-             String str = play1 + " Challenged " + play2 + " picking " + p1 + " against " + p2 + " resulting in " + winner + "\r\n\n";
-             writer.write(str);
-             writer.close();
-         }
-         catch(IOException e) {}
-}
-//Rock Paper Scissors Battle Methods -------------------------------------------
+  //Write result of battle b to rps.log
+  public void writeLog(Battle b)
+  {
+       try(BufferedWriter writer = new BufferedWriter(new FileWriter("rps.log",true)))
+       {
+           SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
+           Date date = new Date();
+           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() < b.getP2Score()) ? b.getPlayer2() : "TIE");
+           String logItem = MessageFormat.format("[{0}] [{4} Round RPS Battle] - Player1: {1} (Challenger) | Player2: {2} (Challenged) | Result: {3}",date,b.getPlayer1(),b.getPlayer2(),result,b.getMaxRounds());
+           writer.write(logItem);
+           writer.close();
+       }
+       catch(IOException e) {
+         System.err.println("Function writeLog encountered a IOException.");
+       }
+  }
 
-      // Added by Brendan
-    public void checkBoard(String name) {
-        Player player = this.playerList.findPlayer(name);
-        if(player == null)
-            return;
-              String board = this.leaderboard.getBoard();
-        player.getReplyWriter().println(board);
-    }
+  //Broadcaast full leaderboard to player 'name'
+  public void checkBoard(String name) {
+      Player player = this.playerList.findPlayer(name);
+      if(player == null)
+          return;
+            String board = this.leaderboard.getBoard();
+      player.getReplyWriter().println(board);
+  }
 
+  //Broadcaast tutorial for RPS battle system to player 'name'
   public String tutorial(String name)
   {
       Player player = this.playerList.findPlayer(name);
@@ -1586,7 +1878,7 @@ public class GameCore implements GameCoreInterface {
     }
     //409_censor END
   
-  //Added by An
+  //Broadcaast top-ten list to player 'name'
   public void topTen(String name) {
       Player player = this.playerList.findPlayer(name);
       if(player == null)
@@ -1595,17 +1887,27 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(topTenLeaderBoard);
   }
 
-
-
-
+  //Broadcast rank of player to player
   public void getRank(String player)
   {
     Player p = this.playerList.findPlayer(player);
     p.getReplyWriter().println("Your current RPS Leaderboard rank is: "+ leaderboard.getPlayerRank(player));
   }
 
-
-
+  //Increment socres at the end of a battle
+  public void updateLeaderboard(Battle b)
+  {
+    if(b.getP1Score() > b.getP2Score()){
+      this.leaderboard.incrementScore(b.getPlayer1(), true);
+      this.leaderboard.incrementScore(b.getPlayer2(), false);
+    }
+    else if(b.getP1Score() < b.getP2Score()){
+      this.leaderboard.incrementScore(b.getPlayer1(), false);
+      this.leaderboard.incrementScore(b.getPlayer2(), true);
+    }
+  }
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
   // Whiteboards
   /**
    * 

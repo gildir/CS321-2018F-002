@@ -253,8 +253,11 @@ public interface GameObjectInterface extends Remote {
      */
     public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
 
-//Rock Paper Scissors Battle Code Here---------------------------------
-    public void challenge(String challenger, String player2) throws RemoteException;
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//Team 8
+	
+	//Rock Paper Scissors Battle Methods
+    public void challenge(String challenger, String player2, int rounds) throws RemoteException;
     public void accept(String challenger, String player2) throws RemoteException;
     public void refuse(String challenger, String player2) throws RemoteException;
     public void rock(String player) throws RemoteException;
@@ -264,7 +267,7 @@ public interface GameObjectInterface extends Remote {
     public void checkBoard(String player) throws RemoteException;
     public void topTen(String name) throws RemoteException;
     public void getRank(String player) throws RemoteException;
-//Rock Paper Scissors Battle Code Here---------------------------------
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   
 	/**
 	 * gives an ASCII art map of the world surrounding a player
