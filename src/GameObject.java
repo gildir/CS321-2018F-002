@@ -258,6 +258,18 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.giftGhoul(playerName, ghoulName, target);
     }
 
+    public String catchSpirit(String playerName, String target) throws RemoteException {
+        return core.catchSpirit(playerName, target);
+    }
+
+    public String getAllSpirits(String playerName) throws RemoteException {
+        return core.getAllSpirits(playerName);
+    }
+
+    public String getCurrentSpirits(String playerName) throws RemoteException {
+        return core.getCurrentSpirits(playerName);
+    }
+ 
 
     @Override
     public String gift(String yourname,String name, double amount) throws RemoteException {

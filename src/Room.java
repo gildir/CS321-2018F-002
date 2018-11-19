@@ -14,6 +14,7 @@ public class Room {
     private final String description;
     private final String location;
     private final LinkedList<Item> objects;
+    private final LinkedList<Spirit> spirits;
     private final LinkedList<Exit> exits;
     private final GameCore gameCore;
     private WhiteBoard whiteboard;
@@ -21,6 +22,7 @@ public class Room {
     public Room(GameCore gameCore, int id, String title, String description, String location) {
         this.objects = new LinkedList<>();
         this.exits = new LinkedList<>();
+        this.spirits = new LinkedList<>();
         this.id = id;
         this.title = title;
         this.description = description;
@@ -56,7 +58,7 @@ public class Room {
         result += "Players in the area: " + this.getPlayers(playerList) + "\n";
 //        result += "Ghouls in the area: " + this.getGhoulsString() + "\n";
 //        result += "Spirits in the area: " + this.getSpiritsString() + "\n";
-        result += "Monsters in the area: " + this.getNPCsString() + "\n";
+        result += "Monsters in the area: " + this.getNPCsString() + " " + this.getSpiritsString() + "\n";
         result += "You see paths in these directions: " + this.getExits() + "\n";
         result += "...................\n";
         result += "You are facing: " + player.getCurrentDirection() + "\n";
@@ -261,7 +263,7 @@ public class Room {
 
     public String getNPCsString() {
         Set<NPC> npcs = getNPCs();
-        if (npcs.isEmpty())
+        if (npcs.isEmpty() && this.spirits.isEmpty())
             return "None";
         else {
             List<String> npcNames = npcs.stream().map(NPC::toString).collect(Collectors.toList());
@@ -275,10 +277,8 @@ public class Room {
      */
     public Set<Spirit> getSpirits() {
         Set<Spirit> spirits = new HashSet<>();
-        for (NPC npc : gameCore.getNpcSet()) {
-            if (npc instanceof Spirit && npc.getCurrentRoomId() == id) {
-                spirits.add((Spirit) npc);
-            }
+        for (Spirit spirit : this.spirits) {
+            spirits.add(spirit);
         }
         return spirits;
     }
@@ -288,12 +288,28 @@ public class Room {
         Set<Spirit> spirits = getSpirits();
         String spiritsString;
         if (spirits.isEmpty())
-            spiritsString = "None";
+            spiritsString = "";
         else {
             List<String> spiritNames = spirits.stream().map(Spirit::toString).collect(Collectors.toList());
-            spiritsString = String.join(", ", spiritNames);
+            spiritsString = String.join(" ", spiritNames);
         }
         return spiritsString;
+    }
+    
+    public void addSpirit(Spirit spirit) {
+        if(this.spirits.size() < 5) {
+            this.spirits.add(spirit);
+        }
+    }
+    
+    public Spirit removeSpirit(String target) {
+        for(Spirit spirit : this.spirits) {
+            if(spirit.getName().equalsIgnoreCase(target)) {
+                this.spirits.remove(spirit);
+                return spirit;
+            }
+        }
+        return null;
     }
 
     public WhiteBoard getWB(){

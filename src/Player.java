@@ -4,6 +4,8 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -12,6 +14,7 @@ import java.util.Random;
 public class Player {
     private GameCore gameCore;
     private LinkedList<Item> currentInventory;
+    private LinkedList<Spirit> currentSpirits;
     private String name;
     private String lastWhisperName;
     private int currentRoom;
@@ -33,6 +36,7 @@ public class Player {
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
+        this.currentSpirits = new LinkedList<>();
         this.money = new Money(20);
         /* START 405_ignore*/
         this.ignoreList = new ArrayList<String>();
@@ -124,6 +128,48 @@ public class Player {
             }
             return null;
         }
+    }
+
+    public LinkedList<Spirit> getCurrentSpirits() {
+        return currentSpirits;
+    }
+
+    public void setCurrentSpirits(LinkedList<Spirit> currentSpirits) {
+        synchronized (this) {
+            this.currentSpirits = currentSpirits;
+        }
+    }
+
+    public void addSpiritToSpirits(Spirit spirit) {
+        synchronized (this) {
+            this.currentSpirits.add(spirit);
+        }
+    }
+
+    public String getAllSpirits() {
+        Set<String> allSpirits = new HashSet<>();
+        allSpirits.addAll(Arrays.asList("HappySpirit", "SadSpirit",
+                       "SpookySpirit", "AngrySpirit",
+                       "SarcasticSpirit", "ShySpirit",
+                       "FunnySpirit", "TiredSpirit",
+                       "ClumsySpirit", "StrongSpirit",
+                       "NiceSpirit", "RudeSpirit",
+                       "CrazySpirit", "SillySpirit",
+                       "StupidSpirit", "SmartSpirit",
+                       "MessySpirit", "SickSpirit",
+                       "HungrySpirit", "LovingSpirit"));
+        String spiritsString = String.join(", ", allSpirits);
+        return spiritsString;
+    }
+
+    public String viewCurrentSpirits() {
+        String currentSpiritsString;
+        if (currentSpirits.isEmpty()) {
+            return "None";
+        }
+        List<String> spiritNames = currentSpirits.stream().map(Spirit::toString).collect(Collectors.toList());
+        currentSpiritsString = String.join(", ", spiritNames); 
+        return currentSpiritsString;
     }
 
     /**

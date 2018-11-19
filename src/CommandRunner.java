@@ -305,6 +305,16 @@ public class CommandRunner {
                 return remoteGameInterface.pokeGhoul(name, args.remove(0));
             }
         });
+        commandFunctions.put("CATCH", (name, args) -> {
+            if(args.isEmpty()) {
+                return "You need to provide a spirit name.";
+            }
+            else {
+                return remoteGameInterface.catchSpirit(name, args.remove(0));
+            }
+        });
+        commandFunctions.put("SPIRITALL",    (name, args) -> remoteGameInterface.getAllSpirits(name));
+        commandFunctions.put("CAUGHTSPIRITS",    (name, args) -> remoteGameInterface.getCurrentSpirits(name));
         commandFunctions.put("ENTER", (name, args) -> { 
             if(args.size() != 1){
                 return "Specify the room you want to enter";
@@ -505,6 +515,11 @@ public class CommandRunner {
         // Ghoul commands
         descriptions.put("POKE",      new String[]{"GHOUL",    "Pokes <GHOUL>"});
         descriptions.put("GIFT",      new String[]{"GHOUL, ITEM", "Gives your <ITEM> to <GHOUL>"});
+
+        // Spirit Commands
+        descriptions.put("CATCH",     new String[]{"SPIRIT",    "Catches <SPIRIT>"});
+        descriptions.put("SPIRITALL",  new String[]{"", "Lists all the possible spirits that can be caught."});
+        descriptions.put("CAUGHTSPIRITS",   new String[]{"", "Shows you what spirits you caught."});
 
         // PvP Commands
         descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another <PLAYER> to a Rock Paper Scissors Battle."});

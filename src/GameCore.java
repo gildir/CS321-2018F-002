@@ -22,6 +22,7 @@ public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
     private final Set<NPC> npcSet;
     private final Set<NPC> nighttimeNpcSet;
+    private final List<Spirit> daySpirits;
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
     private final int minimumSpawnTime=100, maximumSpawnTime=600;
@@ -62,6 +63,7 @@ public class GameCore implements GameCoreInterface {
 
         npcSet = new HashSet<>();
         nighttimeNpcSet = new HashSet<>();
+        daySpirits = new ArrayList<Spirit>();
 
         // Initialize Ghouls
         for (int i = 1; i <= NUM_OF_GHOULS; i++) {
@@ -74,16 +76,32 @@ public class GameCore implements GameCoreInterface {
             nighttimeNpcSet.add(new Ghost(this, "Ghost" + (i + NUM_OF_GHOULS), i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
         }
 
-        npcSet.addAll(Arrays.asList(new Ghoul(this, "GhoulOG", 2, 90000),
-                                    new Spirit(this, "Happy Spirit", 1, 20, Spirits.HAPPY),
-                                    new Spirit(this, "Sad Spirit", 3, 25, Spirits.SAD),
-                                    new Spirit(this, "Spooky Spirit", 1, 45, Spirits.SPOOKY),
-                                    new Spirit(this, "Angry Spirit", 1, 2, Spirits.ANGRY),
-                                    new Spirit(this, "Sarcastic Spirit", 2, 20, Spirits.SARCASTIC),
-                                    new Spirit(this, "Shy Spirit", 4, 15, Spirits.SHY),
-                                    new Spirit(this, "Funny Spirit", 5, 15, Spirits.FUNNY),
-                                    new Spirit(this, "Tired Spirit", 2, 15, Spirits.TIRED),
-                                    new Spirit(this, "Clumsy Spirit", 2, 15, Spirits.CLUMSY)));
+        nighttimeNpcSet.addAll(Arrays.asList(
+                            new Spirit(this, "SpookySpirit", 1, 45, Spirits.SPOOKY),
+                            new Spirit(this, "AngrySpirit", 1, 2, Spirits.ANGRY),
+                            new Spirit(this, "SadSpirit", 3, 25, Spirits.SAD),
+                            new Spirit(this, "RudeSpirit", 3, 25, Spirits.RUDE),
+                            new Spirit(this, "SickSpirit", 3, 25, Spirits.SICK),
+                            new Spirit(this, "TiredSpirit", 2, 15, Spirits.TIRED)));
+
+        daySpirits.addAll(Arrays.asList(
+                            new Spirit(this, "HappySpirit", 1, 20, Spirits.HAPPY),
+                            new Spirit(this, "SadSpirit", 2, 25, Spirits.SAD),
+                            new Spirit(this, "SarcasticSpirit", 3, 12, Spirits.SARCASTIC),
+                            new Spirit(this, "ShySpirit", 4, 15, Spirits.SHY),
+                            new Spirit(this, "FunnySpirit", 5, 14, Spirits.FUNNY),
+                            new Spirit(this, "ClumsySpirit", 6, 23, Spirits.CLUMSY),
+                            new Spirit(this, "StrongSpirit", 7, 10, Spirits.STRONG),
+                            new Spirit(this, "NiceSpirit", 8, 15, Spirits.NICE),
+                            new Spirit(this, "CrazySpirit", 9, 29, Spirits.CRAZY),
+                            new Spirit(this, "SillySpirit", 10, 11, Spirits.SILLY),
+                            new Spirit(this, "StupidSpirit", 11, 8, Spirits.STUPID),
+                            new Spirit(this, "SmartSpirit", 12, 20, Spirits.SMART),
+                            new Spirit(this, "MessySpirit", 13, 6, Spirits.MESSY),
+                            new Spirit(this, "HungrySpirit", 14, 19, Spirits.HUNGRY),
+                            new Spirit(this, "LovingSpirit", 15, 25, Spirits.LOVING)));
+
+        npcSet.addAll(Arrays.asList(new Ghoul(this, "GhoulOG", 2, 90000)));
 
         Thread npcThread = new Thread(new Runnable() {
             @Override
@@ -126,6 +144,30 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+
+        Thread daySpiritsThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Random rand = new Random();
+                Room room;
+                Spirit spirit;
+                while(true) {
+                    try {
+                      Thread.sleep((int)(Math.random()*(5))+minimumSpawnTime);
+                        spirit = (Spirit)daySpirits.get(rand.nextInt(daySpirits.size()));
+                        room = map.randomRoom();
+                        room.addSpirit(spirit);
+                        
+                        GameCore.this.broadcast(room, "A wild " + spirit + " has appeared!");
+
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        });
+        daySpiritsThread.setDaemon(true);
+        daySpiritsThread.start();
 
 
         timeOfDay = DAY;
@@ -172,6 +214,10 @@ public class GameCore implements GameCoreInterface {
 
     public Set<NPC> getNpcSet() {
         return npcSet;
+    }
+
+    public List<Spirit> getDaySpirits() {
+        return daySpirits;
     }
 
     public void setChatPrefix(String prefix) {
@@ -634,6 +680,40 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(this.map.findRoom(player.getCurrentRoom()).toString(this.playerList, player));
       shop.removePlayer(name);
       return "You stop moving and begin to stand around again.";
+    }
+
+    public String catchSpirit(String name, String target) {
+        Player player = this.playerList.findPlayer(name);
+        if(player != null) {
+            Room room = map.findRoom(player.getCurrentRoom());
+              Spirit spirit = room.removeSpirit(target);
+              if(player.getCurrentSpirits().contains(spirit)) {
+                  this.broadcast(player, player.getName() + " tries to catch a spirit, but they already caught it before!");
+                  return "You already caught a " + target + ".";
+              }
+              else if(spirit != null) {
+                  player.addSpiritToSpirits(spirit);
+                  this.broadcast(player, player.getName() + " catches a " + target + "!");
+                  return "You caught a " + target + "!";
+              }
+              else {
+                  this.broadcast(player, player.getName() + " tries to catch something, but doesn't seem to find anything there.");
+                  return "You look around for a " + target + ", but can't find one.";
+              }
+            }
+        else {
+            return null;
+        }
+    }
+
+    public String getAllSpirits(String playerName) {
+        Player player = this.playerList.findPlayer(playerName);
+        return player.getAllSpirits();
+    }
+
+    public String getCurrentSpirits(String playerName) {
+        Player player = this.playerList.findPlayer(playerName);
+        return player.viewCurrentSpirits();
     }
     
     /**
