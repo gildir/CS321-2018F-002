@@ -219,6 +219,10 @@ public class Room {
         return ghoulsString;
     }
 
+    /**
+     * Accessor for the Whiteboard of a room.
+     * @return the Whiteboard stored in the room
+     */
     public WhiteBoard getWB(){
     	return this.whiteboard;
     }

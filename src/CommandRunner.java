@@ -437,6 +437,7 @@ public class CommandRunner {
         private CommandFunction<String, ArrayList<String>, String> function;
 
         /**
+         * A constructed for the nested Command class that will initialize all variables for the class.
          * @param id name of the command
          * @param arguments arguments of the command
          * @param description text description of the command
@@ -451,6 +452,7 @@ public class CommandRunner {
         }
 
         /**
+         * A method for running a command using the passed arraylist as the arguments for the command.
          * @param name name of the command
          * @param args list of text arguments form input
          * @return the String returned by the execution of the command
@@ -460,6 +462,7 @@ public class CommandRunner {
         }
 
         /**
+         * Accessor for the id variable of a command
          * @return the id of this command
          */
         public String getId() {
@@ -467,6 +470,7 @@ public class CommandRunner {
         }
 
         /**
+         * Accessor for the arguments variable of a command
          * @return the arguments of this command
          */
         public String getArguments() {
@@ -474,6 +478,7 @@ public class CommandRunner {
         }
 
         /**
+         * Accessor for the description variable of a command
          * @return the description of this command
          */
         public String getDescription() {
@@ -487,43 +492,17 @@ public class CommandRunner {
     private HashMap<String, Command> commands = new HashMap<String, Command>();
 
     /**
-     * @param rgi remote game interface
-     * @return new CommandRunner
-     */
-    public CommandRunner(GameObjectInterface rgi) {
-        censorList = loadCensorList();
-	this.remoteGameInterface = rgi;
-        setupFunctions();
-        createCommands();
-    }
-
-    /**
+     * A constructor for the CommandRunner class which initializes the remoteGameInterace variable and the commandsInfo variable, as well as, sets up the list of functions and commands.
      * @param rgi remote game interface
      * @param commandsFile path to file with command descriptions
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
-        censorList = loadCensorList();
-	this.remoteGameInterface = rgi;
+        this.remoteGameInterface = rgi;
+        this.commandsInfo = parseCommandsFile(commandsFile);
         setupFunctions();
 
-        // TODO: Read file, extract command descriptions and call createCommands(descriptions)
-        try (Scanner file_commands = new Scanner(new File(commandsFile));) {
-            HashMap<String, String[]> file_map = new HashMap<String, String[]>();
-
-            while(file_commands.hasNextLine()){
-                String currentline = file_commands.nextLine();
-                String[] command_parts = currentline.split(",");
-
-                String command_name = command_parts[0];
-                String[] command_description = new String[]{ command_parts[1], command_parts[2] };
-
-                file_map.put(command_name, command_description);
-            }
-            createCommands(file_map);
-        } catch (IOException ex) {
-            Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        createCommands();
     }
 
     /**
@@ -588,7 +567,9 @@ public class CommandRunner {
     }
 
     /**
+     * Creates a hashmap for the available commands as well as aliases for those commands and links each command to its description
      * @param descriptions map with command names as keys and their descriptions as values
+     * @return the hashmap of commands and their descriptions
      */
     private void createCommands(HashMap<String, String[]> descriptions) {
         HashMap<String, String> aliasesMap = getAliasesFromFile();
@@ -642,6 +623,7 @@ public class CommandRunner {
     }
 
     /**
+     * A method for executing one of the commands for the game, done in a way such that any command could be run regardless of how it works.
      * @param command name of the command to be run
      * @param args list of arguments from input
      * @param playerName name of player running the command
@@ -686,6 +668,7 @@ public class CommandRunner {
     }
 
     /**
+     * Converts the available commands into a string and returns it to the user. 
      * @return string with commands name, accepted arguments and descriptions
      */
     public String listCommands() {
