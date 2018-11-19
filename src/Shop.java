@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * 
@@ -59,6 +60,30 @@ public class Shop {
   items.add(obj);
  }
  
+ public boolean buyItem(Player player, String itemName){
+     Boolean did_buy = false;
+     //Get player inventory
+     LinkedList<Item> inventory = player.getCurrentInventory(); 
+     //Iterate through shop items to try and find a match
+     for(Item obj : this.items){
+         if(obj.getItemName().equalsIgnoreCase(itemName)) {
+             double cost = obj.getItemValue() * 1.2;
+             if(player.getMoney().sum() >= cost){
+                 //add item to player inventory and update inventory and bool
+                 inventory.add(obj);
+                 player.setCurrentInventory(inventory);
+                 //remove money from player
+                 player.removeMoney(cost);
+                 did_buy = true;
+                 //remove item from shop's list of items
+                 items.remove(obj);
+                 break;
+             }
+         }
+     }
+     return did_buy;
+ }
+ 
  /**
   * Adds a player to the list of players in this shop
   * @param name
@@ -106,7 +131,7 @@ public class Shop {
   for(ItemStock item : itemList) {
    result += "" + item.amount + " ..................... " + item.itemName + " $" + (String.format("%.2f",item.value)) +"\n";
   }
-  result += "To sell an item enter SELL <ITEM>\n\n";
+  result += "To sell an item enter SELL <ITEM>\nTo buy an item enter BUY <ITEM>\n\n";
   return result;
  }
 }
