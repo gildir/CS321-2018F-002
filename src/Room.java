@@ -291,7 +291,7 @@ public class Room {
             spiritsString = "";
         else {
             List<String> spiritNames = spirits.stream().map(Spirit::toString).collect(Collectors.toList());
-            spiritsString = String.join(" ", spiritNames);
+            spiritsString = String.join(", ", spiritNames);
         }
         return spiritsString;
     }
