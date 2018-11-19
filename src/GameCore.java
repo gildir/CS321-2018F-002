@@ -86,7 +86,8 @@ public class GameCore implements GameCoreInterface {
                 ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
-                      Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
+			//wait a random amount of time spawn another item
+                      	Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
                         object = (Item)objects.get(rand.nextInt(objects.size())).clone();
                         room = map.randomRoom();
                         room.addObject(object);
