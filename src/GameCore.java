@@ -72,13 +72,13 @@ public class GameCore implements GameCoreInterface {
 
         // Initialize Ghouls
         for (int i = 1; i <= NUM_OF_GHOULS; i++) {
-            npclist.addNPC(new Ghoul(this, "Ghoul" + i, i, GHOUL_AI_PERIOD_SECONDS_BASE + i));
-            nighttimeNpcList.addNPC(new Ghoul(this, "Ghoul" + (i + NUM_OF_GHOULS), i, GHOUL_AI_PERIOD_SECONDS_BASE + i));
+            npclist.addNPC(new Ghoul(this, "Ghoul" + i, i * 2, GHOUL_AI_PERIOD_SECONDS_BASE + i));
+            nighttimeNpcList.addNPC(new Ghoul(this, "Ghoul" + (i + NUM_OF_GHOULS), i * 2 + 1, GHOUL_AI_PERIOD_SECONDS_BASE + i));
         }
         // Initialize Ghosts
         for (int i = 1; i <= NUM_OF_GHOSTS; i++) {
-            npclist.addNPC(new Ghost(this, "Ghost" + i, i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
-            nighttimeNpcList.addNPC(new Ghost(this, "Ghost" + (i + NUM_OF_GHOULS), i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
+            npclist.addNPC(new Ghost(this, "Ghost" + i, i * 2 + 1, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
+            nighttimeNpcList.addNPC(new Ghost(this, "Ghost" + (i + NUM_OF_GHOULS), i * 2, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
         }
 
         nighttimeNpcList.addNPC(new Spirit(this, "SpookySpirit", 1, 45, Spirits.SPOOKY));
@@ -104,8 +104,6 @@ public class GameCore implements GameCoreInterface {
                             new Spirit(this, "MessySpirit", 13, 6, Spirits.MESSY),
                             new Spirit(this, "HungrySpirit", 14, 19, Spirits.HUNGRY),
                             new Spirit(this, "LovingSpirit", 15, 25, Spirits.LOVING)));
-
-        npclist.addNPC(new Ghoul(this, "GhoulOG", 2, 90000));
 
         Thread npcThread = new Thread(new Runnable() {
             @Override
@@ -157,7 +155,7 @@ public class GameCore implements GameCoreInterface {
                 Spirit spirit;
                 while(true) {
                     try {
-                      Thread.sleep((int)(Math.random()*(5))+minimumSpawnTime);
+                      Thread.sleep((int)(Math.random()*(5000))+minimumSpawnTime);
                         spirit = (Spirit)daySpirits.get(rand.nextInt(daySpirits.size()));
                         room = map.randomRoom();
                         room.addSpirit(spirit);
