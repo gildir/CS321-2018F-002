@@ -675,7 +675,7 @@ public class GameCore implements GameCoreInterface {
             Item object = player.removeObjectFomInventory(target);
             Room room = map.findRoom(player.getCurrentRoom());
             if(object != null) {
-                room.addObjectFromPlayer(object);
+                room.addObjectFromPlayer(object);//if it's a valid item
                 this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
                 return "You just dropped off a " + target + ".";
             }
