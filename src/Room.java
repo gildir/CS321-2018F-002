@@ -24,7 +24,7 @@ public class Room {
         this.id = id;
         this.title = title;
         this.description = description;
-	    this.location = location;
+     this.location = location;
         this.gameCore = gameCore;
 
         if (this.location.equalsIgnoreCase("inside")) {
@@ -226,7 +226,7 @@ public class Room {
      */
     public Set<NPC> getNPCs() {
         Set<NPC> npcs = new HashSet<>();
-        for (NPC npc : gameCore.getNpcSet()) {
+        for (NPC npc : gameCore.getNpcList()) {
             if (npc.getCurrentRoomId() == id) {
                 npcs.add(npc);
             }
@@ -275,7 +275,7 @@ public class Room {
      */
     public Set<Spirit> getSpirits() {
         Set<Spirit> spirits = new HashSet<>();
-        for (NPC npc : gameCore.getNpcSet()) {
+        for (NPC npc : gameCore.getNpcList()) {
             if (npc instanceof Spirit && npc.getCurrentRoomId() == id) {
                 spirits.add((Spirit) npc);
             }
@@ -297,6 +297,6 @@ public class Room {
     }
 
     public WhiteBoard getWB(){
-    	return this.whiteboard;
+     return this.whiteboard;
     }
 }
