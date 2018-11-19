@@ -1399,7 +1399,7 @@ public class GameCore implements GameCoreInterface {
     //416_GroupChat Start
     //declared at top: private GroupChatTracker groupChatTracker;  //416_GroupChat
     public String createGroupChat( String groupChatName, String playerName){
-    	return groupChatTracker.createGroupChat( groupChatName, playerName);
+        return groupChatTracker.createGroupChat( groupChatName, playerName);
     }
 
     public String printGroupChat( String groupChatName ){
@@ -1410,82 +1410,92 @@ public class GameCore implements GameCoreInterface {
         return groupChatTracker.checkGroupExists( groupChatName );
     }
 
-    public String GCInvite( String groupName, String playerInvited, String playerInviting){
+    public String GCInvite( String groupName, String playerInvited, String playerInviting)
+    {
         //TO DO:
-	
-	Player pInvited =  playerList.findPlayer( playerInvited ); 
-	//check that playerInvited is in the game
-	if( pInvited == null ){
+
+        Player pInvited =  playerList.findPlayer( playerInvited );
+        //check that playerInvited is in the game
+        if( pInvited == null )
+        {
             return "Player " + playerInvited + " is not in the game.";
-	}
-	    
-	//check that playerInviting is in the group
-	if( !groupChatTracker.checkMembership( groupName, playerInviting) ){
+        }
+
+        //check that playerInviting is in the group
+        if( !groupChatTracker.checkMembership( groupName, playerInviting) )
+        {
             //return "You can't invite a player to group [" + groupName + "].";
             return "You're not in group [" + groupName + "].";
-	}
+        }
 
-	//check if player has already been invited
-	if( groupChatTracker.checkInvite( groupName, playerInvited) ){
-	    //player already invited
+        //check if player has already been invited
+        if( groupChatTracker.checkInvite( groupName, playerInvited) )
+        {
+            //player already invited
             return "Player already invited to group";
-	     
-	}
 
-	//check if inviting inviting and invited player are the same
-	if( playerInvited.equalsIgnoreCase( playerInviting ) ){
-		return "You are already in group [" + groupName + "].";
+        }
 
-	}
-	
-	//Track the invite
-	groupChatTracker.trackInvite( groupName, playerInvited );
+        //check if inviting and invited player are the same
+        if( playerInvited.equalsIgnoreCase( playerInviting ) )
+        {
+            return "You are already in group [" + groupName + "].";
 
-	//Send the invite through a broadcast
-	//The broadcast function used takes into account ignore lists, this was a design decision
-	String message = "Player "+ playerInviting + " has invited you to group chat [" + groupName.toLowerCase() + 
-		"].\nEnter \"JOIN " + groupName.toLowerCase() + "\" to join the group.";
+        }
+
+        //Track the invite
+        groupChatTracker.trackInvite( groupName, playerInvited );
+
+        //Send the invite through a broadcast
+        //The broadcast function used takes into account ignore lists, this was a design decision
+        String message = "Player "+ playerInviting + " has invited you to group chat [" + groupName.toLowerCase() +
+                "].\nEnter \"JOIN " + groupName.toLowerCase() + "\" to join the group.";
 
         pInvited.getReplyWriter().println(message);
-	return "[" + groupName.toLowerCase() + "] invite set to " + playerInvited + ".";
+        return "[" + groupName.toLowerCase() + "] invite set to " + playerInvited + ".";
     }
 
-    public void GCMessage( String groupName, String playerName, String rawInput){
-	    
-	//rawInput has the groupName at the start, it needs to be removed
-	String message = rawInput.replaceAll( "^" + groupName, "[" + groupName.toLowerCase() + "] " + playerName + " : " ); 
-	
-	//Get list of all members in group chat
-	ArrayList<String> group = groupChatTracker.groupMembers( groupName );
-	
-	//send message to all members of group chat
-	Player temp;
-	for( String member : group ){
+    public void GCMessage( String groupName, String playerName, String rawInput)
+    {
+        //rawInput has the groupName at the start, it needs to be removed
+        String message = rawInput.replaceAll( "^" + groupName, "[" + groupName.toLowerCase() + "] " + playerName + " : " );
+
+        //Get list of all members in group chat
+        ArrayList<String> group = groupChatTracker.groupMembers( groupName );
+
+        //send message to all members of group chat
+        Player temp;
+        for( String member : group )
+        {
             temp = playerList.findPlayer( member );
-	    temp.getReplyWriter().println(message);
-	}
+            temp.getReplyWriter().println(message);
+        }
     }
 
-    public String GCLeave( String groupName, String playerName){
-	//check that playerName is in the group
-	if( !groupChatTracker.checkMembership( groupName, playerName) ){
+    public String GCLeave( String groupName, String playerName)
+    {
+        //check that playerName is in the group
+        if( !groupChatTracker.checkMembership( groupName, playerName) )
+        {
             return "You're not in group [" + groupName + "].";
-	}
+        }
 
-	//remove player from group
-	groupChatTracker.removeMember( groupName, playerName);
+        //remove player from group
+        groupChatTracker.removeMember( groupName, playerName);
 
-	return "You've left chat group [" + groupName + "].";
+        return "You've left chat group [" + groupName + "].";
 
     }
 
-    public String GCJoin( String groupName, String playerName){
+    public String GCJoin( String groupName, String playerName)
+    {
         //GroupChatTracker.acceptInvite() checks if player is invited
-	return groupChatTracker.acceptInvite( groupName, playerName);
+        return groupChatTracker.acceptInvite( groupName, playerName);
     }
 
-    public boolean checkGCMembership( String groupName, String playerName){
-	return groupChatTracker.checkMembership( groupName, playerName); 
+    public boolean checkGCMembership( String groupName, String playerName)
+    {
+        return groupChatTracker.checkMembership( groupName, playerName);
     }
     //416_GroupChat End
 }
