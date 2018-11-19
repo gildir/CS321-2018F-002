@@ -344,7 +344,7 @@ public class CommandRunner {
                 return "You need to input 3 characters for your new prefix.";
             }
         });
-	//406_GroupChat START
+	//416_GroupChat START
 	commandFunctions.put("GROUPCHAT", (name, args) -> {
 		//TODO: 
 		// 1. check that chat room name is not the same as an existing game command
@@ -352,14 +352,13 @@ public class CommandRunner {
 		//expect only one argument with command
 		if( args.size() != 1 )
 			return "The command takes one argument. Correct usage is GROUPCHAT <Group Name>.";
-        else if(args.get(0).equalsIgnoreCase("whisper") )
-        {
-            return "Invalid Format";
-        }
         else
         {
-            return remoteGameInterface.createGroupChat( args.get(0), name);
+            for( String key: commandFunctions.keySet())
+                if(key.equalsIgnoreCase(args.get(0)))
+                    return "[Invalid Format]. you cannot name your chat room to one of the commands";
         }
+        return remoteGameInterface.createGroupChat( args.get(0), name);
 
 
 	});
@@ -383,10 +382,9 @@ public class CommandRunner {
 
         commandFunctions.put("GROUPCHATHELP", (name, args) -> {
             //expect only one argument with command
-
             return remoteGameInterface.GCGetHelp(name);
         });
-	//406_GroupChat END
+	//416_GroupChat END
     }
 
     /**
