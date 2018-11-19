@@ -245,5 +245,6 @@ public interface GameObjectInterface extends Remote {
     public String GCJoin( String groupName, String playerName) throws RemoteException;
     
     public boolean checkGCMembership( String groupName, String playerName) throws RemoteException;
+    public String GCGetHelp(String name)throws RemoteException;
     //406_GroupChat END
 }

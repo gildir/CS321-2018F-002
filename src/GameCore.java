@@ -1497,5 +1497,9 @@ public class GameCore implements GameCoreInterface {
     {
         return groupChatTracker.checkMembership( groupName, playerName);
     }
+    public String GCGetHelp(String name)
+    {
+        return groupChatTracker.getHelp();
+    }
     //416_GroupChat End
 }

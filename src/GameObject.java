@@ -426,5 +426,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      {
         return core.checkGCMembership( groupName, playerName);
      }
+    public String GCGetHelp(String name)
+    {
+        return core.GCGetHelp(name);
+    }
     //416_GroupChat END
 }

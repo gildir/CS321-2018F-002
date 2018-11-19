@@ -168,7 +168,16 @@ public class GroupChatTracker{
 		//remove player invites
 		Invites.get( groupChatNameLC ).remove(position);
 	}
-	
+	public String getHelp()
+	{
+		String help = "GROUPCHAT <name>\tThis command creates a private group chat. The creator is automatically added to the group. Only the creator can invite people to the group.\n" +
+				"GROUPCHATPRINT <name>\tThis was used for debugging but i left it. It prints the members of private group <name>.\n" +
+				"JOIN <name>\tOnce a player receives an invitation to join group chat <name>, they can type join the group with this command.\n";
+		help +="cs321 /invite <playerName>\tinvite player with playerName to the group chat. \n" +
+				"Cs321 /leave\tplayer leaves group\n" +
+				"CS321 <message>\tplayer sends message to cs321 group.\n";
+		return help;
+	}
 
 
 
