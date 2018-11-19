@@ -380,6 +380,12 @@ public class CommandRunner {
 		
 		return remoteGameInterface.GCJoin( args.get(0), name);
 	});
+
+        commandFunctions.put("GROUPCHATHELP", (name, args) -> {
+            //expect only one argument with command
+
+            return remoteGameInterface.GCGetHelp(name);
+        });
 	//406_GroupChat END
     }
 
@@ -532,6 +538,7 @@ public class CommandRunner {
         descriptions.put("GROUPCHAT",      new String[]{"NAME", "Creates group chat NAME."});
         descriptions.put("GROUPCHATPRINT",      new String[]{"NAME", "Prints group chat members."});
         descriptions.put("JOIN",       new String[]{"GROUPCHATNAME", "Joins player to group chat with name GROUPCHATNAME."});
+        descriptions.put("GCHELP",       new String[]{"Group chat help"});
 	// Create them
         createCommands(descriptions);
     }

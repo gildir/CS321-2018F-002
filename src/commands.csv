@@ -32,3 +32,4 @@ CHANGEPREFIX,XXX,Input 3 characters for your new chat prefix.
 GROUPCHAT,NAME,Creates group chat NAME.
 GROUPCHATPRINT,NAME,Prints group chat members.
 JOIN,GROUPCHATNAME,Joins player to group chat names GROUPCHATNAME.
+GROUPCHATHELP,,print group chat help.
