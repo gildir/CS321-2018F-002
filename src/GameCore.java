@@ -20,8 +20,8 @@ import java.util.LinkedList;
  */
 public class GameCore implements GameCoreInterface {
     private final PlayerList playerList;
-    private final Set<NPC> npcSet;
-    private final Set<NPC> nighttimeNpcSet;
+    private final NPCList npclist;
+    private final NPCList nighttimeNpcList;
     private final List<Spirit> daySpirits;
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
@@ -61,28 +61,27 @@ public class GameCore implements GameCoreInterface {
 
         shop = new Shop();
 
-        npcSet = new HashSet<>();
-        nighttimeNpcSet = new HashSet<>();
+        npclist = new NPCList();
+        nighttimeNpcList = new NPCList();
         daySpirits = new ArrayList<Spirit>();
 
         // Initialize Ghouls
         for (int i = 1; i <= NUM_OF_GHOULS; i++) {
-            npcSet.add(new Ghoul(this, "Ghoul" + i, i, GHOUL_AI_PERIOD_SECONDS_BASE + i));
-            nighttimeNpcSet.add(new Ghoul(this, "Ghoul" + (i + NUM_OF_GHOULS), i, GHOUL_AI_PERIOD_SECONDS_BASE + i));
+            npclist.addNPC(new Ghoul(this, "Ghoul" + i, i, GHOUL_AI_PERIOD_SECONDS_BASE + i));
+            nighttimeNpcList.addNPC(new Ghoul(this, "Ghoul" + (i + NUM_OF_GHOULS), i, GHOUL_AI_PERIOD_SECONDS_BASE + i));
         }
         // Initialize Ghosts
         for (int i = 1; i <= NUM_OF_GHOSTS; i++) {
-            npcSet.add(new Ghost(this, "Ghost" + i, i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
-            nighttimeNpcSet.add(new Ghost(this, "Ghost" + (i + NUM_OF_GHOULS), i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
+            npclist.addNPC(new Ghost(this, "Ghost" + i, i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
+            nighttimeNpcList.addNPC(new Ghost(this, "Ghost" + (i + NUM_OF_GHOULS), i, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
         }
 
-        nighttimeNpcSet.addAll(Arrays.asList(
-                            new Spirit(this, "SpookySpirit", 1, 45, Spirits.SPOOKY),
-                            new Spirit(this, "AngrySpirit", 1, 2, Spirits.ANGRY),
-                            new Spirit(this, "SadSpirit", 3, 25, Spirits.SAD),
-                            new Spirit(this, "RudeSpirit", 3, 25, Spirits.RUDE),
-                            new Spirit(this, "SickSpirit", 3, 25, Spirits.SICK),
-                            new Spirit(this, "TiredSpirit", 2, 15, Spirits.TIRED)));
+        nighttimeNpcList.addNPC(new Spirit(this, "SpookySpirit", 1, 45, Spirits.SPOOKY));
+        nighttimeNpcList.addNPC(new Spirit(this, "AngrySpirit", 2, 31, Spirits.ANGRY));
+        nighttimeNpcList.addNPC(new Spirit(this, "SadSpirit", 3, 15, Spirits.SAD));
+        nighttimeNpcList.addNPC(new Spirit(this, "RudeSpirit", 4, 5, Spirits.RUDE));
+        nighttimeNpcList.addNPC(new Spirit(this, "SickSpirit", 5, 10, Spirits.SICK));
+        nighttimeNpcList.addNPC(new Spirit(this, "TiredSpirit", 6, 2, Spirits.TIRED));
 
         daySpirits.addAll(Arrays.asList(
                             new Spirit(this, "HappySpirit", 1, 20, Spirits.HAPPY),
@@ -101,14 +100,14 @@ public class GameCore implements GameCoreInterface {
                             new Spirit(this, "HungrySpirit", 14, 19, Spirits.HUNGRY),
                             new Spirit(this, "LovingSpirit", 15, 25, Spirits.LOVING)));
 
-        npcSet.addAll(Arrays.asList(new Ghoul(this, "GhoulOG", 2, 90000)));
+        npclist.addNPC(new Ghoul(this, "GhoulOG", 2, 90000));
 
         Thread npcThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while(true) {
-                    synchronized (npcSet) {
-                        for (NPC npc : npcSet)
+                    synchronized (npclist) {
+                        for (NPC npc : npclist)
                             npc.tryAi();
                     }
                 }
@@ -183,14 +182,14 @@ public class GameCore implements GameCoreInterface {
                     if (timeOfDay == DAY) {
                         timeOfDay = NIGHT;
                         broadcastGlobal("Darkness falls on the world, be wary of monsters at night.");
-                        synchronized (npcSet) {
-                            npcSet.addAll(nighttimeNpcSet);
+                        synchronized (npclist) {
+                            npclist.addAllNPC(nighttimeNpcList);
                         }
                     } else {
                         timeOfDay = DAY;
                         broadcastGlobal("The sun rises, illuminating the sky. Many monsters shriek and flee.");
-                        synchronized (npcSet) {
-                            npcSet.removeAll(nighttimeNpcSet);
+                        synchronized (npclist) {
+                            npclist.removeAllNPC(nighttimeNpcList);
                         }
                     }
                 }
@@ -211,9 +210,14 @@ public class GameCore implements GameCoreInterface {
     public Map getMap(){
       return this.map;
     }
-
-    public Set<NPC> getNpcSet() {
-        return npcSet;
+    public ArrayList<Battle> getActiveBattles(){
+      return activeBattles;
+    }
+     public ArrayList<Battle> getPendingBattles(){
+      return pendingBattles;
+    }
+    public NPCList getNpcList() {
+        return npclist;
     }
 
     public List<Spirit> getDaySpirits() {
@@ -682,6 +686,12 @@ public class GameCore implements GameCoreInterface {
       return "You stop moving and begin to stand around again.";
     }
 
+    /**
+     * Player can catch a spirit if in same room
+     * @param name Name of player
+     * @param target Name of spirit
+     * @return Message showing success
+     */
     public String catchSpirit(String name, String target) {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
@@ -706,11 +716,21 @@ public class GameCore implements GameCoreInterface {
         }
     }
 
+    /**
+     * Gets all possible spirits
+     * @param playerName Name of player
+     * @return String representation of all possible spirits
+     */
     public String getAllSpirits(String playerName) {
         Player player = this.playerList.findPlayer(playerName);
         return player.getAllSpirits();
     }
 
+    /**
+     * Gets current spirits caught by player
+     * @param palyerName Name of player
+     * @return String representation of caught spirits
+     */
     public String getCurrentSpirits(String playerName) {
         Player player = this.playerList.findPlayer(playerName);
         return player.viewCurrentSpirits();
@@ -824,8 +844,8 @@ public class GameCore implements GameCoreInterface {
                 }
                 if(hasItem) {
                     playerOffered.setInTradeWithName(playerName);
-		            playerOffered.setInTradeWithItem(target);
-		            playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
+              playerOffered.setInTradeWithItem(target);
+              playerOffered.getReplyWriter().println(playerName + " offered you a " + target);
                     return "You just offered " + nameOffered + " a " + target + " from your inventory.";
                 }
                 else {
@@ -1336,6 +1356,11 @@ public class GameCore implements GameCoreInterface {
         {
           b.setChoiceP1(1);
           p.getReplyWriter().println("You Chose Rock.\n");
+          if(b.getPlayer2().length() >= 5 && b.getPlayer2().substring(0,5).equals("Ghoul")){
+            Ghoul ghoul = (Ghoul)this.npclist.findNPC(b.getPlayer2());
+            ghoul.doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            return;
+          }
           if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
@@ -1368,6 +1393,11 @@ public class GameCore implements GameCoreInterface {
         {
           b.setChoiceP1(2);
           p.getReplyWriter().println("You Chose Paper.\n");
+          if(b.getPlayer2().length() >= 5 && b.getPlayer2().substring(0,5).equals("Ghoul")){
+            Ghoul ghoul = (Ghoul)this.npclist.findNPC(b.getPlayer2());
+            ghoul.doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            return;
+          }
           if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
@@ -1400,6 +1430,11 @@ public class GameCore implements GameCoreInterface {
         {
           b.setChoiceP1(3);
           p.getReplyWriter().println("You Chose Scissors.\n");
+          if(b.getPlayer2().length() >= 5 && b.getPlayer2().substring(0,5).equals("Ghoul")){
+            Ghoul ghoul = (Ghoul)this.npclist.findNPC(b.getPlayer2());
+            ghoul.doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            return;
+          }
           if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
@@ -1465,9 +1500,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), false);
-	  this.leaderboard.incrementScore(play2.getName(), true);
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName(), false);
+   this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1481,9 +1516,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), true);
-	  this.leaderboard.incrementScore(play2.getName(), false);
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName(), true);
+   this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1497,9 +1532,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), true);
-	  this.leaderboard.incrementScore(play2.getName(), false);
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName(), true);
+   this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1513,9 +1548,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), false);
-	  this.leaderboard.incrementScore(play2.getName(), true);
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName(), false);
+   this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1529,9 +1564,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), false);
-	  this.leaderboard.incrementScore(play2.getName(), true);
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName(), false);
+   this.leaderboard.incrementScore(play2.getName(), true);
 
       return;
     }
@@ -1545,9 +1580,9 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
 
-	  // Added by Brendan
-	  this.leaderboard.incrementScore(play1.getName(), true);
-	  this.leaderboard.incrementScore(play2.getName(), false);
+   // Added by Brendan
+   this.leaderboard.incrementScore(play1.getName(), true);
+   this.leaderboard.incrementScore(play2.getName(), false);
 
       return;
     }
@@ -1720,96 +1755,96 @@ public class GameCore implements GameCoreInterface {
   //if an exit exists in a direction from a room, then its title is returned
   private String SingleExit(Room r, String s)
   {
-  	List<Direction> l=new ArrayList<Direction>();
-	//parse string for directions
-	for(int i=0; i<s.length(); i++)
-		if(s.charAt(i)=='n')
-			l.add(Direction.NORTH);
-		else if(s.charAt(i)=='w')
-			l.add(Direction.WEST);
-		else if(s.charAt(i)=='e')
-			l.add(Direction.EAST);
-		else
-			l.add(Direction.SOUTH);
-	//for each direction found
-	for(Direction d: l)
-		if(r.canExit(d))
-			r=map.findRoom(r.getLink(d));
-		else//not a valid set of directions
-			return "";
-	return r.getTitle()+"("+s+")";
+   List<Direction> l=new ArrayList<Direction>();
+ //parse string for directions
+ for(int i=0; i<s.length(); i++)
+  if(s.charAt(i)=='n')
+   l.add(Direction.NORTH);
+  else if(s.charAt(i)=='w')
+   l.add(Direction.WEST);
+  else if(s.charAt(i)=='e')
+   l.add(Direction.EAST);
+  else
+   l.add(Direction.SOUTH);
+ //for each direction found
+ for(Direction d: l)
+  if(r.canExit(d))
+   r=map.findRoom(r.getLink(d));
+  else//not a valid set of directions
+   return "";
+ return r.getTitle()+"("+s+")";
 }
 //returns all exit strings in a set of directions
 private String ExitString(Room r, int a, int b)
 {
-	String s="", e, t;
-	//convert coordinates to directions
-	for(; a<1; a++)
-		s+='n';
-	for(; a>1; a--)
-		s+='s';
-	for(; b<1; b++)
-		s+='w';
-	for(; b>1; b--)
-		s+='e';
-	e=SingleExit(r, s);
-	//check permutations of directions to find different possible locations
-	for(int i=0; i<s.length(); i++)
-		for(int j=i+1; j<s.length(); j++)
-		{
-			t=SingleExit(r, s.substring(0, i)+s.charAt(j)+s.substring(i+1, j)+s.charAt(i)+s.substring(j+1));//check a new permutation
-			if(t.length()>0&&!e.contains(t.substring(0, t.indexOf("("))))//if we found a new, valid location
-				e+=" or "+t;
-		}
-	if(e.startsWith(" or "))//if the first location wasn't valid
-		e=e.substring(4);
-	return e;
+ String s="", e, t;
+ //convert coordinates to directions
+ for(; a<1; a++)
+  s+='n';
+ for(; a>1; a--)
+  s+='s';
+ for(; b<1; b++)
+  s+='w';
+ for(; b>1; b--)
+  s+='e';
+ e=SingleExit(r, s);
+ //check permutations of directions to find different possible locations
+ for(int i=0; i<s.length(); i++)
+  for(int j=i+1; j<s.length(); j++)
+  {
+   t=SingleExit(r, s.substring(0, i)+s.charAt(j)+s.substring(i+1, j)+s.charAt(i)+s.substring(j+1));//check a new permutation
+   if(t.length()>0&&!e.contains(t.substring(0, t.indexOf("("))))//if we found a new, valid location
+    e+=" or "+t;
+  }
+ if(e.startsWith(" or "))//if the first location wasn't valid
+  e=e.substring(4);
+ return e;
 }
 //returns a room String in a more ASCII-friendly format
 private String[] RoomStrings(String s, int l)
 {
-	String[] r=new String[3];
-	r[0]="";
-	r[1]=s;
-	for(int i=l-s.length(); i>0; i--)
-		r[1]=" "+r[1];
-	if(s.length()==0)//nothing here
-		return new String[]{r[1], r[1], r[1]};//return a bunch of spaces
-	for(int i=0; i<l; i++)
-		r[0]+="-";
-	r[1]="|"+r[1].substring(2)+"|";
-	r[2]=r[0];
-	return r;
+ String[] r=new String[3];
+ r[0]="";
+ r[1]=s;
+ for(int i=l-s.length(); i>0; i--)
+  r[1]=" "+r[1];
+ if(s.length()==0)//nothing here
+  return new String[]{r[1], r[1], r[1]};//return a bunch of spaces
+ for(int i=0; i<l; i++)
+  r[0]+="-";
+ r[1]="|"+r[1].substring(2)+"|";
+ r[2]=r[0];
+ return r;
 }
 //given a player name, returns an ascii map of the world surrounding them
 public String map(String name)
 {
-  	Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());//get the room the player is in
-	//get the title of all exits
-	String[][] a=new String[3][3];//initialize the rooms
-	for(int i=0; i<3; i++)
-		for(int j=0; j<3; j++)
-			a[i][j]=ExitString(r, i, j);
-	a[1][1]=r.getTitle();
-	//get the longest length in each column for spacing
-	int[] l=new int[3];
-	for(int i=0; i<3; i++)
-		for(int j=0; j<3; j++)
-			l[j]=Math.max(l[j], a[i][j].length());
-	//build the map String
-	String m="";
-	String[][] t=new String[3][3];
-	for(int i=0; i<3; i++)
-	{
-		for(int j=0; j<3; j++)
-			t[j]=RoomStrings(a[i][j], l[j]+2);
-		for(int j=0; j<3; j++)
-		{
-			for(int k=0; k<3; k++)
-				m+=t[k][j]+" ";
-			m+="\n";
-		}
-	}
-	return m;
+   Room r=map.findRoom(this.playerList.findPlayer(name).getCurrentRoom());//get the room the player is in
+ //get the title of all exits
+ String[][] a=new String[3][3];//initialize the rooms
+ for(int i=0; i<3; i++)
+  for(int j=0; j<3; j++)
+   a[i][j]=ExitString(r, i, j);
+ a[1][1]=r.getTitle();
+ //get the longest length in each column for spacing
+ int[] l=new int[3];
+ for(int i=0; i<3; i++)
+  for(int j=0; j<3; j++)
+   l[j]=Math.max(l[j], a[i][j].length());
+ //build the map String
+ String m="";
+ String[][] t=new String[3][3];
+ for(int i=0; i<3; i++)
+ {
+  for(int j=0; j<3; j++)
+   t[j]=RoomStrings(a[i][j], l[j]+2);
+  for(int j=0; j<3; j++)
+  {
+   for(int k=0; k<3; k++)
+    m+=t[k][j]+" ";
+   m+="\n";
+  }
+ }
+ return m;
 }
 }
