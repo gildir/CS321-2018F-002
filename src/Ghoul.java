@@ -108,18 +108,21 @@ public class Ghoul extends NPC {
           play1.broadcastToOthersInRoom(message);
           gameCore.getActiveBattles().remove(b);
           check = false;
+          break;
         case 2:
           play1.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
           message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
           play1.broadcastToOthersInRoom(message);
           gameCore.getActiveBattles().remove(b);
           check = false;
+          break;
         case 3:
           play1.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
           message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \nIt was a tie.\n";
           play1.broadcastToOthersInRoom(message);
           gameCore.getActiveBattles().remove(b);
           check = false;
+          break;
       }
     }
     else if(p1 == 1 && p2 == 2)
