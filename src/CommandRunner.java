@@ -352,8 +352,15 @@ public class CommandRunner {
 		//expect only one argument with command
 		if( args.size() != 1 )
 			return "The command takes one argument. Correct usage is GROUPCHAT <Group Name>.";
-		
-		return remoteGameInterface.createGroupChat( args.get(0), name);
+        else if(args.get(0).equalsIgnoreCase("whisper") )
+        {
+            return "Invalid Format";
+        }
+        else
+        {
+            return remoteGameInterface.createGroupChat( args.get(0), name);
+        }
+
 
 	});
 	commandFunctions.put("GROUPCHATPRINT", (name, args) -> {
