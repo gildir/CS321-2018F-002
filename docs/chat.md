@@ -61,13 +61,8 @@ PlayerList class keep a linked list of players called palyerList. toString metho
 GameCore class is responsible for underlying actions. ListAllPlayers is a method in this class that gets the player name, if the player name is valid then it returns a string of all players int the world using toString method of playerList.  
 
 ## 403) Admin Chat Log
-### Usage
-
-### Command Implementation
-
-### Class: GameCore, File: GameCore.java
-The following changes were made to this class:
-1. Function added
+### Description
+Chat logs are now saved to a log file for an admin to view
 
 
 ## 404) Reply
@@ -163,14 +158,8 @@ public  void  broadcast (Player  sendingPlayer , Player  receivingPlayer , Strin
 Does not broadcast to ignoring players
 
 ## 406) Ignored Response 
-### Usage
-
-### Command Implementation
-
-### Class: GameCore, File: GameCore.java
-The following changes were made to this class:
-1. Function added
-
+### Description
+Player that has been ignored, gets a message when messaging the player ignoring them.
 
 
 
@@ -225,13 +214,10 @@ The unignore feature essentially takes in two arguments, name of player as well 
 
 
 ## 409) Censor Words from file 
-### Usage
+### Description
+Words are censored according to an input file. 
+Functions: GameCore.java loadCensorList(), scrubMessage()
 
-### Command Implementation
-
-### Class: GameCore, File: GameCore.java
-The following changes were made to this class:
-1. Function added
 
 
 ## 412) Shout ![shout](../images/megaphone.svg)
@@ -259,26 +245,19 @@ public void broadcastShout(Player player, String message)
 The shout command required a new broadcast function with a specific name. This broadcastShout method is similar to the broadcast method used by say. The difference is that this method doesn't check if the players are in the same room as the one shouting since shouts should be heard everywhere. Due to this difference we were unable to get say and shout to work with the same broadcast method, so we created this one.
 
 ## 413,415) Time Stamps
-### Usage
+### Description
+Time Stamps are displayed when chatting. 
 
-### Command Implementation
-
-### Class: GameCore, File: GameCore.java
-The following changes were made to this class:
-1. Function added
 
 
 
 ## 414) Chat Prefix 
 ### Usage
+Players are able to define and use a chat prefix by editing chatConfig.txt
 
-### Command Implementation
-
-### Class: GameCore, File: GameCore.java
-The following changes were made to this class:
-1. Function added
-
-
+## 416) Group Chat
+### Description 
+Players are able to add and talk to players in a group chat. 
 
 
 ## Team Members
