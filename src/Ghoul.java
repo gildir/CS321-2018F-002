@@ -87,8 +87,7 @@ public class Ghoul extends NPC {
 //      }
       
      // blank = doBattle(player.getName(), getName(), fight.getChoiceP1(), fight.getChoiceP2(), fight);
-      
-     
+
     }
   }
   
@@ -96,7 +95,6 @@ public class Ghoul extends NPC {
   {
     Player play1 = gameCore.getPlayerList().findPlayer(challenger);
     String message = "";
-          String item = play1.removeRandomItem();
     boolean check = false;
     if(p1 == p2)
     {
@@ -190,7 +188,8 @@ public class Ghoul extends NPC {
         play1.broadcastToOthersInRoom(play1.getName() + " managed to fend off " + getName() + "! It has calmed down after a tough battle.");
       }
       else{
-        play1.broadcast(getName() + " grabs you by the legs and drags you to " +
+         String item = play1.removeRandomItem();
+         play1.broadcast(getName() + " grabs you by the legs and drags you to " +
                          gameCore.getMap().findRoom(Map.SPAWN_ROOM_ID).getTitle() +
                          ", and takes a " + item + " from you.");
         play1.broadcastToOthersInRoom(getName() + " grabs " + play1.getName() +
