@@ -74,25 +74,16 @@ public class GameCore implements GameCoreInterface {
         npcThread.setDaemon(true);
         npcThread.start();
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		//Team 8
-        this.activeBattles = new ArrayList<Battle>();	//list of ongoing battles
-        this.pendingBattles = new ArrayList<Battle>();	//list of battle challenges waiting for a response
-        this.leaderboard = new Leaderboard();			//ranked list of RPS player scores
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
+        activeBattles = new ArrayList<Battle>();
+        pendingBattles = new ArrayList<Battle>();
+        this.leaderboard = new Leaderboard();
         Thread objectThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 Random rand = new Random();
                 Room room;
                 Item object;
-				
-				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				//Team 8
-                ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
-				////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-				
+                ArrayList<Item> objects = ItemParser.parse("./RPSdemoitems.csv");//"./ItemListCSV.csv"
                 while(true) {
                     try {
                       Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
@@ -349,16 +340,17 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
     @Override
-    public String say(String name, String message, ArrayList<String> censorList) {
+    public String say(String name, String message) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null) {
-            message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
+        if(player != null)
+        {
             String log = player.getName() + " says, \"" +
                     message + "\" in the room " + player.getCurrentRoom();
             add_chat_log(log);
 
             this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"" + " " + date.toString());
             return chatPrefix + "You say, \"" + message + "\"" + " " + date.toString();
+
         }
         else {
             return null;
@@ -372,10 +364,11 @@ public class GameCore implements GameCoreInterface {
     * @param message Message that will be shouted
     * @return Message showing success.
     */
-    public String shout(String name, String message, ArrayList<String> censorList) {
+    public String shout(String name, String message) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null) {
-            message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
+        if(player != null)
+        {
+
             String log = player.getName() + " shouts, \"" + message + "\"" + " " + date.toString();
             add_chat_log(log);
 
@@ -395,7 +388,7 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to whisper
     * @return Message showing success.
     */
-    public String whisper(String name1, String name2, String message, ArrayList<String> censorList) {
+    public String whisper(String name1, String name2, String message) {
         Player playerSending = this.playerList.findPlayer(name1);
         Player playerReceiving = this.playerList.findPlayer(name2);
         if(playerSending != null && playerReceiving != null)
@@ -405,14 +398,12 @@ public class GameCore implements GameCoreInterface {
                 return "Cannot whisper yourself" + " " + date.toString();
             else
             {
-		
-		if(playerSending.searchIgnoredBy(name2)){
-			return "Cannot whisper player that has ignored you";
-	    	}
+if(playerSending.searchIgnoredBy(name2)){
+		return "Cannot whisper player that has ignored you";
+	    }
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
 
-                    message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
                             + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
@@ -420,6 +411,7 @@ public class GameCore implements GameCoreInterface {
 
                     playerReceiving.setLastWhisperName(name1); 
                     return "Message sent to " + playerReceiving.getName() + " " + date.toString();
+
                 }
                 else {
                     return "";
@@ -440,7 +432,7 @@ public class GameCore implements GameCoreInterface {
     * @param message Message to be whispered
     * @return Message showing success.
     */
-    public String reply(String name, String message, ArrayList<String> censorList) {
+    public String reply(String name, String message) {
         Player playerSending = this.playerList.findPlayer(name);
         if(playerSending.getLastWhisperName() == null) {
 
@@ -448,7 +440,7 @@ public class GameCore implements GameCoreInterface {
         }
         String name2 = playerSending.getLastWhisperName();
         Player playerReceiving = this.playerList.findPlayer(name2);
-        return this.whisper(name, name2, message, censorList); //409_censor whisper command scrubs message of unwanted words
+        return this.whisper(name, name2, message);
     }
 
     /**
@@ -1179,84 +1171,86 @@ public class GameCore implements GameCoreInterface {
         }
     }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  //Team 8
-  
-  //Rock Paper Scissors Battle Methods
 
-  //Challenger challenges player2 to RPS battle with 'rounds' rounds
-  //Edge case: If one player challenges another but the other player challenges back, this is counted as an acceptance of battle in place of an 'accept [player1]'. (WHERE IS THIS IMPLMENTED?)
+//Rock Paper Scissors Battle Methods -------------------------------------------
+
+  // Broadcasts to player2
+  /*
+  [Player1] challenges you to a Rock Paper Scissors Battle!
+  Type 'Accept [Player1]' to accept the challenge.
+  OR
+  Type 'Refuse [Player1]' to refuse the challenge.
+  */
+  //Edge case: If one player challenges another but the other player challenges back, this is counted as an acceptance of battle in place of an 'accept [player1]'.
+  //Checks if player2 exists, if not broadcasts to challenger "That player doesnt exist." and returns false.
+  //if player2 does exist, broadcast to challenger "Request sent. You will be notified when they respond."
   public void challenge(String challenger, String player2, int rounds)
   {
-    Player play1 = this.playerList.findPlayer(challenger);	//challenger
-    Player play2 = this.playerList.findPlayer(player2);		//opposing player
+    Player play1 = this.playerList.findPlayer(challenger);
+    Player play2 = this.playerList.findPlayer(player2);
     
-	//rounds component of challenge message
     String battletype = MessageFormat.format( (rounds == 1) ? " ":" best {0} out of {1} ",(int)Math.ceil(rounds/2.0),rounds);
 
-	//prevent challenge if play2 does not exist
-    if(play2 == null)
+    if(play2 == null)//other player doesnt exist
     {
       play1.getReplyWriter().println("\nThat player doesn't exist.");
       return;
     }
 
-	//prevent play1 from challenging themselves
-    if(challenger.equalsIgnoreCase(player2))
+    if(challenger.equalsIgnoreCase(player2)) // Challenger is challenging himself. Stupid challenger...
     {
       play1.getReplyWriter().println("\nYou can't challenge yourself.\n");
       return;
     }
 
-	//check for conflicting battles
     for(Battle b : activeBattles)
     {
-	  //prevent challenge if play1 is already engaged in battle
-      if(b.containsPlayer(challenger))
+      if(b.containsPlayer(challenger))// Challenger is already in an active battle
       {
         play1.getReplyWriter().println("\nYou can only be in one battle at a time. Finish the current one you are in before challenging someone else.");
         return;
       }
-	  //prevent challenge if play2 is already engaged in battle
-      if(b.containsPlayer(player2))
+      if(b.containsPlayer(player2))// Other Player is already in an active battle.
       {
         play1.getReplyWriter().println("\nYou cant challenge " + player2 + " right now, they're currently in a battle. ");
         return;
       }
     }
 
-	  //check play2 inventory for battle object (rock, paper, or scissors)
-      LinkedList<Item> inventory = play2.getCurrentInventory();
+      LinkedList<Item> inventory = play2.getCurrentInventory();  //you can only challenge a player if they have a rock paper or scissors
       int hasBattleItemP2 = 0;
       for (Item obj : inventory) {
           if (obj.getItemName().equals("Rock") || obj.getItemName().equals("Paper") || obj.getItemName().equals("Scissors")) {
               hasBattleItemP2 ++;
+
+
           }
       }
-	  
-	  //prevent challenge if play2 does not have battle object
+
       if (hasBattleItemP2 == 0) {
+
           play1.getReplyWriter().println("\nThe other person does not have a battle item");
           return;
       }
 
-	  //check play1 inventory for battle object (rock, paper, or scissors)
-      LinkedList<Item> inventory2 = play1.getCurrentInventory();
+      LinkedList<Item> inventory2 = play1.getCurrentInventory(); //you can only challenge if you have a rock, paper, or scissors
       int hasBattleItemP1 = 0;
       for (Item obj : inventory2) {
           if (obj.getItemName().equals("Rock") || obj.getItemName().equals("Paper") || obj.getItemName().equals("Scissors")) {
               hasBattleItemP1 ++;
+
+
           }
       }
 
-	  //prevent challenge if play1 does not have battle object
       if (hasBattleItemP1 == 0) {
+
           play1.getReplyWriter().println("\nYou do not have a battle item");
           return;
       }
 
-	  //prevent challenge if play1 has already challenged play2
-      for(Battle b : pendingBattles)
+
+      for(Battle b : pendingBattles)//Challenger already asked this person to battle and is waiting for a response still.
     {
       if(b.hasPlayers(challenger,player2))
       {
@@ -1264,21 +1258,18 @@ public class GameCore implements GameCoreInterface {
         return;
       }
     }
-	
-	//broadcaast challenge message to play2, add battle to pending battle list, notify everyone of challenge
     play2.getReplyWriter().println("\n" + challenger + " has challenged you to a" + battletype + "Rock Paper Scissors Battle. \n\nTo accept, type 'Accept " 
                   + challenger + "' and press ENTER." + "\n\nTo decline, type 'Refuse " + challenger + "' and press ENTER." );
     pendingBattles.add(new Battle(challenger, player2, rounds));
     System.out.println("Player: " + challenger + " Challenged: " + player2);
   }
 
-  //Player2 accepts challenge to RPS battle by challenger
   public void accept(String challenger, String player2)
   {
-    Player play1 = this.playerList.findPlayer(challenger);	//challenger
-    Player play2 = this.playerList.findPlayer(player2);		//opposing player
+    Player play1 = this.playerList.findPlayer(challenger);
+    Player play2 = this.playerList.findPlayer(player2);
 
-	//prevent acceptance if play2 is already engaged in battle
+
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player2))
@@ -1289,17 +1280,15 @@ public class GameCore implements GameCoreInterface {
       }
     }
 
-	//prevent acceptance if play1 does not exists
-    if(play1 == null)
+
+    if(play1 == null)//other player doesnt exist
     {
       play2.getReplyWriter().println("You can't accept a challenge from a player that doesn't exist.");
     }
     else
     {
-      //check for challenge from play1
-	  for(Battle b : pendingBattles)
+      for(Battle b : pendingBattles)
       {
-		//broadcast acceptance message to play1, confirm acceptance to play2, move battle to active battle list
         if(b.hasPlayers(challenger,player2) && b.getStatus().equalsIgnoreCase("pending"))
         {
           play1.getReplyWriter().println(player2 + " has accepted your Rock Paper Scissors challenge. \nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
@@ -1311,30 +1300,24 @@ public class GameCore implements GameCoreInterface {
           return;
         }
       }
-	  //prevent acceptance if no challenge made by play1 to play2
       play2.getReplyWriter().println("You don't have any pending requests from that player.");
     }
-	//notify everyone of challenge acceptance 
     System.out.println("Player: " + player2 + " Accepted " + challenger + "'s' Challenge.");
   }
 
-  //Player2 refuses challenge to RPS battle by challenger
   public void refuse(String challenger, String player2)
   {
-    Player play1 = this.playerList.findPlayer(challenger);	//challenger
-    Player play2 = this.playerList.findPlayer(player2);		//opposing player
+    Player play1 = this.playerList.findPlayer(challenger);
+    Player play2 = this.playerList.findPlayer(player2);
 
-	//prevent refusal if play1 doesn't exist
-    if(play1 == null)
+    if(play1 == null)//other player doesnt exist
     {
       play2.getReplyWriter().println("You can't refuse a challenge from a player that doesn't exist.");
     }
     else
     {
-	  //check for challenge from play1
       for(Battle b : pendingBattles)
       {
-		//broadcast refusal message to play1, confirm acceptance to play2, remove battle from pending battle list
         if(b.hasPlayers(challenger,player2) && b.getStatus().equalsIgnoreCase("pending"))
         {
           play1.getReplyWriter().println(player2 + " has refused your Rock Paper Scissors Challenge. :(");
@@ -1343,66 +1326,56 @@ public class GameCore implements GameCoreInterface {
           return;
         }
       }
-	  //prevent refusal if no challenge made by play1 to play2
       play2.getReplyWriter().println("You don't have any pending requests from that player.");
     }
-	//notify everyone of challenge refusal 
     System.out.println("Player: " + player2 + " Refused " + challenger + "'s' Challenge.");
   }
 
-  //Player selects rock in RPS battle round
   public void rock(String player)
   {
-      Player p = this.playerList.findPlayer(player);		//player
-      LinkedList<Item> inventory = p.getCurrentInventory();	//player inventory
-	  
-	  //amount of rocks in player inventory
+
+
+
+    Player p = this.playerList.findPlayer(player);
+      LinkedList<Item> inventory = p.getCurrentInventory();
       int hasBattleItem = 0;
       for (Item obj : inventory) {
           if (obj.getItemName().equals("Rock")) {
               hasBattleItem ++;
+
+
           }
       }
-
-	//find battle
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player))
       {
-		//check if player is challenger
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
-		  //prevent choice if player has no rocks
           if (hasBattleItem == 0){
+
             p.getReplyWriter().println("You don't have that item, pick again");
                 return;
           }
-		  //remove rock from inventory, set challenger choice to rock for current round, confirm choice to player
           p.removeObjectFomInventory("Rock");
           b.setChoiceP1(1);
           p.getReplyWriter().println("You Chose Rock.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
-		  
-		  //initiate battle if both players have made a choice
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
           return;
         }
-		//check if player is opposing player
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
-		    //prevent choice if player has no rocks
             if(hasBattleItem == 0){
+
                 p.getReplyWriter().println("You don't have that item, pick again");
                 return;
             }
-		  //remove rock from inventory, set opposing player choice to rock for current round, confirm choice to player
           p.removeObjectFomInventory("Rock");
           b.setChoiceP2(1);
           p.getReplyWriter().println("You Chose Rock.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
-		  
-		  //initiate battle if both players have made a choice
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
@@ -1411,62 +1384,54 @@ public class GameCore implements GameCoreInterface {
         }
       }
     }
-	//prevent choice if player is not engaged in any battle
     p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
-  //Player selects paper in RPS battle round
   public void paper(String player)
   {
-    Player p = this.playerList.findPlayer(player);			//player
-    LinkedList<Item> inventory = p.getCurrentInventory();	//player inventory
-	
-	//amount of paper in player inventory
+    Player p = this.playerList.findPlayer(player);
+
+    LinkedList<Item> inventory = p.getCurrentInventory();
     int hasBattleItem = 0;
     for (Item obj : inventory) {
         if (obj.getItemName().equals("Paper")) {
             hasBattleItem ++;
+
+
         }
     }
-	//find battle
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player))
       {
-		//check if player is challenger
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
-		    //prevent choice if player has no paper
             if (hasBattleItem == 0){
+
                 p.getReplyWriter().println("You don't have that item, pick again");
                 return;
+
             }
-		  //remove paper from inventory, set challenger choice to paper for current round, confirm choice to player
           p.removeObjectFomInventory("Paper");
           b.setChoiceP1(2);
           p.getReplyWriter().println("You Chose Paper.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
-		  
-		  //initiate battle if both players have made a choice
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
           return;
         }
-		//check if player is opposing player
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
-		    //prevent choice if player has no paper
             if (hasBattleItem == 0){
+
                 p.getReplyWriter().println("You don't have that item, pick again");
                 return;
+
             }
-		  //remove paper from inventory, set opposing player choice to paper for current round, confirm choice to player
           p.removeObjectFomInventory("Paper");
           b.setChoiceP2(2);
           p.getReplyWriter().println("You Chose Paper.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
-		  
-		  //initiate battle if both players have made a choice
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
@@ -1475,63 +1440,53 @@ public class GameCore implements GameCoreInterface {
         }
       }
     }
-	//prevent choice if player is not engaged in any battle
     p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
-  //Player selects scissors in RPS battle round
   public void scissors(String player)
   {
-      Player p = this.playerList.findPlayer(player);		//player
-      LinkedList<Item> inventory = p.getCurrentInventory();	//player inventory
-	  
-	  //amount of scissors in player inventory
+    Player p = this.playerList.findPlayer(player);
+      LinkedList<Item> inventory = p.getCurrentInventory();
       int hasBattleItem = 0;
       for (Item obj : inventory) {
           if (obj.getItemName().equals("Scissors")) {
               hasBattleItem ++;
+
+
           }
       }
-	
-	//find battle
     for(Battle b : activeBattles)
     {
       if(b.containsPlayer(player))
       {
-		//check if player is challenger
         if(b.getPlayer1().equalsIgnoreCase(player))
         {
-		    //prevent choice if player has no scissors
             if (hasBattleItem == 0){
+
                 p.getReplyWriter().println("You don't have that item, pick again");
                 return;
+
             }
-		  //remove scissors from inventory, set challenger choice to scissors for current round, confirm choice to player
           p.removeObjectFomInventory("Scissors");
           b.setChoiceP1(3);
           p.getReplyWriter().println("You Chose Scissors.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
-		  
-		  //initiate battle if both players have made a choice
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
           return;
         }
-		//check if player is opposing player
         if(b.getPlayer2().equalsIgnoreCase(player))
         {
-		    //prevent choice if player has no scissors
             if (hasBattleItem == 0){
+
                 p.getReplyWriter().println("You don't have that item, pick again");
                 return;
+
             }
-		  //remove scissors from inventory, set opposing player choice to scissors for current round, confirm choice to player
           p.removeObjectFomInventory("Scissors");
           b.setChoiceP2(3);
           p.getReplyWriter().println("You Chose Scissors.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
-		  
-		  //initiate battle if both players have made a choice
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
@@ -1540,30 +1495,25 @@ public class GameCore implements GameCoreInterface {
         }
       }
     }
-	//prevent choice if player is not engaged in any battle
     p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
-  //Perform RPS battle b with 'rounds' rounds between challenger, making choices 'p1', and player2, making choices 'p2'
   public void doBattle(String challenger, String player2, int[] p1, int[] p2, Battle b, int rounds) 
   {
-    Player play1 = this.playerList.findPlayer(challenger);	//challenger
-    Player play2 = this.playerList.findPlayer(player2);		//opposing player
-    String message = "";									//end of battle message
-    String roundResult  = "";								//result of each round
-	
-	//tie: no winner
+    Player play1 = this.playerList.findPlayer(challenger);
+    Player play2 = this.playerList.findPlayer(player2);
+    String message = "";
+    String roundResult  = "";
     if(p1[b.getCurrentRound()] == p2[b.getCurrentRound()])
     {
+      //tie
       switch(p1[b.getCurrentRound()])
       {
-		//rock-rock tie
         case 1:
           roundResult = "You Both Tied.";
           play1.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
           
-		  //if final round, finish battle
           if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
           {
               String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
@@ -1574,7 +1524,6 @@ public class GameCore implements GameCoreInterface {
               updateLeaderboard(b);
               writeLog(b);
           }
-		  //otherwise, prompt players for choices in next round
           else
           {
               String broadcast = MessageFormat.format("\nThat was round {0}, You have {1} more round(s) to go. Please choose 'Rock' 'Paper' or 'Scissors' for the next round." +
@@ -1584,8 +1533,6 @@ public class GameCore implements GameCoreInterface {
               b.incrementRound();
           }
           return;
-		
-		//paper-paper tie
         case 2:
           play1.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
@@ -1609,8 +1556,6 @@ public class GameCore implements GameCoreInterface {
               b.incrementRound();
           }
           return;
-		
-		//scissors-scissors tie
         case 3:
           play1.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
@@ -1636,9 +1581,9 @@ public class GameCore implements GameCoreInterface {
           return;
       }
     }
-	//rock-paper: play2 wins
     else if(p1[b.getCurrentRound()] == 1 && p2[b.getCurrentRound()] == 2)
     {
+      //rock paper
       play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Paper. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Rock. \nYou win.\n");
       
@@ -1664,9 +1609,9 @@ public class GameCore implements GameCoreInterface {
       }
       return;
     }
-	//rock-scissors: play1 wins
     else if(p1[b.getCurrentRound()] == 1 && p2[b.getCurrentRound()] == 3)
     {
+      //rock scissors
       play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Scissors. \nYou win.\n");
       play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Rock. \nYou lose.\n");
       
@@ -1692,9 +1637,9 @@ public class GameCore implements GameCoreInterface {
       }
       return;
     }
-	//paper-rock: play1 wins
     else if(p1[b.getCurrentRound()] == 2 && p2[b.getCurrentRound()] == 1)
     {
+      //paper rock
       play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Rock. \nYou win.\n");
       play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Paper. \nYou lose.\n");
       
@@ -1720,9 +1665,9 @@ public class GameCore implements GameCoreInterface {
       }
       return;
     }
-	//paper-scissors: play2 wins
     else if(p1[b.getCurrentRound()] == 2 && p2[b.getCurrentRound()] == 3)
     {
+      //paper scissors
       play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Scissors. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Paper. \nYou win.\n");
       
@@ -1748,9 +1693,9 @@ public class GameCore implements GameCoreInterface {
       }
       return;
     }
-	//scissors-rock: play2 wins
     else if(p1[b.getCurrentRound()] == 3 && p2[b.getCurrentRound()] == 1)
     {
+      //scissors rock
       play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Rock. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Scissors. \nYou win.\n");
       
@@ -1776,9 +1721,9 @@ public class GameCore implements GameCoreInterface {
       }
       return;
     }
-	//scissors-paper: play1 wins
     else if(p1[b.getCurrentRound()] == 3 && p2[b.getCurrentRound()] == 2)
     {
+      //scissors paper
       play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Paper. \nYou win.\n");
       play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Scissors. \nYou lose.\n");
     
@@ -1806,7 +1751,6 @@ public class GameCore implements GameCoreInterface {
     }
   }
 
-  //Write result of battle b to rps.log
   public void writeLog(Battle b)
   {
        try(BufferedWriter writer = new BufferedWriter(new FileWriter("rps.log",true)))
@@ -1814,7 +1758,7 @@ public class GameCore implements GameCoreInterface {
            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");  
            Date date = new Date();
            String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() < b.getP2Score()) ? b.getPlayer2() : "TIE");
-           String logItem = MessageFormat.format("[{0}] [{4} Round RPS Battle] - Player1: {1} (Challenger) | Player2: {2} (Challenged) | Result: {3}",date,b.getPlayer1(),b.getPlayer2(),result,b.getMaxRounds());
+           String logItem = MessageFormat.format("[{0}] [{4} Round RPS Battle] - Player1: {1} (Challenger) | Player2: {2} (Challenged) | Result: {3}\n",date,b.getPlayer1(),b.getPlayer2(),result,b.getMaxRounds());
            writer.write(logItem);
            writer.close();
        }
@@ -1823,7 +1767,6 @@ public class GameCore implements GameCoreInterface {
        }
   }
 
-  //Broadcaast full leaderboard to player 'name'
   public void checkBoard(String name) {
       Player player = this.playerList.findPlayer(name);
       if(player == null)
@@ -1832,7 +1775,6 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(board);
   }
 
-  //Broadcaast tutorial for RPS battle system to player 'name'
   public String tutorial(String name)
   {
       Player player = this.playerList.findPlayer(name);
@@ -1862,23 +1804,10 @@ public class GameCore implements GameCoreInterface {
       return "";
   }
 
-    //409_censor START
-    private String scrubMessage( String message, ArrayList<String> censorList ){
-        if( message == null || message.equals(' ') )
-                return message;
-        if( censorList == null || censorList.size()==0)
-                return message;
-        for( String word:censorList){
-            String censor = "*";
-            for( int x = 1; x<word.length();x++)
-                    censor+="*";
-            message = message.replaceAll( "(?i)(" + word.toString() + ")", censor);
-        }
-        return message;
-    }
-    //409_censor END
+
+
   
-  //Broadcaast top-ten list to player 'name'
+  //Added by An
   public void topTen(String name) {
       Player player = this.playerList.findPlayer(name);
       if(player == null)
@@ -1887,16 +1816,21 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(topTenLeaderBoard);
   }
 
-  //Broadcast rank of player to player
+
+
+
   public void getRank(String player)
   {
     Player p = this.playerList.findPlayer(player);
     p.getReplyWriter().println("Your current RPS Leaderboard rank is: "+ leaderboard.getPlayerRank(player));
   }
 
-  //Increment socres at the end of a battle
+
+
+  
   public void updateLeaderboard(Battle b)
   {
+    
     if(b.getP1Score() > b.getP2Score()){
       this.leaderboard.incrementScore(b.getPlayer1(), true);
       this.leaderboard.incrementScore(b.getPlayer2(), false);
@@ -1906,8 +1840,7 @@ public class GameCore implements GameCoreInterface {
       this.leaderboard.incrementScore(b.getPlayer2(), true);
     }
   }
-  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
+//Rock Paper Scissors Battle Methods -------------------------------------------
   // Whiteboards
   /**
    * 
