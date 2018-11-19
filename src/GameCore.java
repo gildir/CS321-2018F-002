@@ -398,7 +398,7 @@ public class GameCore implements GameCoreInterface {
             {
 		
 		if(playerSending.searchIgnoredBy(name2)){
-			return "Cannot whisper player that has ignored you";
+			return "Cannot whisper player that has ignored you" + " " + date.toString();
 	    	}
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
@@ -407,7 +407,7 @@ public class GameCore implements GameCoreInterface {
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
                             + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
-                    this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
+                    this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"" + " " + date.toString());
 
                     playerReceiving.setLastWhisperName(name1); 
                     return "Message sent to " + playerReceiving.getName() + " " + date.toString();
@@ -420,7 +420,7 @@ public class GameCore implements GameCoreInterface {
         else
         {
             if(playerReceiving == null)
-                return "Couldn't find player online.";
+                return "Couldn't find player online." + " " + date.toString();
             return null;
         }
     }
@@ -1027,24 +1027,24 @@ public class GameCore implements GameCoreInterface {
     //405
     public String ignore(String name, String ignoreName) {
               if( name.equalsIgnoreCase(ignoreName) )
-                      return "You can't ignore yourself.";
+                      return "You can't ignore yourself." + " " + date.toString();
 
               //verify player being ignored exists
               Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
               if( ignoredPlayer == null )
-                      return "Player " + ignoreName + " is not in the game.";
+                      return "Player " + ignoreName + " is not in the game." + " " + date.toString();
 
               Player thisPlayer = this.playerList.findPlayer(name);
               //verify player is not already in ignore list
               if( thisPlayer.searchIgnoreList(ignoreName) )
-                      return "Player " + ignoreName + " is in ignored list.";
+                      return "Player " + ignoreName + " is in ignored list." + " " + date.toString();
 
               //add ignoreName to ignore list
               thisPlayer.ignorePlayer(ignoreName);
 
               //add ignoring player to ignored players ignoredBy list
               ignoredPlayer.addIgnoredBy(name);
-              return ignoreName + " added to ignore list.";
+              return ignoreName + " added to ignore list." + " " + date.toString();
     }
 
     //407
@@ -1066,25 +1066,25 @@ public class GameCore implements GameCoreInterface {
     //408
     public String unIgnore(String name, String unIgnoreName) {
               if( name.equalsIgnoreCase(unIgnoreName) )
-                      return "You can't unignore yourself since you can't ignore yourself...";
+                      return "You can't unignore yourself since you can't ignore yourself..." + " " + date.toString();
 
               //verify player being unignored exists
               Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
               if( unIgnoredPlayer == null )
-                      return "Player " + unIgnoreName + " is not in the game.";
+                      return "Player " + unIgnoreName + " is not in the game." + " " + date.toString();
 
               Player thisPlayer = this.playerList.findPlayer(name);
 
               //verify player is in Ignore list
               if( !thisPlayer.searchIgnoreList(unIgnoreName) )
-                      return "Player " + unIgnoreName + " is not in ignored list.";
+                      return "Player " + unIgnoreName + " is not in ignored list." + " " + date.toString();
 
               //remove ignoreName in ignore list
               thisPlayer.unIgnorePlayer(unIgnoreName);
 
               //add ignoring player to ignored players ignoredBy list
               unIgnoredPlayer.removeIgnoredBy(name);
-              return unIgnoreName + " removed from ignore list.";
+              return unIgnoreName + " removed from ignore list." + " " + date.toString();
     }
     /* STOP 408_ignore */
 
