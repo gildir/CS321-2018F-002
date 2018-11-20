@@ -8,15 +8,17 @@ public class Item implements Cloneable {
  private String itemSize;
  private static String color[] = {"Red", "Blue", "Green", "Purple", "Orange", "Black", "White", "Brown", "Yellow", "Silver", "Gold","Pink"};
  private static String size[] = {"Tiny", "Small", "Medium", "Large", "Huge"};
+ private String itemTitle;
 
  // Constructor
- Item(String itemName, String itemDescrip, double itemWeight, double itemValue){
+ Item(String itemName, String itemDescrip, double itemWeight, double itemValue, String title){
   this.itemName = itemName; 
   this.itemDescrip = itemDescrip;
   this.itemWeight = itemWeight;
   this.itemValue = itemValue;
   this.itemColor = getRandColor();
   this.itemSize = getRandSize();
+  this.itemTitle = title;
  }
 
  // Getter functions
@@ -40,6 +42,9 @@ public class Item implements Cloneable {
  public String getItemSize(){
      return this.itemSize;
  }
+ public String getItemTitle(){
+     return this.itemTitle;
+ }
  // Setter functions
  public void setItemValue(double newItemValue){
   this.itemValue = newItemValue;
@@ -49,7 +54,7 @@ public class Item implements Cloneable {
  public String toString(){
   String weightString = String.format("%.2f", itemWeight);
   String valueString = String.format("%.2f", itemValue);
-  return "[" + itemSize + itemColor + "] " + itemName + "(" + weightString + " lb, $" + valueString +")";
+  return "[" + itemSize + itemColor + "] " + itemName + " (" + weightString + " lb, $" + valueString +")";
  }
  // Method spits out a random color
  private String getRandColor(){

@@ -56,6 +56,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return (core.joinGame(name) != null);
     }
 
+    /**
+     * Determines if a player exists in the system already
+     * @param name
+     * @return true if player does exists, false otherwise
+     * @throws RemoteException
+     */
+    public boolean playerExists(String name) throws RemoteException{
+        if(core.findPlayer(name) == null) return false;
+        else return true;
+    }
+
     public void setChatPrefix(String prefix) throws RemoteException {
         core.setChatPrefix(prefix);
     }        
@@ -259,6 +270,16 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      */
     public String offerResponse(String playerName, String response) throws RemoteException {
         return core.offerResponse(playerName, response);
+    }
+
+    /**
+     * Attempts to use an item the player has called <itemName>. Will return a message on any success or failure.
+     * @param playerName Name of the player to use the item
+     * @param itemName The name of the item to use
+     * @return Message showing success.
+     */
+    public String useItem(String playerName, String item) throws RemoteException {
+	    return core.useItem(playerName, item);
     }
 
     /**
