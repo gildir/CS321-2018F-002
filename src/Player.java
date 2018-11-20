@@ -27,6 +27,8 @@ public class Player {
     private ArrayList<Quest> questBook = new ArrayList<Quest>();
     private String inTradeWithName = null;
     private String inTradeWithItem = null;
+    private String playerTitle = null;
+    private boolean isDrunk = false;
 
     /* START 405_ignore variables*/
     private ArrayList<String> ignoreList;
@@ -96,10 +98,38 @@ public class Player {
         return name;
     }
 
+
+    public String getNameWithTitle(){
+        synchronized (this) {
+            if(this.playerTitle != null){
+                return "[" + playerTitle + "] " + name;
+            }
+            else{
+                return name;
+            }
+        }
+    }
+
     public void setName(String name) {
         synchronized (this) {
             this.name = name;
         }
+    }
+
+    public void setTitle(String title){
+        synchronized (this) {
+            this.playerTitle = title;
+        }
+    }
+
+    public void setIsDrunk(Boolean trueOrFalse){
+        synchronized (this) {
+            this.isDrunk = trueOrFalse;
+        }
+    }
+
+    public Boolean getIsDrunk(){
+        return this.isDrunk;
     }
 
     public void setLastWhisperName(String name) {
@@ -170,6 +200,7 @@ public class Player {
     public LinkedList<Spirit> getCurrentSpirits() {
         return currentSpirits;
     }
+
 
     public void setCurrentSpirits(LinkedList<Spirit> currentSpirits) {
         synchronized (this) {
@@ -265,9 +296,11 @@ public class Player {
     // for all Quests in the Player's questBook
     // if the Quest hasn't been completed, update that quest
     private void updateAllQuests() {
-        for (Quest q : questBook) {
-            if (!(q.getQuestComplete())) {
-                q.updateQuest();
+        synchronized (this) {
+            for (Quest q : questBook) {
+                if (!(q.getQuestComplete())) {
+                    q.updateQuest();
+                }
             }
         }
     }

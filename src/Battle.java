@@ -3,16 +3,22 @@ public class Battle
   private String player1 = "";//Challenger
   private String player2 = "";//Challenged
   private String currentStatus = "";//status of battle (Active, Pending)
-  private int choicePlayer1;
-  private int choicePlayer2;
+  private int[] choicePlayer1;
+  private int[] choicePlayer2;
+  private int p1Score;
+  private int p2Score;
+  private int currentRound;
+  private int maxRounds;
 
-  public Battle(String challenger, String otherPlayer)
+  public Battle(String challenger, String otherPlayer, int rounds)
   {
     player1 = challenger;
     player2 = otherPlayer;
     currentStatus = "pending";
-    choicePlayer1 = 0;
-    choicePlayer2 = 0;
+    choicePlayer1 = new int[rounds];
+    choicePlayer2 = new int[rounds];
+    currentRound = 0;
+    maxRounds = rounds;
   }
 
   public void setStatus(String newStatus)
@@ -22,7 +28,7 @@ public class Battle
 
   public void setChoiceP1(int choice)
   {
-    choicePlayer1 = choice;
+    choicePlayer1[currentRound] = choice;
   }
 
   public String getPlayer1()
@@ -37,15 +43,15 @@ public class Battle
 
   public void setChoiceP2(int choice)
   {
-    choicePlayer2 = choice;
+    choicePlayer2[currentRound] = choice;
   }
 
-  public int getChoiceP1()
+  public int[] getChoiceP1()
   {
     return choicePlayer1;
   }
 
-  public int getChoiceP2()
+  public int[] getChoiceP2()
   {
     return choicePlayer2;
   }
@@ -74,6 +80,39 @@ public class Battle
   {
     return "pending".equalsIgnoreCase(currentStatus);
   }
+  
+  public int getCurrentRound()
+  {
+    return currentRound;
+  }
+  
+  public int getP1Score()
+  {
+    return p1Score;
+  }
+  
+  public void incP1Score()
+  {
+    p1Score++;
+  }
 
-
+  public int getP2Score()
+  {
+    return p2Score;
+  }
+  
+  public void incP2Score()
+  {
+    p2Score++;
+  }
+  
+  public int getMaxRounds()
+  {
+    return maxRounds;
+  }
+  
+  public void incrementRound()
+  {
+    currentRound++;
+  }
 }

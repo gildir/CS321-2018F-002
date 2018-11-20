@@ -61,11 +61,10 @@ public class Room {
         result += "Monsters in the area: " + this.getNPCsString() + " " + this.getSpiritsString() + "\n";
         result += "You see paths in these directions: " + this.getExits() + "\n";
         result += "...................\n";
-        result += "You are facing: " + player.getCurrentDirection() + "\n";
         if(player.getCurrentRoom() == 1){
             result += "You are near the shop, type ENTER SHOP to enter.\n";
         }
-        if(player.getCurrentRoom() == 10){
+        if(player.getCurrentRoom() == 182){
             result += "Type LEAVE SHOP to leave.\n";
         }
         return result;
@@ -160,7 +159,12 @@ public class Room {
             return "None.";
         }
         else {
-            return this.objects.toString();
+            String objectsStr = "[" + objects.get(0).getItemName();
+            for (int i = 1; i < objects.size(); i++) {
+                objectsStr += ", " + objects.get(i).getItemName();
+            }
+            objectsStr += "]";
+            return objectsStr;
         }
     }
     
@@ -196,7 +200,7 @@ public class Room {
         for(Player player : players) {
           System.err.println("Checking to see if " + player.getName() + " in room " + player.getCurrentRoom() + " is in this room (" + this.id + ")");
             if(player.getCurrentRoom() == this.id) {
-                localPlayers += player.getName() + " ";
+                localPlayers += player.getNameWithTitle() + " ";
             }
         }
         if(localPlayers.equals("")) {

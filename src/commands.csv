@@ -11,11 +11,12 @@ DESCRIBE,OBJECT,Describe the object in a player's inventory.
 DROPOFF,OBJECT,Tries to drop off an object in the same area.
 OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.
 OFFERRESPONSE,DECISION,Finishes a trade with a <DECISION>, you can decide to ACCEPT or REFUSE
+USEITEM,ITEM,Uses an <ITEM> from your inventory.
 INVENTORY,,Shows you what objects you have collected.
 REDO,,Performs the last command you entered.
 QUIT,,Quits the game.
 HELP,,Displays the list of available commands
-CHALLENGE,PLAYER,Challenges another <PLAYER> to a Rock Paper Scissors Battle.
+CHALLENGE,PLAYER ROUNDS,Challenges another <PLAYER> to a Rock Paper Scissors Battle.
 ACCEPT,PLAYER,Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.
 REFUSE,PLAYER,Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.
 ROCK,,Play <ROCK> in your current Rock Paper Scissors Battle.

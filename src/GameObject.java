@@ -56,6 +56,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return (core.joinGame(name) != null);
     }
 
+    /**
+     * Determines if a player exists in the system already
+     * @param name
+     * @return true if player does exists, false otherwise
+     * @throws RemoteException
+     */
+    public boolean playerExists(String name) throws RemoteException{
+        if(core.findPlayer(name) == null) return false;
+        else return true;
+    }
+
     public void setChatPrefix(String prefix) throws RemoteException {
         core.setChatPrefix(prefix);
     }        
@@ -262,6 +273,16 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
 
     /**
+     * Attempts to use an item the player has called <itemName>. Will return a message on any success or failure.
+     * @param playerName Name of the player to use the item
+     * @param itemName The name of the item to use
+     * @return Message showing success.
+     */
+    public String useItem(String playerName, String item) throws RemoteException {
+	    return core.useItem(playerName, item);
+    }
+
+    /**
      * Player pokes a ghoul that is in the same room.
      * @param ghoulName Name of the ghoul that is poked
      * @param playerName Name of the player that pokes the ghoul.
@@ -400,9 +421,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         core.log(file, log);
     }
       //Rock Paper Scissors Battle Code here--------------------------------------
-      public void challenge(String challenger, String player2) throws RemoteException
+      public void challenge(String challenger, String player2, int rounds) throws RemoteException
       { 
-	      core.challenge(challenger, player2);
+	      core.challenge(challenger, player2, rounds);
       }
 
       public void accept(String challenger, String player2) throws RemoteException
@@ -440,7 +461,12 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
   //Rock Paper Scissors Battle Code here--------------------------------------
   
-  //given a player name, returns an ascii art map of the world surrounding them
+  /*
+   * @author James Bruce
+   * given a player name, returns an ascii art map of the world surrounding them
+   * @param name the player doing the command
+   * @return an ASCII representation of the map around them
+   */
   public String map(String name) throws RemoteException
   {
   	return core.map(name);
