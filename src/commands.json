@@ -279,8 +279,8 @@
     "category":         "BATTLES",
     "description":      "Fight players.",
     "uses": [{
-        "case":         "[PLAYER]",
-        "description":  "Challenge a player to Rock Paper Scissors Battle."
+        "case":         "[PLAYER] [ROUNDS]",
+        "description":  "Challenge a player to Rock Paper Scissors Battle. Specify 1, 3, or 5 rounds."
     }]
 }, {
     "name":             "ACCEPT",

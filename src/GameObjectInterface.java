@@ -263,7 +263,7 @@ public interface GameObjectInterface extends Remote {
     public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
 
 //Rock Paper Scissors Battle Code Here---------------------------------
-    public void challenge(String challenger, String player2) throws RemoteException;
+    public void challenge(String challenger, String player2, int rounds) throws RemoteException;
     public void accept(String challenger, String player2) throws RemoteException;
     public void refuse(String challenger, String player2) throws RemoteException;
     public void rock(String player) throws RemoteException;

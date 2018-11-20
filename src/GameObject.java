@@ -409,9 +409,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         core.log(file, log);
     }
       //Rock Paper Scissors Battle Code here--------------------------------------
-      public void challenge(String challenger, String player2) throws RemoteException
+      public void challenge(String challenger, String player2, int rounds) throws RemoteException
       { 
-	      core.challenge(challenger, player2);
+	      core.challenge(challenger, player2, rounds);
       }
 
       public void accept(String challenger, String player2) throws RemoteException
