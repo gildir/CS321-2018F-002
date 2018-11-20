@@ -1957,9 +1957,22 @@ public class GameCore implements GameCoreInterface {
       return "";
   }
 
+  //409_censor START
+  private String scrubMessage( String message, ArrayList<String> censorList ){
+      if( message == null || message.equals(' ') )
+              return message;
+      if( censorList == null || censorList.size()==0)
+              return message;
+      for( String word:censorList){
+          String censor = "*";
+          for( int x = 1; x<word.length();x++)
+                  censor+="*";
+          message = message.replaceAll( "(?i)(" + word.toString() + ")", censor);
+      }
+      return message;
+  }
+  //409_censor END
 
-
-  
   //Added by An
   public void topTen(String name) {
       Player player = this.playerList.findPlayer(name);
