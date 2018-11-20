@@ -10,6 +10,10 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+#Player files
+src/login_logout_log.txt
+src/player_database.csv
+
 # Package Files #
 *.jar
 *.war
