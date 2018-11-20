@@ -137,8 +137,8 @@ public class GameCore implements GameCoreInterface {
                 ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
-			//wait a random amount of time spawn another item
-                      	Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
+   //wait a random amount of time spawn another item
+                       Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
                         object = (Item)objects.get(rand.nextInt(objects.size())).clone();
                         room = map.randomRoom();
                         room.addObject(object);
@@ -1019,7 +1019,7 @@ public class GameCore implements GameCoreInterface {
      * @return Message showing success.
      */
     public String useItem(String playerName, String itemName){
-	Player player = this.playerList.findPlayer(playerName);
+ Player player = this.playerList.findPlayer(playerName);
         if(player != null) {
             Item object = player.removeObjectFomInventory(itemName);
             if(object != null) {
@@ -1029,7 +1029,7 @@ public class GameCore implements GameCoreInterface {
                     player.setIsDrunk(true);
                     bottleTimerUpdate(player);
                 }    
-		        titleTimerUpdate(player);
+          titleTimerUpdate(player);
                 this.broadcast(player, player.getName() + " has used a " + itemName + " from personal inventory.");
                 return "You just used a " + itemName + ".";
             }
@@ -1656,18 +1656,17 @@ public class GameCore implements GameCoreInterface {
           }
           p.removeObjectFomInventory("Rock");
           b.setChoiceP1(1);
-<<<<<<< HEAD
+
           p.getReplyWriter().println("You Chose Rock.\n");
           if(b.getPlayer2().length() >= 5 && b.getPlayer2().substring(0,5).equals("Ghoul")){
             Ghoul ghoul = (Ghoul)this.npclist.findNPC(b.getPlayer2());
-            ghoul.doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            ghoul.doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1()[b.getCurrentRound()], b.getChoiceP2()[b.getCurrentRound()], b);
             return;
           }
-          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
-=======
+
+
           p.getReplyWriter().println("You Chose Rock.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
->>>>>>> upstream_dev
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
@@ -1721,18 +1720,18 @@ public class GameCore implements GameCoreInterface {
             }
           p.removeObjectFomInventory("Paper");
           b.setChoiceP1(2);
-<<<<<<< HEAD
+
           p.getReplyWriter().println("You Chose Paper.\n");
           if(b.getPlayer2().length() >= 5 && b.getPlayer2().substring(0,5).equals("Ghoul")){
             Ghoul ghoul = (Ghoul)this.npclist.findNPC(b.getPlayer2());
-            ghoul.doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            ghoul.doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1()[b.getCurrentRound()], b.getChoiceP2()[b.getCurrentRound()], b);
             return;
           }
-          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
-=======
+
+
           p.getReplyWriter().println("You Chose Paper.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
->>>>>>> upstream_dev
+
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
@@ -1786,18 +1785,18 @@ public class GameCore implements GameCoreInterface {
             }
           p.removeObjectFomInventory("Scissors");
           b.setChoiceP1(3);
-<<<<<<< HEAD
+
           p.getReplyWriter().println("You Chose Scissors.\n");
           if(b.getPlayer2().length() >= 5 && b.getPlayer2().substring(0,5).equals("Ghoul")){
             Ghoul ghoul = (Ghoul)this.npclist.findNPC(b.getPlayer2());
-            ghoul.doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b);
+            ghoul.doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1()[b.getCurrentRound()], b.getChoiceP2()[b.getCurrentRound()], b);
             return;
           }
-          if((b.getChoiceP1() != 0) && (b.getChoiceP2() != 0))
-=======
+
+
           p.getReplyWriter().println("You Chose Scissors.\nIf you wish to change your choice, type 'Rock' or 'Paper' or 'Scissors again and press ENTER.'\n");
           if((b.getChoiceP1()[b.getCurrentRound()] != 0) && (b.getChoiceP2()[b.getCurrentRound()] != 0))
->>>>>>> upstream_dev
+
           {
             doBattle(b.getPlayer1(), b.getPlayer2(), b.getChoiceP1(), b.getChoiceP2(), b, b.getMaxRounds());
           }
@@ -1914,11 +1913,11 @@ public class GameCore implements GameCoreInterface {
       play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Paper. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Rock. \nYou win.\n");
 
-<<<<<<< HEAD
+
    // Added by Brendan
    this.leaderboard.incrementScore(play1.getName(), false);
    this.leaderboard.incrementScore(play2.getName(), true);
-=======
+
       b.incP2Score();
                 
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
@@ -1939,7 +1938,7 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
->>>>>>> upstream_dev
+
 
       return;
     }
@@ -1948,17 +1947,17 @@ public class GameCore implements GameCoreInterface {
       //rock scissors
       play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Scissors. \nYou win.\n");
       play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Rock. \nYou lose.\n");
-<<<<<<< HEAD
+
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
-      writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
+      writeLog(b);
 
    // Added by Brendan
    this.leaderboard.incrementScore(play1.getName(), true);
    this.leaderboard.incrementScore(play2.getName(), false);
 
-=======
+
       
       b.incP1Score();
       
@@ -1980,7 +1979,7 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
->>>>>>> upstream_dev
+
       return;
     }
     else if(p1[b.getCurrentRound()] == 2 && p2[b.getCurrentRound()] == 1)
@@ -1988,17 +1987,17 @@ public class GameCore implements GameCoreInterface {
       //paper rock
       play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Rock. \nYou win.\n");
       play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Paper. \nYou lose.\n");
-<<<<<<< HEAD
+
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
-      writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");
+      writeLog(b);
 
    // Added by Brendan
    this.leaderboard.incrementScore(play1.getName(), true);
    this.leaderboard.incrementScore(play2.getName(), false);
 
-=======
+
       
       b.incP1Score();
       
@@ -2020,7 +2019,7 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
->>>>>>> upstream_dev
+
       return;
     }
     else if(p1[b.getCurrentRound()] == 2 && p2[b.getCurrentRound()] == 3)
@@ -2028,17 +2027,17 @@ public class GameCore implements GameCoreInterface {
       //paper scissors
       play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Scissors. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Paper. \nYou win.\n");
-<<<<<<< HEAD
+
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
-      writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
+      writeLog(b);
 
    // Added by Brendan
    this.leaderboard.incrementScore(play1.getName(), false);
    this.leaderboard.incrementScore(play2.getName(), true);
 
-=======
+
       
       b.incP2Score();
       
@@ -2060,7 +2059,7 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
->>>>>>> upstream_dev
+
       return;
     }
     else if(p1[b.getCurrentRound()] == 3 && p2[b.getCurrentRound()] == 1)
@@ -2068,17 +2067,16 @@ public class GameCore implements GameCoreInterface {
       //scissors rock
       play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Rock. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Scissors. \nYou win.\n");
-<<<<<<< HEAD
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
       activeBattles.remove(b);
-      writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
+      writeLog(b);
 
    // Added by Brendan
    this.leaderboard.incrementScore(play1.getName(), false);
    this.leaderboard.incrementScore(play2.getName(), true);
 
-=======
+
       
       b.incP2Score();
       
@@ -2100,7 +2098,7 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
->>>>>>> upstream_dev
+
       return;
     }
     else if(p1[b.getCurrentRound()] == 3 && p2[b.getCurrentRound()] == 2)
@@ -2108,17 +2106,17 @@ public class GameCore implements GameCoreInterface {
       //scissors paper
       play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Paper. \nYou win.\n");
       play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Scissors. \nYou lose.\n");
-<<<<<<< HEAD
+
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       this.broadcast(map.findRoom(play1.getCurrentRoom()),message);;
       activeBattles.remove(b);
-      writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
+      writeLog(b);
 
    // Added by Brendan
    this.leaderboard.incrementScore(play1.getName(), true);
    this.leaderboard.incrementScore(play2.getName(), false);
 
-=======
+
     
       b.incP1Score();
     
@@ -2140,7 +2138,7 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
->>>>>>> upstream_dev
+
       return;
     }
   }
@@ -2365,24 +2363,24 @@ public class GameCore implements GameCoreInterface {
  */
   private String SingleExit(Room r, String s)
   {
-  	List<Direction> l=new ArrayList<Direction>();
-	//parse string for directions
-	for(int i=0; i<s.length(); i++)
-		if(s.charAt(i)=='n')
-			l.add(Direction.NORTH);
-		else if(s.charAt(i)=='w')
-			l.add(Direction.WEST);
-		else if(s.charAt(i)=='e')
-			l.add(Direction.EAST);
-		else
-			l.add(Direction.SOUTH);
-	//for each direction found
-	for(Direction d: l)
-		if(r.canExit(d))
-			r=map.findRoom(r.getLink(d));//shift the current room to the next room
-		else//not a valid set of directions
-			return "";
-	return r.getTitle()+"("+s+")";
+   List<Direction> l=new ArrayList<Direction>();
+ //parse string for directions
+ for(int i=0; i<s.length(); i++)
+  if(s.charAt(i)=='n')
+   l.add(Direction.NORTH);
+  else if(s.charAt(i)=='w')
+   l.add(Direction.WEST);
+  else if(s.charAt(i)=='e')
+   l.add(Direction.EAST);
+  else
+   l.add(Direction.SOUTH);
+ //for each direction found
+ for(Direction d: l)
+  if(r.canExit(d))
+   r=map.findRoom(r.getLink(d));//shift the current room to the next room
+  else//not a valid set of directions
+   return "";
+ return r.getTitle()+"("+s+")";
 }
 
 /*
@@ -2428,18 +2426,18 @@ private String ExitString(Room r, int a, int b)
  */
 private String[] RoomStrings(String s, int l)
 {
-	String[] r=new String[3];
-	r[0]="";
-	r[1]=s;
-	for(int i=l-s.length(); i>0; i--)
-		r[1]=" "+r[1];//put spaces until the length requirement is met
-	if(s.length()==0)//nothing here
-		return new String[]{r[1], r[1], r[1]};//return a bunch of spaces
-	for(int i=0; i<l; i++)
-		r[0]+="-";//put dashes to surround the Room name
-	r[1]="|"+r[1].substring(2)+"|";
-	r[2]=r[0];
-	return r;
+ String[] r=new String[3];
+ r[0]="";
+ r[1]=s;
+ for(int i=l-s.length(); i>0; i--)
+  r[1]=" "+r[1];//put spaces until the length requirement is met
+ if(s.length()==0)//nothing here
+  return new String[]{r[1], r[1], r[1]};//return a bunch of spaces
+ for(int i=0; i<l; i++)
+  r[0]+="-";//put dashes to surround the Room name
+ r[1]="|"+r[1].substring(2)+"|";
+ r[2]=r[0];
+ return r;
 }
 
 /*

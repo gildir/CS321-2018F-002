@@ -61,9 +61,9 @@ public class Ghoul extends NPC {
     fight.setStatus("active");
     gameCore.getActiveBattles().add(fight);
     player.getReplyWriter().println("\nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
-    player.addObjectToInventory(new Item("Scissors","A pair of scissors.",0.0,0.0));
-    player.addObjectToInventory(new Item("Rock","A rock.",0.0,0.0));
-    player.addObjectToInventory(new Item("Paper","A piece of paper.",0.0,0.0));
+    player.addObjectToInventory(new Item("Scissors","A pair of scissors.",0.0,0,""));
+    player.addObjectToInventory(new Item("Rock","A rock.",0.0,0,""));
+    player.addObjectToInventory(new Item("Paper","A piece of paper.",0.0,0,""));
     fight.setChoiceP2(new Random().nextInt(3) + 1);
 
   }
