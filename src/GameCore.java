@@ -699,16 +699,8 @@ public class GameCore implements GameCoreInterface {
             Item object = player.removeObjectFomInventory(target);
             Room room = map.findRoom(player.getCurrentRoom());
             if(object != null) {
-                String newName = object.getItemName(); 
-                double newValue = 0.0; //creates a new variable double
-                newValue = object.getItemValue()*.8; //turns the value of the item to 80% of the old value
-                double newWeight = object.getItemWeight(); 
-                String newDesc = object.getItemDescrip();
-                
-                Item newItem = new Item(newName, newDesc, newWeight, newValue, object.getItemTitle()); 
-                
-                player.removeObjectFomInventory(target); 
-                room.addObject(newItem);
+                object.setItemValue(object.getItemValue() * 0.8);
+                room.addObjectFromPlayer(object);
                 this.broadcast(player, player.getName() + " has dropped off a " + target + " from personal inventory.");
                 return "You just dropped off a " + target + ".";
             }
@@ -822,6 +814,7 @@ public class GameCore implements GameCoreInterface {
                         if(response.equalsIgnoreCase("Accept")){
                             if(player.getCurrentInventory().size() < 10){
                                 Item object = playerOffering.removeObjectFomInventory(target);
+                                object.setItemValue(object.getItemValue() * 0.8);
                                 player.addObjectToInventory(object);
                                 playerOffering.getReplyWriter().println(playerName + " accepted your " + target);
                                 return playerName + " got a " + target + " from " + nameOffering + ".";
