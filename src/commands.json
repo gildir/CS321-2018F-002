@@ -269,12 +269,33 @@
     "description":      "Interact with Ghouls.",
     "uses": [{
         "case":         "[GHOUL]",
-        "description":  "Player pokes a ghoul that is in the same room."
+        "description":  "Poke a ghoul that is in the same room."
     }]
-}, 
+},
 
 
 {
+    "name":             "CATCH",
+    "category":         "SPIRITS",
+    "description":      "Interact with Spirits.",
+    "uses": [{
+        "case":         "[SPIRIT]",
+        "description":  "Catch a spirit that's in the same room."
+    }]
+}, {
+    "name":             "SPIRITALL",
+    "category":         "SPIRITS",
+    "description":      "Lists all the possible spirits that can be caught.",
+    "uses": []
+}, {
+    "name":             "CAUGHTSPIRITS",
+    "category":         "SPIRITS",
+    "description":      "Shows you what spirits you caught.",
+    "uses": []
+},
+
+
+    {
     "name":             "CHALLENGE",
     "category":         "BATTLES",
     "description":      "Fight players.",

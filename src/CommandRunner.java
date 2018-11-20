@@ -352,31 +352,21 @@ public class CommandRunner {
                 return "[ERROR] No player specified";
             }
         });
-		
-		//Choose rock, paper, or scissors in RPS battle
-        commandFunctions.put("ROCK",		(name, args) -> { remoteGameInterface.rock(name); return null; });
-        commandFunctions.put("PAPER",		(name, args) -> { remoteGameInterface.paper(name); return null; });
-        commandFunctions.put("SCISSORS",	(name, args) -> { remoteGameInterface.scissors(name); return null; });
-		
-		//Display RPS leaderboard, player rank, tutorial, or top-ten player list
-        commandFunctions.put("LEADERBOARD",	(name, args) -> { remoteGameInterface.checkBoard(name); return null; });
-        commandFunctions.put("RANK",		(name, args) -> { remoteGameInterface.getRank(name); return null; });
-        commandFunctions.put("TUTORIAL",	(name, args) -> { remoteGameInterface.tutorial(name); return null; });
-        commandFunctions.put("TOPTEN",		(name, args) -> { remoteGameInterface.topTen(name); return null; });
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-        commandFunctions.put("GIFT",	(name, args) -> {
-            if(args.isEmpty()) {
-                return "You need to provide a ghoul name and an object.";
+        commandFunctions.put("ROCK",       (name, args) -> { remoteGameInterface.rock(name); return null; });
+        commandFunctions.put("PAPER",      (name, args) -> { remoteGameInterface.paper(name); return null; });
+        commandFunctions.put("SCISSORS",   (name, args) -> { remoteGameInterface.scissors(name); return null; });
+        commandFunctions.put("LEADERBOARD",   (name, args) -> { remoteGameInterface.checkBoard(name); return null; });
+        commandFunctions.put("RANK",   (name, args) -> { remoteGameInterface.getRank(name); return null; });
+        commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
+        commandFunctions.put("TOPTEN",   (name, args) -> { remoteGameInterface.topTen(name); return null; });
+        commandFunctions.put("GIFT", (name, args) -> {
+            if(args.size() < 2) {
+                return "You need to provide a ghoul name and the item to gift.";
             }
-            else if (args.size() == 2){
+            else {
                 String ghoulName = args.remove(0);
-                String target = args.remove(0);
-
-                return remoteGameInterface.giftGhoul(name, ghoulName, target);
-            }
-            else{
-                return "Gift command only takes two arguments <ghoul_name> <item_name>.";
+                String itemName = String.join(" ", args);
+                return remoteGameInterface.giftGhoul(name, ghoulName, itemName);
             }
         });
         commandFunctions.put("POKE", (name, args) -> {
@@ -387,6 +377,16 @@ public class CommandRunner {
                 return remoteGameInterface.pokeGhoul(name, args.remove(0));
             }
         });
+        commandFunctions.put("CATCH", (name, args) -> {
+            if(args.isEmpty()) {
+                return "You need to provide a spirit name.";
+            }
+            else {
+                return remoteGameInterface.catchSpirit(name, args.remove(0));
+            }
+        });
+        commandFunctions.put("SPIRITALL",    (name, args) -> remoteGameInterface.getAllSpirits(name));
+        commandFunctions.put("CAUGHTSPIRITS",    (name, args) -> remoteGameInterface.getCurrentSpirits(name));
         commandFunctions.put("ENTER", (name, args) -> { 
             if(args.size() != 1){
                 return "Specify the room you want to enter";
