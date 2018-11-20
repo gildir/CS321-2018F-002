@@ -55,45 +55,47 @@ public class Ghoul extends NPC {
   }
   
   private void dragPlayer(Player player) {
-    synchronized (player) {
-      player.broadcast("Now's your chance to fight off the ghoul!");
-      Battle fight = new Battle(player.getName(), getName());
-     // gameCore.accept(player.getName(), getName());
-      fight.setStatus("active");
-      gameCore.getActiveBattles().add(fight);
-      gameCore.getPendingBattles().remove(fight);
-      player.getReplyWriter().println("\nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
-//      boolean blank = false;
-      fight.setChoiceP2(new Random().nextInt(3) + 1);
-//      
-//      Scanner scan = new Scanner(System.in);
-//      String input = scan.next();
-//      
-//      while(input.toLowerCase() != "rock" || input.toLowerCase() != "paper" || input.toLowerCase() != "scissors"){
-//        player.getReplyWriter().println("Not the right input. Please try again");
-//        input = scan.next();
-//      }
-//      if (input.toLowerCase().equals("rock")){
-//        fight.setChoiceP1(1);
-//         player.getReplyWriter().println("You Chose Rock.\n");
-//      }
-//      if (input.toLowerCase().equals("paper")){
-//        fight.setChoiceP1(2);
-//         player.getReplyWriter().println("You Chose Paper.\n");
-//      }
-//      if (input.toLowerCase().equals("scissors")){
-//        fight.setChoiceP1(3);
-//         player.getReplyWriter().println("You Chose Scissors.\n");
-//      }
-      
-     // blank = doBattle(player.getName(), getName(), fight.getChoiceP1(), fight.getChoiceP2(), fight);
+  synchronized (player) {
+    player.broadcast("Now's your chance to fight off the ghoul!");
+    Battle fight = new Battle(player.getName(), getName(),1);
+    fight.setStatus("active");
+    gameCore.getActiveBattles().add(fight);
+    player.getReplyWriter().println("\nType 'rock' to choose rock.\nType 'paper' to chose paper.\nType 'scissors' to choose scissors.");
+    player.addObjectToInventory(new Item("Scissors","A pair of scissors.",0.0,0.0));
+    player.addObjectToInventory(new Item("Rock","A rock.",0.0,0.0));
+    player.addObjectToInventory(new Item("Paper","A piece of paper.",0.0,0.0));
+    fight.setChoiceP2(new Random().nextInt(3) + 1);
 
-    }
   }
-  
-  public void doBattle(String challenger, String player2, int p1, int p2, Battle b)
+}
+
+public void doBattle(String challenger, String player2, int p1, int p2, Battle b)
   {
     Player play1 = gameCore.getPlayerList().findPlayer(challenger);
+
+
+
+  //In drag player I just added all three of the items for Rock Paper Scissors, but since we didnt know which one the player will choose, 
+  //Im just removing them based on which one they chose in this method, which is passed in as a parameter here
+  //Otherwise the player gets to keep 2 free items out of the three we gave them   
+    if(p1 == 1)
+    {
+    play1.removeObjectFomInventory("paper");
+    play1.removeObjectFomInventory("scissors");
+    }
+    else if(p1 == 2)
+    {
+    play1.removeObjectFomInventory("rock");
+    play1.removeObjectFomInventory("scissors");
+    }
+    else if(p1 == 3)
+    {
+    play1.removeObjectFomInventory("rock");
+    play1.removeObjectFomInventory("paper");
+    }
+
+
+    
     String message = "";
     boolean check = false;
     if(p1 == p2)
@@ -129,7 +131,7 @@ public class Ghoul extends NPC {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       play1.broadcastToOthersInRoom(message);
       gameCore.getActiveBattles().remove(b);
-      gameCore.writeLog(challenger, player2, "Rock", "Paper", player2 + " winning");
+      gameCore.writeLog(b);
       check = false;
     }
     else if(p1 == 1 && p2 == 3)
@@ -139,7 +141,7 @@ public class Ghoul extends NPC {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       play1.broadcastToOthersInRoom(message);
       gameCore.getActiveBattles().remove(b);
-      gameCore.writeLog(challenger, player2, "Rock", "Scissors", challenger + " winning");
+      gameCore.writeLog(b);
       
       check = true;
     }
@@ -150,7 +152,7 @@ public class Ghoul extends NPC {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       play1.broadcastToOthersInRoom(message);
       gameCore.getActiveBattles().remove(b);
-      gameCore.writeLog(challenger, player2, "Paper", "Rock", challenger + " winning");    
+      gameCore.writeLog(b);
       check = true;
     }
     else if(p1 == 2 && p2 == 3)
@@ -160,7 +162,7 @@ public class Ghoul extends NPC {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       play1.broadcastToOthersInRoom(message);
       gameCore.getActiveBattles().remove(b);
-      gameCore.writeLog(challenger, player2, "Paper", "Scissors", player2 + " winning");
+      gameCore.writeLog(b);
       check = false;
     }
     else if(p1 == 3 && p2 == 1)
@@ -170,7 +172,7 @@ public class Ghoul extends NPC {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
       play1.broadcastToOthersInRoom(message);
       gameCore.getActiveBattles().remove(b);
-      gameCore.writeLog(challenger, player2, "Scissors", "Rock", player2 + " winning");
+      gameCore.writeLog(b);
       check = false;
     }
     else if(p1 == 3 && p2 == 2)
@@ -180,7 +182,7 @@ public class Ghoul extends NPC {
       message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
       play1.broadcastToOthersInRoom(message);
       gameCore.getActiveBattles().remove(b);
-      gameCore.writeLog(challenger, player2, "Scissors", "Paper", challenger + " winning");
+      gameCore.writeLog(b);
       check = true;
     }
      if (check){
