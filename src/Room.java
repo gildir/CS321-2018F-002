@@ -44,7 +44,6 @@ public class Room {
         result += "Ghouls in the area: " + this.getGhoulsString() + "\n";
         result += "You see paths in these directions: " + this.getExits() + "\n";
         result += "...................\n";
-        result += "You are facing: " + player.getCurrentDirection() + "\n";
         if(player.getCurrentRoom() == 1){
             result += "You are near the shop, type ENTER SHOP to enter.\n";
         }
