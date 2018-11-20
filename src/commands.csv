@@ -35,6 +35,9 @@ RECEIVE,,Accept a gift offer
 DECLINE,,Decline a gift offer
 GIFT,GHOULNAME ITEM,Player gifts a ghoul an object; this action decreases the ghoul's aggression.
 POKE,GHOULNAME,Player pokes a ghoul that is in the same room.
+CATCH,SPIRIT,Player catches a spirit that's in the same room.
+SPIRITALL,,Lists all the possible spirits that can be caught.
+CAUGHTSPIRITS,,Shows you what spirits you caught.
 SORTINVENTORY,ATTRIBUTE,Sorts inventory by <name> <value> or <weight>.
 CHANGEPREFIX,XXX,Input 3 characters for your new chat prefix.
 WHITEBOARD,COMMAND? MESSAGE?, Executes WRITE (with MESSAGE) or CLEAR command on the whiteboard. If no COMMAND specified it will display the current message in the whiteboard.

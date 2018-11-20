@@ -197,6 +197,28 @@ public interface GameObjectInterface extends Remote {
     public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException;
 
     /**
+     * Player catches a spirit currently in the same room.
+     * @param playerName Name of the player
+     * @param target Name of the spirit being caught
+     * @return Message showing success
+     */
+    public String catchSpirit(String playerName, String target) throws RemoteException;
+
+    /**
+     * Player is able to list all available spirits.
+     * @param playerName Name of the player
+     * @return String representation of all available spirits
+     */
+    public String getAllSpirits(String playerName) throws RemoteException;
+
+    /**
+     * Player is able to get a list of the spirits they've caught.
+     * @param playerName Name of the player
+     * @return String representation of their caught spirits
+     */
+    public String getCurrentSpirits(String playerName) throws RemoteException;
+
+    /**
      * Returns a list of nearby players you can gift.
      * @param name Player Name
      * @return String representation of nearby players.
