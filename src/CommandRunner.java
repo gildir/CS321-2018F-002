@@ -6,11 +6,19 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Scanner;
+import java.util.Collections;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import org.json.JSONTokener;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
+
 
 public class CommandRunner {
 
@@ -32,8 +40,10 @@ public class CommandRunner {
     /**
      * Store command functions and preprocessing of arguments
      */
+    private ArrayList<JSONObject> commandsInfo;
     private HashMap<String, CommandFunction<String, ArrayList<String>, String>> commandFunctions
             = new HashMap<String, CommandFunction<String, ArrayList<String>, String>>();
+
     private String lastCommand = "";
     private ArrayList<String> lastArgs = new ArrayList<String>();
 
@@ -45,7 +55,7 @@ public class CommandRunner {
      */
     private void setupFunctions() {
         // Help command
-        commandFunctions.put("HELP",    (name, args) -> listCommands() );
+        commandFunctions.put("HELP",    (name, args) -> helpDisplay() );
         commandFunctions.put("LOOK",    (name, args) -> remoteGameInterface.look(name));
         commandFunctions.put("LISTPLAYERS", (name, args) -> remoteGameInterface.listAllPlayers(name));
         commandFunctions.put("LEFT",    (name, args) -> remoteGameInterface.left(name));
@@ -269,9 +279,21 @@ public class CommandRunner {
                 return remoteGameInterface.offerResponse(name, decision);
             }
         });
+	commandFunctions.put("USEITEM", (name, args) -> {
+	    if(args.isEmpty()){
+		    return "You need to specify an item to use.";
+	    }
+	    else {
+		String item = args.remove(0);
+		while(!args.isEmpty()){
+			item = item + " " + args.remove(0);
+		}
+		return remoteGameInterface.useItem(name, item);
+	    }
+	});
         commandFunctions.put("INVENTORY", (name, args) -> remoteGameInterface.inventory(name));
-	commandFunctions.put("REDO", (name, args) -> null);
-        //commandFunctions.put("QUIT",      (name, args) -> { remoteGameInterface.leave(name); return null; });
+        commandFunctions.put("REDO",      (name, args) -> null);
+        commandFunctions.put("QUIT",      (name, args) -> null);
 
         // PvP Commands
         commandFunctions.put("CHALLENGE",    (name, args) -> {
@@ -436,8 +458,7 @@ public class CommandRunner {
      */
     private class Command {
         private String id;
-        private String arguments;
-        private String description;
+        private String alias = "";
         private CommandFunction<String, ArrayList<String>, String> function;
 
         /**
@@ -447,10 +468,8 @@ public class CommandRunner {
          * @param function the function to be executed when calling the command
          * @return new Command
          */
-        public Command(String id, String arguments, String description, CommandFunction<String, ArrayList<String>, String> function) {
+        public Command(String id, CommandFunction<String, ArrayList<String>, String> function) {
             this.id = id;
-            this.arguments = arguments;
-            this.description = description;
             this.function = function;
         }
 
@@ -471,17 +490,17 @@ public class CommandRunner {
         }
 
         /**
-         * @return the arguments of this command
+         * @return list of aliases for this command
          */
-        public String getArguments() {
-            return arguments;
+        public String getAlias() {
+            return alias;
         }
 
         /**
-         * @return the description of this command
+         * @param newAliases
          */
-        public String getDescription() {
-            return description;
+        public void setAlias(String newAlias) {
+            alias = newAlias;
         }
     }
 
@@ -492,125 +511,44 @@ public class CommandRunner {
 
     /**
      * @param rgi remote game interface
-     * @return new CommandRunner
-     */
-    public CommandRunner(GameObjectInterface rgi) {
-        censorList = loadCensorList();
-	this.remoteGameInterface = rgi;
-        setupFunctions();
-        createCommands();
-    }
-
-    /**
-     * @param rgi remote game interface
      * @param commandsFile path to file with command descriptions
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
-        censorList = loadCensorList();
-	this.remoteGameInterface = rgi;
+        this.remoteGameInterface = rgi;
+        this.commandsInfo = parseCommandsFile(commandsFile);
         setupFunctions();
 
-        // TODO: Read file, extract command descriptions and call createCommands(descriptions)
-        try (Scanner file_commands = new Scanner(new File(commandsFile));) {
-            HashMap<String, String[]> file_map = new HashMap<String, String[]>();
-
-            while(file_commands.hasNextLine()){
-                String currentline = file_commands.nextLine();
-                String[] command_parts = currentline.split(",");
-
-                String command_name = command_parts[0];
-                String[] command_description = new String[]{ command_parts[1], command_parts[2] };
-
-                file_map.put(command_name, command_description);
-            }
-            createCommands(file_map);
-        } catch (IOException ex) {
-            Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    /**
-     * Create sample descriptions for commands. Then use them to create the commands
-     */
-    private void createCommands() {
-        HashMap<String, String[]> descriptions = new HashMap<String, String[]>();
-
-        // Default commands
-        descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
-        descriptions.put("LISTPLAYERS",new String[]{"", "Shows a list of all the players in the world."});
-        descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
-        descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
-        descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
-        descriptions.put("WHISPER",   new String[]{"PLAYER MESSAGE", "Says <MESSAGE> to specified <PLAYER>."});
-        descriptions.put("REPLY",     new String[]{"MESSAGE", "Says <MESSAGE> to last player who whispered you."});
-        descriptions.put("MOVE",      new String[]{"DIRECTION","Tries to walk in a <DIRECTION>."});
-        descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
-        descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});
-        descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
-	descriptions.put("REDO",      new String[]{"",         "Performs the last command you entered."});
-        descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
-        descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
-        descriptions.put("SORTINVENTORY",      new String[]{"ATTRIBUTE",         "Sorts inventory by specified name, value or weight."});
-
-        // Ghoul commands
-        descriptions.put("POKE",      new String[]{"GHOUL",    "Pokes <GHOUL>"});
-        descriptions.put("GIFT",      new String[]{"GHOUL, ITEM", "Gives your <ITEM> to <GHOUL>"});
-
-        // PvP Commands
-        descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another <PLAYER> to a Rock Paper Scissors Battle."});
-        descriptions.put("ACCEPT",    new String[]{"PLAYER",   "Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
-        descriptions.put("REFUSE",    new String[]{"PLAYER",   "Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
-        descriptions.put("ROCK",      new String[]{"",         "Play <ROCK> in your current Rock Paper Scissors Battle."});
-        descriptions.put("PAPER",     new String[]{"",         "Play <PAPER> in your current Rock Paper Scissors Battle."});
-        descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
-        descriptions.put("LEADERBOARD",  new String[]{"",      "Display the current Rock Paper Scissors Leaderboard."});
-        descriptions.put("TUTORIAL",  new String[]{"",         "Display a tutorial for Rock Paper Scissors."});
-        descriptions.put("TOPTEN",    new String[]{"",         "Display Top Ten Players from Rock Paper Scissors Leaderboard."});
-        descriptions.put("RANK",  new String[]{"",      "Display your current RPS Leaderboard Rank."});
-
-
-        //Shops & Money
-        descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });
-        descriptions.put("LEAVE",     new String[]{"SHOP",     "Leaves shop" });
-        descriptions.put("SELL",      new String[]{"ITEM",     "Sell item in your inventory to the shop" });
-        descriptions.put("BUY",      new String[]{"ITEM",      "Buy an item from the shop" });
-        descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
-        descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
-        descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
-        descriptions.put("RECEIVE", new String[]{"", "Receive a gift if someone has tried to gift you" });
-	
-	//World Command
-	descriptions.put("MAP", new String[]{"", "Displays an ascii art map of the world."});
-
-        //chat system
-        descriptions.put("SHOUT",      new String[]{"MESSAGE", "Says <MESSAGE> to all players in the game."});
-        descriptions.put("IGNORE",     new String[]{"-L;-A;-R PLAYER", "Use -A to add players to ignore list; -R to remove from list; -L with no player name to show list."});
-
-        // Create them
-        createCommands(descriptions);
+        createCommands();
     }
 
     /**
      * @param descriptions map with command names as keys and their descriptions as values
      */
-    private void createCommands(HashMap<String, String[]> descriptions) {
+    private void createCommands() {
         HashMap<String, String> aliasesMap = getAliasesFromFile();
 
-        for (String key : descriptions.keySet()) {
-            String arguments = descriptions.get(key)[0];
-            String description = descriptions.get(key)[1];
-            CommandFunction<String, ArrayList<String>, String> function = commandFunctions.get(key);
+        for (JSONObject cmdInfo : this.commandsInfo) {
+            String name = ((String) cmdInfo.get("name")).toUpperCase();
+
+            CommandFunction<String, ArrayList<String>, String> function = commandFunctions.get(name);
 
             if (function != null) {
-                Command new_command = new Command(key, arguments, description, function);
-                commands.put(key, new_command );
-                String alias = aliasesMap.get(key);
-                if (alias != null){
+                Command new_command = new Command(name, function);
+                commands.put(name, new_command);
+
+                String alias = aliasesMap.get(name);
+                if (alias != null) {
+                    new_command.setAlias(alias);
                     commands.put(alias.toUpperCase(), new_command);
                 }
+            } else {
+                // Missing function
+                System.out.println("[Warning] Command " + name.toUpperCase() + " has a description but no preprocessing function associated. It won't be added to the client.");
             }
         }
+
+        createHelpUI(commandsInfo);
     }
 
     private HashMap<String, String> getAliasesFromFile() {
@@ -632,10 +570,6 @@ public class CommandRunner {
                 }
             }
 
-            // for (String key : map.keySet())
-            // {
-            //     System.out.println(key + "," + map.get(key));
-            // }
             reader.close();
         }
         catch (Exception ex) {
@@ -689,19 +623,169 @@ public class CommandRunner {
         }
     }
 
+    private String helpCommandUI;
+
     /**
      * @return string with commands name, accepted arguments and descriptions
      */
-    public String listCommands() {
-        String s = "The game allows you to use the following commands:\n";
+    public String helpDisplay() {
+        return "The game lets you use the following commands:\n\n" + helpCommandUI;
+    }
 
-        for (String key : commands.keySet()) {
-            Command command = commands.get(key);
-            String line = String.format("- %-30s%s\n", command.getId() + " " + command.getArguments(), command.getDescription());
-            s += line;
+    private ArrayList<JSONObject> parseCommandsFile(String commandsFile) {
+        ArrayList<JSONObject> commands = new ArrayList<JSONObject>();
+
+        // Read the file
+        try (InputStream fileStream = new FileInputStream(commandsFile)) {
+            // Parse it into array
+            JSONArray json = new JSONArray(new JSONTokener(fileStream));
+
+            // Add each object to our ArrayList
+            for (int i = 0; i < json.length(); i++) {
+                commands.add(json.getJSONObject(i));
+            }
+        } catch (IOException | JSONException ex) {
+            Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return s;
+        // Return it
+        return commands;
+    }
+
+    private java.util.Map<String, ArrayList<JSONObject>> parseCommandsCategories(ArrayList<JSONObject> commands) {
+        java.util.Map<String, ArrayList<JSONObject>> categoriesMap = new HashMap<String, ArrayList<JSONObject>>();
+
+        // Build string for each command
+        for (JSONObject cmd : commands) {
+            String cat = ((String) cmd.get("category")).toUpperCase();
+
+            if (categoriesMap.get(cat) == null) {
+                categoriesMap.put(cat, new ArrayList<JSONObject>());
+            }
+
+            categoriesMap.get(cat).add(cmd);
+        }
+
+        return categoriesMap;
+    }
+
+    private String getCommandHelpUI(JSONObject cmd) {
+        StringBuilder uiBuild = new StringBuilder();
+
+        // Add name
+        String name = ((String) cmd.get("name")).toUpperCase();
+        uiBuild.append(String.format("%-15s", name));
+        
+        // Get alias
+        String alias = commands.get(name).getAlias();
+        Boolean aliasSet = alias.equals("");
+
+        // Add description
+        String[] description = ((String) cmd.get("description")).split(" ");
+        int count = -1;
+        for (int i = 0; i < description.length; i++) {
+            String next = description[i];
+            int l = next.length();
+
+            if ((count + l + 1) > 60) {
+                // Add alias if there's a second line of description
+                if (! aliasSet) {
+                    String aliasAppend = "\n(alias: " + alias + ")";
+                    uiBuild.append(aliasAppend + String.join("", Collections.nCopies((18 - aliasAppend.length()), " ")));
+                    aliasSet = true;
+                } else {
+                    uiBuild.append("\n" + String.join("", Collections.nCopies(18, " ")));
+                }
+                count = 0;
+                uiBuild.append(next);
+            } else {
+                uiBuild.append(" " + next);
+            }
+
+            count += (l + 1);
+        }
+        uiBuild.append("\n");
+
+        // Add alias if not set yet
+        if (! aliasSet) {
+            uiBuild.append("(alias: " + alias + ")\n");
+            aliasSet = true;
+        }
+
+        // Add uses if any
+        JSONArray uses = (JSONArray) cmd.get("uses");
+        if (uses.length() > 0) {
+
+            for (int i = 0; i < uses.length(); i++) {
+                JSONObject use = (JSONObject) uses.getJSONObject(i);
+
+                // Add case
+                String c = (String) use.get("case");
+                if (c.equals("")) c = "(no args)";
+
+                uiBuild.append("    ");
+                uiBuild.append(String.format("%-25s", c));
+                uiBuild.append(" -");
+
+                // Add description
+                String[] desc = ((String) use.get("description")).split(" ");
+                count = -1;
+                for (int j = 0; j < desc.length; j++) {
+                    String next = desc[j];
+                    int l = next.length();
+
+                    if ((count + l + 1) > 44) {
+                        uiBuild.append("\n" + String.join("", Collections.nCopies(32, " ")));
+                        count = 0;
+                        uiBuild.append(next);
+                    } else {
+                        uiBuild.append(" " + next);
+                    }
+
+                    count += (l + 1);
+                }
+                uiBuild.append("\n");
+            }
+        }
+
+        // Add space and return
+        uiBuild.append("\n");
+        return uiBuild.toString();
+    }
+    
+    private void createHelpUI(ArrayList<JSONObject> commands) {
+        // parsed array
+        java.util.Map<String, ArrayList<JSONObject>> categoriesMap = parseCommandsCategories(commands);
+
+        // Build complete ui with categories
+        StringBuilder uiBuild = new StringBuilder();
+        for (String key : categoriesMap.keySet()) {
+            // Don't do MISC here
+            if (! key.equals("MISCELLANEOUS")) {
+                // Add category header
+                uiBuild.append(String.join("", Collections.nCopies(78, "=")) + "\n");
+                uiBuild.append(String.join("", Collections.nCopies((int) (78 - key.length()) / 2, " ")) + key.toUpperCase() + "\n");
+                uiBuild.append(String.join("", Collections.nCopies(78, "=")) + "\n");
+
+                // Add commands strings
+                for (JSONObject cmd : categoriesMap.get(key)) {
+                    uiBuild.append(getCommandHelpUI(cmd));
+                }
+            }
+        }
+        // add MISC header
+        String misc = "MISCELLANEOUS";
+        uiBuild.append(String.join("", Collections.nCopies(78, "=")) + "\n");
+        uiBuild.append(String.join("", Collections.nCopies((int) (78 - misc.length()) / 2, " ")) + misc.toUpperCase() + "\n");
+        uiBuild.append(String.join("", Collections.nCopies(78, "=")) + "\n");
+        
+        // add MISC commands
+        for (JSONObject cmd : categoriesMap.get("MISCELLANEOUS")) {
+            uiBuild.append(getCommandHelpUI(cmd));
+        }
+
+        // Set ui variable
+        helpCommandUI = uiBuild.toString();
     }
     
     //START 409_censor
@@ -730,5 +814,4 @@ public class CommandRunner {
         return temp;    //return temp variable, it has all items in censorlist.txt
     }
     //END 409_censor
-   
 }
