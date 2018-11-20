@@ -91,7 +91,7 @@ public class GameCore implements GameCoreInterface {
                         room = map.randomRoom();
                         room.addObject(object);
                         
-                        GameCore.this.broadcast(room, "You see a student rush past and drop a " + object + " on the ground.");
+                        GameCore.this.broadcast(room, "You see a student rush past and drop a " + object.getItemName() + " on the ground.");
 
                     } catch (InterruptedException ex) {
                         Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);

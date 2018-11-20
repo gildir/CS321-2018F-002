@@ -417,8 +417,9 @@ public class Player {
       return " nothing.";
     }
     else {
-      for(Item obj : this.currentInventory) {
-        result += " " + obj;
+      result += " " + currentInventory.get(0);
+      for(int i = 1; i < currentInventory.size(); i++) {
+        result += ", " + currentInventory.get(i);
       }
       result += ".";
     }
