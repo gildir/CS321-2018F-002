@@ -11,6 +11,7 @@ DESCRIBE,OBJECT,Describe the object in a player's inventory.
 DROPOFF,OBJECT,Tries to drop off an object in the same area.
 OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.
 OFFERRESPONSE,DECISION,Finishes a trade with a <DECISION>, you can decide to ACCEPT or REFUSE
+USEITEM,ITEM,Uses an <ITEM> from your inventory.
 INVENTORY,,Shows you what objects you have collected.
 REDO,,Performs the last command you entered.
 QUIT,,Quits the game.
