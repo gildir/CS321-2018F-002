@@ -261,7 +261,6 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//Team 8
 	

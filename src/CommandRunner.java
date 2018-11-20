@@ -465,7 +465,11 @@ public class CommandRunner {
                 return "[ERROR] Couldn't parse WHITEBOARD command.";
             }
         });
-        commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
+	/*
+	 * @author James Bruce
+	 * this is the map command
+	 */
+	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
     }
 
     /**

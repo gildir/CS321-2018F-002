@@ -112,7 +112,6 @@ public interface GameCoreInterface {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Team 8
-
 //Rock Paper Scissors Battle Methods
 public void challenge(String challenger, String player2, int rounds);
 public void accept(String challenger, String player2);
@@ -128,6 +127,7 @@ public void getRank(String player);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
+	 * @author James Bruce
 	 * gives an ASCII art map of the world surrounding a player
 	 * @param player the name of a player
 	 * @return the ASCII art map

@@ -15,7 +15,12 @@ public class Map
 {
     	private final GameCore gameCore;
 	private final LinkedList<Room> map;
-	//Constructor now takes a filename as an argument
+
+	/*
+	 * construct a new Map
+	 * @param gameCore a GameCore (for some reason)
+	 * @param filename The filename for a Map file to read from
+	 */
 	public Map(GameCore gameCore, String filename)
 	{
 		

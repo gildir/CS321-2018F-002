@@ -116,7 +116,6 @@ public class Battle
   }
   
   //Incrementer Methods
-  
   public void incP1Score()
   {
     p1Score++;
