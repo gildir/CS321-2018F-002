@@ -57,3 +57,6 @@ Highlighter,0.09,0.5,Neon yellow,"Oh, a highlighter. Maybe you could use it for 
 Dime,0.01,0.1,Rich,"Oh, a dime. That's 5 more than a nickel. Did you like that quick math?"
 Image Of A Cat,0.2,5,Meme god,"It's a picture of a cat. Though it doesn't seem to happy, grumpy in fact."
 Rathskeller Bottle,5,20,Tipsy,"Full bottle of a clear liquid, smells like tequila!"
+Rock, 0.5, 1, "It's a rock... nothing very remarkable"
+Paper, 0.01, .25, "Hmmm, this person didn't do very good on their test it seems"
+Scissors, 0.5, 6, "Who leaves scissors outside....r"

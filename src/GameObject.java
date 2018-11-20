@@ -56,6 +56,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return (core.joinGame(name) != null);
     }
 
+    /**
+     * Determines if a player exists in the system already
+     * @param name
+     * @return true if player does exists, false otherwise
+     * @throws RemoteException
+     */
+    public boolean playerExists(String name) throws RemoteException{
+        if(core.findPlayer(name) == null) return false;
+        else return true;
+    }
+
     public void setChatPrefix(String prefix) throws RemoteException {
         core.setChatPrefix(prefix);
     }        
