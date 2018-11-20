@@ -163,7 +163,7 @@ public class Leaderboard {
 			return "noob";
 		return titles[rank];
 	}
-	
+
 	//Return list of top ten player scores
 	// 819: changed all getWins() to new method getScore() from PlayerScore
     public String getTopTen() {
