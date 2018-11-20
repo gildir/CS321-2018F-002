@@ -273,6 +273,16 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
 
     /**
+     * Attempts to use an item the player has called <itemName>. Will return a message on any success or failure.
+     * @param playerName Name of the player to use the item
+     * @param itemName The name of the item to use
+     * @return Message showing success.
+     */
+    public String useItem(String playerName, String item) throws RemoteException {
+	    return core.useItem(playerName, item);
+    }
+
+    /**
      * Player pokes a ghoul that is in the same room.
      * @param ghoulName Name of the ghoul that is poked
      * @param playerName Name of the player that pokes the ghoul.

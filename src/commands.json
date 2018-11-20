@@ -187,6 +187,14 @@
     "description":      "Line-by-line display of money.",
     "uses": []
 }, {
+    "name":             "USEITEM",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Use a item from your inventory.",
+    "uses": [{
+        "case":         "[ITEM]",
+        "description":   "Tries to use an item from your inventory."
+    }]
+}, {
     "name":             "OFFERITEM",
     "category":         "ITEMS AND MONEY",
     "description":      "Trade with items.",

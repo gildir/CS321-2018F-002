@@ -3,6 +3,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.StandardOpenOption;
+import java.sql.Time;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.logging.Level;
@@ -36,6 +37,11 @@ public class GameCore implements GameCoreInterface {
     private ArrayList<Battle> activeBattles; //Handles all battles for all players on the server.
     private ArrayList<Battle> pendingBattles;
     private Leaderboard leaderboard;
+
+    private static Timer titleTimer;
+
+    private static Timer bottleTimer; 
+
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
@@ -342,7 +348,12 @@ public class GameCore implements GameCoreInterface {
     @Override
     public String say(String name, String message, ArrayList<String> censorList) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null) {
+        if(player != null)
+        {
+            if(player.getIsDrunk())
+            {
+                message = drunkText(message);
+            }
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
             String log = player.getName() + " says, \"" +
                     message + "\" in the room " + player.getCurrentRoom();
@@ -365,7 +376,11 @@ public class GameCore implements GameCoreInterface {
     */
     public String shout(String name, String message, ArrayList<String> censorList) {
         Player player = this.playerList.findPlayer(name);
-        if(player != null) {
+        if(player != null)
+        {
+            if(player.getIsDrunk()){
+                message = drunkText(message);
+            }
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
             String log = player.getName() + " shouts, \"" + message + "\"" + " " + date.toString();
             add_chat_log(log);
@@ -402,6 +417,9 @@ public class GameCore implements GameCoreInterface {
       }
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
+                    if(playerSending.getIsDrunk()){
+                        message = drunkText(message);
+                    }
 
                     message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
                     String log = playerSending.getName() + " whispers, \"" + message + "\" to "
@@ -439,7 +457,10 @@ public class GameCore implements GameCoreInterface {
         }
         String name2 = playerSending.getLastWhisperName();
         Player playerReceiving = this.playerList.findPlayer(name2);
-        return this.whisper(name, name2, message, censorList); //409_censor whisper command scrubs message of unwanted words
+        if(playerSending.getIsDrunk()){
+            message = drunkText(message);
+        }
+        return this.whisper(name, name2, message, censorList);
     }
 
     /**
@@ -684,7 +705,7 @@ public class GameCore implements GameCoreInterface {
                 double newWeight = object.getItemWeight(); 
                 String newDesc = object.getItemDescrip();
                 
-                Item newItem = new Item(newName, newDesc, newWeight, newValue); 
+                Item newItem = new Item(newName, newDesc, newWeight, newValue, object.getItemTitle()); 
                 
                 player.removeObjectFomInventory(target); 
                 room.addObject(newItem);
@@ -831,6 +852,119 @@ public class GameCore implements GameCoreInterface {
             }
 
     }
+
+    /**
+     * Attempts to use an item the player has called < itemName >. Will return a message on any success or failure.
+     * @param playerName Name of the player to use the item
+     * @param itemName The case-insensitive name of the item to use
+     * @return Message showing success.
+     */
+    public String useItem(String playerName, String itemName){
+	Player player = this.playerList.findPlayer(playerName);
+        if(player != null) {
+            Item object = player.removeObjectFomInventory(itemName);
+            if(object != null) {
+                player.setTitle(object.getItemTitle());
+                if(itemName.equalsIgnoreCase("rathskeller bottle"))
+                {
+                    player.setIsDrunk(true);
+                    bottleTimerUpdate(player);
+                }    
+		        titleTimerUpdate(player);
+                this.broadcast(player, player.getName() + " has used a " + itemName + " from personal inventory.");
+                return "You just used a " + itemName + ".";
+            }
+            else {
+                this.broadcast(player, player.getName() + " tried to use something, but doesn't seem to find what they were looking for.");
+                return "You just tried to use a " + itemName + ", but you don't have one.";
+            }
+        }
+        else {
+            return null;
+        }
+
+    }
+    /**
+     * Updates a timer for the title
+     */
+    public void titleTimerUpdate(Player player){
+        TimerTask timerTask = new TimerTask(){
+            public void run(){
+                player.getReplyWriter().println("Your title ran out");
+                player.setTitle(null);
+                titleTimer.cancel();
+            }
+        };
+        if(titleTimer != null){
+            titleTimer.cancel();
+            titleTimer.purge();
+        }
+        titleTimer = new Timer();
+        titleTimer.schedule(timerTask, 120000); // sets title for 2 minutes
+    }
+
+    /**
+     * A timer that makes you sober after a minute of using the rathskeller bottle
+     * 
+     */
+    public void bottleTimerUpdate(Player player){
+        TimerTask bottleTask = new TimerTask(){
+            public void run(){
+                player.getReplyWriter().println("Your not drunk anymore =[");
+                player.setIsDrunk(false);
+                bottleTimer.cancel();
+
+            }
+        };
+        if(bottleTimer != null){
+            bottleTimer.cancel();
+            bottleTimer.purge();
+        }
+        bottleTimer = new Timer();
+        bottleTimer.schedule(bottleTask, 60000); // stop being drunk after 1 minute
+
+    }
+    
+    /**
+     * This method turns all punctuation into either a ? or !, it also 
+     * turns the message to lower case.
+     * @param message a String message we need to scramble
+     * @return message scrambled message string
+     */
+    private static String drunkText(String message)
+    {
+        message = message.toLowerCase();
+        char arry[] = {'!','?'};
+        Random randy = new Random();
+        message = message.replace('?', arry[randy.nextInt(arry.length)]);
+        message = message.replace('!', arry[randy.nextInt(arry.length)]);
+        message = message.replace('.', arry[randy.nextInt(arry.length)]);
+        message = message.replace(':', arry[randy.nextInt(arry.length)]);
+        message = message.replace(',', arry[randy.nextInt(arry.length)]);
+        message = message.replace(';', arry[randy.nextInt(arry.length)]);
+        message = message.replace('\'', arry[randy.nextInt(arry.length)]);
+        message = message.replace('\"', arry[randy.nextInt(arry.length)]);
+        message = message.replace('(', arry[randy.nextInt(arry.length)]);
+        message = message.replace(')', arry[randy.nextInt(arry.length)]);
+        message = message.replace('[', arry[randy.nextInt(arry.length)]);
+        message = message.replace(']', arry[randy.nextInt(arry.length)]);
+        message = message.replace('{', arry[randy.nextInt(arry.length)]);
+        message = message.replace('}', arry[randy.nextInt(arry.length)]);
+        message = message.replace('-', arry[randy.nextInt(arry.length)]);
+        message = message.replace('\\', arry[randy.nextInt(arry.length)]);
+        message = message.replace('@', arry[randy.nextInt(arry.length)]);
+        message = message.replace('&', arry[randy.nextInt(arry.length)]);
+        message = message.replace('*', arry[randy.nextInt(arry.length)]);
+        message = message.replace('_', arry[randy.nextInt(arry.length)]);
+        message = message.replace('/', arry[randy.nextInt(arry.length)]);
+        message = message.replace('>', arry[randy.nextInt(arry.length)]);
+        message = message.replace(',', arry[randy.nextInt(arry.length)]);
+        
+
+        return message;
+    }
+
+
 
     /**
      * Player pokes a ghoul that is in the same room.

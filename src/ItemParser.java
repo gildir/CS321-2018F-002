@@ -29,14 +29,15 @@ public class ItemParser
 			double weight = Double.parseDouble(weightString);
 			String priceString = tokens[2];
 			double price = Double.parseDouble(priceString);
-			
-			String description = tokens[3];
-			for (int i = 4; i < tokens.length; i++)
+			String title = tokens[3];
+	
+			String description = tokens[4];
+			for (int i = 5; i < tokens.length; i++)
 			{
 				description += "," + tokens[i];
 			}
-
-			Item tempItem = new Item(name, description, weight, price);
+		
+			Item tempItem = new Item(name, description, weight, price, title);
 			itemList.add(tempItem);
 		   }
 		}

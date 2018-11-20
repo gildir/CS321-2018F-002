@@ -171,7 +171,7 @@ public class Room {
         for(Player player : players) {
           System.err.println("Checking to see if " + player.getName() + " in room " + player.getCurrentRoom() + " is in this room (" + this.id + ")");
             if(player.getCurrentRoom() == this.id) {
-                localPlayers += player.getName() + " ";
+                localPlayers += player.getNameWithTitle() + " ";
             }
         }
         if(localPlayers.equals("")) {

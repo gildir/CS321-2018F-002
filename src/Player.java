@@ -27,6 +27,8 @@ public class Player {
  private ArrayList<Quest> questBook = new ArrayList<Quest>();
   private String inTradeWithName = null;
   private String inTradeWithItem = null;
+  private String playerTitle = null;
+  private boolean isDrunk = false;
   
   /* START 405_ignore variables*/
   private ArrayList<String> ignoreList;
@@ -92,9 +94,31 @@ public class Player {
   public String getName() {
     return name;
   }
+
+  public String getNameWithTitle(){
+    if(this.playerTitle != null){
+    	return "[" + playerTitle + "] " + name;
+    }
+    else{
+	    return name;
+    }
+  }
+
   
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void setTitle(String title){
+    this.playerTitle = title;
+  }
+
+  public void setIsDrunk(Boolean trueOrFalse){
+    this.isDrunk = trueOrFalse;
+  }
+
+  public Boolean getIsDrunk(){
+    return this.isDrunk;
   }
   
   public void setLastWhisperName(String name) {
