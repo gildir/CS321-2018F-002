@@ -449,7 +449,12 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
   //Rock Paper Scissors Battle Code here--------------------------------------
   
-  //given a player name, returns an ascii art map of the world surrounding them
+  /*
+   * @author James Bruce
+   * given a player name, returns an ascii art map of the world surrounding them
+   * @param name the player doing the command
+   * @return an ASCII representation of the map around them
+   */
   public String map(String name) throws RemoteException
   {
   	return core.map(name);
