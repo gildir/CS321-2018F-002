@@ -62,6 +62,9 @@ public class PlayerDatabase {
     */
 	public static boolean addPlayer(String name, String password, String question1, String ans1,
                                    String question2, String ans2, String question3, String ans3){
+                                   
+      if(name == null || password == null)
+         return false;
    
       //build comma-seperated inputs for database with user's name and password
       try(FileOutputStream fos = new FileOutputStream(DATABASE_FILE, true)) {
@@ -309,6 +312,9 @@ public class PlayerDatabase {
     * @return true if log message is written successfully, false otherwise
     */
     public static boolean loginLog(String name, boolean isLoggingIn) {
+        if(name == null)
+           return false;
+           
         String log = name;
         
         try(FileOutputStream fos = new FileOutputStream(LOG_FILE, true)) {
@@ -334,6 +340,8 @@ public class PlayerDatabase {
      * @return true if the username fits all requirements
      */
     public static boolean isUname(String username){
+        if(username == null)
+            return false;
        
         //checking to make sure that username has at least one character and less than 15
         if(username.length() > 15 || username.length() < 1){

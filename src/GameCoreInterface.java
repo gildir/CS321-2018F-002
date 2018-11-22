@@ -111,10 +111,10 @@ public interface GameCoreInterface {
     public void log(String fileName, String log);
 
 //Rock Paper Scissors Battle Code here--------------------------------------
-public void challenge(String challenger, String player2);
+public void challenge(String challenger, String player2, int rounds);
 public void accept(String challenger, String player2);
 public void refuse(String challenger, String player2);
-public void doBattle(String challenger, String player2, int p1, int p2, Battle b);
+public void doBattle(String challenger, String player2, int[] p1, int[] p2, Battle b, int rounds);
 public void rock(String player);
 public void paper(String player);
 public void scissors(String player);
@@ -125,6 +125,7 @@ public void getRank(String player);
 
 //Rock Paper Scissors Battle Code here--------------------------------------
 	/**
+	 * @author James Bruce
 	 * gives an ASCII art map of the world surrounding a player
 	 * @param player the name of a player
 	 * @return the ASCII art map
