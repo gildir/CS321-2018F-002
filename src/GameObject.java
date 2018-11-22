@@ -420,11 +420,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
 
         core.log(file, log);
     }
-	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	  //Team 8
-	  
-      //Rock Paper Scissors Battle Methods
-	  
+      //Rock Paper Scissors Battle Code here--------------------------------------
       public void challenge(String challenger, String player2, int rounds) throws RemoteException
       { 
 	      core.challenge(challenger, player2, rounds);
@@ -463,7 +459,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
   public void topTen(String name) throws RemoteException {
         core.topTen(name);
     }
-	  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //Rock Paper Scissors Battle Code here--------------------------------------
   
   /*
    * @author James Bruce
