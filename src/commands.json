@@ -89,6 +89,14 @@
         "description":  "Creates group chat NAME."
     }]
 }, {
+    "name":             "JOIN",
+    "category":         "COMMUNICATION",
+    "description":      "Joins player to group chat names GROUPCHATNAME.",
+    "uses": [{
+        "case":         "[GROUPCHATNAME]",
+        "description":  "Joins player to group chat names GROUPCHATNAME."
+    }]
+}, {
     "name":             "GROUPCHATPRINT",
     "category":         "COMMUNICATION",
     "description":      "Prints group chat members.",
