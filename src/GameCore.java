@@ -78,6 +78,7 @@ public class GameCore implements GameCoreInterface {
         npclist = new NPCList();
         nighttimeNpcList = new NPCList();
         daySpirits = new ArrayList<Spirit>();
+        groupChatTracker = new GroupChatTracker();  //416_GroupChat
 
         // Initialize Ghouls
         for (int i = 1; i <= NUM_OF_GHOULS; i++) {
@@ -90,11 +91,6 @@ public class GameCore implements GameCoreInterface {
             nighttimeNpcList.addNPC(new Ghost(this, "Ghost" + (i + NUM_OF_GHOULS), i * 2, GHOST_AI_PERIOD_SECONDS_BASE + i, new File("GhostSayings.txt")));
         }
 
-	groupChatTracker = new GroupChatTracker();  //416_GroupChat
-
-        // Initialize starting NPCs
-        npcSet.addAll(Arrays.asList(new Ghoul(this, "Ghoul1", 1, 20),
-                                    new Ghoul(this, "Ghoul2", 3, 25)));
         nighttimeNpcList.addNPC(new Spirit(this, "SpookySpirit", 1, 45, Spirits.SPOOKY));
         nighttimeNpcList.addNPC(new Spirit(this, "AngrySpirit", 2, 31, Spirits.ANGRY));
         nighttimeNpcList.addNPC(new Spirit(this, "SadSpirit", 3, 15, Spirits.SAD));

@@ -55,6 +55,7 @@ public class GameClient {
                     runListener = false;
                     System.out.println("User has been inactive for 5 minutes.. logging off");
                     timer.cancel();
+
                     System.exit(-1);
                 }
                 catch (RemoteException ex) {
