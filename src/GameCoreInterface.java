@@ -110,9 +110,7 @@ public interface GameCoreInterface {
      */
     public void log(String fileName, String log);
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Team 8
-//Rock Paper Scissors Battle Methods
+//Rock Paper Scissors Battle Code here--------------------------------------
 public void challenge(String challenger, String player2, int rounds);
 public void accept(String challenger, String player2);
 public void refuse(String challenger, String player2);
@@ -124,8 +122,8 @@ public void checkBoard(String player);
 public String tutorial(String name);
 public void topTen(String name);
 public void getRank(String player);
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//Rock Paper Scissors Battle Code here--------------------------------------
 	/**
 	 * @author James Bruce
 	 * gives an ASCII art map of the world surrounding a player

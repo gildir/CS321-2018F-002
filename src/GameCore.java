@@ -134,7 +134,7 @@ public class GameCore implements GameCoreInterface {
                 Random rand = new Random();
                 Room room;
                 Item object;
-                ArrayList<Item> objects = ItemParser.parse("./RPSdemoitems.csv");//"./ItemListCSV.csv"
+                ArrayList<Item> objects = ItemParser.parse("./ItemListCSV.csv");
                 while(true) {
                     try {
    //wait a random amount of time spawn another item
@@ -461,6 +461,7 @@ public class GameCore implements GameCoreInterface {
      * @param message Message to speak
      * @return Message showing success.
      */
+    @Override
     public String say(String name, String message, ArrayList<String> censorList) {
         Player player = this.playerList.findPlayer(name);
         if(player != null)
@@ -517,46 +518,46 @@ public class GameCore implements GameCoreInterface {
     * @return Message showing success.
     */
     public String whisper(String name1, String name2, String message, ArrayList<String> censorList) {
-           Player playerSending = this.playerList.findPlayer(name1);
-           Player playerReceiving = this.playerList.findPlayer(name2);
-           if(playerSending != null && playerReceiving != null)
-           {
-   
-               if(name1.equalsIgnoreCase(name2))
-                   return "Cannot whisper yourself" + " " + date.toString();
-               else
-               {
-     
-     if(playerSending.searchIgnoredBy(name2)){
-      return "Cannot whisper player that has ignored you";
-         }
-                   if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
-                   {
-                       if(playerSending.getIsDrunk()){
-                           message = drunkText(message);
-                       }
-   
-                       message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
-                       String log = playerSending.getName() + " whispers, \"" + message + "\" to "
-                               + playerReceiving.getName() + " " + date.toString();
-                       add_chat_log(log);
-                       this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
-   
-                       playerReceiving.setLastWhisperName(name1); 
-                       return "Message sent to " + playerReceiving.getName() + " " + date.toString();
-                   }
-                   else {
-                       return "";
-                   }
-               }
-           }
-           else
-           {
-               if(playerReceiving == null)
-                   return "Couldn't find player online.";
-               return null;
-           }
-       }
+        Player playerSending = this.playerList.findPlayer(name1);
+        Player playerReceiving = this.playerList.findPlayer(name2);
+        if(playerSending != null && playerReceiving != null)
+        {
+
+            if(name1.equalsIgnoreCase(name2))
+                return "Cannot whisper yourself" + " " + date.toString();
+            else
+            {
+  
+  if(playerSending.searchIgnoredBy(name2)){
+   return "Cannot whisper player that has ignored you";
+      }
+                if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
+                {
+                    if(playerSending.getIsDrunk()){
+                        message = drunkText(message);
+                    }
+
+                    message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
+                    String log = playerSending.getName() + " whispers, \"" + message + "\" to "
+                            + playerReceiving.getName() + " " + date.toString();
+                    add_chat_log(log);
+                    this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
+
+                    playerReceiving.setLastWhisperName(name1); 
+                    return "Message sent to " + playerReceiving.getName() + " " + date.toString();
+                }
+                else {
+                    return "";
+                }
+            }
+        }
+        else
+        {
+            if(playerReceiving == null)
+                return "Couldn't find player online.";
+            return null;
+        }
+    }
 
     /**
     * Sends a whisper the last player that whispered.
@@ -2195,22 +2196,22 @@ public class GameCore implements GameCoreInterface {
       return "";
   }
 
-  //409_censor START
-  private String scrubMessage( String message, ArrayList<String> censorList ){
-      if( message == null || message.equals(' ') )
-              return message;
-      if( censorList == null || censorList.size()==0)
-              return message;
-      for( String word:censorList){
-          String censor = "*";
-          for( int x = 1; x<word.length();x++)
-                  censor+="*";
-          message = message.replaceAll( "(?i)(" + word.toString() + ")", censor);
-      }
-      return message;
-  }
-  //409_censor END
-
+    //409_censor START
+    private String scrubMessage( String message, ArrayList<String> censorList ){
+        if( message == null || message.equals(' ') )
+                return message;
+        if( censorList == null || censorList.size()==0)
+                return message;
+        for( String word:censorList){
+            String censor = "*";
+            for( int x = 1; x<word.length();x++)
+                    censor+="*";
+            message = message.replaceAll( "(?i)(" + word.toString() + ")", censor);
+        }
+        return message;
+    }
+    //409_censor END
+  
   //Added by An
   public void topTen(String name) {
       Player player = this.playerList.findPlayer(name);
