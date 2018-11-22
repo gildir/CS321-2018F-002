@@ -56,6 +56,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return (core.joinGame(name) != null);
     }
 
+    /**
+     * Determines if a player exists in the system already
+     * @param name
+     * @return true if player does exists, false otherwise
+     * @throws RemoteException
+     */
+    public boolean playerExists(String name) throws RemoteException{
+        if(core.findPlayer(name) == null) return false;
+        else return true;
+    }
+
     public void setChatPrefix(String prefix) throws RemoteException {
         core.setChatPrefix(prefix);
     }        
@@ -203,20 +214,20 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     @Override
     public String pickup(String name, String target) throws RemoteException {
         return core.pickup(name, target);
-    }
+    }  
 
 	/**
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
      * @param target The case-insensitive name of the object to pickup.
      * @return Message showing success.
-     * @throws RemoteException
-     */
+     * @throws RemoteException 
+     */    
     @Override
     public String describe(String name, String target) throws RemoteException {
         return core.describe(name, target);
     }
-
+	
     /**
      * Attempts to drop off an object < target >. Will return a message on any success or failure.
      * @param name Name of the player to move
@@ -262,6 +273,16 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
 
     /**
+     * Attempts to use an item the player has called <itemName>. Will return a message on any success or failure.
+     * @param playerName Name of the player to use the item
+     * @param itemName The name of the item to use
+     * @return Message showing success.
+     */
+    public String useItem(String playerName, String item) throws RemoteException {
+	    return core.useItem(playerName, item);
+    }
+
+    /**
      * Player pokes a ghoul that is in the same room.
      * @param ghoulName Name of the ghoul that is poked
      * @param playerName Name of the player that pokes the ghoul.
@@ -282,17 +303,29 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return core.giftGhoul(playerName, ghoulName, target);
     }
 
+    public String catchSpirit(String playerName, String target) throws RemoteException {
+        return core.catchSpirit(playerName, target);
+    }
+
+    public String getAllSpirits(String playerName) throws RemoteException {
+        return core.getAllSpirits(playerName);
+    }
+
+    public String getCurrentSpirits(String playerName) throws RemoteException {
+        return core.getCurrentSpirits(playerName);
+    }
+
 
     @Override
     public String gift(String yourname,String name, double amount) throws RemoteException {
      return core.gift(yourname, name,amount);
     }
-
+    
     @Override
     public String acceptGift(String name) throws RemoteException{
     	return core.acceptGift(name);
     }
-
+    
     @Override
     public String declineGift(String name) throws RemoteException{
     	return core.declineGift(name);
@@ -334,7 +367,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String sell(String playerName, String itemName) throws RemoteException{
      return core.sell(playerName, itemName);
     }
-
+    
     /**
      * Buy an item from the shop the player is currently in
      * @param playerName player who is selling
@@ -388,9 +421,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         core.log(file, log);
     }
       //Rock Paper Scissors Battle Code here--------------------------------------
-      public void challenge(String challenger, String player2) throws RemoteException
+      public void challenge(String challenger, String player2, int rounds) throws RemoteException
       {
-	      core.challenge(challenger, player2);
+	      core.challenge(challenger, player2, rounds);
       }
 
       public void accept(String challenger, String player2) throws RemoteException
@@ -422,18 +455,23 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
   public void getRank(String player) throws RemoteException {
         core.getRank(player);
-    }
+    }  
   public void topTen(String name) throws RemoteException {
         core.topTen(name);
     }
   //Rock Paper Scissors Battle Code here--------------------------------------
-
-  //given a player name, returns an ascii art map of the world surrounding them
+  
+  /*
+   * @author James Bruce
+   * given a player name, returns an ascii art map of the world surrounding them
+   * @param name the player doing the command
+   * @return an ASCII representation of the map around them
+   */
   public String map(String name) throws RemoteException
   {
   	return core.map(name);
 }
-
+  
 
     //405
     @Override
@@ -464,7 +502,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String displayWhiteboard(String playerName) throws RemoteException {
         return core.displayWhiteboard(playerName);
     }
-
+    
     /**
      * [clearWhiteboard description]
      * @param  playerName
@@ -474,7 +512,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String clearWhiteboard(String playerName) throws RemoteException {
         return core.clearWhiteboard(playerName);
     }
-
+    
     /**
      * [writeWhiteboard description]
      * @param  playerName
