@@ -295,26 +295,33 @@ public class CommandRunner {
         commandFunctions.put("REDO",      (name, args) -> null);
         commandFunctions.put("QUIT",      (name, args) -> null);
 
-        // PvP Commands
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//Team 8
+		
+        //Rock-Paper-Scissors Commands
+		
+		//Challenge player 'name' to RPS battle
         commandFunctions.put("CHALLENGE",    (name, args) -> {
-                    try {
-                        String player = args.get(0);
-                        String rounds = args.get(1);
+            try {
+                String player = args.get(0);
+                String rounds = args.get(1);
 
-                        if (Integer.parseInt(rounds) != 1 && Integer.parseInt(rounds) != 3 && Integer.parseInt(rounds) != 5){
-                            return "[ERROR] You must specify 1 3 or 5 as the number of rounds.";
-                        }
-                        
-                        if (player.equals("")) {
-                            return "[ERROR] No player specified";
-                        } else {
-                            remoteGameInterface.challenge(name, player, Integer.parseInt(rounds));
-                            return null;
-                        }
-                    } catch (IndexOutOfBoundsException ex) {
-                        return (args.size() == 1) ? "[ERROR] Number of rounds unspecified." : "[ERROR] No player specified.\n[ERROR] Number of rounds unspecified.";
-                    }
-                });
+                if (Integer.parseInt(rounds) != 1 && Integer.parseInt(rounds) != 3 && Integer.parseInt(rounds) != 5){
+                    return "[ERROR] You must specify 1 3 or 5 as the number of rounds.";
+                }
+                
+                if (player.equals("")) {
+                    return "[ERROR] No player specified";
+                } else {
+                    remoteGameInterface.challenge(name, player, Integer.parseInt(rounds));
+                    return null;
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                return (args.size() == 1) ? "[ERROR] Number of rounds unspecified." : "[ERROR] No player specified.\n[ERROR] Number of rounds unspecified.";
+            }
+        });
+		
+		//Accept challenge to RPS battle from player 'name'
         commandFunctions.put("ACCEPT",    (name, args) -> {
             try {
                 String player = args.get(0);
@@ -329,6 +336,8 @@ public class CommandRunner {
                 return "[ERROR] No player specified";
             }
         });
+		
+		//Refuse challenge to RPS battle from player 'name'
         commandFunctions.put("REFUSE",    (name, args) -> {
             try {
                 String player = args.get(0);
