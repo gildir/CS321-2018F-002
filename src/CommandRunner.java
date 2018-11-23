@@ -535,6 +535,7 @@ public class CommandRunner {
         this.remoteGameInterface = rgi;
         this.commandsInfo = parseCommandsFile(commandsFile);
         setupFunctions();
+        createCommands();
     }
 
     /**
