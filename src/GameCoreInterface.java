@@ -131,9 +131,6 @@ public void getRank(String player);
 	 * @return the ASCII art map
 	 */
 	public String map(String player);
-	
-	// Displays the Player's active Quest Objectives
-	public String objectives(String player);
 
     /* START 405_ignore */
     /**

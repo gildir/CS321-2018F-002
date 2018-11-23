@@ -471,11 +471,6 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
   {
   	return core.map(name);
 }
-	// Displays the Player's active Quest Objectives
-	public String objectives(String name) throws RemoteException
-	{
-		return core.objectives(name);
-	}
   
 
     //405
