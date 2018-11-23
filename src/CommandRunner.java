@@ -26,9 +26,11 @@ public class CommandRunner {
      * Game interface
      */
     protected GameObjectInterface remoteGameInterface;
-    
-    protected ArrayList<String> censorList;  //409_censor
-    
+
+    //START 409_censor
+    protected ArrayList<String> censorList;
+    //END 409_censor
+
     /**
      * Wrap a lambda expression and allow it to throw a RemoteException
      */
@@ -304,7 +306,7 @@ public class CommandRunner {
                         if (Integer.parseInt(rounds) != 1 && Integer.parseInt(rounds) != 3 && Integer.parseInt(rounds) != 5){
                             return "[ERROR] You must specify 1 3 or 5 as the number of rounds.";
                         }
-                        
+
                         if (player.equals("")) {
                             return "[ERROR] No player specified";
                         } else {
@@ -378,7 +380,7 @@ public class CommandRunner {
         });
         commandFunctions.put("SPIRITALL",    (name, args) -> remoteGameInterface.getAllSpirits(name));
         commandFunctions.put("CAUGHTSPIRITS",    (name, args) -> remoteGameInterface.getCurrentSpirits(name));
-        commandFunctions.put("ENTER", (name, args) -> { 
+        commandFunctions.put("ENTER", (name, args) -> {
             if(args.size() != 1){
                 return "Specify the room you want to enter";
             }
@@ -461,6 +463,47 @@ public class CommandRunner {
 	 * this is the map command
 	 */
 	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
+	//416_GroupChat START
+	commandFunctions.put("GROUPCHAT", (name, args) -> {
+		//TODO:
+		// 1. check that chat room name is not the same as an existing game command
+
+		//expect only one argument with command
+		if( args.size() != 1 )
+			return "The command takes one argument. Correct usage is GROUPCHAT <Group Name>.";
+        else
+        {
+            for( String key: commandFunctions.keySet())
+                if(key.equalsIgnoreCase(args.get(0)))
+                    return "[Invalid Format]. you cannot name your chat room to one of the commands";
+        }
+        return remoteGameInterface.createGroupChat( args.get(0), name);
+
+
+	});
+	commandFunctions.put("GROUPCHATPRINT", (name, args) -> {
+		//This is primarily used for debugging
+		//expect only one argument with command
+		if( args.size() != 1 )
+			return "The command takes one argument. Correct usage is GROUPCHATPRINT <Group Name>.";
+
+		return remoteGameInterface.printGroupChat( args.get(0));
+
+	});
+
+	commandFunctions.put("JOIN", (name, args) -> {
+		//expect only one argument with command
+		if( args.size() != 1 )
+			return "The command takes one argument. Correct usage is JOIN <Group Name>.";
+
+		return remoteGameInterface.GCJoin( args.get(0), name);
+	});
+
+        commandFunctions.put("GROUPCHATHELP", (name, args) -> {
+            //expect only one argument with command
+            return remoteGameInterface.GCGetHelp(name);
+        });
+	//416_GroupChat END
     }
 
     /**
@@ -528,6 +571,8 @@ public class CommandRunner {
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
         this.remoteGameInterface = rgi;
         this.commandsInfo = parseCommandsFile(commandsFile);
+        censorList = loadCensorList();    //409_censor load censor list
+	this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();
     }
@@ -685,7 +730,7 @@ public class CommandRunner {
         // Add name
         String name = ((String) cmd.get("name")).toUpperCase();
         uiBuild.append(String.format("%-15s", name));
-        
+
         // Get alias
         String alias = commands.get(name).getAlias();
         Boolean aliasSet = alias.equals("");
@@ -762,7 +807,7 @@ public class CommandRunner {
         uiBuild.append("\n");
         return uiBuild.toString();
     }
-    
+
     private void createHelpUI(ArrayList<JSONObject> commands) {
         // parsed array
         java.util.Map<String, ArrayList<JSONObject>> categoriesMap = parseCommandsCategories(commands);
@@ -788,7 +833,7 @@ public class CommandRunner {
         uiBuild.append(String.join("", Collections.nCopies(78, "=")) + "\n");
         uiBuild.append(String.join("", Collections.nCopies((int) (78 - misc.length()) / 2, " ")) + misc.toUpperCase() + "\n");
         uiBuild.append(String.join("", Collections.nCopies(78, "=")) + "\n");
-        
+
         // add MISC commands
         for (JSONObject cmd : categoriesMap.get("MISCELLANEOUS")) {
             uiBuild.append(getCommandHelpUI(cmd));

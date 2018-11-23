@@ -22,9 +22,9 @@ public interface GameCoreInterface {
     
 
     public String gift(String playerName, String name, double amount);
-    
+
     public String acceptGift(String name);
-    
+
     public String declineGift(String name);
 
     /**
@@ -158,7 +158,7 @@ public void getRank(String player);
      * @throws RemoteException
      */
     public String displayWhiteboard(String playerName);
-    
+
     /**
      * [clearWhiteboard description]
      * @param  playerName
@@ -166,7 +166,7 @@ public void getRank(String player);
      * @throws RemoteException
      */
     public String clearWhiteboard(String playerName);
-    
+
     /**
      * [writeWhiteboard description]
      * @param  playerName
@@ -175,4 +175,39 @@ public void getRank(String player);
      * @throws RemoteException
      */
     public String writeWhiteboard(String playerName, String message);
+
+    /* START 416_GroupChat */
+    /**
+     * Creates group chat
+     * @return Success or Failure message.
+     */
+    public String createGroupChat(String groupChatName, String playerName);
+
+    /**
+     * @return print out of groupChatName HashMap entry.
+     */
+    public String printGroupChat(String groupChatName);
+
+
+    /**
+     *  check if group chat exists
+     *  @return true if group with name exists, otherwise false
+     */
+    public boolean checkGCExists(String groupChatName);
+
+     /**
+     * Invites player to join a group chat
+     * @return feed back to the user.
+     */
+    public String GCInvite( String groupName, String playerInvited, String playerInviting);
+
+    public void GCMessage( String groupName, String playerName, String rawInput);
+
+    public String GCLeave( String groupName, String playerName);
+
+    public String GCJoin( String groupName, String playerName);
+
+    public boolean checkGCMembership( String groupName, String playerName);
+    public String GCGetHelp(String name);
+    /* END 416_GroupCat */
 }

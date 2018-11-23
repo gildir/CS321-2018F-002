@@ -80,6 +80,35 @@
         "case":         "-R [PLAYER]",
         "description":  "Remove player from ignore list."
     }]
+}, {
+    "name":             "GROUPCHAT",
+    "category":         "COMMUNICATION",
+    "description":      "Creates group chat.",
+    "uses": [{
+        "case":         "[NAME]",
+        "description":  "Creates group chat NAME."
+    }]
+}, {
+    "name":             "JOIN",
+    "category":         "COMMUNICATION",
+    "description":      "Joins player to group chat names GROUPCHATNAME.",
+    "uses": [{
+        "case":         "[GROUPCHATNAME]",
+        "description":  "Joins player to group chat names GROUPCHATNAME."
+    }]
+}, {
+    "name":             "GROUPCHATPRINT",
+    "category":         "COMMUNICATION",
+    "description":      "Prints group chat members.",
+    "uses": [{
+        "case":         "[NAME]",
+        "description":  "Prints group chat members."
+    }]
+}, {
+    "name":             "GROUPCHATHELP",
+    "category":         "COMMUNICATION",
+    "description":      "Print group chat help",
+    "uses": []
 },
 
 
