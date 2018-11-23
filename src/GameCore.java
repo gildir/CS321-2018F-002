@@ -2276,7 +2276,7 @@ public class GameCore implements GameCoreInterface {
   }
   
   /**
-   * Method that players can use to call the erase method of the whiteboard in the same room that they are in, which replaces the message of that whiteboard with the empty string.
+   * [clearWhiteboard description]
    * @param  playerName
    * @return message to be displayed to player
    * @throws RemoteException
@@ -2293,7 +2293,7 @@ public class GameCore implements GameCoreInterface {
   }
   
   /**
-   * Allows a player to access the write method of the whiteboard that is in the same room as them, allowing them to change the message stored in that whiteboard to the message that the player enters.
+   * [writeWhiteboard description]
    * @param  playerName
    * @param  message
    * @return message to be displayed to player
