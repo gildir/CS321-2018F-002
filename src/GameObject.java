@@ -504,7 +504,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
     
     /**
-     * Returns a string notifying the player that the message stored in the Whiteboard was erased.
+     * [clearWhiteboard description]
      * @param  playerName
      * @return message to be displayed to player
      * @throws RemoteException
@@ -514,7 +514,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
     
     /**
-     * Returns a string to the player notifying them whether their message was invalid, whether it exceeded the maximum character length, or that their message was saved to the Whiteboard.
+     * [writeWhiteboard description]
      * @param  playerName
      * @param  message
      * @return message to be displayed to player
