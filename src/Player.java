@@ -39,6 +39,97 @@ public class Player {
         this.gameCore = gameCore;
         this.currentRoom = Map.SPAWN_ROOM_ID;
         this.currentDirection = Direction.NORTH;
+        break;
+    }
+  }
+  
+	public ArrayList<Quest> getQuestBook()
+	{
+		return this.questBook;
+	}
+  
+  public Money giveMoney(Player giver,Player receiver,double value){
+    Money moneyToGive = new Money();
+    replyWriter.println("You are giving away "+ String.format("%1$,.2f", value)); 
+    
+    if(this.money.sum() <= 0){
+      replyWriter.println("Must give a positive amount of money!");
+      return moneyToGive;
+    } 
+    // send money in units available to player 
+    // if correct units are unavaialable, then return and give a message
+    double valueCopy = value;
+    int[] unitsGiven = new int[5];
+    int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
+    double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
+    int index = 0;
+    
+    while(index < 5){
+      for (int i = 1; i <= numUnits[index]; i++){
+        if(unitVals[index] * i > valueCopy){
+          break;
+        }
+        unitsGiven[index]++;
+      }
+      
+      if(unitsGiven[index] > 0){
+        valueCopy -= unitVals[index] * unitsGiven[index];
+      }
+      index++;
+    }
+    
+    if(valueCopy > 0){ 
+      replyWriter.println("You don't have enough money with the units of money that you have!");
+      return moneyToGive;
+    }
+    
+    else{
+      moneyToGive.numFives = unitsGiven[0];
+      moneyToGive.numOnes = unitsGiven[1];
+      moneyToGive.numQuarters = unitsGiven[2];
+      moneyToGive.numDimes = unitsGiven[3];
+      moneyToGive.numPennies = unitsGiven[4];
+      receiver.addMoney(moneyToGive); 
+      removeMoney(moneyToGive);   
+      receiver.getReplyWriter().println("You received " + String.format("%1$,.2f", value) + " dollars!"); 
+      return moneyToGive;
+    }
+  }
+  
+  public String viewInventory() {
+    String result = "";
+    if(this.currentInventory.isEmpty() == true) {
+      return " nothing.";
+    }
+    else {
+      for(Item obj : this.currentInventory) {
+        result += " " + obj;
+      }
+      result += ".";
+    }
+    result += ".";
+    return result;
+  }
+  
+  @Override
+  public String toString() {
+    return "Player " + this.name + ": " + currentDirection.toString();
+  }
+  
+  /* START 405_ignore */
+  public void ignorePlayer(String name) {
+    ignoreList.add(name);
+  }
+  
+  public void addIgnoredBy( String name) {
+    ignoredByList.add(name);
+  }
+  
+  public boolean searchIgnoredBy(String name) {
+    int listSize = ignoredByList.size();
+    for( int x = 0; x < listSize; x++){
+      if( name.equalsIgnoreCase(ignoredByList.get(x)))
+        return true;
         this.name = name;
         this.currentInventory = new LinkedList<>();
         this.currentSpirits = new LinkedList<>();
@@ -289,6 +380,7 @@ public class Player {
     public void setCurrentRoom(int room) {
         synchronized (this) {
             this.currentRoom = room;
+            updateAllQuests();
         }
     }
 

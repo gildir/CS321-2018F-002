@@ -461,6 +461,7 @@ public class CommandRunner {
 	 * this is the map command
 	 */
 	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
+		commandFunctions.put("OBJECTIVES", (name, args) -> {return remoteGameInterface.objectives(name);});
     }
 
     /**
@@ -529,6 +530,88 @@ public class CommandRunner {
         this.remoteGameInterface = rgi;
         this.commandsInfo = parseCommandsFile(commandsFile);
         setupFunctions();
+
+        // TODO: Read file, extract command descriptions and call createCommands(descriptions)
+        try (Scanner file_commands = new Scanner(new File(commandsFile));) {
+            HashMap<String, String[]> file_map = new HashMap<String, String[]>();
+
+            while(file_commands.hasNextLine()){
+                String currentline = file_commands.nextLine();
+                String[] command_parts = currentline.split(",");
+
+                String command_name = command_parts[0];
+                String[] command_description = new String[]{ command_parts[1], command_parts[2] };
+
+                file_map.put(command_name, command_description);
+            }
+            createCommands(file_map);
+        } catch (IOException ex) {
+            Logger.getLogger(CommandRunner.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Create sample descriptions for commands. Then use them to create the commands
+     */
+    private void createCommands() {
+        HashMap<String, String[]> descriptions = new HashMap<String, String[]>();
+
+        // Default commands
+        descriptions.put("LOOK",      new String[]{"",         "Shows you the area around you"});
+        descriptions.put("LISTPLAYERS",new String[]{"", "Shows a list of all the players in the world."});
+        descriptions.put("LEFT",      new String[]{"",         "Turns your player left 90 degrees."});
+        descriptions.put("RIGHT",     new String[]{"",         "Turns your player right 90 degrees."});
+        descriptions.put("SAY",       new String[]{"WORDS",    "Says <WORDS> to any other players in the same area."});
+        descriptions.put("WHISPER",   new String[]{"PLAYER MESSAGE", "Says <MESSAGE> to specified <PLAYER>."});
+        descriptions.put("REPLY",     new String[]{"MESSAGE", "Says <MESSAGE> to last player who whispered you."});
+        descriptions.put("MOVE",      new String[]{"DIRECTION","Tries to walk in a <DIRECTION>."});
+        descriptions.put("PICKUP",    new String[]{"OBJECT",   "Tries to pick up an <OBJECT> in the same area."});
+        descriptions.put("DROPOFF",   new String[]{"OBJECT",   "Tries to drop off an <OBJECT> in the same area."});
+        descriptions.put("INVENTORY", new String[]{"",         "Shows you what objects you have collected."});
+	descriptions.put("REDO",      new String[]{"",         "Performs the last command you entered."});
+        descriptions.put("QUIT",      new String[]{"",         "Quits the game."});
+        descriptions.put("HELP",      new String[]{"",         "Displays the list of available commands"});
+        descriptions.put("SORTINVENTORY",      new String[]{"ATTRIBUTE",         "Sorts inventory by specified name, value or weight."});
+
+        // Ghoul commands
+        descriptions.put("POKE",      new String[]{"GHOUL",    "Pokes <GHOUL>"});
+        descriptions.put("GIFT",      new String[]{"GHOUL, ITEM", "Gives your <ITEM> to <GHOUL>"});
+
+        // PvP Commands
+        descriptions.put("CHALLENGE", new String[]{"PLAYER",   "Challenges another <PLAYER> to a Rock Paper Scissors Battle."});
+        descriptions.put("ACCEPT",    new String[]{"PLAYER",   "Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
+        descriptions.put("REFUSE",    new String[]{"PLAYER",   "Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>."});
+        descriptions.put("ROCK",      new String[]{"",         "Play <ROCK> in your current Rock Paper Scissors Battle."});
+        descriptions.put("PAPER",     new String[]{"",         "Play <PAPER> in your current Rock Paper Scissors Battle."});
+        descriptions.put("SCISSORS",  new String[]{"",         "Play <SCISSORS> in your current Rock Paper Scissors Battle."});
+        descriptions.put("LEADERBOARD",  new String[]{"",      "Display the current Rock Paper Scissors Leaderboard."});
+        descriptions.put("TUTORIAL",  new String[]{"",         "Display a tutorial for Rock Paper Scissors."});
+        descriptions.put("TOPTEN",    new String[]{"",         "Display Top Ten Players from Rock Paper Scissors Leaderboard."});
+        descriptions.put("RANK",  new String[]{"",      "Display your current RPS Leaderboard Rank."});
+
+
+        //Shops & Money
+        descriptions.put("ENTER",     new String[]{"SHOP",     "Enters shop at clock tower" });
+        descriptions.put("LEAVE",     new String[]{"SHOP",     "Leaves shop" });
+        descriptions.put("SELL",      new String[]{"ITEM",     "Sell item in your inventory to the shop" });
+        descriptions.put("BUY",      new String[]{"ITEM",      "Buy an item from the shop" });
+        descriptions.put("MONEY",     new String[]{"",         "Line-by-line display of money"});
+        descriptions.put("GIFTABLE",  new String[]{"",         "List players in the same room that you can give money to"});
+        descriptions.put("GIVE", new String[]{"GIFTEE","AMOUNT", "Give amount of money to a friend" });
+        descriptions.put("RECEIVE", new String[]{"", "Receive a gift if someone has tried to gift you" });
+	
+	//World Command
+	descriptions.put("MAP", new String[]{"", "Displays an ascii art map of the world."});
+		
+		// Objective information command
+		descriptions.put("OBJECTIVES",new String[]{"", "Displays the Player's active Quest Objectives"});
+
+        //chat system
+        descriptions.put("SHOUT",      new String[]{"MESSAGE", "Says <MESSAGE> to all players in the game."});
+        descriptions.put("IGNORE",     new String[]{"-L;-A;-R PLAYER", "Use -A to add players to ignore list; -R to remove from list; -L with no player name to show list."});
+
+        // Create them
+        createCommands(descriptions);
         createCommands();
     }
 

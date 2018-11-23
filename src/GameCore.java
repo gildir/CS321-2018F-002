@@ -2476,4 +2476,31 @@ public String map(String name)
  }
  return m;
 }
+	public String objectives(String name)
+	{
+		Player p = this.playerList.findPlayer(name);
+		StringBuilder sb = new StringBuilder();
+		// for each Quest in the Player's questBook
+		for (Quest q : p.getQuestBook())
+		{
+			if (q != null)
+			{
+				// append the String representation of that Quest
+				sb.append(q.toString());
+				sb.append("\n");
+				// for each active Objective in that Quest
+				for (Objective obj : q.activeObjectives)
+				{
+					if (obj != null)
+					{
+						// append the String representation of that Objective
+						sb.append(obj.toString());
+						sb.append("\n");
+					}
+				}
+				sb.append("\n");
+			}
+		}
+		return sb.toString();
+	}
 }
