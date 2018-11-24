@@ -543,7 +543,7 @@ public class GameCore implements GameCoreInterface {
                             + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
                     message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
-                    this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
+                    this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"" + " " + date.toString());
 
                     playerReceiving.setLastWhisperName(name1);
                     return "Message sent to " + playerReceiving.getName() + " " + date.toString();
@@ -1361,18 +1361,18 @@ public class GameCore implements GameCoreInterface {
               //verify player being unignored exists
               Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
               if( unIgnoredPlayer == null )
-                      return "Player " + unIgnoreName + " is not in the game.";
+                      return "Player " + unIgnoreName + " is not in the game." + " " + date.toString();
               Player thisPlayer = this.playerList.findPlayer(name);
 
               //verify player is in Ignore list
               if( !thisPlayer.searchIgnoreList(unIgnoreName) )
-                      return "Player " + unIgnoreName + " is not in ignored list.";
+                      return "Player " + unIgnoreName + " is not in ignored list." + " " + date.toString();
               //remove ignoreName in ignore list
               thisPlayer.unIgnorePlayer(unIgnoreName);
 
               //add ignoring player to ignored players ignoredBy list
               unIgnoredPlayer.removeIgnoredBy(name);
-              return unIgnoreName + " removed from ignore list.";
+              return unIgnoreName + " removed from ignore list." + " " + date.toString();
     }
     /* STOP 408_ignore */
 
