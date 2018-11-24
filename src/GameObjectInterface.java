@@ -321,7 +321,7 @@ public interface GameObjectInterface extends Remote {
     public String displayWhiteboard(String playerName) throws RemoteException;
     
     /**
-     * [clearWhiteboard description]
+     * Returns a string notifying the player that the message stored in the Whiteboard was erased.
      * @param  playerName
      * @return message to be displayed to player
      * @throws RemoteException
@@ -329,11 +329,28 @@ public interface GameObjectInterface extends Remote {
     public String clearWhiteboard(String playerName) throws RemoteException;
     
     /**
-     * [writeWhiteboard description]
+     * Returns a string to the player notifying them whether their message was invalid, whether it exceeded the maximum character length, or that their message was saved to the Whiteboard.
      * @param  playerName
      * @param  message
      * @return message to be displayed to player
      * @throws RemoteException
      */
     public String writeWhiteboard(String playerName, String message) throws RemoteException;
+    //406_GroupChat START
+    public String createGroupChat( String chatGroupName, String playerName) throws RemoteException;
+    public String printGroupChat( String chatGroupName) throws RemoteException;
+
+    public boolean checkGCExists(String groupChatName) throws RemoteException;
+
+    public String GCInvite( String groupName, String playerInvited, String playerInviting) throws RemoteException;
+
+    public void GCMessage( String groupName, String playerName, String rawInput) throws RemoteException;
+
+    public String GCLeave( String groupName, String playerName) throws RemoteException;
+
+    public String GCJoin( String groupName, String playerName) throws RemoteException;
+
+    public boolean checkGCMembership( String groupName, String playerName) throws RemoteException;
+    public String GCGetHelp(String name)throws RemoteException;
+    //406_GroupChat END
 }

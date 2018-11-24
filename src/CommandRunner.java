@@ -26,9 +26,11 @@ public class CommandRunner {
      * Game interface
      */
     protected GameObjectInterface remoteGameInterface;
-    
-    protected ArrayList<String> censorList;  //409_censor
-    
+
+    //START 409_censor
+    protected ArrayList<String> censorList;
+    //END 409_censor
+
     /**
      * Wrap a lambda expression and allow it to throw a RemoteException
      */
@@ -304,7 +306,7 @@ public class CommandRunner {
                         if (Integer.parseInt(rounds) != 1 && Integer.parseInt(rounds) != 3 && Integer.parseInt(rounds) != 5){
                             return "[ERROR] You must specify 1 3 or 5 as the number of rounds.";
                         }
-                        
+
                         if (player.equals("")) {
                             return "[ERROR] No player specified";
                         } else {
@@ -378,7 +380,7 @@ public class CommandRunner {
         });
         commandFunctions.put("SPIRITALL",    (name, args) -> remoteGameInterface.getAllSpirits(name));
         commandFunctions.put("CAUGHTSPIRITS",    (name, args) -> remoteGameInterface.getCurrentSpirits(name));
-        commandFunctions.put("ENTER", (name, args) -> { 
+        commandFunctions.put("ENTER", (name, args) -> {
             if(args.size() != 1){
                 return "Specify the room you want to enter";
             }
@@ -461,6 +463,47 @@ public class CommandRunner {
 	 * this is the map command
 	 */
 	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
+	//416_GroupChat START
+	commandFunctions.put("GROUPCHAT", (name, args) -> {
+		//TODO:
+		// 1. check that chat room name is not the same as an existing game command
+
+		//expect only one argument with command
+		if( args.size() != 1 )
+			return "The command takes one argument. Correct usage is GROUPCHAT <Group Name>.";
+        else
+        {
+            for( String key: commandFunctions.keySet())
+                if(key.equalsIgnoreCase(args.get(0)))
+                    return "[Invalid Format]. you cannot name your chat room to one of the commands";
+        }
+        return remoteGameInterface.createGroupChat( args.get(0), name);
+
+
+	});
+	commandFunctions.put("GROUPCHATPRINT", (name, args) -> {
+		//This is primarily used for debugging
+		//expect only one argument with command
+		if( args.size() != 1 )
+			return "The command takes one argument. Correct usage is GROUPCHATPRINT <Group Name>.";
+
+		return remoteGameInterface.printGroupChat( args.get(0));
+
+	});
+
+	commandFunctions.put("JOIN", (name, args) -> {
+		//expect only one argument with command
+		if( args.size() != 1 )
+			return "The command takes one argument. Correct usage is JOIN <Group Name>.";
+
+		return remoteGameInterface.GCJoin( args.get(0), name);
+	});
+
+        commandFunctions.put("GROUPCHATHELP", (name, args) -> {
+            //expect only one argument with command
+            return remoteGameInterface.GCGetHelp(name);
+        });
+	//416_GroupChat END
     }
 
     /**
@@ -473,6 +516,7 @@ public class CommandRunner {
         private CommandFunction<String, ArrayList<String>, String> function;
 
         /**
+         * A constructed for the nested Command class that will initialize all variables for the class.
          * @param id name of the command
          * @param arguments arguments of the command
          * @param description text description of the command
@@ -485,6 +529,7 @@ public class CommandRunner {
         }
 
         /**
+         * A method for running a command using the passed arraylist as the arguments for the command.
          * @param name name of the command
          * @param args list of text arguments form input
          * @return the String returned by the execution of the command
@@ -494,6 +539,7 @@ public class CommandRunner {
         }
 
         /**
+         * Accessor for the id variable of a command
          * @return the id of this command
          */
         public String getId() {
@@ -501,14 +547,16 @@ public class CommandRunner {
         }
 
         /**
-         * @return list of aliases for this command
+         * Accessor for the arguments variable of a command
+         * @return the arguments of this command
          */
         public String getAlias() {
             return alias;
         }
 
         /**
-         * @param newAliases
+         * Accessor for the description variable of a command
+         * @return the description of this command
          */
         public void setAlias(String newAlias) {
             alias = newAlias;
@@ -521,6 +569,7 @@ public class CommandRunner {
     private HashMap<String, Command> commands = new HashMap<String, Command>();
 
     /**
+     * A constructor for the CommandRunner class which initializes the remoteGameInterace variable and the commandsInfo variable, as well as, sets up the list of functions and commands.
      * @param rgi remote game interface
      * @param commandsFile path to file with command descriptions
      * @return new CommandRunner
@@ -528,12 +577,16 @@ public class CommandRunner {
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
         this.remoteGameInterface = rgi;
         this.commandsInfo = parseCommandsFile(commandsFile);
+        censorList = loadCensorList();    //409_censor load censor list
+	this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();
     }
 
     /**
+     * Creates a hashmap for the available commands as well as aliases for those commands and links each command to its description
      * @param descriptions map with command names as keys and their descriptions as values
+     * @return the hashmap of commands and their descriptions
      */
     private void createCommands() {
         HashMap<String, String> aliasesMap = getAliasesFromFile();
@@ -590,6 +643,7 @@ public class CommandRunner {
     }
 
     /**
+     * A method for executing one of the commands for the game, done in a way such that any command could be run regardless of how it works.
      * @param command name of the command to be run
      * @param args list of arguments from input
      * @param playerName name of player running the command
@@ -636,6 +690,7 @@ public class CommandRunner {
     private String helpCommandUI;
 
     /**
+     * Converts the available commands into a string and returns it to the user. 
      * @return string with commands name, accepted arguments and descriptions
      */
     public String helpDisplay() {
@@ -685,7 +740,7 @@ public class CommandRunner {
         // Add name
         String name = ((String) cmd.get("name")).toUpperCase();
         uiBuild.append(String.format("%-15s", name));
-        
+
         // Get alias
         String alias = commands.get(name).getAlias();
         Boolean aliasSet = alias.equals("");
@@ -762,7 +817,7 @@ public class CommandRunner {
         uiBuild.append("\n");
         return uiBuild.toString();
     }
-    
+
     private void createHelpUI(ArrayList<JSONObject> commands) {
         // parsed array
         java.util.Map<String, ArrayList<JSONObject>> categoriesMap = parseCommandsCategories(commands);
@@ -788,7 +843,7 @@ public class CommandRunner {
         uiBuild.append(String.join("", Collections.nCopies(78, "=")) + "\n");
         uiBuild.append(String.join("", Collections.nCopies((int) (78 - misc.length()) / 2, " ")) + misc.toUpperCase() + "\n");
         uiBuild.append(String.join("", Collections.nCopies(78, "=")) + "\n");
-        
+
         // add MISC commands
         for (JSONObject cmd : categoriesMap.get("MISCELLANEOUS")) {
             uiBuild.append(getCommandHelpUI(cmd));

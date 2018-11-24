@@ -314,7 +314,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public String getCurrentSpirits(String playerName) throws RemoteException {
         return core.getCurrentSpirits(playerName);
     }
- 
+
 
     @Override
     public String gift(String yourname,String name, double amount) throws RemoteException {
@@ -422,7 +422,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
       //Rock Paper Scissors Battle Code here--------------------------------------
       public void challenge(String challenger, String player2, int rounds) throws RemoteException
-      { 
+      {
 	      core.challenge(challenger, player2, rounds);
       }
 
@@ -504,7 +504,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
     
     /**
-     * [clearWhiteboard description]
+     * Returns a string notifying the player that the message stored in the Whiteboard was erased.
      * @param  playerName
      * @return message to be displayed to player
      * @throws RemoteException
@@ -514,7 +514,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
     
     /**
-     * [writeWhiteboard description]
+     * Returns a string to the player notifying them whether their message was invalid, whether it exceeded the maximum character length, or that their message was saved to the Whiteboard.
      * @param  playerName
      * @param  message
      * @return message to be displayed to player
@@ -531,4 +531,49 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public void saveWhiteboards() throws RemoteException {
         core.saveWhiteboards();
     }
+    //416_GroupChat START
+    public String createGroupChat( String chatGroupName, String playerName) throws RemoteException
+    {
+	return core.createGroupChat( chatGroupName, playerName);
+    }
+
+    public String printGroupChat( String chatGroupName) throws RemoteException
+    {
+	    return core.printGroupChat( chatGroupName );
+    }
+
+    public boolean checkGCExists(String groupChatName) throws RemoteException
+    {
+	    return core.checkGCExists( groupChatName );
+    }
+
+     public String GCInvite( String groupName, String playerInvited, String playerInviting) throws RemoteException
+    {
+        return core.GCInvite( groupName, playerInvited, playerInviting);
+    }
+
+    public void GCMessage( String groupName, String playerName, String rawInput) throws RemoteException
+    {
+        core.GCMessage( groupName, playerName, rawInput);
+    }
+
+    public String GCLeave( String groupName, String playerName) throws RemoteException
+    {
+        return core.GCLeave( groupName, playerName);
+    }
+
+     public String GCJoin( String groupName, String playerName) throws RemoteException
+     {
+        return core.GCJoin( groupName, playerName);
+     }
+
+     public boolean checkGCMembership( String groupName, String playerName) throws RemoteException
+     {
+        return core.checkGCMembership( groupName, playerName);
+     }
+    public String GCGetHelp(String name)
+    {
+        return core.GCGetHelp(name);
+    }
+    //416_GroupChat END
 }
