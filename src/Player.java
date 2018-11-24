@@ -22,7 +22,7 @@ public class Player {
   private Direction currentDirection;
   private PrintWriter replyWriter = null;
   private DataOutputStream outputWriter = null;
-  public Money money;
+  private Money money;
   // the player's list of all his/her Quests
   private ArrayList<Quest> questBook = new ArrayList<Quest>();
   private String inTradeWithName = null;
