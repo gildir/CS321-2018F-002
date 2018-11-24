@@ -23,7 +23,7 @@ public class GameCore implements GameCoreInterface {
     private final Set<NPC> npcSet;
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
-    private final int minimumSpawnTime=50, maximumSpawnTime=300;
+    private final int minimumSpawnTime=100, maximumSpawnTime=600;
     
     private final GiftsTracker giftsTracker;
 
@@ -396,10 +396,10 @@ public class GameCore implements GameCoreInterface {
                 return "Cannot whisper yourself" + " " + date.toString();
             else
             {
-		
-		if(playerSending.searchIgnoredBy(name2)){
-			return "Cannot whisper player that has ignored you";
-	    	}
+  
+  if(playerSending.searchIgnoredBy(name2)){
+   return "Cannot whisper player that has ignored you";
+      }
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
 
