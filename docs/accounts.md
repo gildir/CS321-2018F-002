@@ -3,6 +3,7 @@
 ## Player Database
 Written by: Cody Kidwell
 
+
 Where is it? Separate class utilized by GameClient.java
 
 The player database was created for the storage of all user account information including the user's encrypted password. This information will not be available to users to see but is stored on the server for the game's use. Currently usernames and passwords are stored on this database for account creation and logging in and out (all listings listed below). In addition, the user account information is not permanent on the database. Users will be able to delete their account information at request upon logging out. Users should not worry about this feature as it is solely used by the game server to ensure the player is logged into their correct account.
@@ -25,12 +26,15 @@ What is stored in the database?
 * encrypt/decrypt 
 This class also includes other methods that are required for other features such as hasAccount() checkSecurityQestions(String name)(well documented inside the Java file).
 
+
 > ![UserDatabase](../images/userdatabase.png)
 
 ## Account Creation
 Written by: Cody Kidwell
 
+
 Where is it? In GameClient.java and it utilizes PlayerDatabase.java writing to a csv file
+
 
 When a player first boots up the game they will be prompted to login or create a new account. New players will need to prompt the second option to create a new account. The game server will ask the user to input a new username they would like to have for their account. If the username is not available, it will tell them that that username is not available and prompt them to enter a new username. Otherwise, if the username is available they will be asked to verify that they want that username. Once they verify the username, they will enter their new password. Following this, they will be logged in and their account login information will be saved to the database for future login attempts. Previous users do not need to create a new account each time they boot the game, but now be able to login with their already created accounts.
 
@@ -76,6 +80,7 @@ Logging Out:
 ## Permanently Removing Account
 Written by: Brett Mullins
 
+
 Where is it? In GameClient.java and it utilizes PlayerDatabase.java reading and writing to a csv file
 
 If the user wants to remove his or her character permanently from the game, then the user should follow these steps to accomplish deletion. It is important for the user to realize this process is PERMANTENT and once an account is deleted it can NEVER be recovered. First, if the user is not already logged in, log into the game as a user normally would. The next step would be to enter the quit command into the user prompt. At that point, the user will be prompted if he or she wants to permanently delete their player and account. The user should then type "Y" (for yes). The user will then be prompted for his or her password. This is to prevent unwanted or accidental deletion of the character and account. After the password is entered correctly, the removal process will take place. If the password is entered incorrectly, the user is not deleted and is logged out normally.
@@ -92,6 +97,7 @@ If the user wants to remove his or her character permanently from the game, then
 
 ## Timeout Due to Inactivity
 Written by: Haroon Tanveer
+
 
 Where is it? Public class within GameClient.java
 
@@ -114,6 +120,7 @@ GameClient.java.
 
 ## Login/Logout Log File
 Written by: Joseph Saah
+
 
 Where is it? In GameClient.java and it utilizes PlayerDatabase.java writing to a txt file
 
