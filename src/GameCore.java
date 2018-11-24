@@ -23,7 +23,7 @@ public class GameCore implements GameCoreInterface {
     private final Set<NPC> npcSet;
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
-    private final int minimumSpawnTime=100, maximumSpawnTime=600;
+    private final int minimumSpawnTime=50, maximumSpawnTime=300;
     
     private final GiftsTracker giftsTracker;
 

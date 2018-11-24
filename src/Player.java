@@ -272,6 +272,8 @@ public class Player {
       
       if(unitsRemoved[index] > 0){
         valueCopy -= unitVals[index] * unitsRemoved[index];
+         int scale = (int) Math.pow(10, 2);
+         valueCopy = (double) Math.round(valueCopy * scale) / scale;
       }
       index++;
     }
@@ -285,7 +287,7 @@ public class Player {
       return;
     }
     // player must overcompensate and then get change
-    else if(valueCopy > 0){
+    else if(valueCopy > 0.0){
       double currentSum = value - valueCopy;
       // round to the nearest dollar, if there are enough dollars
       double rounded = Math.ceil(value);
@@ -355,11 +357,14 @@ public class Player {
        
        if(unitsGiven[index] > 0){
          valueCopy -= unitVals[index] * unitsGiven[index];
+         int scale = (int) Math.pow(10, 2);
+         valueCopy = (double) Math.round(valueCopy * scale) / scale;
        }
        index++;
      }
-     if(valueCopy > 0)
+     if(valueCopy - 0.0099999999999999  > (float)0.0){
       return false;
+     }
      return true;
   }
   
@@ -378,22 +383,24 @@ public class Player {
     int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
     double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
     int index = 0;
-    
+
     while(index < 5){
       for (int i = 1; i <= numUnits[index]; i++){
         if(unitVals[index] * i > valueCopy){
-          break;
+          break; 
         }
         unitsGiven[index]++;
       }
       
       if(unitsGiven[index] > 0){
         valueCopy -= unitVals[index] * unitsGiven[index];
+        int scale = (int) Math.pow(10, 2);
+        valueCopy = (double) Math.round(valueCopy * scale) / scale;
       }
       index++;
     }
     
-    if(valueCopy > 0){ 
+    if(valueCopy - 0.0099999999999999 > (float)0.0){ 
       replyWriter.println("You don't have enough money with the units of money that you have!");
       return moneyToGive;
     }
