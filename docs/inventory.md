@@ -49,10 +49,12 @@ The following image depicts the proper order items should be entered in the csv 
 
 ## User Commands
 ### Dropoff
-The dropoff command removes an item from the player inventory and places it in the room inventory. To use this command simply type `dropoff <item_name>`. Once the dropoff command is entered, the dropoff function will check that the user provided an item to drop and that the item exists in the player inventory. If these conditions are met, the item will be moved from the user inventory to the room inventory. If the user doesn't specify an item to dropoff or the item provided doesn't exist in the user's inventory, a message will be displayed to notify the user.
+
+The dropoff command removes an item from the player inventory and places it in the room inventory. To use this command simply type `DROPOFF <item_name>`. Once the dropoff command is entered, the dropoff function will check that the user provided an item to drop and that the item exists in the player inventory. If these conditions are met, the item will be moved from the user inventory to the room inventory. If the user doesn't specify an item to dropoff or the item provided doesn't exist in the user's inventory, a message will be displayed to notify the user.
 
 ### OfferItem
-The offerItem command gives the player the ability to offer an item to another player. To use this command simply type `offerItem <item_name> <player_name>`. The offerItem function will check that the user entered an item to offer, as well as a player to offer the item to. If these conditions are satisfied it will check that the item exists in the inventory, otherwise it will display an error message to notify the player. If the item doesn't exist in the inventory an error message will also be displayed.
+The offerItem command gives the player the ability to offer an item to another player. To use this command simply type `OFFERITEM <item_name> <player_name>`. The offerItem function will check that the user entered an item to offer, as well as a player to offer the item to. If these conditions are satisfied it will check that the item exists in the inventory, otherwise it will display an error message to notify the player. If the item doesn't exist in the inventory an error message will also be displayed.
+
 
 Below is an example output of the dropoff function. If an item is not provided an error message is displayed. A message is also displayed if the item is been dropoff successfully.
 
@@ -60,8 +62,22 @@ The offerItem function works in a similar way but a player name is also required
 
 ![dropoff](../images/dropoff.png "Dropoff Example")
 
-Both of these functions are called in GameClient.java and implemented in GameCore.java.
-The functions signatures are defined in the GameObjectInterface.java. The dropoff takes two strings as parameters: player name and item name. The offerItem function takes three parameters: the name of the player offering the item, the item name, and the name of the target player. 
+
+### SortInventory
+User inventory can be sorted by three attributes: name, value, or weight.
+To sort the inventory just type `SORTINVENTORY <attribute>`. Then type `INVENTORY` to see the items sorted.
+
+### OfferItem
+This command allows us to offer items from our inventory to other players. Simply type `OFFERITEM <playerName> <itemToOffer>`.
+
+### OfferResponse
+This command is use to reply to an offer from another player. Once a player has offered an item, reply by typing `OFFERRESPONSE <decision>`. Where the decision would be accept or refuse.
+
+### Describe
+This command describes items in the inventory. In order to use it type `DESCRIBE <item>`, where item is the item in the inventory you want to describe.
+
+### UseItem
+This command allows us to use items in our inventory. By using this command, the item is deleted from inventory and the player gets a 'title' based on the item used for 2 minutes. Just type `USEITEM <item>`, where item is the item in your inventory you want to use.     
 
 ## Authors
 __Items:__ Christopher French  

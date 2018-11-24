@@ -65,6 +65,7 @@ GameCore class is responsible for underlying actions. ListAllPlayers is a method
 Chat logs are now saved to a log file for an admin to view
 
 
+
 ## 404) Reply
 ### Usage
 There is one way to invoke the reply command:
@@ -163,6 +164,7 @@ Player that has been ignored, gets a message when messaging the player ignoring 
 
 
 
+
 ## 407) List Ignore Users ![list](../images/database.svg)
 ### Description
 You want to check all the players you have ignored. Ignore -l List all players who are ignored by you. Basically, this function allows you to list all the players that you muted. You might mute players due to misbehavior. You might to use this functionality to find out about those players in case you want to unmute them back or just for checking. List ignore users is your personal blacklist so don’t share it with any one. 
@@ -220,6 +222,7 @@ Functions: GameCore.java loadCensorList(), scrubMessage()
 
 
 
+
 ## 412) Shout ![shout](../images/megaphone.svg)
 ### Usage
 There is one way to invoke the shout command:
@@ -258,6 +261,7 @@ Players are able to define and use a chat prefix by editing chatConfig.txt
 ## 416) Group Chat
 ### Description 
 Players are able to add and talk to players in a group chat. 
+
 
 
 ## Team Members
