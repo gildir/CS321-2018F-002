@@ -13,9 +13,16 @@ import java.util.Scanner;
 */
 public class Map
 {
-    	private final GameCore gameCore;
+	public static final int SPAWN_ROOM_ID = 1;
+
+	private final GameCore gameCore;
 	private final LinkedList<Room> map;
-	//Constructor now takes a filename as an argument
+
+	/*
+	 * construct a new Map
+	 * @param gameCore A reference to the gameCore this map is present in
+	 * @param filename The filename for a Map file to read from
+	 */
 	public Map(GameCore gameCore, String filename)
 	{
 		
