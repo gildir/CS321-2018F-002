@@ -14,7 +14,7 @@ import java.util.*;
  * @author Kevin
  */
 public class Player {
-
+  
   private LinkedList<Item> currentInventory;
   private String name;
   private String lastWhisperName;
@@ -22,9 +22,9 @@ public class Player {
   private Direction currentDirection;
   private PrintWriter replyWriter = null;
   private DataOutputStream outputWriter = null;
-  private Money money;
+  public Money money;
   // the player's list of all his/her Quests
- private ArrayList<Quest> questBook = new ArrayList<Quest>();
+  private ArrayList<Quest> questBook = new ArrayList<Quest>();
   private String inTradeWithName = null;
   private String inTradeWithItem = null;
   
@@ -40,15 +40,15 @@ public class Player {
     this.currentInventory = new LinkedList<>();
     this.money = new Money(20);
     try
-  {
-   // add a tutorial Quest to the player
-   questBook.add(new Quest(this, new File("go_to_dk_hall.quest")));
-   questBook.get(0).printQuest();
-  }
-  catch (FileNotFoundException fnfe)
-  {
-   System.out.println("Couldn't add quest: file containing quest information not found");
-  }
+    {
+      // add a tutorial Quest to the player
+      questBook.add(new Quest(this, new File("go_to_dk_hall.quest")));
+      questBook.get(0).printQuest();
+    }
+    catch (FileNotFoundException fnfe)
+    {
+      System.out.println("Couldn't add quest: file containing quest information not found");
+    }
     /* START 405_ignore*/
     this.ignoreList = new ArrayList<String>();
     this.ignoredByList = new ArrayList<String>();
@@ -126,11 +126,11 @@ public class Player {
     }
     return null;
   }
-
+  
   /**
- * Sorts items in the inventory by a given attribute
- * @param attribute the attribute to sort inventory by
- */
+   * Sorts items in the inventory by a given attribute
+   * @param attribute the attribute to sort inventory by
+   */
   public void sortInventoryItems(String attribute) {
     Collections.sort(this.currentInventory, new Comparator<Item>() {
       @Override
@@ -138,15 +138,15 @@ public class Player {
         int item1 = 0;
         int item2 = 0;
         if(attribute.equalsIgnoreCase("name")) {
-            return i1.getItemName().compareTo(i2.getItemName());
+          return i1.getItemName().compareTo(i2.getItemName());
         }
         if(attribute.equalsIgnoreCase("weight")) {
-              item1 = (int)(i1.getItemWeight() * 10000);
-              item2 = (int)(i2.getItemWeight() * 10000);
+          item1 = (int)(i1.getItemWeight() * 10000);
+          item2 = (int)(i2.getItemWeight() * 10000);
         }
         if(attribute.equalsIgnoreCase("value")) {
-            item1 = (int)(i1.getItemValue() * 10000);
-            item2 = (int)(i2.getItemValue() * 10000);
+          item1 = (int)(i1.getItemValue() * 10000);
+          item2 = (int)(i2.getItemValue() * 10000);
         }
         return Integer.compare(item1, item2);
       }
@@ -191,18 +191,18 @@ public class Player {
   public void setCurrentRoom(int room) {
     this.currentRoom = room;
     updateAllQuests();
-    }
-
- // updates all objectives in the player's questBook
- // for all Quests in the Player's questBook
- // if the Quest hasn't been completed, update that quest
- private void updateAllQuests() {
-  for (Quest q : questBook) {
-   if ( !(q.getQuestComplete()) ) {
-    q.updateQuest();
-   }
   }
- }
+  
+  // updates all objectives in the player's questBook
+  // for all Quests in the Player's questBook
+  // if the Quest hasn't been completed, update that quest
+  private void updateAllQuests() {
+    for (Quest q : questBook) {
+      if ( !(q.getQuestComplete()) ) {
+        q.updateQuest();
+      }
+    }
+  }
   
   public String getCurrentDirection() {
     return this.currentDirection.name();
@@ -216,7 +216,7 @@ public class Player {
   }
   
   public void addMoney(double value) {
-   // System.out.printf("%f", value);
+    // System.out.printf("%f", value);
     Money added = new Money();
     int fives = (int)(value / 5);
     int ones = (int)(value % 5);
@@ -265,19 +265,19 @@ public class Player {
       for (int i = 1; i <= numUnits[index]; i++){
         if(unitVals[index] * i > valueCopy){
           break;
-
+          
         }
         unitsRemoved[index]++;
       }
       
       if(unitsRemoved[index] > 0){
         valueCopy -= unitVals[index] * unitsRemoved[index];
-         int scale = (int) Math.pow(10, 2);
-         valueCopy = (double) Math.round(valueCopy * scale) / scale;
+        int scale = (int) Math.pow(10, 2);
+        valueCopy = (double) Math.round(valueCopy * scale) / scale;
       }
       index++;
     }
-   
+    
     if(valueCopy == 0.0){
       this.money.numFives -= unitsRemoved[0];
       this.money.numOnes -= unitsRemoved[1];
@@ -288,31 +288,49 @@ public class Player {
     }
     // player must overcompensate and then get change
     else if(valueCopy > 0.0){
-      double currentSum = value - valueCopy;
-      // round to the nearest dollar, if there are enough dollars
-      double rounded = Math.ceil(value);
-      int extraOnes = 1;
-      double valRemoved = 0;
-      while(unitsRemoved[1] + extraOnes <= numUnits[1]){
-        // add ones until the value has been met
-        if(currentSum + extraOnes >= value){
-          unitsRemoved[2] = 0;
-          unitsRemoved[3] = 0;
-          unitsRemoved[4] = 0;
-          unitsRemoved[1] += extraOnes;
-          // value has been met so change player money and return
-          this.money.numFives -= unitsRemoved[0];
-          this.money.numOnes -= unitsRemoved[1];
-          this.money.numQuarters -= unitsRemoved[2];
-          this.money.numDimes -= unitsRemoved[3];
-          this.money.numPennies -= unitsRemoved[4];
-          currentSum += extraOnes;
-          addMoney(rounded - value);
-          return;
-        }
-        extraOnes++;
+      int scale = (int) Math.pow(10, 2);
+      valueCopy = (double) Math.round(valueCopy * scale) / scale;
+      
+      if(valueCopy <= 0.10 && unitsRemoved[3] + 1 <= numUnits[3]){
+        unitsRemoved[3] += 1;
+        unitsRemoved[4] = 0;
       }
+      else if(valueCopy <= 0.25 && unitsRemoved[2] + 1 <= numUnits[2]){
+        unitsRemoved[2] += 1;
+        unitsRemoved[3] = 0;
+        unitsRemoved[4] = 0;
+      }
+      else if(valueCopy <= 1.0 && unitsRemoved[1] + 1 <= numUnits[1]){
+        unitsRemoved[1] += 1;
+        unitsRemoved[2] = 0;
+        unitsRemoved[3] = 0;
+        unitsRemoved[4] = 0;
+      }
+      else if(valueCopy <= 5.0 && unitsRemoved[0] + 1 <= numUnits[0]){
+        unitsRemoved[0] += 1;
+        unitsRemoved[1] = 0;
+        unitsRemoved[2] = 0;
+        unitsRemoved[3] = 0;
+        unitsRemoved[4] = 0;
+      }
+      // remove player money
+      this.money.numFives -= unitsRemoved[0];
+      this.money.numOnes -= unitsRemoved[1];
+      this.money.numQuarters -= unitsRemoved[2];
+      this.money.numDimes -= unitsRemoved[3];
+      this.money.numPennies -= unitsRemoved[4];
+      // give player change
+      double amountGiven = 0;
+      for(int i = 0; i < 5; i++){
+        amountGiven += unitsRemoved[i] * unitVals[i];
+      }
+      amountGiven = (double) Math.round(amountGiven * scale) / scale;
+      double change = amountGiven - value;
+      change = (double) Math.round(change * scale) / scale;
+      addMoney(change);
+      return;
     }
+    
   }
   
   public String viewMoney() {
@@ -322,50 +340,50 @@ public class Player {
   public void setDirection(Direction direction){
     this.currentDirection = direction;
   }
-
+  
   public String getInTradeWithName(){
     return this.inTradeWithName;
   }
-
+  
   public String getInTradeWithItem(){
     return this.inTradeWithItem;
   }
   public void setInTradeWithName(String playerName){
     this.inTradeWithName = playerName;
   }
-
+  
   public void setInTradeWithItem(String itemName){
     this.inTradeWithItem = itemName;
   }
   
   public boolean hasUnits(double amount) {
-     // send money in units available to player 
-     // if correct units are unavaialable, then return and give a message
-     double valueCopy = amount;
-     int[] unitsGiven = new int[5];
-     int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
-     double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
-     int index = 0;
-     
-     while(index < 5){
-       for (int i = 1; i <= numUnits[index]; i++){
-         if(unitVals[index] * i > valueCopy){
-           break;
-         }
-         unitsGiven[index]++;
-       }
-       
-       if(unitsGiven[index] > 0){
-         valueCopy -= unitVals[index] * unitsGiven[index];
-         int scale = (int) Math.pow(10, 2);
-         valueCopy = (double) Math.round(valueCopy * scale) / scale;
-       }
-       index++;
-     }
-     if(valueCopy - 0.0099999999999999  > (float)0.0){
+    // send money in units available to player 
+    // if correct units are unavaialable, then return and give a message
+    double valueCopy = amount;
+    int[] unitsGiven = new int[5];
+    int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
+    double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
+    int index = 0;
+    
+    while(index < 5){
+      for (int i = 1; i <= numUnits[index]; i++){
+        if(unitVals[index] * i > valueCopy){
+          break;
+        }
+        unitsGiven[index]++;
+      }
+      
+      if(unitsGiven[index] > 0){
+        valueCopy -= unitVals[index] * unitsGiven[index];
+        int scale = (int) Math.pow(10, 2);
+        valueCopy = (double) Math.round(valueCopy * scale) / scale;
+      }
+      index++;
+    }
+    if(valueCopy - 0.0099999999999999  > (float)0.0){
       return false;
-     }
-     return true;
+    }
+    return true;
   }
   
   public Money giveMoney(Player giver,Player receiver,double value){
@@ -383,7 +401,7 @@ public class Player {
     int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
     double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
     int index = 0;
-
+    
     while(index < 5){
       for (int i = 1; i <= numUnits[index]; i++){
         if(unitVals[index] * i > valueCopy){
