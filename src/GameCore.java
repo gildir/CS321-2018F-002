@@ -143,7 +143,6 @@ public class GameCore implements GameCoreInterface {
                     try {
    //wait a random amount of time spawn another item
                        Thread.sleep((int)(Math.random()*(maximumSpawnTime+1))+minimumSpawnTime);
-
                         object = (Item)objects.get(rand.nextInt(objects.size())).clone();
                         room = map.randomRoom();
                         room.addObject(object);
@@ -571,7 +570,6 @@ public class GameCore implements GameCoreInterface {
     public String reply(String name, String message, ArrayList<String> censorList) {
         Player playerSending = this.playerList.findPlayer(name);
         if(playerSending.getLastWhisperName() == null) {
-
             return "You have not received a whisper to reply to." + " " + date.toString();
         }
         String name2 = playerSending.getLastWhisperName();
@@ -983,7 +981,6 @@ public class GameCore implements GameCoreInterface {
                         if(response.equalsIgnoreCase("Accept")){
                             if(player.getCurrentInventory().size() < 10){
                                 Item object = playerOffering.removeObjectFomInventory(target);
-
                                 object.setItemValue(object.getItemValue() * 0.8);
                                 player.addObjectToInventory(object);
                                 playerOffering.getReplyWriter().println(playerName + " accepted your " + target);
@@ -1015,7 +1012,6 @@ public class GameCore implements GameCoreInterface {
             }
 
     }
-
 
     /**
      * Attempts to use an item the player has called < itemName >. Will return a message on any success or failure.
@@ -1323,7 +1319,6 @@ public class GameCore implements GameCoreInterface {
     public String ignore(String name, String ignoreName) {
               if( name.equalsIgnoreCase(ignoreName) )
                       return "You can't ignore yourself.";
-      
               //verify player being ignored exists
               Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
               if( ignoredPlayer == null )
@@ -1418,7 +1413,6 @@ public class GameCore implements GameCoreInterface {
   }
 }
 
-
  public synchronized String buy(String playerName, String itemName) {
      //format user input for item
      itemName = itemName.toLowerCase();
@@ -1433,7 +1427,6 @@ public class GameCore implements GameCoreInterface {
      //buyItem() will handle removing money since we do not have an Item obj
      Boolean did_buy = shop.buyItem(player, itemName);
      player.getReplyWriter().println(shop.displayShop());
-
      try{Thread.sleep(500);}
       catch (InterruptedException e){
         return "thread exception!";
@@ -1837,7 +1830,6 @@ public class GameCore implements GameCoreInterface {
     String roundResult  = "";
     if(p1[b.getCurrentRound()] == p2[b.getCurrentRound()])
     {
-
       //tie
       switch(p1[b.getCurrentRound()])
       {
@@ -1965,7 +1957,6 @@ public class GameCore implements GameCoreInterface {
 
 
 
-
       b.incP1Score();
 
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
@@ -2078,7 +2069,6 @@ public class GameCore implements GameCoreInterface {
       activeBattles.remove(b);
       writeLog(b);
 
-
    // Added by Brendan
    this.leaderboard.incrementScore(play1.getName(), false);
    this.leaderboard.incrementScore(play2.getName(), true);
@@ -2149,7 +2139,6 @@ public class GameCore implements GameCoreInterface {
       return;
     }
   }
-
 
   public void writeLog(Battle b)
   {
@@ -2229,7 +2218,6 @@ public class GameCore implements GameCoreInterface {
       player.getReplyWriter().println(topTenLeaderBoard);
   }
 
-
   public void getRank(String player)
   {
     Player p = this.playerList.findPlayer(player);
@@ -2285,7 +2273,6 @@ public class GameCore implements GameCoreInterface {
   }
   
   /**
-
    * Method that players can use to call the erase method of the whiteboard in the same room that they are in, which replaces the message of that whiteboard with the empty string.
    * @param  playerName
    * @return message to be displayed to player

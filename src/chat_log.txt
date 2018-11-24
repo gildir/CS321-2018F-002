@@ -1,4 +1,0 @@
-trump whispers, "hello" to julius Sun Nov 18 20:42:16 EST 2018
-trump says, "hello" in the room 1
-trump shouts, "hello" Sun Nov 18 20:42:16 EST 2018
-julius whispers, "hello" to trump Sun Nov 18 20:42:16 EST 2018
