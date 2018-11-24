@@ -329,8 +329,7 @@ public class Player {
       change = (double) Math.round(change * scale) / scale;
       addMoney(change);
       return;
-    }
-    
+    } 
   }
   
   public String viewMoney() {
