@@ -4,6 +4,9 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Scanner;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  *
@@ -24,6 +27,8 @@ public class Player {
     private ArrayList<String> ignoredByList;
     /* END 405_ignore variables*/
 
+    private ArrayList<String> censorList;// 409_censor
+
     public Player(String name) {
         this.currentRoom = 1;
         this.currentDirection = Direction.NORTH;
@@ -34,6 +39,7 @@ public class Player {
         this.ignoreList = new ArrayList<String>();
         this.ignoredByList = new ArrayList<String>();
         /* END 405_ignore  */
+	this.censorList = null; //409_censor
     }
 
     public void turnLeft() {
@@ -259,4 +265,14 @@ public class Player {
  public void removeIgnoredBy( String name) {
 		ignoredByList.remove(name);
     }
+    
+    //START 409_censor
+    public ArrayList<String> getCensorList(){
+        return censorList;
+    }
+
+    public void setCensorList( ArrayList<String> censorList ){
+        this.censorList = censorList;
+    }
+    //END 409_censor
 }

@@ -1381,6 +1381,7 @@ public class GameCore implements GameCoreInterface {
   }
 
     //409_censor START
+    
     private String scrubMessage( String message, ArrayList<String> censorList ){
         if( message == null || message.equals(' ') )
                 return message;
@@ -1394,6 +1395,14 @@ public class GameCore implements GameCoreInterface {
         }
         return message;
     }
+    public void setPlayerCensorList( ArrayList<String> censorList, String playerName ){
+        playerList.findPlayer(  playerName ).setCensorList( censorList );
+    }
+
+    public ArrayList<String> getPlayerCensorList( String playerName ){
+        return playerList.findPlayer( playerName ).getCensorList();
+    }
+
     //409_censor END
 
     //416_GroupChat Start

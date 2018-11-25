@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Scanner;
 
 /**
  *
@@ -226,6 +227,7 @@ public class GameClient {
                         }
                         else{
                             nameConf = true; nameSat = true;
+			    setPlayerCensorList();  //409_censor
                         }
                     }
                     else if (entry.equalsIgnoreCase("N")){
@@ -508,4 +510,36 @@ public class GameClient {
             }
         }
     }
+
+    //409_censor START
+    public void setPlayerCensorList(){
+        Scanner fileIn = null;
+        String tempStr = null;
+        ArrayList<String> temp = new ArrayList<String>();
+        try{
+            fileIn = new Scanner( new FileReader( "censorlist.txt" ) );
+            while( fileIn.hasNextLine() ){
+                tempStr = fileIn.nextLine();
+                //check if string from file is empty or all spaces
+                //ignore if it is, add to ArrayList temp if it is not
+                if( !tempStr.isEmpty() && !tempStr.replaceAll("\\s+","").isEmpty() )
+                        temp.add( tempStr );
+            }
+            if(false){    //Used for debugging
+                System.out.println( "******Contents of censorList: " + temp.toString() );
+            }
+        }catch( IOException e ){
+            System.out.println( e );
+        }finally{
+           if( fileIn != null )
+                   fileIn.close();
+        }
+	try{
+	    remoteGameInterface.setPlayerCensorList( temp, this.playerName );   
+	}catch( RemoteException re){
+	   
+	}
+    }
+    //409_censor END
+
 }

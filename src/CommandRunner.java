@@ -441,7 +441,7 @@ public class CommandRunner {
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi) {
-        censorList = loadCensorList();    //409_censor load censor list
+        //censorList = loadCensorList();    //409_censor load censor list
 	this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();
@@ -453,7 +453,7 @@ public class CommandRunner {
      * @return new CommandRunner
      */
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
-        censorList = loadCensorList();    //409_censor load censor list
+        //censorList = loadCensorList();    //409_censor load censor list
 	this.remoteGameInterface = rgi;
         setupFunctions();
 
@@ -591,12 +591,12 @@ public class CommandRunner {
      */
     public void run(String command, ArrayList<String> args, String playerName) {
         // System.out.println(playerName + ": " + command + '(' + args + ')');
-
         Command cmd = commands.get(command.toUpperCase());
 
         if (cmd != null) {
 
             try {
+	        censorList = remoteGameInterface.getPlayerCensorList( playerName );  //409_censor
                 String result = cmd.run(playerName, args);
                 if (result != null)
                     System.out.println(result);
@@ -627,7 +627,7 @@ public class CommandRunner {
         return s;
     }
     //START 409_censor
-    private ArrayList<String> loadCensorList(){
+    /*private ArrayList<String> loadCensorList(){
         Scanner fileIn = null;
         String tempStr = null;
 	ArrayList<String> temp = new ArrayList<String>();
@@ -651,6 +651,6 @@ public class CommandRunner {
         }
         return temp;    //return temp variable, it has all items in censorlist.txt
     }
-    //END 409_censor
+    *///END 409_censor
 
 }
