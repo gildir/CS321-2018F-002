@@ -86,7 +86,7 @@ public class GroupChatTracker{
 		}
 		return false;
 	}
-
+	
 	//No need to check if GroupChat exists. In Game, this is a group chat command, which implies group exists.
 	//  function called when user leaves a group.
 	//Prior to calling leaveGroup(), the following conditions are checked in GameCore:
