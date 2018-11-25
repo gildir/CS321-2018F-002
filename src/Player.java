@@ -4,16 +4,10 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Random;
-<<<<<<< HEAD
-import java.util.Scanner;
-import java.io.FileReader;
-import java.io.IOException;
-=======
 import java.util.*;
 import java.util.stream.Collectors;
 import java.io.File;
 import java.io.FileNotFoundException;
->>>>>>> 3a2ae61d74d62fa27cb691e655d65a66cbd726d6
 
 /**
  *
@@ -41,16 +35,11 @@ public class Player {
     private ArrayList<String> ignoredByList;
     /* END 405_ignore variables*/
 
-<<<<<<< HEAD
     private ArrayList<String> censorList;// 409_censor
 
-    public Player(String name) {
-        this.currentRoom = 1;
-=======
     public Player(GameCore gameCore, String name) {
         this.gameCore = gameCore;
         this.currentRoom = Map.SPAWN_ROOM_ID;
->>>>>>> 3a2ae61d74d62fa27cb691e655d65a66cbd726d6
         this.currentDirection = Direction.NORTH;
         this.name = name;
         this.currentInventory = new LinkedList<>();
@@ -647,7 +636,6 @@ public class Player {
                 player.broadcast(message);
         }
     }
-<<<<<<< HEAD
     
     //START 409_censor
     public ArrayList<String> getCensorList(){
@@ -659,6 +647,3 @@ public class Player {
     }
     //END 409_censor
 }
-=======
-}
->>>>>>> 3a2ae61d74d62fa27cb691e655d65a66cbd726d6
