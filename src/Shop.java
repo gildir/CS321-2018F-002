@@ -157,7 +157,8 @@ public class Shop {
 	  result += " 	" + inDemand.get(i).getItemName() + "\n";
   }
   //display items currently in the shop
-  result += "\nAMOUNT ................ ITEM/PRICE\n";
+  result += "\nSHOP INVENTORY\n";
+  result += "AMOUNT ................ ITEM/PRICE\n";
   if(items.size() == 0)
    result += "Shop is currently empty.\n";
   for(ItemStock item : itemList) {
