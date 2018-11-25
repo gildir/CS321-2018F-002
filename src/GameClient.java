@@ -55,6 +55,7 @@ public class GameClient {
                     runListener = false;
                     System.out.println("User has been inactive for 5 minutes.. logging off");
                     timer.cancel();
+
                     System.exit(-1);
                 }
                 catch (RemoteException ex) {
@@ -118,8 +119,8 @@ public class GameClient {
             String strName = "rmi://"+host+"/GameService";
             remoteGameInterface = (GameObjectInterface) Naming.lookup(strName);
 
-            //Sets the prefix for player chat
-            try {
+             //Sets the prefix for player chat
+             try {
                 BufferedReader chatConfig = new BufferedReader(new FileReader("chatConfig.txt"));
                 String line = chatConfig.readLine();
                 chatConfig.close();
@@ -167,9 +168,9 @@ public class GameClient {
             remoteOutputThread.start();
 
             // Init the CommandRunner
-            commandRunner = new CommandRunner(remoteGameInterface, "commands.csv");
+            commandRunner = new CommandRunner(remoteGameInterface, "commands.json");
             // commandRunner.run("help", null, this.playerName);
-            System.out.println(commandRunner.listCommands());
+            System.out.println(commandRunner.helpDisplay());
 
             // Collect input for the game.
             while(runGame) {
@@ -211,7 +212,12 @@ public class GameClient {
                     if(!PlayerDatabase.isUname(playerName)){
                         nameSat = false; continue;
                     }
-                    if(PlayerDatabase.isPlayer(playerName))
+                    if(remoteGameInterface.playerExists(playerName))
+                    {
+                        System.out.println("ERROR: USER IS ALREADY LOGGED ON");
+                        nameSat = false;
+                    }
+                    else if(PlayerDatabase.isPlayer(playerName))
                     {
                         System.out.println("Username already exits... Please enter a new username\n");
                         nameSat = false;
@@ -305,8 +311,12 @@ public class GameClient {
                     System.out.println("Please enter your username");
                     System.out.print("> ");
                     this.playerName = keyboardInput.readLine(); update();
-                    if(PlayerDatabase.isPlayer(playerName)) break;
-                    else System.out.println("Username is incorrect... Please enter a new username");
+                    if(PlayerDatabase.isPlayer(playerName))
+                    {
+                        if(!remoteGameInterface.playerExists(playerName)) break;
+                        else System.out.println("ERROR: USER IS ALREADY LOGGED IN\n");
+                    }
+                    else System.out.println("Username is incorrect... Please enter a new username\n");
                 }while(true); //exits the loop only through a break
 
                 boolean conf = false; newuser = false; boolean isPassword = false;
@@ -341,7 +351,7 @@ public class GameClient {
                     			update();
                     			if(PlayerDatabase.changePassword(playerName)) {
                     				update();
-                    				System.out.println("Password has been updated.");
+                                    System.out.println("Password has been updated.");
                                     passwordsEnteredCount = 0;
                     			}
                     			else System.out.println("Password update failed.");
@@ -381,7 +391,7 @@ public class GameClient {
                 } else if (keyboardStatement.equalsIgnoreCase("N")) {
                     break;
                 }
-                System.out.print("Would you like to permanently delete your player and account? (Y/N)");
+                System.out.print("Would you like to permanently delete your player and account? (Y/N) ");
                 keyboardStatement = keyboardInput.readLine();
                 update();
             } while (true);
@@ -427,10 +437,77 @@ public class GameClient {
             deleteCharacter();
         }
         update();
-        commandRunner.run(command, tokens, this.playerName);
-        update();
+	//416_GroupChat START
+	if( checkDynamicCommand( command, tokens, input) ){
+		//work on in checkDynamicCommand()
+	}
+	//416_groupChat END
+	else{
+	        commandRunner.run(command, tokens, this.playerName);
+        	update();
+	}
     }
+	//416_GroupChat START
+    
+    private boolean checkDynamicCommand( String command, ArrayList<String> tokens, String input){
+	try{
+	    String groupName = command.toLowerCase();
+            //check if groupname is being invoked
+	    if( remoteGameInterface.checkGCExists( groupName ) ){
+		//check if there is no additional tokens, there should be
+		if( tokens.size() == 0){
+                    //The error message depends on whether or not the user is part of the group. 
+		    if( remoteGameInterface.checkGCMembership( groupName, this.playerName ) ) 
+                        System.out.println("Command not used properly, type GROUPCHAT HELP for group chat context command help");
+                    else
+		        System.out.println("You're not in group [" + groupName + "].");
+	            return true;
+		}
 
+	        //group exists, check for groupchat context commands, ignore case
+	        switch( tokens.get(0).toLowerCase() )
+	        {
+	            //check for /invite
+	            case "/invite":
+			    //two command arguments are needed
+			    //there should only be 2 tokens left
+			    if( tokens.size() != 2)
+				System.out.println("Command not used properly, type GROUPCHAT HELP for group chat context command help");
+			    else 
+                                System.out.println( remoteGameInterface.GCInvite( groupName, tokens.get(1) /*player being invited*/ , this.playerName ) );
+		    break;
+
+		    //check for /leave
+		    case "/leave":
+		            //one command argument is needed
+			    //there should only be 1 token left
+			    if( tokens.size() != 1)
+				    System.out.println("Command not used properly, type GROUPCHAT HELP for group chat context command list");
+			    else
+				    System.out.println( remoteGameInterface.GCLeave(groupName, this.playerName) );
+			    break;
+	            
+		    //its a message, send it to the group
+		    default:
+			     //check that player is in the group
+                            if( !remoteGameInterface.checkGCMembership( groupName, this.playerName) )
+                                System.out.println("You aren't in group [" + groupName + "].");
+			    else
+				//here command is passed instead of groupName because the original letter case is needed
+			        remoteGameInterface.GCMessage(command, this.playerName, input);
+			
+		    break;
+			    
+			    
+	        }	    
+		return true;
+            }
+	}catch( RemoteException re ){
+		    System.exit(-1);
+	}
+        return false;
+    }
+    //416_GruopChat END
     public static void main(String[] args) {
         if(args.length < 1) {
             System.out.println("[SHUTDOWN] .. This program requires one argument. Run as java -Djava.security.policy=game.policy GameClient hostname");
