@@ -1,0 +1,386 @@
+[{
+    "name":             "LOOK",
+    "category":         "MISCELLANEOUS",
+    "description":      "Shows you the area around you.",
+    "uses": []
+}, {
+    "name":             "HELP",
+    "category":         "MISCELLANEOUS",
+    "description":      "Displays list of commands.",
+    "uses": []
+}, {
+    "name":             "REDO",
+    "category":         "MISCELLANEOUS",
+    "description":      "Redo your last command (with same arguments).",
+    "uses": []
+}, {
+    "name":             "QUIT",
+    "category":         "MISCELLANEOUS",
+    "description":      "Log out of the game.",
+    "uses": []
+},
+
+
+{
+    "name":             "LISTPLAYERS",
+    "category":         "COMMUNICATION",
+    "description":      "Shows a list of all the players in the world.",
+    "uses": []
+}, {
+    "name":             "CHANGEPREFIX",
+    "category":         "COMMUNICATION",
+    "description":      "Style your chat.",
+    "uses": [{
+        "case":         "[XXX]",
+        "description":  "Input 3 characters for your new chat prefix."
+    }]
+}, {
+    "name":             "SAY",
+    "category":         "COMMUNICATION",
+    "description":      "Talk in the current room.",
+    "uses": [{
+        "case":         "[MESSAGE]",
+        "description":  "Says a message to all players in the room."
+    }]
+}, {
+    "name":             "SHOUT",
+    "category":         "COMMUNICATION",
+    "description":      "Talk in the world.",
+    "uses": [{
+        "case":         "[MESSAGE]",
+        "description":  "Says a message to all players in the world."
+    }]
+}, {
+    "name":             "WHISPER",
+    "category":         "COMMUNICATION",
+    "description":      "Talk to someone.",
+    "uses": [{
+        "case":         "[PLAYER] [MESSAGE]",
+        "description":  "Says a message to a player."
+    }]
+}, {
+    "name":             "REPLY",
+    "category":         "COMMUNICATION",
+    "description":      "Talk to someone.",
+    "uses": [{
+        "case":         "[MESSAGE]",
+        "description":  "Says a message to the last player who whispered you."
+    }]
+}, {
+    "name":             "IGNORE",
+    "category":         "COMMUNICATION",
+    "description":      "Stop someone from talking to you.",
+    "uses": [{
+        "case":         "-L",
+        "description":  "Show ignore list."
+    }, {
+        "case":         "-A [PLAYER]",
+        "description":  "Add player to ignore list."
+    }, {
+        "case":         "-R [PLAYER]",
+        "description":  "Remove player from ignore list."
+    }]
+}, {
+    "name":             "GROUPCHAT",
+    "category":         "COMMUNICATION",
+    "description":      "Creates group chat.",
+    "uses": [{
+        "case":         "[NAME]",
+        "description":  "Creates group chat NAME."
+    }]
+}, {
+    "name":             "JOIN",
+    "category":         "COMMUNICATION",
+    "description":      "Joins player to group chat names GROUPCHATNAME.",
+    "uses": [{
+        "case":         "[GROUPCHATNAME]",
+        "description":  "Joins player to group chat names GROUPCHATNAME."
+    }]
+}, {
+    "name":             "GROUPCHATPRINT",
+    "category":         "COMMUNICATION",
+    "description":      "Prints group chat members.",
+    "uses": [{
+        "case":         "[NAME]",
+        "description":  "Prints group chat members."
+    }]
+}, {
+    "name":             "GROUPCHATHELP",
+    "category":         "COMMUNICATION",
+    "description":      "Print group chat help",
+    "uses": []
+},
+
+
+{
+    "name":             "MAP",
+    "category":         "ROOMS",
+    "description":      "Displays an ASCII map of the world around you.",
+    "uses": []
+}, {
+    "name":             "MOVE",
+    "category":         "ROOMS",
+    "description":      "Moves around the world.",
+    "uses": [{
+        "case":         "NORTH",
+        "description":  "Moves to the room north of the current one"
+    }, {
+        "case":         "EAST",
+        "description":  "Moves to the room east of the current one"
+    }, {
+        "case":         "SOUTH",
+        "description":  "Moves to the room south of the current one"
+    }, {
+        "case":         "WEST",
+        "description":  "Moves to the room west of the current one"
+    }]
+}, {
+    "name":             "ENTER",
+    "category":         "ROOMS",
+    "description":      "Enters a sub-room inside a room.",
+    "uses": [{
+        "case":         "SHOP",
+        "description":  "Enters shop at clock tower."
+    }]
+}, {
+    "name":             "LEAVE",
+    "category":         "ROOMS",
+    "description":      "Leaves a sub-room inside a room.",
+    "uses": [{
+        "case":         "SHOP",
+        "description":  "Leaves shop at clock tower."
+    }]
+}, {
+    "name":             "WHITEBOARD",
+    "category":         "ROOMS",
+    "description":      "Interacts with whiteboards in indoor rooms.",
+    "uses": [{
+        "case":         "",
+        "description":  "Displays current message in the whiteboard."
+    }, {
+        "case":         "WRITE [MESSAGE]",
+        "description":  "Writes the [MESSAGE] to the whiteboard."
+    }, {
+        "case":         "CLEAR",
+        "description":  "Erases whiteboard in the room."
+    }]
+},
+
+
+{
+    "name":             "INVENTORY",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Shows you what items you have collected.",
+    "uses": []
+}, {
+    "name":             "SORTINVENTORY",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Shows you what items you have collected.",
+    "uses": [{
+        "case":         "NAME",
+        "description":  "Sort items in inventory by name."
+    }, {
+        "case":         "VALUE",
+        "description":  "Sort items in inventory by value."
+    }, {
+        "case":         "WEIGHT",
+        "description":  "Sort items in inventory by weight."
+    }]
+}, {
+    "name":             "DESCRIBE",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Shows you what items you have collected.",
+    "uses": [{
+        "case":         "[OBJECT]",
+        "description":  "Describe an object in inventory."
+    }]
+}, {
+    "name":             "PICKUP",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Interact with items.",
+    "uses": [{
+        "case":         "[ITEM]",
+        "description":  "Tries to pick up an item in the room."
+    }]
+}, {
+    "name":             "DROPOFF",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Interact with items.",
+    "uses": [{
+        "case":         "[ITEM]",
+        "description":  "Tries to drop off an item in the room."
+    }]
+}, {
+    "name":             "MONEY",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Line-by-line display of money.",
+    "uses": []
+}, {
+    "name":             "USEITEM",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Use a item from your inventory.",
+    "uses": [{
+        "case":         "[ITEM]",
+        "description":   "Tries to use an item from your inventory."
+    }]
+}, {
+    "name":             "OFFERITEM",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Trade with items.",
+    "uses": [{
+        "case":         "[PLAYER] [ITEM]",
+        "description":  "Offer an item from your inventory to a player."
+    }]
+}, {
+    "name":             "OFFERRESPONSE",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Trade with items.",
+    "uses": [{
+        "case":         "ACCEPT",
+        "description":  "Finish an item trade by accepting an offer"
+    }, {
+        "case":         "REFUSE",
+        "description":  "Finish an item trade by refusing an offer"
+    }]
+}, {
+    "name":             "BUY",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Trade with items.",
+    "uses": [{
+        "case":         "[ITEM]",
+        "description":  "Buy item (must be in the shop)."
+    }]
+}, {
+    "name":             "SELL",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Trade with items.",
+    "uses": [{
+        "case":         "[ITEM]",
+        "description":  "Sell item in your inventory (must be in the shop)."
+    }]
+}, {
+    "name":             "GIFTABLE",
+    "category":         "ITEMS AND MONEY",
+    "description":      "List players in the same room that you can give money to.",
+    "uses": []
+}, {
+    "name":             "GIVE",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Trade with money.",
+    "uses": [{
+        "case":         "[AMMOUNT] [PLAYER]",
+        "description":  "Give some money to a player."
+    }]
+}, {
+    "name":             "RECEIVE",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Accept a gift offer.",
+    "uses": []
+}, {
+    "name":             "DECLINE",
+    "category":         "ITEMS AND MONEY",
+    "description":      "Decline a gift offer.",
+    "uses": []
+},
+
+
+{
+    "name":             "GIFT",
+    "category":         "GHOULS",
+    "description":      "Interact with Ghouls.",
+    "uses": [{
+        "case":         "[GHOUL] [ITEM]",
+        "description":  "Give an item to a ghoul. This will decrease its aggression."
+    }]
+}, {
+    "name":             "POKE",
+    "category":         "GHOULS",
+    "description":      "Interact with Ghouls.",
+    "uses": [{
+        "case":         "[GHOUL]",
+        "description":  "Poke a ghoul that is in the same room."
+    }]
+},
+
+
+{
+    "name":             "CATCH",
+    "category":         "SPIRITS",
+    "description":      "Interact with Spirits.",
+    "uses": [{
+        "case":         "[SPIRIT]",
+        "description":  "Catch a spirit that's in the same room."
+    }]
+}, {
+    "name":             "SPIRITALL",
+    "category":         "SPIRITS",
+    "description":      "Lists all the possible spirits that can be caught.",
+    "uses": []
+}, {
+    "name":             "CAUGHTSPIRITS",
+    "category":         "SPIRITS",
+    "description":      "Shows you what spirits you caught.",
+    "uses": []
+},
+
+
+    {
+    "name":             "CHALLENGE",
+    "category":         "BATTLES",
+    "description":      "Fight players.",
+    "uses": [{
+        "case":         "[PLAYER] [ROUNDS]",
+        "description":  "Challenge a player to Rock Paper Scissors Battle. Specify 1, 3, or 5 rounds."
+    }]
+}, {
+    "name":             "ACCEPT",
+    "category":         "BATTLES",
+    "description":      "Fight players.",
+    "uses": [{
+        "case":         "[PLAYER]",
+        "description":  "Accept Rock Paper Scissors Battle from a player."
+    }]
+}, {
+    "name":             "REFUSE",
+    "category":         "BATTLES",
+    "description":      "Fight players.",
+    "uses": [{
+        "case":         "[PLAYER]",
+        "description":  "Refuse Rock Paper Scissors Battle from a player."
+    }]
+}, {
+    "name":             "ROCK",
+    "category":         "BATTLES",
+    "description":      "Play rock in your current Rock Paper Scissors Battle.",
+    "uses": []
+}, {
+    "name":             "PAPER",
+    "category":         "BATTLES",
+    "description":      "Play paper in your current Rock Paper Scissors Battle.",
+    "uses": []
+}, {
+    "name":             "SCISSORS",
+    "category":         "BATTLES",
+    "description":      "Play scissors in your current Rock Paper Scissors Battle.",
+    "uses": []
+}, {
+    "name":             "LEADERBOARD",
+    "category":         "BATTLES",
+    "description":      "Display the current Rock Paper Scissors Leaderboard.",
+    "uses": []
+}, {
+    "name":             "TOPTEN",
+    "category":         "BATTLES",
+    "description":      "Display the current Top Ten Players from Rock Paper Scissors Leaderboard.",
+    "uses": []
+}, {
+    "name":             "RANK",
+    "category":         "BATTLES",
+    "description":      "Display your current rank in Rock Paper Scissors Battles.",
+    "uses": []
+}, {
+    "name":             "TUTORIAL",
+    "category":         "BATTLES",
+    "description":      "Display a tutorial for Rock Paper Scissors.",
+    "uses": []
+}]

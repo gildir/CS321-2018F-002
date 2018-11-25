@@ -92,7 +92,7 @@ public class Shop {
          if(obj.getItemName().equalsIgnoreCase(itemName)) {
              double cost = obj.getItemValue() * 1.2;
              if(player.getMoney().sum() >= cost){
-                 //add item to player inventory and update inventory and bool
+                 //add item to player inventory and update
                  inventory.add(obj);
                  player.setCurrentInventory(inventory);
                  //remove money from player
@@ -136,7 +136,7 @@ public class Shop {
   * Builds the string to represent the shop
   * @return String representation of shop
   */
- public String displayShop() {
+ public synchronized String displayShop() {
   //preprocessing to build up the list of items with their multiplicities using ItemStock
   //so that multiple items only show up once
   ArrayList<ItemStock> itemList = new ArrayList<ItemStock>();
@@ -159,11 +159,12 @@ public class Shop {
   //display items currently in the shop
   result += "\nAMOUNT ................ ITEM/PRICE\n";
   if(items.size() == 0)
-   result += "shop is empty\n";
+   result += "Shop is currently empty.\n";
   for(ItemStock item : itemList) {
    result += "" + item.amount + " ..................... " + item.itemName + " $" + (String.format("%.2f",item.value)) +"\n";
   }
-  result += "To sell an item enter SELL <ITEM>\nTo buy an item enter BUY <ITEM>\n\n";
+  result += "To sell an item enter SELL <ITEM>\n" + "To buy an item enter BUY <ITEM>\n";
+  result += "To exit the shop enter LEAVE SHOP or MOVE <ANY DIRECTION>\n\n";
   return result;
  }
  
