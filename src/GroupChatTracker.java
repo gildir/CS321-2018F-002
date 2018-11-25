@@ -12,11 +12,13 @@ public class GroupChatTracker{
 	// GroupChat object can be retrieved from HashMaps using group chat name
 	// NOTE: Group chat names will always be saved in lowercase and need to be used in lowercase
 	private HashMap< String, ArrayList<String>> Tracker;  //Tracker keeps track of all group chats
-	private HashMap< String, ArrayList<String>> Invites;  //Invites keeps track of all group chats
-
+	private HashMap< String, ArrayList<String>> Invites;  //Invites keeps track of all group chat invites
+	private ArrayList<String> groups; //tracks group chat names
+		
 	GroupChatTracker(){
 		Tracker = new HashMap<String, ArrayList<String> >();
 		Invites = new HashMap<String, ArrayList<String> >();
+		groups = new ArrayList<String>();
 	}
 
 	//track a new group chats
@@ -36,6 +38,7 @@ public class GroupChatTracker{
 		tempT.add( playerName );
 		Tracker.put( groupChatNameLC, tempT );
 		Invites.put( groupChatNameLC, tempI );
+		groups.add(groupChatNameLC);
 		return "Group chat [" + groupChatNameLC + "] created.";
 	}
 
@@ -83,7 +86,7 @@ public class GroupChatTracker{
 		}
 		return false;
 	}
-	
+
 	//No need to check if GroupChat exists. In Game, this is a group chat command, which implies group exists.
 	//  function called when user leaves a group.
 	//Prior to calling leaveGroup(), the following conditions are checked in GameCore:
@@ -109,6 +112,7 @@ public class GroupChatTracker{
 		if( Tracker.get( groupChatNameLC ).size() == 0 ){
 			Tracker.remove( groupChatNameLC ); 
 			Invites.remove( groupChatNameLC );
+			groups.remove( groupChatNameLC );
 		}
 
 
@@ -179,7 +183,21 @@ public class GroupChatTracker{
 		return help;
 	}
 
-
+	//when a player quits, this function removes the player from group chats and invite lists
+	public void playerQuit( String playerName){
+		//get chat room names
+		ArrayList<String> groupsTemp = new ArrayList<String>( groups );
+		for( String group: groupsTemp){
+			//if player is in group, remove player
+			if( this.checkMembership(group, playerName) ){
+				this.removeMember( group, playerName);
+			}
+			if( this.checkInvite(group, playerName) ){
+				this.removeInvite( group, playerName );
+			}
+		}
+		
+	}
 
 }
 

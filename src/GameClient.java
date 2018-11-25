@@ -79,7 +79,8 @@ public class GameClient {
                     remoteGameInterface.leave(playerName);
                     runListener = false;
                     System.out.println("User has been inactive for 5 minutes.. logging off");
-                    timer.cancel();
+                    remoteGameInterface.GCPlayerQuit(playerName); //416_GroupChat
+		    timer.cancel();
                     System.exit(-1);
                 }
                 catch (RemoteException ex) {
@@ -436,7 +437,12 @@ public class GameClient {
 
         String command = tokens.remove(0);
         if(command.equalsIgnoreCase("Quit")){
-            deleteCharacter();
+                try{
+			remoteGameInterface.GCPlayerQuit(this.playerName); //416_GroupChat
+		}catch( RemoteException re){
+		    System.out.println(re);
+		}
+		deleteCharacter();
         }
         update();
 	//416_GroupChat START

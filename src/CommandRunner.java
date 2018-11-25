@@ -571,7 +571,6 @@ public class CommandRunner {
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
         this.remoteGameInterface = rgi;
         this.commandsInfo = parseCommandsFile(commandsFile);
-        censorList = loadCensorList();    //409_censor load censor list
 	this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();

@@ -2559,7 +2559,8 @@ public String map(String name)
         for( String member : group )
         {
             temp = playerList.findPlayer( member );
-            temp.getReplyWriter().println(message);
+            message = scrubMessage( message, temp.getCensorList() ); //409_censor scrub message of unwanted words
+	    temp.getReplyWriter().println(message);
         }
     }
 
@@ -2591,6 +2592,9 @@ public String map(String name)
     public String GCGetHelp(String name)
     {
         return groupChatTracker.getHelp();
+    }
+    public void GCPlayerQuit( String playerName){
+	groupChatTracker.playerQuit( playerName );
     }
     //416_GroupChat End
 }

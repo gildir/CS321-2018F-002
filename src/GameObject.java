@@ -575,6 +575,10 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
         return core.GCGetHelp(name);
     }
+    public void GCPlayerQuit( String playerName ) throws RemoteException
+    {
+        core.GCPlayerQuit( playerName);
+    }
     //416_GroupChat END
     
     /* START 409_censor */
