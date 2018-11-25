@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 import java.lang.StringBuilder;
@@ -51,16 +52,35 @@ public class PlayerDatabase {
     *
     * @param name Player's username
     * @param password Player's password
+    * @param question1 Player's first security question
+    * @param ans1 Player's answer to their first provided question
+    * @param question2 Player's second security question
+    * @param ans2 Player's answer to their second provided question
+    * @param question3 Player's third security question
+    * @param ans3 Player's answer to their third provided question
     * @return true if player is added to database, false otherwise 
     */
-	public static boolean addPlayer(String name, String password){
+	public static boolean addPlayer(String name, String password, String question1, String ans1,
+                                   String question2, String ans2, String question3, String ans3){
+                                   
+      if(name == null || password == null)
+         return false;
    
       //build comma-seperated inputs for database with user's name and password
       try(FileOutputStream fos = new FileOutputStream(DATABASE_FILE, true)) {
-         StringBuilder sb = new StringBuilder(name);
          
-         sb.append(",");
-         sb.append(password);
+         //add given values to database
+         StringBuilder sb = new StringBuilder(name);
+         String en = Crypt.encrypt(password, name);
+         
+         sb.append(","); sb.append(en);
+
+         sb.append(","); sb.append(question1);
+         sb.append(","); sb.append(ans1);
+         sb.append(","); sb.append(question2);
+         sb.append(","); sb.append(ans2);
+         sb.append(","); sb.append(question3);
+         sb.append(","); sb.append(ans3);
          sb.append("\n");
          
          //write inputs to database
@@ -122,7 +142,8 @@ public class PlayerDatabase {
              
              //checks if the username on this line is equal to the given username
 			if(info[0].equals(name)) {
-                if(info[1].equals(password))
+				String decrypted = Crypt.decrypt(info[1], name);
+                if(decrypted.equals(password))
                     return true;
              }
 			 }
@@ -179,6 +200,109 @@ public class PlayerDatabase {
 			}
 		}
     }
+	
+	/**
+	 * Checks the security questions for a given player using in method keyboard inputs
+	 * @param name Player's name
+	 * @return
+	 */
+	public static boolean checkSecurityQestions(String name) {
+		try(FileInputStream fis = new FileInputStream(DATABASE_FILE);
+		    InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr)) {
+			
+			InputStreamReader keyboardReader = new InputStreamReader(System.in);
+	        BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+			String[] info = null;
+			String line;
+			boolean check = false; //check default is false assuming that the answers are wrong
+			
+			//find the user
+			/*do {
+				line = br.readLine();
+				info = line.split(",");
+			} while(info[0] != name);
+			*/
+			
+			while((line = br.readLine()) != null) {
+				info = line.split(",");
+				if (!info[0].equals(name)) continue;
+				else break;
+			}
+			
+			//prompt for all three security question answers
+			System.out.println(info[2]); String ans1 = keyboardInput.readLine();
+			System.out.println(info[4]); String ans2 = keyboardInput.readLine();
+			System.out.println(info[6]); String ans3 = keyboardInput.readLine();
+			
+			//check their answers versus the ones in the csv file
+			if(ans1.equals(info[3])) {
+				if(ans2.equals(info[5])) {
+					if(ans3.equals(info[7])) {
+						check = true;
+					}
+				}
+			}
+			
+			return check;
+			
+		} catch (FileNotFoundException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	/**
+	 * Changes the password for a given Player using an in method keyboard entry
+	 * @param name Player's name
+	 * @return
+	 */
+	public static boolean changePassword (String name) {
+				String line;
+				String newLine = "";
+				StringBuilder lines = new StringBuilder();
+				InputStreamReader keyboardReader = new InputStreamReader(System.in);
+		        BufferedReader keyboardInput = new BufferedReader(keyboardReader);
+				try (FileInputStream fis = new FileInputStream(DATABASE_FILE);
+						InputStreamReader isr = new InputStreamReader(fis);
+						BufferedReader br = new BufferedReader(isr)) {
+					
+					System.out.print("Please enter your new password: ");
+					String newPassword = keyboardInput.readLine();
+					
+					// reads database line by line adding lines in to a collective string of all the lines
+					while ((line = br.readLine()) != null) {
+						
+						String[] info = line.split(",");
+
+						// if username does not match to the one read it will rewrite it to the file
+						// else rewrite the line with the new password instead
+						if (!info[0].equals(name)) lines.append(line + "\n");
+						else {
+							for (int i = 0; i < info.length; i++) {
+								if(i != 1) newLine = newLine + info[i] + ",";
+								else newLine = newLine + newPassword + ",";
+							}
+							lines.append(newLine + "\n");
+						}
+					
+					}
+				} catch (IOException e) {
+					return false;
+				}
+				try (FileOutputStream fos = new FileOutputStream(DATABASE_FILE)){
+					
+					//overwrite the old file
+					fos.write(lines.toString().getBytes());
+					return true;
+				
+				} catch (FilerException e) {
+					return false;
+				} catch (IOException e) {
+					return false;
+				}
+	}
 
     /**
     * Writes to a log file everytime a player logs in/out
@@ -187,23 +311,50 @@ public class PlayerDatabase {
     * @param isLoggingIn Whether the player is logging in or logging out
     * @return true if log message is written successfully, false otherwise
     */
-   public static boolean loginLog(String name, boolean isLoggingIn) {
-    String log = name;
-    
-    try(FileOutputStream fos = new FileOutputStream(LOG_FILE, true)) {
-       if(isLoggingIn)
-          log += " logged in.\n";
-       else
-          log += " logged out.\n"; 
+    public static boolean loginLog(String name, boolean isLoggingIn) {
+        if(name == null)
+           return false;
+           
+        String log = name;
+        
+        try(FileOutputStream fos = new FileOutputStream(LOG_FILE, true)) {
+            if(isLoggingIn)
+                log += " logged in.\n";
+            else
+                log += " logged out.\n"; 
+            
+            //write log message to log file
+            fos.write(log.getBytes());
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * Determines if the username is less than 15 characters 
+     * and does not include numbers or symbols
+     * @return true if the username fits all requirements
+     */
+    public static boolean isUname(String username){
+        if(username == null)
+            return false;
        
-       //write log message to log file
-       fos.write(log.getBytes());
+        //checking to make sure that username has at least one character and less than 15
+        if(username.length() > 15 || username.length() < 1){
+            System.out.println("Username must be between 1 and 15 characters");
+            return false;
+        }
+
+        //ensures all characters in the strings are alpha characters
+        if(!username.matches("[a-zA-Z]+"))
+        {
+            System.out.println("Username can only contain alphabetical characters");
+            return false;
+        }
+        return true;
     }
-    catch(IOException e) {
-       e.printStackTrace();
-       return false;
-    }
-    
-    return true;
- }
 }
