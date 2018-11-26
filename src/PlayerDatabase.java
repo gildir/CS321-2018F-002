@@ -216,14 +216,8 @@ public class PlayerDatabase {
 			String[] info = null;
 			String line;
 			boolean check = false; //check default is false assuming that the answers are wrong
-			
-			//find the user
-			/*do {
-				line = br.readLine();
-				info = line.split(",");
-			} while(info[0] != name);
-			*/
-			
+        
+            //finding the user
 			while((line = br.readLine()) != null) {
 				info = line.split(",");
 				if (!info[0].equals(name)) continue;
