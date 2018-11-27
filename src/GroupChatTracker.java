@@ -174,12 +174,13 @@ public class GroupChatTracker{
 	}
 	public String getHelp()
 	{
-		String help = "GROUPCHAT <name>\tThis command creates a private group chat. The creator is automatically added to the group. Only the creator can invite people to the group.\n" +
-				"GROUPCHATPRINT <name>\tThis was used for debugging but i left it. It prints the members of private group <name>.\n" +
-				"JOIN <group name>\tOnce a player receives an invitation to join group chat <name>, they can type join the group with this command.\n";
-		help +="\n\n<group name> /invite <player name>\tinvite player with playerName to the group chat. \n" +
-				"<group name> /leave\tplayer leaves group\n" +
-				"<group name> <message>\tplayer sends message to cs321 group.\n";
+		String help = "GROUPCHAT [GroupName]         Creates a private group chat. The creator is automatically added to the group.\n"+
+			      "                              Only members can invite other players to the group.\n" +
+			      "GROUPCHATPRINT [GroupName]    Prints the members of private group GroupName.\n" +
+			      "JOIN [GroupName]              After player receives an invitation to join GroupName, this command can be used to join the group.\n";
+		help +=	      "<GroupName> /invite [playerName]    Member of group invites playerName to the group chat. \n" +
+			      "<GroupName> /leave            Member of group leaves group\n" +
+			      "<GroupName> [message]         Member of group sends message to the group.\n";
 		return help;
 	}
 
