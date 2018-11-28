@@ -216,14 +216,8 @@ public class PlayerDatabase {
 			String[] info = null;
 			String line;
 			boolean check = false; //check default is false assuming that the answers are wrong
-			
-			//find the user
-			/*do {
-				line = br.readLine();
-				info = line.split(",");
-			} while(info[0] != name);
-			*/
-			
+        
+            //finding the user
 			while((line = br.readLine()) != null) {
 				info = line.split(",");
 				if (!info[0].equals(name)) continue;
@@ -269,7 +263,9 @@ public class PlayerDatabase {
 						BufferedReader br = new BufferedReader(isr)) {
 					
 					System.out.print("Please enter your new password: ");
-					String newPassword = keyboardInput.readLine();
+                    String newPassword = keyboardInput.readLine();
+                    String en = Crypt.encrypt(newPassword, name);
+
 					
 					// reads database line by line adding lines in to a collective string of all the lines
 					while ((line = br.readLine()) != null) {
@@ -282,7 +278,7 @@ public class PlayerDatabase {
 						else {
 							for (int i = 0; i < info.length; i++) {
 								if(i != 1) newLine = newLine + info[i] + ",";
-								else newLine = newLine + newPassword + ",";
+								else newLine = newLine + en + ",";
 							}
 							lines.append(newLine + "\n");
 						}
