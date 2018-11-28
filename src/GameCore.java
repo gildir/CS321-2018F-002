@@ -543,7 +543,7 @@ public class GameCore implements GameCoreInterface {
                             + playerReceiving.getName() + " " + date.toString();
                     add_chat_log(log);
                     message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
-                    this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"");
+                    this.broadcast(playerSending, playerReceiving, chatPrefix + playerSending.getName() + " whispers, \"" + message + "\"" + " " + date.toString());
 
                     playerReceiving.setLastWhisperName(name1);
                     return "Message sent to " + playerReceiving.getName() + " " + date.toString();
@@ -556,7 +556,7 @@ public class GameCore implements GameCoreInterface {
         else
         {
             if(playerReceiving == null)
-                return "Couldn't find player online.";
+                return "Couldn't find player online." + " " + date.toString();
             return null;
         }
     }
@@ -570,7 +570,7 @@ public class GameCore implements GameCoreInterface {
     public String reply(String name, String message, ArrayList<String> censorList) {
         Player playerSending = this.playerList.findPlayer(name);
         if(playerSending.getLastWhisperName() == null) {
-            return "You have not received a whisper to reply to.";
+            return "You have not received a whisper to reply to." + " " + date.toString();
         }
         String name2 = playerSending.getLastWhisperName();
         Player playerReceiving = this.playerList.findPlayer(name2);
@@ -1319,7 +1319,6 @@ public class GameCore implements GameCoreInterface {
     public String ignore(String name, String ignoreName) {
               if( name.equalsIgnoreCase(ignoreName) )
                       return "You can't ignore yourself.";
-
               //verify player being ignored exists
               Player ignoredPlayer = this.playerList.findPlayer(ignoreName);
               if( ignoredPlayer == null )
@@ -1362,20 +1361,18 @@ public class GameCore implements GameCoreInterface {
               //verify player being unignored exists
               Player unIgnoredPlayer = this.playerList.findPlayer(unIgnoreName);
               if( unIgnoredPlayer == null )
-                      return "Player " + unIgnoreName + " is not in the game.";
-
+                      return "Player " + unIgnoreName + " is not in the game." + " " + date.toString();
               Player thisPlayer = this.playerList.findPlayer(name);
 
               //verify player is in Ignore list
               if( !thisPlayer.searchIgnoreList(unIgnoreName) )
-                      return "Player " + unIgnoreName + " is not in ignored list.";
-
+                      return "Player " + unIgnoreName + " is not in ignored list." + " " + date.toString();
               //remove ignoreName in ignore list
               thisPlayer.unIgnorePlayer(unIgnoreName);
 
               //add ignoring player to ignored players ignoredBy list
               unIgnoredPlayer.removeIgnoredBy(name);
-              return unIgnoreName + " removed from ignore list.";
+              return unIgnoreName + " removed from ignore list." + " " + date.toString();
     }
     /* STOP 408_ignore */
 
@@ -1980,7 +1977,6 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
-
       return;
     }
     else if(p1[b.getCurrentRound()] == 2 && p2[b.getCurrentRound()] == 1)
