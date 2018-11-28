@@ -214,7 +214,35 @@ public class GameCore implements GameCoreInterface {
 
       date = new Date();
     }
-
+	
+	public String objectives(String name)
+	{
+		Player p = this.playerList.findPlayer(name);
+		StringBuilder sb = new StringBuilder();
+		// for each Quest in the Player's questBook
+		for (Quest q : p.getQuestBook())
+		{
+			if (q != null)
+			{
+				// append the String representation of that Quest
+				sb.append(q.toString());
+				sb.append("\n");
+				// for each active Objective in that Quest
+				for (Objective obj : q.activeObjectives)
+				{
+					if (obj != null)
+					{
+						// append the String representation of that Objective
+						sb.append(obj.toString());
+						sb.append("\n");
+					}
+				}
+				sb.append("\n");
+			}
+		}
+		return sb.toString();
+	}
+	
     /**
      * Basic getter methods for GameCore.
      */
@@ -531,9 +559,9 @@ public class GameCore implements GameCoreInterface {
             else
             {
 
-		if(playerSending.searchIgnoredBy(name2)){
-			return "Cannot whisper player that has ignored you";
-	    	}
+  if(playerSending.searchIgnoredBy(name2)){
+   return "Cannot whisper player that has ignored you";
+      }
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
                     if(playerSending.getIsDrunk()){
