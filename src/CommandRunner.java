@@ -463,6 +463,7 @@ public class CommandRunner {
 	 * this is the map command
 	 */
 	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
+	commandFunctions.put("OBJECTIVES", (name, args) -> {return remoteGameInterface.objectives(name);});
 	//416_GroupChat START
 	commandFunctions.put("GROUPCHAT", (name, args) -> {
 		//TODO:

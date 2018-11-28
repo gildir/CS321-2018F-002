@@ -55,7 +55,12 @@ public class Player {
         this.ignoredByList = new ArrayList<String>();
         /* END 405_ignore  */
     }
-
+	
+	public ArrayList<Quest> getQuestBook()
+	{
+		return this.questBook;
+	}
+	
     public void turnLeft() {
         synchronized (this) {
             switch (this.currentDirection.toString()) {
