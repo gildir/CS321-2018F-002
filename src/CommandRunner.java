@@ -671,7 +671,7 @@ public class CommandRunner {
 
             try {
                 lastCommand = cmdToRun;
-                lastArgs = argsToRun;
+                lastArgs = (ArrayList<String>) argsToRun.clone();
 
                 String result = cmd.run(playerName, argsToRun);
                 if (result != null)
