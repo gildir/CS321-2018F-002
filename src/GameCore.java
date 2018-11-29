@@ -1337,6 +1337,23 @@ public class GameCore implements GameCoreInterface {
         Player player = this.playerList.findPlayer(name);
         if(player != null) {
             this.broadcast(player, "You see " + player.getName() + " heading off to class.");
+            for(Battle b : activeBattles)
+            {
+              if(b.containsPlayer(name))
+              {
+                Player p1 = this.playerList.findPlayer(b.getPlayer1());
+                Player p2 = this.playerList.findPlayer(b.getPlayer2());
+                if(b.getPlayer1().equalsIgnoreCase(name))
+                {
+                  p2.getReplyWriter().println("The other player has left the game. You win.");
+                }
+                else
+                {
+                  p1.getReplyWriter().println("The other player has left the game. You win.");
+                }
+                activeBattles.remove(b);
+              }
+            }
             this.playerList.removePlayer(name);
             return player;
         }
@@ -1514,6 +1531,13 @@ public class GameCore implements GameCoreInterface {
   {
     Player play1 = this.playerList.findPlayer(challenger);
     Player play2 = this.playerList.findPlayer(player2);
+    
+    play1.addObjectToInventory(new Item("Scissors","A pair of scissors.",0.0,0,""));
+    play2.addObjectToInventory(new Item("Scissors","A pair of scissors.",0.0,0,""));
+    play1.addObjectToInventory(new Item("Rock","A rock.",0.0,0,""));
+    play2.addObjectToInventory(new Item("Rock","A rock.",0.0,0,""));
+    play1.addObjectToInventory(new Item("Paper","A piece of paper.",0.0,0,""));
+    play2.addObjectToInventory(new Item("Paper","A piece of paper.",0.0,0,""));
 
     String battletype = MessageFormat.format( (rounds == 1) ? " ":" best {0} out of {1} ",(int)Math.ceil(rounds/2.0),rounds);
 

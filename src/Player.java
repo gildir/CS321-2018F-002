@@ -295,6 +295,24 @@ public class Player {
         synchronized (this) {
             this.currentRoom = room;
         }
+        for(Battle b : gameCore.activeBattles)
+        {
+            Player p1 = gameCore.playerList.findPlayer(b.getPlayer1());
+            Player p2 = gameCore.playerList.findPlayer(b.getPlayer2());
+            if(p1.getCurrentRoom() != p2.getCurrentRoom())
+            {
+              if(this.name.equalsIgnoreCase(b.getPlayer1()))
+              {
+                p2.getReplyWriter().println("The other player left the room and forfeits the battle. You win.");
+                p1.getReplyWriter().println("By leaving the room, you forfeit the battle. You lose.");
+              }
+              else
+              {
+                p1.getReplyWriter().println("The other player left the room and forfeits the battle. You win.");
+                p2.getReplyWriter().println("By leaving the room, you forfeit the battle. You lose.");
+              }
+            }
+        }
     }
 
     // updates all objectives in the player's questBook
