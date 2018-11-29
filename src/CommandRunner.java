@@ -463,6 +463,7 @@ public class CommandRunner {
 	 * this is the map command
 	 */
 	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
+	commandFunctions.put("OBJECTIVES", (name, args) -> {return remoteGameInterface.objectives(name);});
 	//416_GroupChat START
 	commandFunctions.put("GROUPCHAT", (name, args) -> {
 		//TODO:
@@ -669,8 +670,8 @@ public class CommandRunner {
 
             try {
                 lastCommand = cmdToRun;
-                lastArgs = argsToRun;
 	        censorList = remoteGameInterface.getPlayerCensorList( playerName );  //409_censor
+                lastArgs = (ArrayList<String>) argsToRun.clone();
                 String result = cmd.run(playerName, argsToRun);
                 if (result != null)
                     System.out.println(result);

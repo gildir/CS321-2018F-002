@@ -379,6 +379,11 @@
     "description":      "Display your current rank in Rock Paper Scissors Battles.",
     "uses": []
 }, {
+    "name":             "OBJECTIVES",
+    "category":         "MISCELLANEOUS",
+    "description":      "Display your current quest objectives.",
+    "uses": []
+}, {
     "name":             "TUTORIAL",
     "category":         "BATTLES",
     "description":      "Display a tutorial for Rock Paper Scissors.",

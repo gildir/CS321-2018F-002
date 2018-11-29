@@ -303,6 +303,9 @@ public interface GameObjectInterface extends Remote {
 	 * @return the ASCII art map
 	 */
 	public String map(String player) throws RemoteException;
+	
+	// Displays the Player's active Quest Objectives
+	public String objectives(String player) throws RemoteException;
   
     //405
     public String ignore(String name, String ignoreName) throws RemoteException;
@@ -356,7 +359,6 @@ public interface GameObjectInterface extends Remote {
     
     public void GCPlayerQuit( String playerName) throws RemoteException;
     //406_GroupChat END
-    
     /* START 409_censor */
     public void setPlayerCensorList( ArrayList<String> censorList, String playerName ) throws RemoteException;
 
