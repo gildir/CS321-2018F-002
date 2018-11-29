@@ -352,6 +352,7 @@ public class CommandRunner {
         commandFunctions.put("RANK",   (name, args) -> { remoteGameInterface.getRank(name); return null; });
         commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
         commandFunctions.put("TOPTEN",   (name, args) -> { remoteGameInterface.topTen(name); return null; });
+        commandFunctions.put("QUITRPS",   (name, args) -> { remoteGameInterface.quitRps(name); return null; });
         commandFunctions.put("GIFT", (name, args) -> {
             if(args.size() < 2) {
                 return "You need to provide a ghoul name and the item to gift.";

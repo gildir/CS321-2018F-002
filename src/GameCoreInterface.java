@@ -122,7 +122,7 @@ public void checkBoard(String player);
 public String tutorial(String name);
 public void topTen(String name);
 public void getRank(String player);
-
+public void quitRps(String player);
 //Rock Paper Scissors Battle Code here--------------------------------------
 	/**
 	 * @author James Bruce

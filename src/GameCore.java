@@ -1543,6 +1543,12 @@ public class GameCore implements GameCoreInterface {
       }
     }
 
+    if(play1.getCurrentRoom() != play2.getCurrentRoom())
+    {
+      play1.getReplyWriter().println("You must be in the same room as the person you are challenging.");
+      return;
+    }
+    
       LinkedList<Item> inventory = play2.getCurrentInventory();  //you can only challenge a player if they have a rock paper or scissors
       int hasBattleItemP2 = 0;
       for (Item obj : inventory) {
@@ -1850,7 +1856,7 @@ public class GameCore implements GameCoreInterface {
     p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
-  public void doBattle(String challenger, String player2, int[] p1, int[] p2, Battle b, int rounds)
+  public void doBattle(String challenger, String player2, int[] p1, int[] p2, Battle b, int rounds) 
   {
     Player play1 = this.playerList.findPlayer(challenger);
     Player play2 = this.playerList.findPlayer(player2);
@@ -1911,7 +1917,7 @@ public class GameCore implements GameCoreInterface {
         case 3:
           play1.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
-
+          
           if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
           {
               String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
@@ -1938,14 +1944,9 @@ public class GameCore implements GameCoreInterface {
       //rock paper
       play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Paper. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Rock. \nYou win.\n");
-
-
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName(), false);
-   this.leaderboard.incrementScore(play2.getName(), true);
-
+      
       b.incP2Score();
-
+                
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
@@ -1964,8 +1965,6 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
-
-
       return;
     }
     else if(p1[b.getCurrentRound()] == 1 && p2[b.getCurrentRound()] == 3)
@@ -1973,25 +1972,14 @@ public class GameCore implements GameCoreInterface {
       //rock scissors
       play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Scissors. \nYou win.\n");
       play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Rock. \nYou lose.\n");
-
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-      activeBattles.remove(b);
-      writeLog(b);
-
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName(), true);
-   this.leaderboard.incrementScore(play2.getName(), false);
-
-
-
+      
       b.incP1Score();
-
+      
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -2012,25 +2000,14 @@ public class GameCore implements GameCoreInterface {
       //paper rock
       play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Rock. \nYou win.\n");
       play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Paper. \nYou lose.\n");
-
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-      activeBattles.remove(b);
-      writeLog(b);
-
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName(), true);
-   this.leaderboard.incrementScore(play2.getName(), false);
-
-
-
+      
       b.incP1Score();
-
+      
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -2044,7 +2021,6 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
-
       return;
     }
     else if(p1[b.getCurrentRound()] == 2 && p2[b.getCurrentRound()] == 3)
@@ -2052,25 +2028,14 @@ public class GameCore implements GameCoreInterface {
       //paper scissors
       play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Scissors. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Paper. \nYou win.\n");
-
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-      activeBattles.remove(b);
-      writeLog(b);
-
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName(), false);
-   this.leaderboard.incrementScore(play2.getName(), true);
-
-
-
+      
       b.incP2Score();
-
+      
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -2084,7 +2049,6 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
-
       return;
     }
     else if(p1[b.getCurrentRound()] == 3 && p2[b.getCurrentRound()] == 1)
@@ -2092,24 +2056,14 @@ public class GameCore implements GameCoreInterface {
       //scissors rock
       play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Rock. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Scissors. \nYou win.\n");
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + player2 + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
-      activeBattles.remove(b);
-      writeLog(b);
-
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName(), false);
-   this.leaderboard.incrementScore(play2.getName(), true);
-
-
-
+      
       b.incP2Score();
-
+      
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -2123,7 +2077,6 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
-
       return;
     }
     else if(p1[b.getCurrentRound()] == 3 && p2[b.getCurrentRound()] == 2)
@@ -2131,25 +2084,14 @@ public class GameCore implements GameCoreInterface {
       //scissors paper
       play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Paper. \nYou win.\n");
       play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Scissors. \nYou lose.\n");
-
-      message = challenger + " and " + player2 + " had a Rock Paper Scissors Battle. \n" + challenger + " won.\n";
-      this.broadcast(map.findRoom(play1.getCurrentRoom()),message);;
-      activeBattles.remove(b);
-      writeLog(b);
-
-   // Added by Brendan
-   this.leaderboard.incrementScore(play1.getName(), true);
-   this.leaderboard.incrementScore(play2.getName(), false);
-
-
-
+    
       b.incP1Score();
-
+    
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -2163,7 +2105,6 @@ public class GameCore implements GameCoreInterface {
           play2.getReplyWriter().println(broadcast);
           b.incrementRound();
       }
-
       return;
     }
   }
@@ -2271,6 +2212,32 @@ public class GameCore implements GameCoreInterface {
     else if(b.getP1Score() < b.getP2Score()){
       this.leaderboard.incrementScore(b.getPlayer1(), false);
       this.leaderboard.incrementScore(b.getPlayer2(), true);
+    }
+  }
+  public void quitRps(String player)
+  {
+    for(Battle b : activeBattles)
+    {
+        Player p1 = playerList.findPlayer(player);
+        Player p2 = null;
+        if(b.getPlayer1().equals(player))
+        {
+          p2 = playerList.findPlayer(b.getPlayer2());
+        }
+        else
+        {
+          p2 = playerList.findPlayer(b.getPlayer1());
+        }
+        if(b.containsPlayer(player))
+        {
+          p1.getReplyWriter().println(MessageFormat.format("You forfeit the battle by quitting. {0} wins.",p2.getName()));
+          p2.getReplyWriter().println(MessageFormat.format("{0} has forfeitted the match by quitting. You win.",player));
+          b.incP2Score();
+          updateLeaderboard(b);
+          writeLog(b);
+          activeBattles.remove(b);
+          return;
+        }
     }
   }
 //Rock Paper Scissors Battle Methods -------------------------------------------

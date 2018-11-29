@@ -295,6 +295,7 @@ public interface GameObjectInterface extends Remote {
     public void checkBoard(String player) throws RemoteException;
     public void topTen(String name) throws RemoteException;
     public void getRank(String player) throws RemoteException;
+    public void quitRps(String player) throws RemoteException;
 //Rock Paper Scissors Battle Code Here---------------------------------
   
 	/**
