@@ -35,6 +35,8 @@ public class Player {
     private ArrayList<String> ignoredByList;
     /* END 405_ignore variables*/
 
+    private ArrayList<String> censorList;// 409_censor
+
     public Player(GameCore gameCore, String name) {
         this.gameCore = gameCore;
         this.currentRoom = Map.SPAWN_ROOM_ID;
@@ -54,6 +56,7 @@ public class Player {
         this.ignoreList = new ArrayList<String>();
         this.ignoredByList = new ArrayList<String>();
         /* END 405_ignore  */
+	this.censorList = null; //409_censor
     }
 	
 	public ArrayList<Quest> getQuestBook()
@@ -662,4 +665,14 @@ public class Player {
                 player.broadcast(message);
         }
     }
+    
+    //START 409_censor
+    public ArrayList<String> getCensorList(){
+        return censorList;
+    }
+
+    public void setCensorList( ArrayList<String> censorList ){
+        this.censorList = censorList;
+    }
+    //END 409_censor
 }

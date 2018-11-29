@@ -559,9 +559,9 @@ public class GameCore implements GameCoreInterface {
             else
             {
 
-  if(playerSending.searchIgnoredBy(name2)){
-   return "Cannot whisper player that has ignored you";
-      }
+		if(playerSending.searchIgnoredBy(name2)){
+			return "Cannot whisper player that has ignored you";
+	    	}
                 if(!playerSending.searchIgnoredBy(playerReceiving.getName()))
                 {
                     if(playerSending.getIsDrunk()){
@@ -2222,6 +2222,7 @@ public class GameCore implements GameCoreInterface {
   }
 
     //409_censor START
+    
     private String scrubMessage( String message, ArrayList<String> censorList ){
         if( message == null || message.equals(' ') )
                 return message;
@@ -2235,6 +2236,14 @@ public class GameCore implements GameCoreInterface {
         }
         return message;
     }
+    public void setPlayerCensorList( ArrayList<String> censorList, String playerName ){
+        playerList.findPlayer(  playerName ).setCensorList( censorList );
+    }
+
+    public ArrayList<String> getPlayerCensorList( String playerName ){
+        return playerList.findPlayer( playerName ).getCensorList();
+    }
+
     //409_censor END
 
   //Added by An
@@ -2574,7 +2583,8 @@ public String map(String name)
         for( String member : group )
         {
             temp = playerList.findPlayer( member );
-            temp.getReplyWriter().println(message);
+            message = scrubMessage( message, temp.getCensorList() ); //409_censor scrub message of unwanted words
+	    temp.getReplyWriter().println(message);
         }
     }
 
@@ -2606,6 +2616,9 @@ public String map(String name)
     public String GCGetHelp(String name)
     {
         return groupChatTracker.getHelp();
+    }
+    public void GCPlayerQuit( String playerName){
+	groupChatTracker.playerQuit( playerName );
     }
     //416_GroupChat End
 }

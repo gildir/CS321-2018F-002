@@ -208,6 +208,15 @@ public void getRank(String player);
     public String GCJoin( String groupName, String playerName);
 
     public boolean checkGCMembership( String groupName, String playerName);
+    
     public String GCGetHelp(String name);
+    
+    public void GCPlayerQuit( String playerName);
     /* END 416_GroupCat */
+
+    /* START 409_censor */
+    public void setPlayerCensorList( ArrayList<String> censorList, String playerName );
+    
+    public ArrayList<String> getPlayerCensorList( String playerName );
+    /* END 409_censor */
 }

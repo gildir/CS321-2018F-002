@@ -578,7 +578,6 @@ public class CommandRunner {
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
         this.remoteGameInterface = rgi;
         this.commandsInfo = parseCommandsFile(commandsFile);
-        censorList = loadCensorList();    //409_censor load censor list
 	this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();
@@ -671,8 +670,8 @@ public class CommandRunner {
 
             try {
                 lastCommand = cmdToRun;
+	        censorList = remoteGameInterface.getPlayerCensorList( playerName );  //409_censor
                 lastArgs = (ArrayList<String>) argsToRun.clone();
-
                 String result = cmd.run(playerName, argsToRun);
                 if (result != null)
                     System.out.println(result);
@@ -854,30 +853,4 @@ public class CommandRunner {
         helpCommandUI = uiBuild.toString();
     }
     
-    //START 409_censor
-    private ArrayList<String> loadCensorList(){
-        Scanner fileIn = null;
-        String tempStr = null;
-	ArrayList<String> temp = new ArrayList<String>();
-        try{
-            fileIn = new Scanner( new FileReader( "censorlist.txt" ) );
-            while( fileIn.hasNextLine() ){
-                tempStr = fileIn.nextLine();
-		//check if string from file is empty or all spaces
-		//ignore if it is, add to ArrayList temp if it is not
-                if( !tempStr.isEmpty() && !tempStr.replaceAll("\\s+","").isEmpty() )
-			temp.add( tempStr );
-            }
-            if(false){    //Used for debugging
-                System.out.println( "******Contents of censorList: " + temp.toString() );
-            }
-        }catch( IOException e ){
-            System.out.println( e );
-        }finally{
-           if( fileIn != null )
-                   fileIn.close();
-        }
-        return temp;    //return temp variable, it has all items in censorlist.txt
-    }
-    //END 409_censor
 }

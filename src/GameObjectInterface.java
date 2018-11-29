@@ -354,6 +354,15 @@ public interface GameObjectInterface extends Remote {
     public String GCJoin( String groupName, String playerName) throws RemoteException;
 
     public boolean checkGCMembership( String groupName, String playerName) throws RemoteException;
+    
     public String GCGetHelp(String name)throws RemoteException;
+    
+    public void GCPlayerQuit( String playerName) throws RemoteException;
     //406_GroupChat END
+    /* START 409_censor */
+    public void setPlayerCensorList( ArrayList<String> censorList, String playerName ) throws RemoteException;
+
+    public ArrayList<String> getPlayerCensorList( String playerName ) throws RemoteException;
+    /* END 409_censor */
+
 }

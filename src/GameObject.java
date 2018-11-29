@@ -580,5 +580,20 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
         return core.GCGetHelp(name);
     }
+    public void GCPlayerQuit( String playerName ) throws RemoteException
+    {
+        core.GCPlayerQuit( playerName);
+    }
     //416_GroupChat END
+    
+    /* START 409_censor */
+    public void setPlayerCensorList( ArrayList<String> censorList, String playerName ) throws RemoteException
+    {
+	core.setPlayerCensorList( censorList, playerName);
+    }
+    public ArrayList<String> getPlayerCensorList( String playerName ) throws RemoteException
+    {
+         return core.getPlayerCensorList( playerName );
+    }
+    /* END 409_censor */
 }
