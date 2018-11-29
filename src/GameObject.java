@@ -459,6 +459,10 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
   public void topTen(String name) throws RemoteException {
         core.topTen(name);
     }
+  public void quitRps(String player)
+    {
+        core.quitRps(player);
+    }
   //Rock Paper Scissors Battle Code here--------------------------------------
   
   /*
@@ -471,7 +475,12 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
   {
   	return core.map(name);
 }
-  
+	
+	// Displays the Player's active Quest Objectives
+	public String objectives(String name) throws RemoteException
+	{
+		return core.objectives(name);
+	}
 
     //405
     @Override
@@ -575,5 +584,20 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     {
         return core.GCGetHelp(name);
     }
+    public void GCPlayerQuit( String playerName ) throws RemoteException
+    {
+        core.GCPlayerQuit( playerName);
+    }
     //416_GroupChat END
+    
+    /* START 409_censor */
+    public void setPlayerCensorList( ArrayList<String> censorList, String playerName ) throws RemoteException
+    {
+	core.setPlayerCensorList( censorList, playerName);
+    }
+    public ArrayList<String> getPlayerCensorList( String playerName ) throws RemoteException
+    {
+         return core.getPlayerCensorList( playerName );
+    }
+    /* END 409_censor */
 }

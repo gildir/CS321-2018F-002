@@ -35,6 +35,8 @@ public class Player {
     private ArrayList<String> ignoredByList;
     /* END 405_ignore variables*/
 
+    private ArrayList<String> censorList;// 409_censor
+
     public Player(GameCore gameCore, String name) {
         this.gameCore = gameCore;
         this.currentRoom = Map.SPAWN_ROOM_ID;
@@ -54,8 +56,14 @@ public class Player {
         this.ignoreList = new ArrayList<String>();
         this.ignoredByList = new ArrayList<String>();
         /* END 405_ignore  */
+	this.censorList = null; //409_censor
     }
-
+	
+	public ArrayList<Quest> getQuestBook()
+	{
+		return this.questBook;
+	}
+	
     public void turnLeft() {
         synchronized (this) {
             switch (this.currentDirection.toString()) {
@@ -361,125 +369,146 @@ public class Player {
             this.money.numPennies -= moneyRemove.numPennies;
         }
     }
-  
+
    /**
    * Removes a double value from the players money
    * @param value Amount to be removed
    */
-    public void removeMoney(double value) {
-        synchronized (this) {
-            if (this.money.sum() < value) {
-                return;
-            }
-            double valueCopy = value;
-            int[] unitsRemoved = new int[5];
-            int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
-            double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
-            int index = 0;
-
-            while (index < 5) {
-                for (int i = 1; i <= numUnits[index]; i++) {
-                    if (unitVals[index] * i > valueCopy) {
-                        break;
-                    }
-                    unitsRemoved[index]++;
-                }
-
-                if (unitsRemoved[index] > 0) {
-                    valueCopy -= unitVals[index] * unitsRemoved[index];
-                }
-                index++;
-            }
-
-            if (valueCopy == 0.0) {
-                this.money.numFives -= unitsRemoved[0];
-                this.money.numOnes -= unitsRemoved[1];
-                this.money.numQuarters -= unitsRemoved[2];
-                this.money.numDimes -= unitsRemoved[3];
-                this.money.numPennies -= unitsRemoved[4];
-                return;
-            }
-            // player must overcompensate and then get change
-            else if (valueCopy > 0) {
-                double currentSum = value - valueCopy;
-                // round to the nearest dollar, if there are enough dollars
-                double rounded = Math.ceil(value);
-                int extraOnes = 1;
-                double valRemoved = 0;
-                while (unitsRemoved[1] + extraOnes <= numUnits[1]) {
-                    // add ones until the value has been met
-                    if (currentSum + extraOnes >= value) {
-                        unitsRemoved[2] = 0;
-                        unitsRemoved[3] = 0;
-                        unitsRemoved[4] = 0;
-                        unitsRemoved[1] += extraOnes;
-                        // value has been met so change player money and return
-                        this.money.numFives -= unitsRemoved[0];
-                        this.money.numOnes -= unitsRemoved[1];
-                        this.money.numQuarters -= unitsRemoved[2];
-                        this.money.numDimes -= unitsRemoved[3];
-                        this.money.numPennies -= unitsRemoved[4];
-                        currentSum += extraOnes;
-                        addMoney(rounded - value);
-                        return;
-                    }
-                    extraOnes++;
-                }
-            }
-        }
+   public void removeMoney(double value){
+    if(this.money.sum() < value){
+      return;
     }
-
+    double valueCopy = value;
+    int[] unitsRemoved = new int[5];
+    int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
+    double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
+    int index = 0;
+    
+    while(index < 5){
+      for (int i = 1; i <= numUnits[index]; i++){
+        if(unitVals[index] * i > valueCopy){
+          break;
+          
+        }
+        unitsRemoved[index]++;
+      }
+      
+      if(unitsRemoved[index] > 0){
+        valueCopy -= unitVals[index] * unitsRemoved[index];
+        int scale = (int) Math.pow(10, 2);
+        valueCopy = (double) Math.round(valueCopy * scale) / scale;
+      }
+      index++;
+    }
+    
+    if(valueCopy == 0.0){
+      this.money.numFives -= unitsRemoved[0];
+      this.money.numOnes -= unitsRemoved[1];
+      this.money.numQuarters -= unitsRemoved[2];
+      this.money.numDimes -= unitsRemoved[3];
+      this.money.numPennies -= unitsRemoved[4];
+      return;
+    }
+    // player must overcompensate and then get change
+    else if(valueCopy > 0.0){
+      int scale = (int) Math.pow(10, 2);
+      valueCopy = (double) Math.round(valueCopy * scale) / scale;
+      
+      if(valueCopy <= 0.10 && unitsRemoved[3] + 1 <= numUnits[3]){
+        unitsRemoved[3] += 1;
+        unitsRemoved[4] = 0;
+      }
+      else if(valueCopy <= 0.25 && unitsRemoved[2] + 1 <= numUnits[2]){
+        unitsRemoved[2] += 1;
+        unitsRemoved[3] = 0;
+        unitsRemoved[4] = 0;
+      }
+      else if(valueCopy <= 1.0 && unitsRemoved[1] + 1 <= numUnits[1]){
+        unitsRemoved[1] += 1;
+        unitsRemoved[2] = 0;
+        unitsRemoved[3] = 0;
+        unitsRemoved[4] = 0;
+      }
+      else if(valueCopy <= 5.0 && unitsRemoved[0] + 1 <= numUnits[0]){
+        unitsRemoved[0] += 1;
+        unitsRemoved[1] = 0;
+        unitsRemoved[2] = 0;
+        unitsRemoved[3] = 0;
+        unitsRemoved[4] = 0;
+      }
+      // remove player money
+      this.money.numFives -= unitsRemoved[0];
+      this.money.numOnes -= unitsRemoved[1];
+      this.money.numQuarters -= unitsRemoved[2];
+      this.money.numDimes -= unitsRemoved[3];
+      this.money.numPennies -= unitsRemoved[4];
+      // give player change
+      double amountGiven = 0;
+      for(int i = 0; i < 5; i++){
+        amountGiven += unitsRemoved[i] * unitVals[i];
+      }
+      amountGiven = (double) Math.round(amountGiven * scale) / scale;
+      double change = amountGiven - value;
+      change = (double) Math.round(change * scale) / scale;
+      addMoney(change);
+      return;
+    } 
+  }
+  
     public String viewMoney() {
         return this.money.toString();
     }
 
-    public Money giveMoney(Player giver, Player receiver, double value) {
-        synchronized (this) {
-            Money moneyToGive = new Money();
-            replyWriter.println("You are giving away " + String.format("%1$,.2f", value));
-
-            if (this.money.sum() <= 0) {
-                replyWriter.println("Must give a positive amount of money!");
-                return moneyToGive;
-            }
-            // send money in units available to player
-            // if correct units are unavaialable, then return and give a message
-            double valueCopy = value;
-            int[] unitsGiven = new int[5];
-            int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
-            double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
-            int index = 0;
-
-            while (index < 5) {
-                for (int i = 1; i <= numUnits[index]; i++) {
-                    if (unitVals[index] * i > valueCopy) {
-                        break;
-                    }
-                    unitsGiven[index]++;
-                }
-
-                if (unitsGiven[index] > 0) {
-                    valueCopy -= unitVals[index] * unitsGiven[index];
-                }
-                index++;
-            }
-
-            if (valueCopy > 0) {
-                replyWriter.println("You don't have enough money with the units of money that you have!");
-                return moneyToGive;
-            } else {
-                moneyToGive.numFives = unitsGiven[0];
-                moneyToGive.numOnes = unitsGiven[1];
-                moneyToGive.numQuarters = unitsGiven[2];
-                moneyToGive.numDimes = unitsGiven[3];
-                moneyToGive.numPennies = unitsGiven[4];
-                receiver.addMoney(moneyToGive);
-                removeMoney(moneyToGive);
-                receiver.getReplyWriter().println("You received " + String.format("%1$,.2f", value) + " dollars!");
-                return moneyToGive;
-            }
+   public Money giveMoney(Player giver,Player receiver,double value){
+    Money moneyToGive = new Money();
+    //replyWriter.println("You are giving away "+ String.format("%1$,.2f", value)); 
+    
+    if(this.money.sum() <= 0){
+      replyWriter.println("Must give a positive amount of money!");
+      return moneyToGive;
+    } 
+    // send money in units available to player 
+    // if correct units are unavaialable, then return and give a message
+    double valueCopy = value;
+    int[] unitsGiven = new int[5];
+    int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
+    double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
+    int index = 0;
+    
+    while(index < 5){
+      for (int i = 1; i <= numUnits[index]; i++){
+        if(unitVals[index] * i > valueCopy){
+          break; 
         }
+        unitsGiven[index]++;
+      }
+      
+      if(unitsGiven[index] > 0){
+        valueCopy -= unitVals[index] * unitsGiven[index];
+        int scale = (int) Math.pow(10, 2);
+        valueCopy = (double) Math.round(valueCopy * scale) / scale;
+      }
+      index++;
     }
+    
+    if(valueCopy - 0.0099999999999999 > (float)0.0){ 
+      replyWriter.println("You don't have enough money with the units of money that you have!");
+      return moneyToGive;
+    }
+    
+    else{
+      moneyToGive.numFives = unitsGiven[0];
+      moneyToGive.numOnes = unitsGiven[1];
+      moneyToGive.numQuarters = unitsGiven[2];
+      moneyToGive.numDimes = unitsGiven[3];
+      moneyToGive.numPennies = unitsGiven[4];
+      receiver.addMoney(moneyToGive); 
+      removeMoney(moneyToGive);   
+      receiver.getReplyWriter().println("You received " + String.format("%1$,.2f", value) + " dollars!"); 
+      return moneyToGive;
+    }
+  }
+  
 
     public void setDirection(Direction direction) {
         synchronized (this) {
@@ -513,31 +542,34 @@ public class Player {
    * @return true if player can reach the amount
    */
     public boolean hasUnits(double amount) {
-        // send money in units available to player
-        // if correct units are unavaialable, then return and give a message
-        double valueCopy = amount;
-        int[] unitsGiven = new int[5];
-        int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
-        double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
-        int index = 0;
-
-        while (index < 5) {
-            for (int i = 1; i <= numUnits[index]; i++) {
-                if (unitVals[index] * i > valueCopy) {
-                    break;
-                }
-                unitsGiven[index]++;
-            }
-
-            if (unitsGiven[index] > 0) {
-                valueCopy -= unitVals[index] * unitsGiven[index];
-            }
-            index++;
+    // send money in units available to player 
+    // if correct units are unavaialable, then return and give a message
+    double valueCopy = amount;
+    int[] unitsGiven = new int[5];
+    int[] numUnits = new int[]{this.money.numFives, this.money.numOnes, this.money.numQuarters, this.money.numDimes, this.money.numPennies};
+    double[] unitVals = new double[]{5, 1, 0.25, 0.10, 0.01};
+    int index = 0;
+    
+    while(index < 5){
+      for (int i = 1; i <= numUnits[index]; i++){
+        if(unitVals[index] * i > valueCopy){
+          break;
         }
-        if (valueCopy > 0)
-            return false;
-        return true;
+        unitsGiven[index]++;
+      }
+      
+      if(unitsGiven[index] > 0){
+        valueCopy -= unitVals[index] * unitsGiven[index];
+        int scale = (int) Math.pow(10, 2);
+        valueCopy = (double) Math.round(valueCopy * scale) / scale;
+      }
+      index++;
     }
+    if(valueCopy - 0.0099999999999999  > (float)0.0){
+      return false;
+    }
+    return true;
+  }
 
     public String viewInventory() {
         synchronized (this) {
@@ -646,4 +678,14 @@ public class Player {
                 player.broadcast(message);
         }
     }
+    
+    //START 409_censor
+    public ArrayList<String> getCensorList(){
+        return censorList;
+    }
+
+    public void setCensorList( ArrayList<String> censorList ){
+        this.censorList = censorList;
+    }
+    //END 409_censor
 }
