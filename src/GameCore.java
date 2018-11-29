@@ -27,7 +27,7 @@ public class GameCore implements GameCoreInterface {
     private final Map map;
     //Specifies a minimum and maximum amount of time until next item spawn
     private final int minimumSpawnTime=100, maximumSpawnTime=600;
-
+    
     private final GiftsTracker giftsTracker;
 
     //Prefix that will help distinguish player chat from anything else
@@ -60,19 +60,19 @@ public class GameCore implements GameCoreInterface {
     /**
      * Creates a new GameCoreObject. Namely, creates the map for the rooms in the game,
      *  and establishes a new, empty, player list.
-     *
+     * 
      * This is the main core that both the RMI and non-RMI based servers will interface with.
      */
      //now takes filename for Map
     public GameCore(String filename) {
-
+ 
         // Generate the game map. with the proper filename!
         map = new Map(this, filename);
 
         playerList = new PlayerList();
 
         shop = new Shop();
-
+        
         giftsTracker = new GiftsTracker();
 
         npclist = new NPCList();
@@ -146,7 +146,7 @@ public class GameCore implements GameCoreInterface {
                         object = (Item)objects.get(rand.nextInt(objects.size())).clone();
                         room = map.randomRoom();
                         room.addObject(object);
-
+                        
                         GameCore.this.broadcast(room, "You see a student rush past and drop a " + object.getItemName() + " on the ground.");
 
                     } catch (InterruptedException ex) {
@@ -214,7 +214,7 @@ public class GameCore implements GameCoreInterface {
 
       date = new Date();
     }
-
+	
 	public String objectives(String name)
 	{
 		Player p = this.playerList.findPlayer(name);
@@ -242,7 +242,7 @@ public class GameCore implements GameCoreInterface {
 		}
 		return sb.toString();
 	}
-
+	
     /**
      * Basic getter methods for GameCore.
      */
@@ -370,10 +370,10 @@ public class GameCore implements GameCoreInterface {
         }
         return null;
     }
-
+    
     /**
      * Allows a player to join the game.  If a player with the same name (case-insensitive)
-     *  is already in the game, then this returns false.  Otherwise, adds a new player of
+     *  is already in the game, then this returns false.  Otherwise, adds a new player of 
      *  that name to the game.  The next step is non-coordinated, waiting for the player
      *  to open a socket for message events not initiated by the player (ie. other player actions)
      * @param name
@@ -399,7 +399,7 @@ public class GameCore implements GameCoreInterface {
         // A player of that name already exists.
         return null;
     }
-
+   
     /**
      * Returns a look at the area of the specified player.
      * @param playerName Player Name
@@ -409,7 +409,7 @@ public class GameCore implements GameCoreInterface {
     public String look(String playerName) {
         Player player = playerList.findPlayer(playerName);
 
-        if(player != null) {
+        if(player != null) {        
             // Find the room the player is in.
             Room room = this.map.findRoom(player.getCurrentRoom());
 
@@ -423,7 +423,7 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }
+    }        
 
     //402
     public String listAllPlayers(String name)
@@ -452,10 +452,10 @@ public class GameCore implements GameCoreInterface {
         if(player != null) {
             // Compel the player to turn left 90 degrees.
             player.turnLeft();
-
+            
             // Send a message to every other player in the room that the player has turned left.
             this.broadcast(player, player.getName() + " turns to the left.");
-
+            
             // Return a string back to the calling function with an update.
             return "You turn to the left to face " + player.getCurrentDirection();
         }
@@ -463,7 +463,7 @@ public class GameCore implements GameCoreInterface {
             return null;
         }
     }
-
+    
     /**
      * Turns the player right.
      * @param name Player Name
@@ -475,18 +475,18 @@ public class GameCore implements GameCoreInterface {
         if(player != null) {
             // Compel the player to turn left 90 degrees.
             player.turnRight();
-
+            
             // Send a message to every other player in the room that the player has turned right.
             this.broadcast(player, player.getName() + " turns to the right.");
-
+            
             // Return a string back to the calling function with an update.
             return "You turn to the right to face " + player.getCurrentDirection();
         }
         else {
             return null;
         }
-    }
-
+    }    
+    
     /**
      * Says "message" to everyone in the current area.
      * @param name Name of the player to speak
@@ -858,7 +858,7 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }
+    }       
 
  /**
      * Attempts to pick up an object < target >. Will return a message on any success or failure.
@@ -1001,7 +1001,7 @@ public class GameCore implements GameCoreInterface {
                             hasItem = true;
                             break;
                         }
-                    }
+                    } 
                     if(hasItem) {
                         player.setInTradeWithName(null);
                         player.setInTradeWithItem(null);
@@ -1217,7 +1217,7 @@ public class GameCore implements GameCoreInterface {
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move
      * @return Message showing success.
-     */
+     */    
     @Override
     public String inventory(String name) {
         Player player = this.playerList.findPlayer(name);
@@ -1260,7 +1260,7 @@ public class GameCore implements GameCoreInterface {
         else {
             return null;
         }
-    }
+    }    
     @Override
     public String gift(String yourname ,String name, double amount){
      if(yourname.toLowerCase().equals(name.toLowerCase()))
@@ -1283,7 +1283,7 @@ public class GameCore implements GameCoreInterface {
         tradee.getReplyWriter().println("" + trader.getName() + " wants to gift you $" + String.format("%1$,.2f", amount) + "!\nEnter RECEIVE GIFT to accept.");
         return "You try to gift " + tradee.getName() + " $" +   String.format("%1$,.2f", amount);
     }
-
+    
     public String acceptGift(String name) {
      Player tradee = this.playerList.findPlayer(name);
      if(tradee == null)
@@ -1307,7 +1307,7 @@ public class GameCore implements GameCoreInterface {
      this.giftsTracker.close(request);
      return "You have receieved the gift!";
     }
-
+    
     public String declineGift(String name) {
      Player player = playerList.findPlayer(name);
      if(player == null)
@@ -1331,7 +1331,7 @@ public class GameCore implements GameCoreInterface {
      * Leaves the game.
      * @param name Name of the player to leave
      * @return Player that was just removed.
-     */
+     */    
     @Override
     public Player leave(String name) {
         Player player = this.playerList.findPlayer(name);
@@ -1467,7 +1467,7 @@ public class GameCore implements GameCoreInterface {
      }
      return "You have bought a " + itemName + " from the shop.";
  }
-
+ 
   /**
      * Logs a string into a file
      * @param fileName name of the file to log in
@@ -1548,7 +1548,7 @@ public class GameCore implements GameCoreInterface {
       play1.getReplyWriter().println("You must be in the same room as the person you are challenging.");
       return;
     }
-
+    
       LinkedList<Item> inventory = play2.getCurrentInventory();  //you can only challenge a player if they have a rock paper or scissors
       int hasBattleItemP2 = 0;
       for (Item obj : inventory) {
@@ -1856,7 +1856,7 @@ public class GameCore implements GameCoreInterface {
     p.getReplyWriter().println("You aren't in any Rock Paper Scissors Battles currently.");
   }
 
-  public void doBattle(String challenger, String player2, int[] p1, int[] p2, Battle b, int rounds)
+  public void doBattle(String challenger, String player2, int[] p1, int[] p2, Battle b, int rounds) 
   {
     Player play1 = this.playerList.findPlayer(challenger);
     Player play2 = this.playerList.findPlayer(player2);
@@ -1871,12 +1871,12 @@ public class GameCore implements GameCoreInterface {
           roundResult = "You Both Tied.";
           play1.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Rock. The match is a tie!\n");
-
+          
           if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
           {
               String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-              message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                        MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+              message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                        MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
               this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
               activeBattles.remove(b);
               updateLeaderboard(b);
@@ -1894,12 +1894,12 @@ public class GameCore implements GameCoreInterface {
         case 2:
           play1.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Paper. The match is a tie!\n");
-
+          
           if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
           {
               String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-              message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                        MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+              message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                        MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
               this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
               activeBattles.remove(b);
               updateLeaderboard(b);
@@ -1917,11 +1917,11 @@ public class GameCore implements GameCoreInterface {
         case 3:
           play1.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
           play2.getReplyWriter().println("You both chose Scissors. The match is a tie!\n");
-
+          
           if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
           {
               String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-              message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
+              message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
                         MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
               this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
               activeBattles.remove(b);
@@ -1944,14 +1944,14 @@ public class GameCore implements GameCoreInterface {
       //rock paper
       play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Paper. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Rock. \nYou win.\n");
-
+      
       b.incP2Score();
-
+                
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -1972,14 +1972,14 @@ public class GameCore implements GameCoreInterface {
       //rock scissors
       play1.getReplyWriter().println("You chose Rock. " + player2 + " chose Scissors. \nYou win.\n");
       play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Rock. \nYou lose.\n");
-
+      
       b.incP1Score();
-
+      
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -2000,14 +2000,14 @@ public class GameCore implements GameCoreInterface {
       //paper rock
       play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Rock. \nYou win.\n");
       play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Paper. \nYou lose.\n");
-
+      
       b.incP1Score();
-
+      
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -2028,14 +2028,14 @@ public class GameCore implements GameCoreInterface {
       //paper scissors
       play1.getReplyWriter().println("You chose Paper. " + player2 + " chose Scissors. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Scissors. " + challenger + " chose Paper. \nYou win.\n");
-
+      
       b.incP2Score();
-
+      
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -2056,14 +2056,14 @@ public class GameCore implements GameCoreInterface {
       //scissors rock
       play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Rock. \nYou lose.\n");
       play2.getReplyWriter().println("You chose Rock. " + challenger + " chose Scissors. \nYou win.\n");
-
+      
       b.incP2Score();
-
+      
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -2084,14 +2084,14 @@ public class GameCore implements GameCoreInterface {
       //scissors paper
       play1.getReplyWriter().println("You chose Scissors. " + player2 + " chose Paper. \nYou win.\n");
       play2.getReplyWriter().println("You chose Paper. " + challenger + " chose Scissors. \nYou lose.\n");
-
+    
       b.incP1Score();
-
+    
       if(b.getCurrentRound()+1 == b.getMaxRounds() || b.getP1Score() >= Math.ceil(b.getMaxRounds()/2.0) || b.getP2Score() >= Math.ceil(b.getMaxRounds()/2.0))
       {
           String result = (b.getP1Score() > b.getP2Score()) ? b.getPlayer1() : ((b.getP1Score() == b.getP2Score()) ? "it was a tie, nobody": b.getPlayer2());
-          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) :
-                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));
+          message = challenger + " and " + player2 + ((b.getMaxRounds() == 1) ? MessageFormat.format(" had a Rock Paper Scissors Battle, {0} won.\n",result) : 
+                    MessageFormat.format(" had a best {2} out of {0} Rock Paper Scissors Battle, {1} won.\n",b.getMaxRounds(),result,(int)Math.ceil(b.getMaxRounds()/2.0)));  
           this.broadcast(map.findRoom(play1.getCurrentRoom()),message);
           activeBattles.remove(b);
           updateLeaderboard(b);
@@ -2234,7 +2234,7 @@ public class GameCore implements GameCoreInterface {
 //Rock Paper Scissors Battle Methods -------------------------------------------
   // Whiteboards
   /**
-   *
+   * 
    * @param  playerName
    * @return the room object where the player is
    * @throws RemoteException
@@ -2266,7 +2266,7 @@ public class GameCore implements GameCoreInterface {
 
     return wb.display();
   }
-
+  
   /**
    * Method that players can use to call the erase method of the whiteboard in the same room that they are in, which replaces the message of that whiteboard with the empty string.
    * @param  playerName
@@ -2283,7 +2283,7 @@ public class GameCore implements GameCoreInterface {
 
     return wb.erase();
   }
-
+  
   /**
    * Allows a player to access the write method of the whiteboard that is in the same room as them, allowing them to change the message stored in that whiteboard to the message that the player enters.
    * @param  playerName
@@ -2312,10 +2312,10 @@ public class GameCore implements GameCoreInterface {
       LinkedList<Room> roomList = map.getMap();
       Iterator rooms = roomList.listIterator(1);
 
-      while(rooms.hasNext()){
+      while(rooms.hasNext()){ 
         Room r = (Room) rooms.next();
         // System.out.println(r.getId());
-
+        
         WhiteBoard wb = r.getWB();
 
         if (wb != null) {
