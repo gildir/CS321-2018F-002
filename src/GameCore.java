@@ -507,7 +507,7 @@ public class GameCore implements GameCoreInterface {
                     message + "\" in the room " + player.getCurrentRoom();
             add_chat_log(log);
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
-            this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"");
+            this.broadcast(player, chatPrefix + player.getName() + " says, \"" + message + "\"" + " " + date.toString());
             return chatPrefix + "You say, \"" + message + "\"" + " " + date.toString();
         }
         else {
@@ -532,7 +532,7 @@ public class GameCore implements GameCoreInterface {
             String log = player.getName() + " shouts, \"" + message + "\"";
             add_chat_log(log);
             message = scrubMessage( message, censorList); //409_censor scrub message of unwanted words
-            this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"");
+            this.broadcastShout(player, chatPrefix + player.getName() + " shouts, \"" + message + "\"" + " " + date.toString());
             return chatPrefix + "You shout, \"" + message + "\"" + " " + date.toString();
         }
         else {
