@@ -45,6 +45,16 @@ public class Leaderboard {
 	
 	public String getBoard() {
 		String head = "\n\n\n\n\n\n\nRock-Paper-Scissors Global Leaderboard:\n";
+		
+		//819
+		Collections.sort(board, new Comparator<PlayerScore>(){
+            public int compare(PlayerScore s1, PlayerScore s2) {
+				Integer a = new Integer(s1.getScore());
+				Integer b = new Integer(s2.getScore());
+				return b.compareTo(a);
+            }
+        });
+		
 		PlayerScore playerScore = null;
 		String rank = null;
 		String title = null;
@@ -53,10 +63,28 @@ public class Leaderboard {
 		//String currentWinStreak = null;
 		String longestLossStreak = null;
 		//String currentLossStreak = null;
-		for(int i = 0; i < this.board.size(); i++) {
+		
+		//819
+		int pRank = 1;
+		
+		for(int i=0; i<this.board.size(); i++) {
 			playerScore = this.board.get(i);
-			rank = String.valueOf(i+1);
-			title = this.getTitle(playerScore, i);
+			
+			//819s
+			if (i==0) {
+				rank = String.format("%-4d", pRank);
+			}
+            else if (this.board.get(i-1).getScore()>playerScore.getScore()){
+				rank = String.format("%-4d", ++pRank);
+            }
+            else {
+				rank = String.format("%-4d", pRank);
+            }
+            
+			//819: associate title to rank which means there CAN be duplicates 
+			//getTitle(playerScore, i) => getTitle(playerScore, pRank-1)
+			title = this.getTitle(playerScore, pRank-1);
+			
 			score = String.valueOf(playerScore.getScore());
 			longestWinStreak = String.valueOf(playerScore.getLongestWinStreak());
 			//currentWinStreak = String.format("%-2d", playerScore.getCurrentWinStreak());
@@ -85,19 +113,18 @@ public class Leaderboard {
 		return titles[rank];
 	}
 	
-	// Added by An
+	// 819: changed all getWins() to new method getScore() from PlayerScore
     public String getTopTen() {
         String topTen = "\nRock-Paper-Scissors Global Top Ten RPS Ranking:\n\n";
         
         //sort leaderboard by number of wins in descending order
         Collections.sort(board, new Comparator<PlayerScore>(){
             public int compare(PlayerScore s1, PlayerScore s2) {
-                Integer a = new Integer(s1.getWins());
-                Integer b = new Integer(s2.getWins());
+                Integer a = new Integer(s1.getScore());
+                Integer b = new Integer(s2.getScore());
                 return b.compareTo(a);
             }
         });
-        //Collections.reverse(leaderboard);
         
         PlayerScore score = null;
         String rank = null;
@@ -119,14 +146,14 @@ public class Leaderboard {
                 rank = String.format("%-4d", j);
             }
             // if score from previous player is greater than current player, increment rank
-            else if (board.get(i-1).getWins() > score.getWins())  {
+            else if (board.get(i-1).getScore() > score.getScore())  {
                 rank = String.format("%-4d", ++j);
             }
             // if current score is same as previous score, rank remain the same
             else {
                 rank = String.format("%-4d", j);
             }
-            wins = String.format("%-4d", score.getWins());
+            wins = String.format("%-4d", score.getScore());
             topTen += ("Rank: " + rank + " |   Score: " + wins + " |   Name: " + score.getName() + "\n");
         }
         //add string buffer for empty player 
