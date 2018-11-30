@@ -53,6 +53,17 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
         return (core.joinGame(name) != null);
     }
 
+    /**
+     * Determines if a player exists in the system already
+     * @param name
+     * @return true if player does exists, false otherwise
+     * @throws RemoteException
+     */
+    public boolean playerExists(String name) throws RemoteException{
+        if(core.findPlayer(name) == null) return false;
+        else return true;
+    }
+
     public void setChatPrefix(String prefix) throws RemoteException {
         core.setChatPrefix(prefix);
     }        
@@ -108,8 +119,8 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      * @throws RemoteException 
      */
     @Override
-    public String say(String name, String message) throws RemoteException {
-        return core.say(name, message);
+    public String say(String name, String message, ArrayList<String> censorList) throws RemoteException {
+        return core.say(name, message, censorList);
     }
 
     /**
@@ -119,8 +130,8 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     * @return Message showing success
     * @throws RemoteException
     */
-    public String shout(String name, String message) throws RemoteException {
-        return core.shout(name, message);
+    public String shout(String name, String message, ArrayList<String> censorList) throws RemoteException {
+        return core.shout(name, message, censorList);
     }
 
     //302
@@ -138,9 +149,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     * @throws RemoteException
     */
     @Override
-    public String whisper(String name1, String name2, String message) throws RemoteException
+    public String whisper(String name1, String name2, String message, ArrayList<String> censorList) throws RemoteException
     {
-        return core.whisper(name1, name2, message);
+        return core.whisper(name1, name2, message, censorList);
     }
 
     /**
@@ -151,9 +162,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     * @throws RemoteException
     */
     @Override
-    public String reply(String name, String message) throws RemoteException
+    public String reply(String name, String message, ArrayList<String> censorList) throws RemoteException
     {
-        return core.reply(name, message);
+        return core.reply(name, message, censorList);
     }
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
@@ -259,6 +270,16 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
 
     /**
+     * Attempts to use an item the player has called <itemName>. Will return a message on any success or failure.
+     * @param playerName Name of the player to use the item
+     * @param itemName The name of the item to use
+     * @return Message showing success.
+     */
+    public String useItem(String playerName, String item) throws RemoteException {
+	    return core.useItem(playerName, item);
+    }
+
+    /**
      * Player pokes a ghoul that is in the same room.
      * @param ghoulName Name of the ghoul that is poked
      * @param playerName Name of the player that pokes the ghoul.
@@ -277,6 +298,18 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
      */
     public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException {
         return core.giftGhoul(playerName, ghoulName, target);
+    }
+
+    public String catchSpirit(String playerName, String target) throws RemoteException {
+        return core.catchSpirit(playerName, target);
+    }
+
+    public String getAllSpirits(String playerName) throws RemoteException {
+        return core.getAllSpirits(playerName);
+    }
+
+    public String getCurrentSpirits(String playerName) throws RemoteException {
+        return core.getCurrentSpirits(playerName);
     }
 
 
@@ -406,9 +439,9 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
 
       //Rock Paper Scissors Battle Code here--------------------------------------
-      public void challenge(String challenger, String player2) throws RemoteException
-      { 
-	      core.challenge(challenger, player2);
+      public void challenge(String challenger, String player2, int rounds) throws RemoteException
+      {
+	      core.challenge(challenger, player2, rounds);
       }
 
       public void accept(String challenger, String player2) throws RemoteException
@@ -447,7 +480,12 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
   //Rock Paper Scissors Battle Code here--------------------------------------
   
-  //given a player name, returns an ascii art map of the world surrounding them
+  /*
+   * @author James Bruce
+   * given a player name, returns an ascii art map of the world surrounding them
+   * @param name the player doing the command
+   * @return an ASCII representation of the map around them
+   */
   public String map(String name) throws RemoteException
   {
   	return core.map(name);
@@ -485,7 +523,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
     
     /**
-     * [clearWhiteboard description]
+     * Returns a string notifying the player that the message stored in the Whiteboard was erased.
      * @param  playerName
      * @return message to be displayed to player
      * @throws RemoteException
@@ -495,7 +533,7 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     }
     
     /**
-     * [writeWhiteboard description]
+     * Returns a string to the player notifying them whether their message was invalid, whether it exceeded the maximum character length, or that their message was saved to the Whiteboard.
      * @param  playerName
      * @param  message
      * @return message to be displayed to player
@@ -512,4 +550,49 @@ public class GameObject extends UnicastRemoteObject implements GameObjectInterfa
     public void saveWhiteboards() throws RemoteException {
         core.saveWhiteboards();
     }
+    //416_GroupChat START
+    public String createGroupChat( String chatGroupName, String playerName) throws RemoteException
+    {
+	return core.createGroupChat( chatGroupName, playerName);
+    }
+
+    public String printGroupChat( String chatGroupName) throws RemoteException
+    {
+	    return core.printGroupChat( chatGroupName );
+    }
+
+    public boolean checkGCExists(String groupChatName) throws RemoteException
+    {
+	    return core.checkGCExists( groupChatName );
+    }
+
+     public String GCInvite( String groupName, String playerInvited, String playerInviting) throws RemoteException
+    {
+        return core.GCInvite( groupName, playerInvited, playerInviting);
+    }
+
+    public void GCMessage( String groupName, String playerName, String rawInput) throws RemoteException
+    {
+        core.GCMessage( groupName, playerName, rawInput);
+    }
+
+    public String GCLeave( String groupName, String playerName) throws RemoteException
+    {
+        return core.GCLeave( groupName, playerName);
+    }
+
+     public String GCJoin( String groupName, String playerName) throws RemoteException
+     {
+        return core.GCJoin( groupName, playerName);
+     }
+
+     public boolean checkGCMembership( String groupName, String playerName) throws RemoteException
+     {
+        return core.checkGCMembership( groupName, playerName);
+     }
+    public String GCGetHelp(String name)
+    {
+        return core.GCGetHelp(name);
+    }
+    //416_GroupChat END
 }
