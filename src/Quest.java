@@ -176,13 +176,24 @@ public class Quest
 			if (activeObjectives[0] == null)
 			{
 				this.questComplete = true;
+<<<<<<< HEAD
 				OWNER.getReplyWriter().println(String.format("\nQuest completed: %s", this.QUEST_NAME));
 				giveQuestReward();
+=======
+        
+				OWNER.getReplyWriter().println(String.format("\nQuest completed: %s", this.QUEST_NAME));
+				giveQuestReward();
+
+>>>>>>> 365be86cf7b8f19c52923d6793651a9d73187a0f
 			}
 		}
 		else
 		{
 			this.questComplete = true;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 365be86cf7b8f19c52923d6793651a9d73187a0f
 			OWNER.getReplyWriter().println(String.format("\nQuest completed: %s", this.QUEST_NAME));
 			giveQuestReward();
 		}

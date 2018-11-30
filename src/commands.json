@@ -390,6 +390,12 @@
     "uses": []
 },
 
+{
+    "name":             "QUITRPS",
+    "category":         "BATTLES",
+    "description":      "Leave the current battle. This will count as a loss.",
+    "uses": []
+},
 
 {
     "name":             "QUESTS",
