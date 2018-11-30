@@ -43,20 +43,18 @@ public class Player {
         this.name = name;
         this.currentInventory = new LinkedList<>();
         this.currentSpirits = new LinkedList<>();
-        try {
-            // add a tutorial Quest to the player
-            questBook.add(new Quest(this, new File("go_to_dk_hall.quest")));
-            questBook.get(0).printQuest();
-        } catch (FileNotFoundException fnfe) {
-            System.out.println("Couldn't add quest: file containing quest information not found");
-        }
         this.money = new Money(20);
         /* START 405_ignore*/
         this.ignoreList = new ArrayList<String>();
         this.ignoredByList = new ArrayList<String>();
         /* END 405_ignore  */
     }
-
+	
+	public ArrayList<Quest> getQuestBook()
+	{
+		return this.questBook;
+	}
+	
     public void turnLeft() {
         synchronized (this) {
             switch (this.currentDirection.toString()) {

@@ -38,6 +38,8 @@ public class Quest
 	*/
 	private boolean questComplete = false;
 	
+	private final double REWARD_AMOUNT;
+	
 	/**
 	 * Constructor for a Quest
 	 * 
@@ -60,6 +62,8 @@ public class Quest
 				this.QUEST_NAME = questScanner.next();
 				// read in the Quest description
 				this.QUEST_DESCRIPTION = questScanner.next();
+				// read in the Quest reward amount
+				this.REWARD_AMOUNT = questScanner.nextDouble();
 				// throw an exception if there are no Quest Objectives specified in the input file
 				if ( !(questScanner.hasNext()) )
 				{
@@ -172,14 +176,22 @@ public class Quest
 			if (activeObjectives[0] == null)
 			{
 				this.questComplete = true;
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!QUEST COMPLETE!!!!!!!!!!!!!!!!!!!!!!");
+				OWNER.getReplyWriter().println(String.format("\nQuest completed: %s", this.QUEST_NAME));
+				giveQuestReward();
 			}
 		}
 		else
 		{
 			this.questComplete = true;
-			System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!QUEST COMPLETE!!!!!!!!!!!!!!!!!!!!!!");
+			OWNER.getReplyWriter().println(String.format("\nQuest completed: %s", this.QUEST_NAME));
+			giveQuestReward();
 		}
+	}
+	
+	private void giveQuestReward()
+	{
+		OWNER.addMoney(REWARD_AMOUNT);
+		OWNER.getReplyWriter().println(String.format("Quest reward added: $%f\n", this.REWARD_AMOUNT));
 	}
 	
 	/**
