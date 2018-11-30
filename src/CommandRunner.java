@@ -353,6 +353,7 @@ public class CommandRunner {
         commandFunctions.put("RANK",   (name, args) -> { remoteGameInterface.getRank(name); return null; });
         commandFunctions.put("TUTORIAL",   (name, args) -> { remoteGameInterface.tutorial(name); return null; });
         commandFunctions.put("TOPTEN",   (name, args) -> { remoteGameInterface.topTen(name); return null; });
+        commandFunctions.put("QUITRPS",   (name, args) -> { remoteGameInterface.quitRps(name); return null; });
         commandFunctions.put("GIFT", (name, args) -> {
             if(args.size() < 2) {
                 return "You need to provide a ghoul name and the item to gift.";
@@ -475,6 +476,7 @@ public class CommandRunner {
 	 * this is the map command
 	 */
 	commandFunctions.put("MAP", (name, args) -> {return remoteGameInterface.map(name);});
+	commandFunctions.put("OBJECTIVES", (name, args) -> {return remoteGameInterface.objectives(name);});
 	//416_GroupChat START
 	commandFunctions.put("GROUPCHAT", (name, args) -> {
 		//TODO:
@@ -589,7 +591,6 @@ public class CommandRunner {
     public CommandRunner(GameObjectInterface rgi, String commandsFile) {
         this.remoteGameInterface = rgi;
         this.commandsInfo = parseCommandsFile(commandsFile);
-        censorList = loadCensorList();    //409_censor load censor list
 	this.remoteGameInterface = rgi;
         setupFunctions();
         createCommands();
@@ -682,8 +683,8 @@ public class CommandRunner {
 
             try {
                 lastCommand = cmdToRun;
-                lastArgs = argsToRun;
-
+	        censorList = remoteGameInterface.getPlayerCensorList( playerName );  //409_censor
+                lastArgs = (ArrayList<String>) argsToRun.clone();
                 String result = cmd.run(playerName, argsToRun);
                 if (result != null)
                     System.out.println(result);
@@ -865,30 +866,4 @@ public class CommandRunner {
         helpCommandUI = uiBuild.toString();
     }
     
-    //START 409_censor
-    private ArrayList<String> loadCensorList(){
-        Scanner fileIn = null;
-        String tempStr = null;
-	ArrayList<String> temp = new ArrayList<String>();
-        try{
-            fileIn = new Scanner( new FileReader( "censorlist.txt" ) );
-            while( fileIn.hasNextLine() ){
-                tempStr = fileIn.nextLine();
-		//check if string from file is empty or all spaces
-		//ignore if it is, add to ArrayList temp if it is not
-                if( !tempStr.isEmpty() && !tempStr.replaceAll("\\s+","").isEmpty() )
-			temp.add( tempStr );
-            }
-            if(false){    //Used for debugging
-                System.out.println( "******Contents of censorList: " + temp.toString() );
-            }
-        }catch( IOException e ){
-            System.out.println( e );
-        }finally{
-           if( fileIn != null )
-                   fileIn.close();
-        }
-        return temp;    //return temp variable, it has all items in censorlist.txt
-    }
-    //END 409_censor
 }
