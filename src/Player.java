@@ -1,3 +1,4 @@
+
 import java.io.DataOutputStream;
 import java.io.PrintWriter;
 import java.util.LinkedList;
@@ -28,9 +29,8 @@ public class Player {
     private String inTradeWithItem = null;
     private String playerTitle = null;
     private boolean isDrunk = false;
-    private int numOfPurchases;
 
-   /* START 405_ignore variables*/
+    /* START 405_ignore variables*/
     private ArrayList<String> ignoreList;
     private ArrayList<String> ignoredByList;
     /* END 405_ignore variables*/
@@ -44,9 +44,14 @@ public class Player {
         this.name = name;
         this.currentInventory = new LinkedList<>();
         this.currentSpirits = new LinkedList<>();
+        try {
+            // add a tutorial Quest to the player
+            questBook.add(new Quest(this, new File("go_to_dk_hall.quest")));
+            questBook.get(0).printQuest();
+        } catch (FileNotFoundException fnfe) {
+            System.out.println("Couldn't add quest: file containing quest information not found");
+        }
         this.money = new Money(20);
-	this.numOfPurchases = 0;
-
         /* START 405_ignore*/
         this.ignoreList = new ArrayList<String>();
         this.ignoredByList = new ArrayList<String>();
@@ -266,7 +271,8 @@ public class Player {
             this.replyWriter = writer;
         }
     }
-   public PrintWriter getReplyWriter() {
+
+    public PrintWriter getReplyWriter() {
         return this.replyWriter;
     }
 
@@ -672,30 +678,7 @@ public class Player {
                 player.broadcast(message);
         }
     }
-  
-    public boolean addQuest(Quest quest){
-	if(quest == null)
-		return false;
-        questBook.add(quest);
-        return true;
-    }
-
-    public boolean hasQuest(Quest quest){
-	for(int i = 0; i < questBook.size(); i++){
-		if(questBook.get(i).getQuestName().equals(quest.getQuestName()))
-			return true;
-	}
-	return false;
-    }
-
-    public int getNumPurchases(){
-	return numOfPurchases;
-    }
-
-    public void incrementPurchaseTotal(){
-    	numOfPurchases++;
-    }
-
+    
     //START 409_censor
     public ArrayList<String> getCensorList(){
         return censorList;
