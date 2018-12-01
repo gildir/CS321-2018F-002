@@ -44,6 +44,8 @@ WHITEBOARD,COMMAND? MESSAGE?, Executes WRITE (with MESSAGE) or CLEAR command on 
 MAP,,Displays an ASCII map of the world around you
 TOPTEN,,Display Top Ten Players from Rock Paper Scissors Leaderboard.
 RANK,,Display your current RPS Leaderboard Rank.
+QUESTS,,Check available quests at local NPC
+TAKEQUEST, QUESTNUMBER, Take quest from local NPC
 GROUPCHAT,NAME,Creates group chat NAME.
 GROUPCHATPRINT,NAME,Prints group chat members.
 JOIN,GROUPCHATNAME,Joins player to group chat names GROUPCHATNAME.

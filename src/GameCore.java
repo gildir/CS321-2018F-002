@@ -1,4 +1,3 @@
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -34,6 +33,9 @@ public class GameCore implements GameCoreInterface {
     private String chatPrefix;
 
     private final Shop shop;
+
+    private final List<questNPC> questNPCs;
+  
     Date date;
 
     public static final boolean DAY = true;
@@ -157,6 +159,10 @@ public class GameCore implements GameCoreInterface {
         });
         objectThread.setDaemon(true);
         objectThread.start();
+	
+	questNPCs = new ArrayList<questNPC>();
+	questNPC clocktowerNPC = new questNPC("Clock Tower");
+	questNPCs.add(clocktowerNPC);
 
         Thread daySpiritsThread = new Thread(new Runnable() {
             @Override
@@ -181,7 +187,6 @@ public class GameCore implements GameCoreInterface {
         });
         daySpiritsThread.setDaemon(true);
         daySpiritsThread.start();
-
 
         timeOfDay = DAY;
         Thread dayNightCycleThread = new Thread(new Runnable() {
@@ -267,6 +272,10 @@ public class GameCore implements GameCoreInterface {
         return daySpirits;
     }
 
+    public List<questNPC> getQuestNPCs() {
+	return questNPCs;
+    }
+
     public void setChatPrefix(String prefix) {
       this.chatPrefix = prefix;
     }
@@ -290,6 +299,7 @@ public class GameCore implements GameCoreInterface {
         System.err.println("Couldn't save new chat prefix.");
       }
       return "Prefix set successfully.";
+
     }
 
     /**
@@ -1217,7 +1227,7 @@ public class GameCore implements GameCoreInterface {
      * Returns a string representation of all objects you are carrying.
      * @param name Name of the player to move
      * @return Message showing success.
-     */    
+     */
     @Override
     public String inventory(String name) {
         Player player = this.playerList.findPlayer(name);
@@ -1481,6 +1491,8 @@ public class GameCore implements GameCoreInterface {
          return null;
      //buyItem() will handle removing money since we do not have an Item obj
      Boolean did_buy = shop.buyItem(player, itemName);
+     if(did_buy == true)
+         player.incrementPurchaseTotal();
      player.getReplyWriter().println(shop.displayShop());
      try{Thread.sleep(500);}
       catch (InterruptedException e){
@@ -1523,6 +1535,105 @@ public class GameCore implements GameCoreInterface {
             Logger.getLogger(GameObject.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    /**
+      *
+      * Check available quests from NPC
+      * @param name Player that is interacting with the NPC
+      */
+      public String availableQuests(String name){
+	
+	Player player = this.playerList.findPlayer(name);
+	Room room = map.findRoom(player.getCurrentRoom());
+	questNPC npc  = new questNPC("placeholder");
+	boolean hasNPC = false;
+	String result = "";
+	Quest quest1 = null;
+	Quest quest2 = null;
+	try{
+		quest1 = new Quest(player, new File("go_to_dk_hall.quest"));		
+		quest2 = new Quest(player, new File("buyAnItem.quest"));
+      }
+	catch (FileNotFoundException fnfe){
+		System.out.println("Some quests files were unable to be found");
+	}
+	boolean playerHasQuest;
+
+	for(int i = 0; i < questNPCs.size(); i++){
+		if(room.getTitle().equals(questNPCs.get(i).getLocation())){
+			hasNPC=true;
+			npc = questNPCs.get(i);
+		}
+	}
+
+	playerHasQuest = player.hasQuest(quest1);
+	if(playerHasQuest == false)
+		npc.addQuest(quest1);
+	playerHasQuest = player.hasQuest(quest2);
+	if(playerHasQuest == false)
+		npc.addQuest(quest2);
+
+	if(hasNPC == true){
+		player.getReplyWriter().println("");
+		player.getReplyWriter().println(npc.printQuests());
+	}
+	else
+		player.getReplyWriter().println("There isn't an npc that provides quests in this room");
+	npc.clearQuests(npc.getNumQuests());
+	return result;
+	}
+
+    /**
+      * Interact with an NPC that provides quests
+      * @param name Player that is interacting with the NPC
+      */
+      public String takeQuest(String name, int questNumber){
+      
+     		Player player = this.playerList.findPlayer(name);
+		Room room = map.findRoom(player.getCurrentRoom());
+		questNPC npc = new questNPC("placeholder");
+		boolean hasNPC = false;
+		String result = "";
+		Quest quest1 = null;
+		Quest quest2 = null;
+
+		try{
+			quest1 = new Quest(player, new File("go_to_dk_hall.quest"));
+			quest2 = new Quest(player, new File("buyAnItem.quest"));
+		}
+		catch (FileNotFoundException fnfe){
+			System.out.println("Some quest files were unable to be found");
+		}
+		boolean playerHasQuest;
+	
+      	for(int i = 0; i < questNPCs.size(); i++){
+			if(room.getTitle().equals(questNPCs.get(i).getLocation())){
+				hasNPC = true;
+				npc = questNPCs.get(i);
+			}
+		}	
+
+		playerHasQuest = player.hasQuest(quest1);
+		if(playerHasQuest == false)
+			npc.addQuest(quest1);
+		playerHasQuest = player.hasQuest(quest2);
+		if(playerHasQuest == false)
+			npc.addQuest(quest2);
+
+		if(hasNPC == true){
+			if(questNumber < 0 || questNumber > npc.getNumQuests()){
+				npc.clearQuests(npc.getNumQuests());
+				return "Not a valid quest number";
+			}
+			else{
+				player.addQuest(npc.getQuest(questNumber));
+				result += "Quest Added to your Quest Book\n";
+			}
+		}
+		npc.clearQuests(npc.getNumQuests());
+        	result += "Please come again!";
+		return result;
+      }
 
 
 //Rock Paper Scissors Battle Methods -------------------------------------------

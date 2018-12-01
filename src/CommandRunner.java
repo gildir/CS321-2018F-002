@@ -62,6 +62,7 @@ public class CommandRunner {
         commandFunctions.put("LISTPLAYERS", (name, args) -> remoteGameInterface.listAllPlayers(name));
         commandFunctions.put("LEFT",    (name, args) -> remoteGameInterface.left(name));
         commandFunctions.put("RIGHT",   (name, args) -> remoteGameInterface.right(name));
+	commandFunctions.put("QUESTS", (name, args) -> remoteGameInterface.availableQuests(name));
         commandFunctions.put("SAY",     (name, args) -> {
             // Create empty string
             String message = String.join(" ", args);
@@ -429,6 +430,17 @@ public class CommandRunner {
                 return "invalid amount of money specified";
             } 
         });
+	
+	commandFunctions.put("TAKEQUEST", (name, args) -> {
+		if(args.size() != 1){
+			System.out.println("Invalid value, please try again");
+			return null;
+		}
+		else{
+			int questNumber = Integer.parseInt(args.remove(0));
+			return remoteGameInterface.takeQuest(name, questNumber);
+		}
+	});
 
         commandFunctions.put("RECEIVE",   (name, args) -> { return remoteGameInterface.acceptGift(name);  });
         
