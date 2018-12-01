@@ -324,7 +324,11 @@ public class Player {
     public Money getMoney() {
         return this.money;
     }
-
+  
+   /**
+   * Adds a double value to this players money
+   * @param value Amount to add
+   */
     public void addMoney(double value) {
         synchronized (this) {
             Money added = new Money();
@@ -366,6 +370,10 @@ public class Player {
         }
     }
 
+   /**
+   * Removes a double value from the players money
+   * @param value Amount to be removed
+   */
    public void removeMoney(double value){
     if(this.money.sum() < value){
       return;
@@ -527,7 +535,12 @@ public class Player {
             this.inTradeWithItem = itemName;
         }
     }
-
+  
+   /**
+   * Checks if the players units can reach the desired amount
+   * @param amount Amount to be reached using players units
+   * @return true if player can reach the amount
+   */
     public boolean hasUnits(double amount) {
     // send money in units available to player 
     // if correct units are unavaialable, then return and give a message
