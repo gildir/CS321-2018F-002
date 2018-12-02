@@ -12,11 +12,13 @@ public class GroupChatTracker{
 	// GroupChat object can be retrieved from HashMaps using group chat name
 	// NOTE: Group chat names will always be saved in lowercase and need to be used in lowercase
 	private HashMap< String, ArrayList<String>> Tracker;  //Tracker keeps track of all group chats
-	private HashMap< String, ArrayList<String>> Invites;  //Invites keeps track of all group chats
-
+	private HashMap< String, ArrayList<String>> Invites;  //Invites keeps track of all group chat invites
+	private ArrayList<String> groups; //tracks group chat names
+		
 	GroupChatTracker(){
 		Tracker = new HashMap<String, ArrayList<String> >();
 		Invites = new HashMap<String, ArrayList<String> >();
+		groups = new ArrayList<String>();
 	}
 
 	//track a new group chats
@@ -36,6 +38,7 @@ public class GroupChatTracker{
 		tempT.add( playerName );
 		Tracker.put( groupChatNameLC, tempT );
 		Invites.put( groupChatNameLC, tempI );
+		groups.add(groupChatNameLC);
 		return "Group chat [" + groupChatNameLC + "] created.";
 	}
 
@@ -109,6 +112,7 @@ public class GroupChatTracker{
 		if( Tracker.get( groupChatNameLC ).size() == 0 ){
 			Tracker.remove( groupChatNameLC ); 
 			Invites.remove( groupChatNameLC );
+			groups.remove( groupChatNameLC );
 		}
 
 
@@ -170,16 +174,31 @@ public class GroupChatTracker{
 	}
 	public String getHelp()
 	{
-		String help = "GROUPCHAT <name>\tThis command creates a private group chat. The creator is automatically added to the group. Only the creator can invite people to the group.\n" +
-				"GROUPCHATPRINT <name>\tThis was used for debugging but i left it. It prints the members of private group <name>.\n" +
-				"JOIN <group name>\tOnce a player receives an invitation to join group chat <name>, they can type join the group with this command.\n";
-		help +="\n\n<group name> /invite <player name>\tinvite player with playerName to the group chat. \n" +
-				"<group name> /leave\tplayer leaves group\n" +
-				"<group name> <message>\tplayer sends message to cs321 group.\n";
+		String help = "GROUPCHAT [GroupName]         Creates a private group chat. The creator is automatically added to the group.\n"+
+			      "                              Only members can invite other players to the group.\n" +
+			      "GROUPCHATPRINT [GroupName]    Prints the members of private group GroupName.\n" +
+			      "JOIN [GroupName]              After player receives an invitation to join GroupName, this command can be used to join the group.\n";
+		help +=	      "<GroupName> /invite [playerName]    Member of group invites playerName to the group chat. \n" +
+			      "<GroupName> /leave            Member of group leaves group\n" +
+			      "<GroupName> [message]         Member of group sends message to the group.\n";
 		return help;
 	}
 
-
+	//when a player quits, this function removes the player from group chats and invite lists
+	public void playerQuit( String playerName){
+		//get chat room names
+		ArrayList<String> groupsTemp = new ArrayList<String>( groups );
+		for( String group: groupsTemp){
+			//if player is in group, remove player
+			if( this.checkMembership(group, playerName) ){
+				this.removeMember( group, playerName);
+			}
+			if( this.checkInvite(group, playerName) ){
+				this.removeInvite( group, playerName );
+			}
+		}
+		
+	}
 
 }
 

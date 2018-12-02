@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Scanner;
 
 /**
  *
@@ -78,7 +79,8 @@ public class GameClient {
                     remoteGameInterface.leave(playerName);
                     runListener = false;
                     System.out.println("User has been inactive for 5 minutes.. logging off");
-                    timer.cancel();
+                    remoteGameInterface.GCPlayerQuit(playerName); //416_GroupChat
+		    timer.cancel();
                     System.exit(-1);
                 }
                 catch (RemoteException ex) {
@@ -238,6 +240,7 @@ public class GameClient {
                         }
                         else{
                             nameConf = true; nameSat = true;
+			    setPlayerCensorList();  //409_censor
                         }
                     }
                     else if (entry.equalsIgnoreCase("N")){
@@ -434,7 +437,12 @@ public class GameClient {
 
         String command = tokens.remove(0);
         if(command.equalsIgnoreCase("Quit")){
-            deleteCharacter();
+                try{
+			remoteGameInterface.GCPlayerQuit(this.playerName); //416_GroupChat
+		}catch( RemoteException re){
+		    System.out.println(re);
+		}
+		deleteCharacter();
         }
         update();
 	//416_GroupChat START
@@ -569,4 +577,36 @@ public class GameClient {
             }
         }
     }
+
+    //409_censor START
+    public void setPlayerCensorList(){
+        Scanner fileIn = null;
+        String tempStr = null;
+        ArrayList<String> temp = new ArrayList<String>();
+        try{
+            fileIn = new Scanner( new FileReader( "censorlist.txt" ) );
+            while( fileIn.hasNextLine() ){
+                tempStr = fileIn.nextLine();
+                //check if string from file is empty or all spaces
+                //ignore if it is, add to ArrayList temp if it is not
+                if( !tempStr.isEmpty() && !tempStr.replaceAll("\\s+","").isEmpty() )
+                        temp.add( tempStr );
+            }
+            if(false){    //Used for debugging
+                System.out.println( "******Contents of censorList: " + temp.toString() );
+            }
+        }catch( IOException e ){
+            System.out.println( e );
+        }finally{
+           if( fileIn != null )
+                   fileIn.close();
+        }
+	try{
+	    remoteGameInterface.setPlayerCensorList( temp, this.playerName );   
+	}catch( RemoteException re){
+	   
+	}
+    }
+    //409_censor END
+
 }
