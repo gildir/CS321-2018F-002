@@ -389,6 +389,19 @@
     "description":      "Display a tutorial for Rock Paper Scissors.",
     "uses": []
 }, {
+    "name":		"QUESTS",
+    "category":		"QUESTS",
+    "description":	"Display quests available at NPC in the current room.",
+    "uses": []
+}, {
+    "name":		"TAKEQUEST",
+    "category":		"QUESTS",
+    "description":	"Take quest from the NPC",
+    "uses": [{
+	    "case":		"[QUESTNUMBER]",	
+	    "description":	"The number of the quest you wish to take."
+    }]
+}, {
     "name":             "QUITRPS",
     "category":         "BATTLES",
     "description":      "Leave the current battle. This will count as a loss.",
