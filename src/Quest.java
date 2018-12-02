@@ -90,11 +90,6 @@ public class Quest
 					{
 						case "A to B":
 							scannedObjective = new AToBObjective(this, questScanner);
-							scannedObjective.printObjective();
-							break;
-						case "purchase":
-							scannedObjective = new purchaseObjective(this, questScanner);
-							scannedObjective.printObjective();
 							break;
 					}
 					storeNewObjectivesHere[objectivesAdded] = scannedObjective;
@@ -233,10 +228,5 @@ public class Quest
 		}
 		return String.format("Quest: %s\nDescription: %s\nStatus: %s", this.QUEST_NAME, this.QUEST_DESCRIPTION, status);
 	}
-
-	public String getQuestName()
-	{
-		return QUEST_NAME;
-	} 
 	
 }
