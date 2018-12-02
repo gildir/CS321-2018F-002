@@ -400,7 +400,8 @@
     "uses": [{
 	"case":		"[QUESTNUMBER]",	
 	"description":	"The number of the quest you wish to take."
-    }
+    }]
+}, {
 
     "name":             "QUITRPS",
     "category":         "BATTLES",
