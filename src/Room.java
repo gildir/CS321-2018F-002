@@ -142,6 +142,13 @@ public class Room {
         return validExits.get(randomIndex);
     }
     
+    public Exit randomValidExit(){
+        List<Exit> validExits = new LinkedList<>(exits);
+        validExits.removeIf(exit -> exit.getRoom() == 0);
+        int index = new Random().nextInt(validExits.size());
+      return validExits.get(index);
+    }
+    
     public String getDescription() {
         return this.description;
     }
