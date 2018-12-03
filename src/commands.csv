@@ -7,12 +7,16 @@ WHISPER,PLAYER MESSAGE,Says <MESSAGE> to specified <PLAYER>.
 REPLY,MESSAGE,Says <MESSAGE> to last player who whispered you.
 MOVE,DIRECTION,Tries to walk in <direction>.
 PICKUP,OBJECT,Tries to pick up an object in the same area.
+DESCRIBE,OBJECT,Describe the object in a player's inventory.
 DROPOFF,OBJECT,Tries to drop off an object in the same area.
 OFFERITEM,PLAYER ITEM,Offers <PLAYER> an <ITEM> from your inventory.
+OFFERRESPONSE,DECISION,Finishes a trade with a <DECISION>, you can decide to ACCEPT or REFUSE
+USEITEM,ITEM,Uses an <ITEM> from your inventory.
 INVENTORY,,Shows you what objects you have collected.
+REDO,,Performs the last command you entered.
 QUIT,,Quits the game.
 HELP,,Displays the list of available commands
-CHALLENGE,PLAYER,Challenges another <PLAYER> to a Rock Paper Scissors Battle.
+CHALLENGE,PLAYER ROUNDS,Challenges another <PLAYER> to a Rock Paper Scissors Battle.
 ACCEPT,PLAYER,Accepts a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.
 REFUSE,PLAYER,Refuses a Rock Paper Scissors Battle Challenge from a specified <PLAYER>.
 ROCK,,Play <ROCK> in your current Rock Paper Scissors Battle.
@@ -23,8 +27,24 @@ TUTORIAL,,Display a tutorial for Rock Paper Scissors.
 ENTER,SHOP,Enters shop at clock tower
 LEAVE,SHOP,Leaves shop
 SELL,ITEM,Sell item in your inventory to the shop
+BUY,ITEM,Buy an item from the shop
 MONEY,,Line-by-line display of money
 GIFTABLE,,List players in the same room that you can give money to
 GIVE,,Give amount of money to a friend
+RECEIVE,,Accept a gift offer
+DECLINE,,Decline a gift offer
 GIFT,GHOULNAME ITEM,Player gifts a ghoul an object; this action decreases the ghoul's aggression.
 POKE,GHOULNAME,Player pokes a ghoul that is in the same room.
+CATCH,SPIRIT,Player catches a spirit that's in the same room.
+SPIRITALL,,Lists all the possible spirits that can be caught.
+CAUGHTSPIRITS,,Shows you what spirits you caught.
+SORTINVENTORY,ATTRIBUTE,Sorts inventory by <name> <value> or <weight>.
+CHANGEPREFIX,XXX,Input 3 characters for your new chat prefix.
+WHITEBOARD,COMMAND? MESSAGE?, Executes WRITE (with MESSAGE) or CLEAR command on the whiteboard. If no COMMAND specified it will display the current message in the whiteboard.
+MAP,,Displays an ASCII map of the world around you
+TOPTEN,,Display Top Ten Players from Rock Paper Scissors Leaderboard.
+RANK,,Display your current RPS Leaderboard Rank.
+GROUPCHAT,NAME,Creates group chat NAME.
+GROUPCHATPRINT,NAME,Prints group chat members.
+JOIN,GROUPCHATNAME,Joins player to group chat names GROUPCHATNAME.
+GROUPCHATHELP,,print group chat help.

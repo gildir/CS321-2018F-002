@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 
 /**
  *
@@ -23,6 +23,9 @@ public interface GameCoreInterface {
 
     public String gift(String playerName, String name, double amount);
 
+    public String acceptGift(String name);
+
+    public String declineGift(String name);
 
     /**
      * Returns the player with the given name or null if no such player.
@@ -68,7 +71,7 @@ public interface GameCoreInterface {
      * @param message Message to speak
      * @return Message showing success.
      */
-    public String say(String name, String message);
+    public String say(String name, String message, ArrayList<String> censorList);
 
     /**
     * Whispers "message" to specified player.
@@ -77,7 +80,7 @@ public interface GameCoreInterface {
     * @param message Message to whisper
     * @return Message Showing success.
     */
-    public String whisper(String name1, String name2, String message);
+    public String whisper(String name1, String name2, String message, ArrayList<String> censorList);
     
     /**
      * Returns a string representation of all objects you are carrying.
@@ -108,16 +111,26 @@ public interface GameCoreInterface {
     public void log(String fileName, String log);
 
 //Rock Paper Scissors Battle Code here--------------------------------------
-public void challenge(String challenger, String player2);
+public void challenge(String challenger, String player2, int rounds);
 public void accept(String challenger, String player2);
 public void refuse(String challenger, String player2);
-public void doBattle(String challenger, String player2, int p1, int p2, Battle b);
+public void doBattle(String challenger, String player2, int[] p1, int[] p2, Battle b, int rounds);
 public void rock(String player);
 public void paper(String player);
 public void scissors(String player);
 public void checkBoard(String player);
 public String tutorial(String name);
+public void topTen(String name);
+public void getRank(String player);
+public void quitRps(String player);
 //Rock Paper Scissors Battle Code here--------------------------------------
+	/**
+	 * @author James Bruce
+	 * gives an ASCII art map of the world surrounding a player
+	 * @param player the name of a player
+	 * @return the ASCII art map
+	 */
+	public String map(String player);
 
     /* START 405_ignore */
     /**
@@ -137,4 +150,73 @@ public String tutorial(String name);
      */
     public String unIgnore(String name, String ignorePlayerName);
 
+    // Whiteboards
+    /**
+     * Returns a string displaying the Whiteboard of the room the player is in.
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String displayWhiteboard(String playerName);
+
+    /**
+     * [clearWhiteboard description]
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String clearWhiteboard(String playerName);
+
+    /**
+     * [writeWhiteboard description]
+     * @param  playerName
+     * @param  message
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String writeWhiteboard(String playerName, String message);
+
+    /* START 416_GroupChat */
+    /**
+     * Creates group chat
+     * @return Success or Failure message.
+     */
+    public String createGroupChat(String groupChatName, String playerName);
+
+    /**
+     * @return print out of groupChatName HashMap entry.
+     */
+    public String printGroupChat(String groupChatName);
+
+
+    /**
+     *  check if group chat exists
+     *  @return true if group with name exists, otherwise false
+     */
+    public boolean checkGCExists(String groupChatName);
+
+     /**
+     * Invites player to join a group chat
+     * @return feed back to the user.
+     */
+    public String GCInvite( String groupName, String playerInvited, String playerInviting);
+
+    public void GCMessage( String groupName, String playerName, String rawInput);
+
+    public String GCLeave( String groupName, String playerName);
+
+    public String GCJoin( String groupName, String playerName);
+
+    public boolean checkGCMembership( String groupName, String playerName);
+    
+    public String GCGetHelp(String name);
+    
+    public void GCPlayerQuit( String playerName);
+    /* END 416_GroupCat */
+
+    /* START 409_censor */
+    public void setPlayerCensorList( ArrayList<String> censorList, String playerName );
+    
+    public ArrayList<String> getPlayerCensorList( String playerName );
+    /* END 409_censor */
 }

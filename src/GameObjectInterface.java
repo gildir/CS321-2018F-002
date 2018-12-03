@@ -22,6 +22,22 @@ public interface GameObjectInterface extends Remote {
     public boolean joinGame(String name) throws RemoteException;
 
     public String gift(String playerName, String name, double amount) throws RemoteException;
+    
+    public String acceptGift(String name) throws RemoteException;
+    
+    public String declineGift(String name) throws RemoteException;
+
+    public void setChatPrefix(String prefix) throws RemoteException;
+
+    public boolean playerExists(String name) throws RemoteException;
+
+    /**
+    * Changes the chat prefix to the new prefix specified by the player.
+    * @param prefix New chat prefix to be set.
+    * @return Returns message saying whether the prefix was successfully changed or not.
+    * @throws RemoteException
+    */
+    public String changeChatPrefix(String prefix) throws RemoteException;
 
     /**
      * Returns a look at the area of the specified player.
@@ -57,7 +73,7 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success.
      * @throws RemoteException 
      */
-    public String say(String name, String message) throws RemoteException;
+    public String say(String name, String message, ArrayList<String> censorList) throws RemoteException;
 
     /**
     * Shouts "message" to everyone in the game.
@@ -66,7 +82,7 @@ public interface GameObjectInterface extends Remote {
     * @return Message showing success
     * @throws RemoteException
     */
-    public String shout(String name, String message) throws RemoteException;
+    public String shout(String name, String message, ArrayList<String> censorList) throws RemoteException;
 
     /**
     * Whispers "message" to specified player.
@@ -76,7 +92,7 @@ public interface GameObjectInterface extends Remote {
     * @return Message showing success.
     * @throws RemoteException
     */
-    public String whisper(String name1, String name2, String message) throws RemoteException;
+    public String whisper(String name1, String name2, String message, ArrayList<String> censorList) throws RemoteException;
 
     /**
     * Sends a whisper the last player that whispered.
@@ -84,7 +100,7 @@ public interface GameObjectInterface extends Remote {
     * @param message Message to be whispered
     * @return Message showing success.
     */
-    public String reply(String name, String message) throws RemoteException;
+    public String reply(String name, String message, ArrayList<String> censorList) throws RemoteException;
 
     /**
      * Attempts to walk forward < distance > times.  If unable to make it all the way,
@@ -103,6 +119,16 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException 
      */    
     public String pickup(String name, String object) throws RemoteException;
+	
+	/**
+     * Attempts to pick up an object < object >. Will return a message on any success or failure.
+     * @param name Name of the player to pickup an object
+     * @param object The case-insensitive name of the object to pickup.
+     * @return Message showing success.
+     * @throws RemoteException 
+     */    
+    public String describe(String name, String object) throws RemoteException;
+	
     /**
      * Attempts to drop off an object < object >. Will return a message on any success or failure.
      * @param name Name of the player to dropoff an object
@@ -111,6 +137,14 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public String dropoff(String name, String object) throws RemoteException;
+    /**
+     * Sorts inventory by specified attribute
+     * @param name Name of the player who's inventory is going to be sorted
+     * @param attribute The attribute by which to sort the inventory
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    public String sortInventory(String name, String attribute) throws RemoteException;
     /**
      * Attempts to offer an item < target > from a player < player > to a player < nameOffered >. Will return a message on success or failure.
      * @param player The player offering the item
@@ -130,6 +164,22 @@ public interface GameObjectInterface extends Remote {
     public String inventory(String name) throws RemoteException;
 
     /**
+     * Attempts to have a player <playerName> answer an offering player with <response>. Will return a message on success or failure.
+     * @param playerName The player responding to the offer
+     * @param response The response that the player is sending
+     * @return A message showing success.
+     * @throws RemoteException
+     */
+    public String offerResponse(String playerName, String response) throws RemoteException;
+    /**
+     * Attempts to use an item the player has called <itemName>. Will return a message on success or failure.
+     * @param playerName Name of the player using the item
+     * @param itemName The case-insensitive name of the item to use
+     * @return Message showing success.
+     * @throws RemoteException
+     */
+    public String useItem(String playerName, String itemName) throws RemoteException;
+    /**
      * Player pokes a ghoul that is in the same room.
      * @param ghoulName Name of the ghoul that is poked
      * @param playerName Name of the player that pokes the ghoul.
@@ -145,6 +195,28 @@ public interface GameObjectInterface extends Remote {
      * @return Message showing success or failure of the gifting action.
      */
     public String giftGhoul(String playerName, String ghoulName, String target) throws RemoteException;
+
+    /**
+     * Player catches a spirit currently in the same room.
+     * @param playerName Name of the player
+     * @param target Name of the spirit being caught
+     * @return Message showing success
+     */
+    public String catchSpirit(String playerName, String target) throws RemoteException;
+
+    /**
+     * Player is able to list all available spirits.
+     * @param playerName Name of the player
+     * @return String representation of all available spirits
+     */
+    public String getAllSpirits(String playerName) throws RemoteException;
+
+    /**
+     * Player is able to get a list of the spirits they've caught.
+     * @param playerName Name of the player
+     * @return String representation of their caught spirits
+     */
+    public String getCurrentSpirits(String playerName) throws RemoteException;
 
     /**
      * Returns a list of nearby players you can gift.
@@ -170,6 +242,14 @@ public interface GameObjectInterface extends Remote {
      * @throws RemoteException
      */
     public String sell(String playerName, String itemName) throws RemoteException;
+    
+    /**
+     * Buy an item from the shop the player is currently in
+     * @param playerName player who is selling
+     * @param itemName item to buy
+     * @return A string indicating success or failure
+     */
+    public String buy(String playerName, String itemName) throws RemoteException;
 
     /**
      * Leaves the shop.
@@ -205,19 +285,85 @@ public interface GameObjectInterface extends Remote {
     public void logInteraction(String name, String command, ArrayList<String> args, String output) throws RemoteException;
 
 //Rock Paper Scissors Battle Code Here---------------------------------
-    public void challenge(String challenger, String player2) throws RemoteException;
+    public void challenge(String challenger, String player2, int rounds) throws RemoteException;
     public void accept(String challenger, String player2) throws RemoteException;
     public void refuse(String challenger, String player2) throws RemoteException;
     public void rock(String player) throws RemoteException;
     public void paper(String player) throws RemoteException;
     public void scissors(String player) throws RemoteException;
-	  public String tutorial(String name) throws RemoteException;
+    public String tutorial(String name) throws RemoteException;
     public void checkBoard(String player) throws RemoteException;
+    public void topTen(String name) throws RemoteException;
+    public void getRank(String player) throws RemoteException;
+    public void quitRps(String player) throws RemoteException;
 //Rock Paper Scissors Battle Code Here---------------------------------
+  
+	/**
+	 * gives an ASCII art map of the world surrounding a player
+	 * @param player the name of a player
+	 * @return the ASCII art map
+	 */
+	public String map(String player) throws RemoteException;
+	
+	// Displays the Player's active Quest Objectives
+	public String objectives(String player) throws RemoteException;
+  
     //405
     public String ignore(String name, String ignoreName) throws RemoteException;
     //407
     public String listIgnoredPlayers(String playerName)throws RemoteException;
     //408
     public String unIgnore(String name, String ignoreName) throws RemoteException;
+
+    // Whiteboards
+    /**
+     * Returns a string displaying the Whiteboard of the room the player is in.
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String displayWhiteboard(String playerName) throws RemoteException;
+    
+    /**
+     * Returns a string notifying the player that the message stored in the Whiteboard was erased.
+     * @param  playerName
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String clearWhiteboard(String playerName) throws RemoteException;
+    
+    /**
+     * Returns a string to the player notifying them whether their message was invalid, whether it exceeded the maximum character length, or that their message was saved to the Whiteboard.
+     * @param  playerName
+     * @param  message
+     * @return message to be displayed to player
+     * @throws RemoteException
+     */
+    public String writeWhiteboard(String playerName, String message) throws RemoteException;
+    //406_GroupChat START
+    public String createGroupChat( String chatGroupName, String playerName) throws RemoteException;
+    public String printGroupChat( String chatGroupName) throws RemoteException;
+
+    public boolean checkGCExists(String groupChatName) throws RemoteException;
+
+    public String GCInvite( String groupName, String playerInvited, String playerInviting) throws RemoteException;
+
+    public void GCMessage( String groupName, String playerName, String rawInput) throws RemoteException;
+
+    public String GCLeave( String groupName, String playerName) throws RemoteException;
+
+    public String GCJoin( String groupName, String playerName) throws RemoteException;
+
+    public boolean checkGCMembership( String groupName, String playerName) throws RemoteException;
+    
+    public String GCGetHelp(String name)throws RemoteException;
+    
+    public void GCPlayerQuit( String playerName) throws RemoteException;
+    //406_GroupChat END
+    /* START 409_censor */
+    public void setPlayerCensorList( ArrayList<String> censorList, String playerName ) throws RemoteException;
+
+    public ArrayList<String> getPlayerCensorList( String playerName ) throws RemoteException;
+    /* END 409_censor */
+
 }
